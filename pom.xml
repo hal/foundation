@@ -92,7 +92,7 @@
         <version.junit>5.12.2</version.junit>
         <version.kie.j2cl.bom>0.4</version.kie.j2cl.bom>
         <version.kie.di.bom>0.8.1</version.kie.di.bom>
-        <version.mockito>5.17.0</version.mockito>
+        <version.mockito>5.18.0</version.mockito>
         <version.node>v20.18.0</version.node>
         <version.patternfly>5.2.1</version.patternfly>
         <version.patternfly.java>0.2.11</version.patternfly.java>
