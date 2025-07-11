@@ -1,4 +1,4 @@
-# New features
+ # New features
 
 This document highlights the new features of the management console.
 
@@ -28,7 +28,7 @@ The model browser has been greatly improved:
 - Attribute description as popovers
 - Links for referenced capabilities (popup for multiple references)
 - Support for simple nested attributes
-- Support for complex attributes in read-only view
+- Support for complex attributes in a read-only view
 - Info of allowed values
 - Syntax highlighting for expressions
 
