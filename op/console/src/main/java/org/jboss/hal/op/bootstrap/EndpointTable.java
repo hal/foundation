@@ -66,8 +66,8 @@ class EndpointTable implements IsElement<HTMLElement> {
         table = table()
                 .addHead(thead()
                         .addRow(tr("endpoint-head")
-                                .addItem(th().textContent("Name"))
-                                .addItem(th().textContent("URL"))
+                                .addItem(th().text("Name"))
+                                .addItem(th().text("URL"))
                                 .addItem(th().screenReader("Edit"))
                                 .addItem(th().screenReader("Remove"))))
                 .addBody(tbody());
@@ -95,8 +95,8 @@ class EndpointTable implements IsElement<HTMLElement> {
             table.tbody().clear();
             table.tbody().addRows(endpoints, endpoint -> tr(endpoint.id)
                     .clickable()
-                    .addItem(td("Name").textContent(endpoint.name))
-                    .addItem(td("URL").textContent(endpoint.url))
+                    .addItem(td("Name").text(endpoint.name))
+                    .addItem(td("URL").text(endpoint.url))
                     .addItem(td("Edit").wrap(fitContent)
                             .add(tableText()
                                     .add(button().plain().icon(pencilAlt())

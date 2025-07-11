@@ -96,7 +96,7 @@ import static org.patternfly.style.Classes.list;
 import static org.patternfly.style.Classes.start;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Color.blue;
-import static org.patternfly.style.Color.gold;
+import static org.patternfly.style.Color.orange;
 import static org.patternfly.style.Color.red;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variable.utilVar;
@@ -112,7 +112,7 @@ public class BuildingBlocks {
 
     public static Flex attributeName(AttributeDescription attribute, boolean compact, Supplier<Boolean> stabilityCheck) {
         HTMLContainerBuilder<HTMLElement> name = strong()
-                .textContent(attribute.name())
+                .text(attribute.name())
                 .run(element -> {
                     if (attribute.deprecation().isDefined()) {
                         element.css(halModifier(deprecated));
@@ -141,7 +141,7 @@ public class BuildingBlocks {
         if (attribute.hasDefined(CAPABILITY_REFERENCE)) {
             infos.addItem(listItem()
                     .add("References the capability ")
-                    .add(code().textContent(attribute.get(CAPABILITY_REFERENCE).asString()))
+                    .add(code().text(attribute.get(CAPABILITY_REFERENCE).asString()))
                     .add("."));
         }
         if (attribute.get(EXPRESSIONS_ALLOWED).asBoolean(false)) {
@@ -151,13 +151,13 @@ public class BuildingBlocks {
         if (attribute.hasDefined(UNIT)) {
             infos.addItem(listItem()
                     .add("Uses ")
-                    .add(i().textContent(attribute.get(UNIT).asString()))
+                    .add(i().text(attribute.get(UNIT).asString()))
                     .add(" as unit."));
         }
         if (attribute.hasDefined(DEFAULT)) {
             infos.addItem(listItem()
                     .add("Defaults to ")
-                    .add(i().textContent(attribute.get(DEFAULT).asString()))
+                    .add(i().text(attribute.get(DEFAULT).asString()))
                     .add(" when undefined."));
         }
         if (attribute.hasDefined(REQUIRES)) {
@@ -188,7 +188,7 @@ public class BuildingBlocks {
                         text = "A modification requires a restart of services, associated with the attribute's resource, but does not require a restart of all services or a full JVM restart.";
                         break;
                 }
-                infos.addItem(listItem().textContent(text));
+                infos.addItem(listItem().text(text));
             }
         }
 
@@ -209,12 +209,12 @@ public class BuildingBlocks {
     }
 
     public static HTMLElement nestedElementSeparator() {
-        return span().css(util("mx-sm")).textContent("/").element();
+        return span().css(util("mx-sm")).text("/").element();
     }
 
     private static HTMLContainerBuilder<HTMLDivElement> description(Description description) {
         HTMLContainerBuilder<HTMLDivElement> div = div();
-        div.add(div().textContent(description.description()));
+        div.add(div().text(description.description()));
         Deprecation deprecation = description.deprecation();
         if (deprecation.isDefined()) {
             div.add(div().css(util("mt-sm"))
@@ -228,7 +228,7 @@ public class BuildingBlocks {
     private static void enumerate(ListItem listItem, java.util.List<ModelNode> values) {
         for (Iterator<ModelNode> iterator = values.iterator(); iterator.hasNext(); ) {
             ModelNode value = iterator.next();
-            listItem.add(code().textContent(value.asString()));
+            listItem.add(code().text(value.asString()));
             if (iterator.hasNext()) {
                 listItem.add(", ");
             }
@@ -266,7 +266,7 @@ public class BuildingBlocks {
                         .icon(search())
                         .text("No results found"))
                 .addBody(emptyStateBody()
-                        .textContent(
+                        .text(
                                 "No results match the filter criteria. Clear all filters and try again."))
                 .addFooter(emptyStateFooter()
                         .addActions(emptyStateActions()
@@ -282,7 +282,7 @@ public class BuildingBlocks {
             internalRenderExpression(span, value);
             return span.element();
         } else {
-            return span().textContent(value).element();
+            return span().text(value).element();
         }
     }
 
@@ -290,12 +290,12 @@ public class BuildingBlocks {
     private static void internalRenderExpression(HTMLContainerBuilder<HTMLElement> builder, String value) {
         String[] startExprEnd = Expression.extractExpression(value);
         if (!startExprEnd[0].isEmpty()) {
-            builder.add(span().css(halComponent(expression, start)).textContent(startExprEnd[0]));
+            builder.add(span().css(halComponent(expression, start)).text(startExprEnd[0]));
         }
         String[] nameDefault = Expression.splitExpression(startExprEnd[1]);
         builder.add(span().css(halComponent(expression, dollar)))
                 .add(span().css(halComponent(expression, curlyBraces, start)))
-                .add(span().css(halComponent(expression, name)).textContent(nameDefault[0]));
+                .add(span().css(halComponent(expression, name)).text(nameDefault[0]));
         if (!nameDefault[1].isEmpty()) {
             builder.add(span().css(halComponent(expression, colon)));
             if (Expression.containsExpression(nameDefault[1])) {
@@ -303,12 +303,12 @@ public class BuildingBlocks {
                 internalRenderExpression(nested, nameDefault[1]);
                 builder.add(nested);
             } else {
-                builder.add(span().css(halComponent(expression, defaultValue)).textContent(nameDefault[1]));
+                builder.add(span().css(halComponent(expression, defaultValue)).text(nameDefault[1]));
             }
         }
         builder.add(span().css(halComponent(expression, curlyBraces, end)));
         if (!startExprEnd[2].isEmpty()) {
-            builder.add(span().css(halComponent(expression, end)).textContent(startExprEnd[2]));
+            builder.add(span().css(halComponent(expression, end)).text(startExprEnd[2]));
         }
     }
 
@@ -338,7 +338,7 @@ public class BuildingBlocks {
         if (stability == EXPERIMENTAL) {
             return red;
         } else if (stability == PREVIEW) {
-            return gold;
+            return orange;
         }
         return blue;
     }

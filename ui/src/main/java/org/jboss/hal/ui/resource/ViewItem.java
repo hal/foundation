@@ -18,8 +18,9 @@ package org.jboss.hal.ui.resource;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.elemento.HasElement;
-import org.patternfly.component.WithIdentifier;
+import org.jboss.elemento.IsElement;
+import org.jboss.elemento.TypedBuilder;
+import org.patternfly.component.HasIdentifier;
 import org.patternfly.component.list.DescriptionListGroup;
 import org.patternfly.component.list.DescriptionListTerm;
 import org.patternfly.core.ComponentContext;
@@ -32,9 +33,10 @@ import static org.patternfly.component.list.DescriptionListGroup.descriptionList
 /** An item for a {@link ResourceView} based on a {@link DescriptionListGroup} */
 class ViewItem implements
         ManagerItem<ViewItem>,
-        HasElement<HTMLElement, ViewItem>,
+        TypedBuilder<HTMLElement, ViewItem>,
+        IsElement<HTMLElement>,
         ComponentContext<HTMLElement, ViewItem>,
-        WithIdentifier<HTMLElement, ViewItem> {
+        HasIdentifier<HTMLElement, ViewItem> {
 
     final DescriptionListGroup descriptionListGroup;
     private final String identifier;

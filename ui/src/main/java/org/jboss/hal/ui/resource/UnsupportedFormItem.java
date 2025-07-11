@@ -53,7 +53,8 @@ class UnsupportedFormItem extends FormItem {
             control = textArea(identifier)
                     .readonly() // the fallback form item is always read-only!
                     .validated(warning)
-                    .applyTo(ta -> ta.element().rows = rows)
+                    // TODO
+                    // .applyTo(ta -> ta.element().rows = rows)
                     .run(ta -> {
                         if (ra.value.isDefined()) {
                             ta.value(value);

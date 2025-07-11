@@ -29,87 +29,87 @@ import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.StorageValue;
 import org.jboss.hal.model.filter.TypeValues;
 import org.jboss.hal.model.filter.TypesAttribute;
-import org.patternfly.component.chip.Chip;
+import org.patternfly.component.label.Label;
 import org.patternfly.filter.Filter;
 
-import static org.patternfly.component.chip.Chip.chip;
+import static org.patternfly.component.label.Label.label;
 import static org.patternfly.filter.FilterAttributeModifier.collectionRemove;
 
-public class FilterChips {
+public class FilterLabels {
 
-    public static <T> List<Chip> definedRequiredDeprecatedChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
-        chips.addAll(booleanChips(filter, DefinedAttribute.NAME, "Defined", "Undefined"));
-        chips.addAll(booleanChips(filter, RequiredAttribute.NAME, "Required", "Optional"));
-        chips.addAll(deprecatedChips(filter));
-        return chips;
+    public static <T> List<Label> definedRequiredDeprecatedChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
+        labels.addAll(booleanLabels(filter, DefinedAttribute.NAME, "Defined", "Undefined"));
+        labels.addAll(booleanLabels(filter, RequiredAttribute.NAME, "Required", "Optional"));
+        labels.addAll(deprecatedChips(filter));
+        return labels;
     }
 
-    public static <T> List<Chip> requiredDeprecatedChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
-        chips.addAll(booleanChips(filter, RequiredAttribute.NAME, "Required", "Optional"));
-        chips.addAll(deprecatedChips(filter));
-        return chips;
+    public static <T> List<Label> requiredDeprecatedChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
+        labels.addAll(booleanLabels(filter, RequiredAttribute.NAME, "Required", "Optional"));
+        labels.addAll(deprecatedChips(filter));
+        return labels;
     }
 
-    public static <T> List<Chip> deprecatedChips(Filter<T> filter) {
-        return booleanChips(filter, DeprecatedAttribute.NAME, "Deprecated", "Not deprecated");
+    public static <T> List<Label> deprecatedChips(Filter<T> filter) {
+        return booleanLabels(filter, DeprecatedAttribute.NAME, "Deprecated", "Not deprecated");
     }
 
-    public static <T> List<Chip> storageAccessTypeChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
-        chips.addAll(storageChips(filter));
-        chips.addAll(accessTypeChips(filter));
-        return chips;
+    public static <T> List<Label> storageAccessTypeChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
+        labels.addAll(storageChips(filter));
+        labels.addAll(accessTypeChips(filter));
+        return labels;
     }
 
-    public static <T> List<Chip> storageChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
+    public static <T> List<Label> storageChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
         if (filter.defined(StorageAttribute.NAME)) {
             StorageValue storageValue = filter.<StorageValue>get(StorageAttribute.NAME).value();
-            chips.add(chip(storageValue.text)
+            labels.add(label(storageValue.text)
                     .onClose((e, c) -> filter.reset(StorageAttribute.NAME)));
         }
-        return chips;
+        return labels;
     }
 
-    public static <T> List<Chip> accessTypeChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
+    public static <T> List<Label> accessTypeChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
         if (filter.defined(AccessTypeAttribute.NAME)) {
             AccessTypeValue accessTypeValue = filter.<AccessTypeValue>get(AccessTypeAttribute.NAME).value();
-            chips.add(chip(accessTypeValue.text)
+            labels.add(label(accessTypeValue.text)
                     .onClose((e, c) -> filter.reset(AccessTypeAttribute.NAME)));
         }
-        return chips;
+        return labels;
     }
 
-    public static <T> List<Chip> typeChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
+    public static <T> List<Label> typeChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
         if (filter.defined(TypesAttribute.NAME)) {
             List<TypeValues> value = filter.<List<TypeValues>>get(TypesAttribute.NAME).value();
             for (TypeValues type : value) {
-                chips.add(chip(type.name).onClose((event, chip) ->
+                labels.add(label(type.name).onClose((event, chip) ->
                         filter.set(TypesAttribute.NAME, List.of(type), collectionRemove(ArrayList::new))));
             }
         }
-        return chips;
+        return labels;
     }
 
-    public static <T> List<Chip> parametersReturnValueChips(Filter<T> filter) {
-        List<Chip> chips = new ArrayList<>();
-        chips.addAll(booleanChips(filter, ParametersAttribute.NAME, "Parameters", "No parameters"));
-        chips.addAll(booleanChips(filter, ReturnValueAttribute.NAME, "Return value", "No return value"));
-        return chips;
+    public static <T> List<Label> parametersReturnValueChips(Filter<T> filter) {
+        List<Label> labels = new ArrayList<>();
+        labels.addAll(booleanLabels(filter, ParametersAttribute.NAME, "Parameters", "No parameters"));
+        labels.addAll(booleanLabels(filter, ReturnValueAttribute.NAME, "Return value", "No return value"));
+        return labels;
     }
 
     // ------------------------------------------------------ internal
 
-    private static <T> List<Chip> booleanChips(Filter<T> filter, String filterAttribute, String true_, String false_) {
-        List<Chip> chips = new ArrayList<>();
+    private static <T> List<Label> booleanLabels(Filter<T> filter, String filterAttribute, String true_, String false_) {
+        List<Label> labels = new ArrayList<>();
         if (filter.defined(filterAttribute)) {
             Boolean value = filter.<Boolean>get(filterAttribute).value();
-            chips.add(chip(value ? true_ : false_).onClose((e, c) -> filter.reset(filterAttribute)));
+            labels.add(label(value ? true_ : false_).onClose((e, c) -> filter.reset(filterAttribute)));
         }
-        return chips;
+        return labels;
     }
 }

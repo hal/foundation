@@ -69,21 +69,21 @@ class DocumentationCard implements DashboardCard {
                         .alignSelf(AlignSelf.stretch)
                         .addItem(flexItem().flex(_1)
                                 .add(card().fullHeight().plain()
-                                        .addHeader(cardHeader().addTitle(cardTitle().textContent("General Resources")))
+                                        .addHeader(cardHeader().addTitle(cardTitle().text("General Resources")))
                                         .addBody(cardBody().add(list().plain()
                                                 .addItems(GENERAL_RESOURCES, nu ->
                                                         listItem(Id.build("general-resources", nu[0]))
                                                                 .add(a(replaceVersion(nu[1]), "_blank")
-                                                                        .textContent(nu[0])))))))
+                                                                        .text(nu[0])))))))
                         .add(divider(hr).orientation(breakpoints(md, vertical)))
                         .addItem(flexItem().flex(_1)
                                 .add(card().fullHeight().plain()
-                                        .addHeader(cardHeader().addTitle(cardTitle().textContent("Get Help")))
+                                        .addHeader(cardHeader().addTitle(cardTitle().text("Get Help")))
                                         .addBody(cardBody().add(list().plain()
                                                 .addItems(GET_HELP, nu ->
                                                         listItem(Id.build("get-help", nu[0]))
                                                                 .add(a(replaceVersion(nu[1]), "_blank")
-                                                                        .textContent(nu[0]))))))))
+                                                                        .text(nu[0]))))))))
                 .element();
     }
 

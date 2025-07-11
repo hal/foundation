@@ -26,7 +26,7 @@ import elemental2.dom.HTMLElement;
 
 import static elemental2.dom.DomGlobal.document;
 import static java.util.stream.StreamSupport.stream;
-import static org.jboss.elemento.Elements.findAll;
+import static org.jboss.elemento.Elements.querySelectorAll;
 import static org.jboss.hal.resources.HalClasses.rbacHidden;
 import static org.patternfly.style.Classes.util;
 
@@ -48,11 +48,11 @@ public class ElementGuard {
     }
 
     public static void processElements(AuthorisationDecision authorisationDecision, String selector) {
-        processElements(authorisationDecision, findAll(document, By.selector(selector)));
+        processElements(authorisationDecision, querySelectorAll(document, By.selector(selector)));
     }
 
     public static void processElements(AuthorisationDecision authorisationDecision, HTMLElement element) {
-        processElements(authorisationDecision, findAll(element, By.data(constraint)));
+        processElements(authorisationDecision, querySelectorAll(element, By.data(constraint)));
     }
 
     private static void processElements(AuthorisationDecision authorisationDecision, Iterable<HTMLElement> elements) {

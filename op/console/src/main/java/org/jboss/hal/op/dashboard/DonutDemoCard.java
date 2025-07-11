@@ -54,18 +54,18 @@ class DonutDemoCard implements DashboardCard {
         this.dispatcher = dispatcher;
         this.root = card()
                 .addHeader(cardHeader()
-                        .addTitle(cardTitle().textContent("Donut Demo"))
+                        .addTitle(cardTitle().text("Donut Demo"))
                         .addActions(refreshActions()))
                 .addBody(cardBody()
                         .add(flex().display(inlineFlex).spaceItems(md)
                                 .addItem(flexItem()
-                                        .add(div().textContent("Heap"))
+                                        .add(div().text("Heap"))
                                         .add(div().innerHtml(HEAP_CODE)))
                                 .addItem(flexItem()
-                                        .add(div().textContent("Non heap"))
+                                        .add(div().text("Non heap"))
                                         .add(div().innerHtml(NON_HEAP_CODE)))
                                 .addItem(flexItem()
-                                        .add(div().textContent("Threads"))
+                                        .add(div().text("Threads"))
                                         .add(div().innerHtml(THREADS_CODE)))))
                 .element();
     }

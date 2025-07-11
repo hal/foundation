@@ -26,6 +26,7 @@ import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
 import org.patternfly.component.breadcrumb.Breadcrumb;
 import org.patternfly.component.icon.Icon;
+import org.patternfly.component.icon.IconSize;
 import org.patternfly.component.page.PageMainBreadcrumb;
 import org.patternfly.component.page.PageMainSection;
 import org.patternfly.component.title.Title;
@@ -35,7 +36,7 @@ import org.patternfly.layout.flex.FlexItem;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
 
-import static org.jboss.elemento.DomGlobal.navigator;
+import static elemental2.dom.DomGlobal.navigator;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.p;
@@ -54,11 +55,11 @@ import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.RESOURCE;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.SINGLETON_RESOURCE;
 import static org.patternfly.component.breadcrumb.Breadcrumb.breadcrumb;
 import static org.patternfly.component.breadcrumb.BreadcrumbItem.breadcrumbItem;
+import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.page.PageMainBreadcrumb.pageMainBreadcrumb;
 import static org.patternfly.component.page.PageMainGroup.pageMainGroup;
 import static org.patternfly.component.page.PageMainSection.pageMainSection;
-import static org.patternfly.component.text.TextContent.textContent;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.icon.IconSets.fas.copy;
@@ -68,7 +69,6 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Brightness.light;
 import static org.patternfly.style.Size._3xl;
-import static org.patternfly.style.Size.sm;
 import static org.patternfly.style.Sticky.top;
 
 class ModelBrowserDetail implements IsElement<HTMLElement> {
@@ -89,11 +89,11 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
                         .sticky(top)
                         .addSection(pageMainBreadcrumb = pageMainBreadcrumb())
                         .addSection(pageMainSection().background(light)
-                                .add(textContent()
+                                .add(content()
                                         .add(flex().alignItems(center)
                                                 .addItem(flexItem().add(header = title(1, _3xl, "")))
                                                 .addItem(stabilityContainer = flexItem()))
-                                        .add(description = p().textContent("")))))
+                                        .add(description = p().text("")))))
                 .add(pageMainSection = pageMainSection().css(halComponent(HalClasses.modelBrowser, detail, content)))
                 .element();
     }
@@ -158,10 +158,10 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
     private void adjustHeader(ModelBrowserNode mbn, Metadata metadata) {
         switch (mbn.type) {
             case SINGLETON_FOLDER:
-                header.add("Singleton child resources of ").add(code().textContent(mbn.name));
+                header.add("Singleton child resources of ").add(code().text(mbn.name));
                 break;
             case FOLDER:
-                header.add("Child resources of ").add(code().textContent(mbn.name));
+                header.add("Child resources of ").add(code().text(mbn.name));
                 break;
             case SINGLETON_RESOURCE:
             case RESOURCE:
@@ -173,7 +173,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
             if (uic().environment().highlightStability(stability)) {
                 stabilityContainer.add(stabilityLabel(stability));
             }
-            description.textContent(metadata.resourceDescription().description());
+            description.text(metadata.resourceDescription().description());
         }
     }
 
@@ -191,7 +191,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
         Tooltip tooltip = tooltip(By.id(copyToClipboardId), copyToClipboardText)
                 .placement(auto)
                 .onClose((e, t) -> t.text(copyToClipboardText)); // restore text
-        Icon icon = icon(copy()).size(sm).id(copyToClipboardId).on(click, e -> {
+        Icon icon = icon(copy()).size(IconSize.sm).id(copyToClipboardId).on(click, e -> {
             navigator.clipboard.writeText(template.toString());
             tooltip.text("Address copied");
         });

@@ -96,7 +96,7 @@ class FormItemFactory {
                 HTMLElement parentLabelElement = Elements.label().css(component(form, label))
                         .apply(l -> l.htmlFor = identifier)
                         .add(span().css(component(form, label, text))
-                                .textContent(parentLabel))
+                                .text(parentLabel))
                         .element();
                 HTMLButtonElement parentHelpButton = Elements.button(ButtonType.button)
                         .css(component(form, group, label, help))

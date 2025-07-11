@@ -16,7 +16,7 @@
 package org.jboss.hal.op.bootstrap;
 
 import org.jboss.elemento.IsElement;
-import org.patternfly.component.text.TextContent;
+import org.patternfly.component.content.Content;
 
 import elemental2.dom.HTMLElement;
 
@@ -27,14 +27,14 @@ import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.Elements.pre;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
-import static org.patternfly.component.text.TextContent.textContent;
 import static org.patternfly.icon.IconSets.fas.exclamationCircle;
-import static org.patternfly.style.Variable.globalVar;
+import static org.patternfly.style.Status.danger;
 
 public class BootstrapErrorElement implements IsElement<HTMLElement> {
 
@@ -52,7 +52,7 @@ public class BootstrapErrorElement implements IsElement<HTMLElement> {
         String selectUrl = location.origin + location.pathname;
         this.root = emptyState()
                 .addHeader(emptyStateHeader()
-                        .icon(exclamationCircle(), globalVar("danger-color", "100"))
+                        .icon(exclamationCircle(), danger)
                         .text(header(error)))
                 .addBody(emptyStateBody()
                         .add(details(error)))
@@ -79,12 +79,12 @@ public class BootstrapErrorElement implements IsElement<HTMLElement> {
     }
 
     private HTMLElement details(BootstrapError error) {
-        TextContent textContent = textContent();
+        Content textContent = content();
         switch (error.failure()) {
             case NO_ENDPOINT_SPECIFIED:
                 textContent.add(p()
                         .add("You have not specified a value for parameter ")
-                        .add(code().textContent(error.data()))
+                        .add(code().text(error.data()))
                         .add(".")
                         .add(br())
                         .add("You must specify a URL of a management interface or the name of a saved management interface."));
@@ -92,25 +92,25 @@ public class BootstrapErrorElement implements IsElement<HTMLElement> {
             case NO_ENDPOINT_FOUND:
                 textContent.add(p()
                         .add("The management interface ")
-                        .add(code().textContent(error.data()))
+                        .add(code().text(error.data()))
                         .add(" was not found."));
                 break;
             case NOT_AN_ENDPOINT:
                 textContent.add(p()
                         .add("The management interface ")
-                        .add(a(error.data(), "_blank").textContent(error.data()))
+                        .add(a(error.data(), "_blank").text(error.data()))
                         .add(" is not a valid management interface."));
                 break;
             case NETWORK_ERROR:
                 textContent.add(p()
                         .add("A network error occurred while accessing ")
-                        .add(a(error.data(), "_blank").textContent(error.data()))
+                        .add(a(error.data(), "_blank").text(error.data()))
                         .add("."));
                 break;
             case UNKNOWN:
                 textContent
-                        .add(p().textContent("An unknown error occurred."))
-                        .add(pre().textContent(error.data()));
+                        .add(p().text("An unknown error occurred."))
+                        .add(pre().text(error.data()));
                 break;
         }
         return textContent.element();

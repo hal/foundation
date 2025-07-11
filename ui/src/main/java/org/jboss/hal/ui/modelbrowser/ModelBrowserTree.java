@@ -169,7 +169,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                 treeView.select(item);
             } else {
                 Flow.sequential(new FlowContext(), selectTasks(template)).subscribe(context -> {
-                    if (context.successful()) {
+                    if (context.isSuccessful()) {
                         // The template might contain invalid segments or no longer exist.
                         // Build a template up to the last valid segment.
                         AddressTemplate current = AddressTemplate.root();

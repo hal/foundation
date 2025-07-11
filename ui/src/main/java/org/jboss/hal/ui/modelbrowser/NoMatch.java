@@ -41,7 +41,7 @@ public class NoMatch<T> implements IsElement<HTMLElement> {
                         .icon(search())
                         .text("No results found"))
                 .addBody(emptyStateBody()
-                        .textContent("No results match the filter criteria. Clear all filters and try again."))
+                        .text("No results match the filter criteria. Clear all filters and try again."))
                 .addFooter(emptyStateFooter()
                         .addActions(emptyStateActions()
                                 .add(button("Clear all filters").link()

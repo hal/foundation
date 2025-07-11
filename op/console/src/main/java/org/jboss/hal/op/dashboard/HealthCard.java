@@ -69,7 +69,7 @@ class HealthCard implements DashboardCard {
         this.dispatcher = dispatcher;
         this.root = card()
                 .addHeader(cardHeader()
-                        .addTitle(cardTitle().textContent("Health"))
+                        .addTitle(cardTitle().text("Health"))
                         .addActions(refreshActions()))
                 .add(cardBody = div())
                 .element();
@@ -103,7 +103,7 @@ class HealthCard implements DashboardCard {
                                             String name = check.get(NAME).asString();
                                             String nameId = Id.build(name);
                                             return dataListItem(nameId)
-                                                    .addCell(dataListCell().add(span().id(nameId).textContent(name)))
+                                                    .addCell(dataListCell().add(span().id(nameId).text(name)))
                                                     .addCell(dataListCell().alignRight().noFill()
                                                             .add(statusIcon(check)));
                                         }));

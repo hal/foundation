@@ -10,7 +10,7 @@ The work is in a very early state and very much in progress.
 
 # Technical Stack
 
-- [Java 11](https://jdk.java.net/java-se-ri/11)
+- [Java 17](https://jdk.java.net/java-se-ri/17)
 - [J2CL](https://github.com/google/j2cl)
 - [Crysknife CDI](https://github.com/crysknife-io/crysknife)
 - [Elemento](https://github.com/hal/elemento)

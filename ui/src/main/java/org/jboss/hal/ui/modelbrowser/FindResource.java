@@ -100,7 +100,7 @@ import static org.patternfly.style.Breakpoints.breakpoints;
 import static org.patternfly.style.Classes.search;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Size.lg;
-import static org.patternfly.style.Variable.globalVar;
+import static org.patternfly.token.Token.globalTextColorDisabled;
 
 class FindResource {
 
@@ -139,38 +139,38 @@ class FindResource {
                 .addItem(descriptionListGroup(Id.build(scopeId, "address-help"))
                         .addTerm(descriptionListTerm("Address"))
                         .addDescription(descriptionListDescription()
-                                .add(div().textContent(
+                                .add(div().text(
                                         "Search anywhere in the resource address"))
                                 .add(flex().display(inlineFlex).columnGap(sm)
-                                        .add(span().add(strong().textContent("data")))
-                                        .add(span().textContent("→"))
+                                        .add(span().add(strong().text("data")))
+                                        .add(span().text("→"))
                                         .add(span()
                                                 .add("/subsystem=")
-                                                .add(strong().textContent("data"))
+                                                .add(strong().text("data"))
                                                 .add("sources/")
-                                                .add(strong().textContent("data"))
+                                                .add(strong().text("data"))
                                                 .add("-source=ExampleDS")))))
                 .addItem(descriptionListGroup(Id.build(scopeId, "type-help"))
                         .addTerm(descriptionListTerm("Type"))
                         .addDescription(descriptionListDescription()
-                                .add(div().textContent("Search in the resource type"))
+                                .add(div().text("Search in the resource type"))
                                 .add(flex().display(inlineFlex).columnGap(sm)
-                                        .add(span().add(strong().textContent("data")))
-                                        .add(span().textContent("→"))
+                                        .add(span().add(strong().text("data")))
+                                        .add(span().text("→"))
                                         .add(span()
                                                 .add("/subsystem=datasources/")
-                                                .add(strong().textContent("data"))
+                                                .add(strong().text("data"))
                                                 .add("-source=ExampleDS")))))
                 .addItem(descriptionListGroup(Id.build(scopeId, "name-help"))
                         .addTerm(descriptionListTerm("Name"))
                         .addDescription(descriptionListDescription()
-                                .add(div().textContent("Search in the resource name"))
+                                .add(div().text("Search in the resource name"))
                                 .add(flex().display(inlineFlex).columnGap(sm)
-                                        .add(span().add(strong().textContent("example")))
-                                        .add(span().textContent("→"))
+                                        .add(span().add(strong().text("example")))
+                                        .add(span().text("→"))
                                         .add(span()
                                                 .add("/subsystem=datasources/data-source=")
-                                                .add(strong().textContent("Example"))
+                                                .add(strong().text("Example"))
                                                 .add("DS")))));
 
         DescriptionList comparisonDescription = descriptionList().horizontal().compact()
@@ -178,44 +178,44 @@ class FindResource {
                         .addTerm(descriptionListTerm("contains"))
                         .addDescription(descriptionListDescription()
                                 .add(div()
-                                        .textContent("The search result must contain the search term"))
+                                        .text("The search result must contain the search term"))
                                 .add(flex().display(inlineFlex).columnGap(sm)
-                                        .add(span().add(strong().textContent("example")))
-                                        .add(span().textContent("→"))
+                                        .add(span().add(strong().text("example")))
+                                        .add(span().text("→"))
                                         .add(span()
                                                 .add("/subsystem=datasources/data-source=")
-                                                .add(strong().textContent("Example"))
+                                                .add(strong().text("Example"))
                                                 .add("DS")))))
                 .addItem(descriptionListGroup(Id.build(comparisonId, "equals-help"))
                         .addTerm(descriptionListTerm("equals"))
                         .addDescription(descriptionListDescription()
-                                .add(div().textContent("The search result must match the search term"))
+                                .add(div().text("The search result must match the search term"))
                                 .add(flex().display(inlineFlex).columnGap(sm)
-                                        .add(span().add(strong().textContent("exampleds")))
-                                        .add(span().textContent("→"))
+                                        .add(span().add(strong().text("exampleds")))
+                                        .add(span().text("→"))
                                         .add(span()
                                                 .add("/subsystem=datasources/data-source=")
-                                                .add(strong().textContent("ExampleDS"))))));
+                                                .add(strong().text("ExampleDS"))))));
 
         Popover scopeInfo = popover()
                 .autoWidth()
                 .placement(auto)
-                .addHeader(popoverHeader().textContent("Where to search"))
+                .addHeader(popoverHeader().text("Where to search"))
                 .addBody(popoverBody()
                         .add(flex().direction(column).rowGap(Gap.md)
-                                .addItem(flexItem().add(div().textContent("Given comparison is 'contains':")))
+                                .addItem(flexItem().add(div().text("Given comparison is 'contains':")))
                                 .addItem(flexItem().add(scopeDescription))
-                                .addItem(flexItem().add(div().textContent("The search is case insensitive by default.")))));
+                                .addItem(flexItem().add(div().text("The search is case insensitive by default.")))));
 
         Popover comparisonInfo = popover()
                 .autoWidth()
                 .placement(auto)
-                .addHeader(popoverHeader().textContent("How to search"))
+                .addHeader(popoverHeader().text("How to search"))
                 .addBody(popoverBody()
                         .add(flex().direction(column).rowGap(Gap.md)
-                                .addItem(flexItem().add(div().textContent("Given scope is 'Name':")))
+                                .addItem(flexItem().add(div().text("Given scope is 'Name':")))
                                 .addItem(flexItem().add(comparisonDescription))
-                                .addItem(flexItem().add(div().textContent("The search is case insensitive by default.")))));
+                                .addItem(flexItem().add(div().text("The search is case insensitive by default.")))));
 
         FormGroup nameFormGroup = formGroup(nameId).required()
                 .addLabel(formGroupLabel("Name"))
@@ -242,7 +242,6 @@ class FindResource {
                 .addLabel(formGroupLabel("Exclude"))
                 .addControl(formGroupControl()
                         .addControl(excludeTextArea = textArea(excludeId)
-                                .applyTo(textArea -> textArea.element().rows = 1)
                                 .autoResize()
                                 .resize(vertical)
                                 .value("/core-service"))
@@ -286,7 +285,7 @@ class FindResource {
                                 .icon(IconSets.fas.search())
                                 .text("No results found"))
                         .addBody(emptyStateBody()
-                                .textContent("No resources match the search criteria.")));
+                                .text("No resources match the search criteria.")));
 
         searchModal = modal().css(halComponent(modelBrowser, search))
                 .top()
@@ -312,7 +311,7 @@ class FindResource {
 
     void open() {
         searchModal.open();
-        nameInput.inputElement().element().focus();
+        nameInput.input().element().focus();
     }
 
     private void close() {
@@ -332,20 +331,20 @@ class FindResource {
                 nameInput.resetValidation();
                 matchingResources.clear();
                 removeChildrenFrom(status);
-                status.style("color", globalVar("Color", "200").asVar());
+                status.style("color", globalTextColorDisabled.var);
                 setVisible(searchResults, true);
                 setVisible(noResults, false);
 
                 String name = nameInput.value();
                 Set<String> exclude = stream(excludeTextArea.value().split("\\r?\\n"))
-                        .filter(s -> s != null && !s.trim().isEmpty())
+                        .filter(s -> !s.trim().isEmpty())
                         .collect(toSet());
                 boolean contains = comparisonContainsRadio.value();
                 AddressTemplate rootTemplate = AddressTemplate.of(rootInput.value());
                 timeout = setTimeout(__ -> searchButton.text("Stop").startProgress(), Timeouts.LOADING_TIMEOUT);
                 uic().modelTree().traverse(continuation, rootTemplate, exclude, EnumSet.noneOf(TraverseType.class),
                                 (template, traverseContext) -> {
-                                    status.textContent("Process " + template.toString());
+                                    status.text("Process " + template.toString());
                                     String argument = "";
                                     if (scopeAddressRadio.value()) {
                                         argument = template.template;
@@ -359,7 +358,7 @@ class FindResource {
                                             : argument.equalsIgnoreCase(name);
                                     if (match) {
                                         ListItem listItem = listItem()
-                                                .add(button().link().inline().textContent(template.toString())
+                                                .add(button().link().inline().text(template.toString())
                                                         .onClick((e, b) -> {
                                                             SelectInTree.dispatch(trigger, template);
                                                             close();
@@ -388,9 +387,9 @@ class FindResource {
             removeChildrenFrom(status);
             status.style("color", "inherit")
                     .add("Found ")
-                    .add(strong().textContent(String.valueOf(matchingResources.size())))
+                    .add(strong().text(String.valueOf(matchingResources.size())))
                     .add(" matches in ")
-                    .add(strong().textContent(String.valueOf(context.processed())))
+                    .add(strong().text(String.valueOf(context.processed())))
                     .add(" resources.");
         }
         endSearch();
@@ -398,7 +397,7 @@ class FindResource {
 
     private void error(String reason) {
         String failSafeReason = reason != null && !reason.isEmpty() ? "Unknown error" : reason;
-        status.textContent("Error while searching: " + failSafeReason);
+        status.text("Error while searching: " + failSafeReason);
         endSearch();
     }
 

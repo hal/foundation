@@ -249,7 +249,7 @@ public class ResourceDialogs {
                 .addHeader("Delete resource")
                 .addBody(modalBody()
                         .add("Do you really want to delete ")
-                        .add(span().css(util("font-weight-bold")).textContent(name))
+                        .add(span().css(util("font-weight-bold")).text(name))
                         .add("?"))
                 .addFooter(modalFooter()
                         .addButton(button("Delete").primary(), (__, modal) -> uic().crud().delete(resolvedTemplate)

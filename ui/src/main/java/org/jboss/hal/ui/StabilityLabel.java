@@ -15,12 +15,14 @@
  */
 package org.jboss.hal.ui;
 
-import org.jboss.elemento.HasElement;
-import org.jboss.elemento.HasHTMLElement;
+import org.jboss.elemento.ElementClassListMethods;
+import org.jboss.elemento.HTMLElementStyleMethods;
 import org.jboss.hal.env.Stability;
+import org.patternfly.component.ElementTextDelegate;
 import org.patternfly.component.label.Label;
 import org.patternfly.core.Aria;
 
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.resources.HalClasses.halComponent;
@@ -30,8 +32,9 @@ import static org.jboss.hal.ui.BuildingBlocks.stabilityIcon;
 import static org.patternfly.component.label.Label.label;
 
 public class StabilityLabel implements
-        HasHTMLElement<HTMLElement, StabilityLabel>,
-        HasElement<HTMLElement, StabilityLabel> {
+        ElementClassListMethods<HTMLElement, StabilityLabel>,
+        ElementTextDelegate<HTMLElement, StabilityLabel>,
+        HTMLElementStyleMethods<HTMLElement, StabilityLabel> {
 
     // ------------------------------------------------------ factory
 
@@ -48,6 +51,11 @@ public class StabilityLabel implements
                 .css(halComponent(stabilityLevel))
                 .aria(Aria.label, stability.label)
                 .icon(stabilityIcon(stability));
+    }
+
+    @Override
+    public Element textDelegate() {
+        return label.textDelegate();
     }
 
     @Override

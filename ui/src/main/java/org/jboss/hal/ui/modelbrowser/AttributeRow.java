@@ -28,6 +28,8 @@ import org.patternfly.component.table.Tr;
 import org.patternfly.style.Variable;
 import org.patternfly.style.Variables;
 
+import elemental2.dom.HTMLElement;
+
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CONFIGURATION;
@@ -77,7 +79,8 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                             tr.addChildren(attribute.valueTypeAttributeDescriptions(),
                                     new AttributeRow(resource, true));
                         } else {
-                            titleCell.delegate().style.setProperty("cursor", "initial");
+                            // TODO
+                            ((HTMLElement) titleCell.containerDelegate()).style.setProperty("cursor", "initial");
                         }
                     } else {
                         tr.addItem(td("Name")
@@ -86,7 +89,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                                 .add(attributeDescription(attribute).css(util("mt-sm"))));
                     }
                 })
-                .addItem(td("Type").textContent(attribute.formatType()))
+                .addItem(td("Type").text(attribute.formatType()))
                 .addItem(td("Storage").run(td -> storage(td, attribute)))
                 .addItem(td("Access type").run(td -> accessType(td, attribute)));
     }
@@ -111,10 +114,12 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                                 .style(minWidth.name, "10ch")
                                 .text("Memory")));
             } else {
-                td.innerHtml(SafeHtmlUtils.fromSafeConstant("&nbsp;"));
+                // TODO
+                td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
             }
         } else {
-            td.innerHtml(SafeHtmlUtils.fromSafeConstant("&nbsp;"));
+            // TODO
+            td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
         }
     }
 
@@ -145,11 +150,13 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                                     .text("metric")));
                     break;
                 default:
-                    td.innerHtml(SafeHtmlUtils.fromSafeConstant("&nbsp;"));
+                    // TODO
+                    td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
                     break;
             }
         } else {
-            td.innerHtml(SafeHtmlUtils.fromSafeConstant("&nbsp;"));
+            // TODO
+            td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
         }
     }
 }

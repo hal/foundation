@@ -29,6 +29,7 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.hal.ui.filter.MultiSelects.setBooleanFilter;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuGroup.menuGroup;
+import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
@@ -59,13 +60,13 @@ public class ParametersReturnValueMultiSelect<T> implements IsElement<HTMLElemen
                         .addContent(menuContent()
                                 .addGroup(menuGroup("Parameters")
                                         .addList(menuList()
-                                                .addItem(ParametersAttribute.NAME + "-true", "Parameters")
-                                                .addItem(ParametersAttribute.NAME + "-false", "No parameters")))
+                                                .addItem(menuItem(ParametersAttribute.NAME + "-true", "Parameters"))
+                                                .addItem(menuItem(ParametersAttribute.NAME + "-false", "No parameters"))))
                                 .addDivider()
                                 .addGroup(menuGroup("Return value")
                                         .addList(menuList()
-                                                .addItem(ReturnValueAttribute.NAME + "-true", "Return value")
-                                                .addItem(ReturnValueAttribute.NAME + "-false", "No return value")))));
+                                                .addItem(menuItem(ReturnValueAttribute.NAME + "-true", "Return value"))
+                                                .addItem(menuItem(ReturnValueAttribute.NAME + "-false", "No return value"))))));
     }
 
     @Override

@@ -20,7 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.elemento.HasElement;
+import org.jboss.elemento.IsElement;
+import org.jboss.elemento.TypedBuilder;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
@@ -46,7 +47,8 @@ import static org.patternfly.component.form.FormAlert.formAlert;
 
 /** Form to modify an existing resource */
 class ResourceForm implements
-        HasElement<HTMLElement, ResourceForm>,
+        TypedBuilder<HTMLElement, ResourceForm>,
+        IsElement<HTMLElement>,
         HasItems<HTMLElement, ResourceForm, FormItem> {
 
     private final AddressTemplate template;

@@ -105,11 +105,11 @@ class OperationsTable implements IsElement<HTMLElement> {
                 .add(table()
                         .addHead(thead()
                                 .addRow(tr("operations-head")
-                                        .addItem(th("name").width(width35).textContent("Name"))
-                                        .addItem(th("parameters").width(width45).textContent("Parameters"))
-                                        .addItem(th("return-value").width(width20).textContent("Return value"))
+                                        .addItem(th("name").width(width35).text("Name"))
+                                        .addItem(th("parameters").width(width45).text("Parameters"))
+                                        .addItem(th("return-value").width(width20).text("Return value"))
                                         .addItem(th("execute")
-                                                .add(span().css(screenReader).textContent("Execute operation")))))
+                                                .add(span().css(screenReader).text("Execute operation")))))
                         .addBody(tbody = tbody()
                                 .addRows(metadata.resourceDescription().operations(), operation -> {
                                     boolean executable = metadata.securityContext().executable(operation.name());
@@ -157,7 +157,7 @@ class OperationsTable implements IsElement<HTMLElement> {
 
     private Flex operationName(ResourceDescription resource, OperationDescription operation) {
         HTMLContainerBuilder<HTMLElement> name = strong()
-                .textContent(operation.name())
+                .text(operation.name())
                 .run(strong -> {
                     if (operation.deprecation().isDefined()) {
                         strong.css(halModifier(deprecated));
@@ -184,8 +184,8 @@ class OperationsTable implements IsElement<HTMLElement> {
                                 .highlightStability(resource.stability(), operation.stability(),
                                         parameter.stability()))
                                 .alignItems(center).spaceItems(xs)
-                                .add(span().textContent(":"))
-                                .add(span().textContent(parameter.formatType())))
+                                .add(span().text(":"))
+                                .add(span().text(parameter.formatType())))
                         .add(attributeDescription(parameter).css(util("mt-sm"))));
     }
 

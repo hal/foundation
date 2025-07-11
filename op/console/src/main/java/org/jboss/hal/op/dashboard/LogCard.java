@@ -113,7 +113,7 @@ class LogCard implements DashboardCard {
 
     @Override
     public void refresh() {
-        cardTitle.textContent(logFile);
+        cardTitle.text(logFile);
         removeChildrenFrom(cardBody);
 
         ResourceAddress address = AddressTemplate.of("subsystem=logging/log-file=" + logFile).resolve();
@@ -133,13 +133,13 @@ class LogCard implements DashboardCard {
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem()
                                                 .add(checkCircle().attr("color", globalVar("success-color", "100").asVar())))
-                                        .add(div().textContent("No errors or warnings"))));
+                                        .add(div().text("No errors or warnings"))));
                     } else if (statusMap.size() == 1) {
                         Map.Entry<Status, Long> entry = statusMap.entrySet().iterator().next();
                         cardBody.add(flex().justifyContent(center).spaceItems(md)
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem().add(entry.getKey().icon.get()))
-                                        .add(div().textContent(entry.getValue() + " " + entry.getKey().text))));
+                                        .add(div().text(entry.getValue() + " " + entry.getKey().text))));
                     } else {
                         Flex flex = flex();
                         cardBody.add(flex.justifyContent(center).spaceItems(md));
@@ -148,7 +148,7 @@ class LogCard implements DashboardCard {
                             Map.Entry<Status, Long> entry = iterator.next();
                             flex.add(flex().spaceItems(sm)
                                     .add(flexItem().add(entry.getKey().icon.get())));
-                            flex.add(div().textContent(entry.getValue() + " " + entry.getKey().text));
+                            flex.add(div().text(entry.getValue() + " " + entry.getKey().text));
                             if (iterator.hasNext()) {
                                 flex.add(divider(hr).orientation(vertical));
                             }
@@ -161,7 +161,7 @@ class LogCard implements DashboardCard {
                                 .text("Log file not found"))
                         .addBody(emptyStateBody()
                                 .add("The log file ")
-                                .add(code().textContent("server.log"))
+                                .add(code().text("server.log"))
                                 .add(" was not found!"))
                         .addFooter(emptyStateFooter()
                                 .addActions(emptyStateActions()

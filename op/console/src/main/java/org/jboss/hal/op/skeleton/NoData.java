@@ -41,7 +41,7 @@ public class NoData implements Page {
                 .background(light)
                 .add(textContent()
                         .add(title(1, _3xl, "No data"))
-                        .add(p().textContent("The data for the page " + place.route + " could not be loaded.")))
+                        .add(p().text("The data for the page " + place.route + " could not be loaded.")))
                 .element());
     }
 }

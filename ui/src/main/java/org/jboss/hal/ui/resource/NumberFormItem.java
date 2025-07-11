@@ -226,13 +226,13 @@ class NumberFormItem extends FormItem {
         if (type == ModelType.INT) {
             int min = max(ra.description.get(MIN).asInt(Integer.MIN_VALUE), Integer.MIN_VALUE);
             int max = min(ra.description.get(MAX).asInt(Integer.MAX_VALUE), Integer.MAX_VALUE);
-            minMaxControl.inputElement().min(min).max(max).apply(e -> e.step = "1");
+            minMaxControl.input().min(min).max(max).apply(e -> e.step = "1");
         } else if (type == ModelType.LONG) {
             String min = String.valueOf(max(ra.description.get(MIN).asLong(MIN_SAFE_LONG), MIN_SAFE_LONG));
             String max = String.valueOf(min(ra.description.get(MAX).asLong(MAX_SAFE_LONG), MAX_SAFE_LONG));
-            minMaxControl.inputElement().min(min).max(max).apply(e -> e.step = "1");
+            minMaxControl.input().min(min).max(max).apply(e -> e.step = "1");
         } else if (type == ModelType.DOUBLE) {
-            minMaxControl.inputElement().apply(e -> e.step = "any");
+            minMaxControl.input().apply(e -> e.step = "any");
         }
         return minMaxControl;
     }

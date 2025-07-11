@@ -41,7 +41,7 @@ public class NotFound implements Page {
                 .background(light)
                 .add(textContent()
                         .add(title(1, _3xl, "Not found"))
-                        .add(p().textContent("Page " + place.route + " not found")))
+                        .add(p().text("Page " + place.route + " not found")))
                 .element());
     }
 }

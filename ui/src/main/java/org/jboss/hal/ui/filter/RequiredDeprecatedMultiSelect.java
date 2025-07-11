@@ -29,6 +29,7 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.hal.ui.filter.MultiSelects.setBooleanFilter;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuGroup.menuGroup;
+import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
@@ -59,13 +60,13 @@ public class RequiredDeprecatedMultiSelect<T> implements IsElement<HTMLElement> 
                         .addContent(menuContent()
                                 .addGroup(menuGroup("Required")
                                         .addList(menuList()
-                                                .addItem(RequiredAttribute.NAME + "-true", "Required")
-                                                .addItem(RequiredAttribute.NAME + "-false", "Optional")))
+                                                .addItem(menuItem(RequiredAttribute.NAME + "-true", "Required"))
+                                                .addItem(menuItem(RequiredAttribute.NAME + "-false", "Optional"))))
                                 .addDivider()
                                 .addGroup(menuGroup("Deprecated")
                                         .addList(menuList()
-                                                .addItem(DeprecatedAttribute.NAME + "-true", "Deprecated")
-                                                .addItem(DeprecatedAttribute.NAME + "-false", "Not deprecated")))));
+                                                .addItem(menuItem(DeprecatedAttribute.NAME + "-true", "Deprecated"))
+                                                .addItem(menuItem(DeprecatedAttribute.NAME + "-false", "Not deprecated"))))));
     }
 
     @Override

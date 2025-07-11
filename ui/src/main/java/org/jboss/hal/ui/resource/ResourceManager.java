@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.Attachable;
-import org.jboss.elemento.HasElement;
+import org.jboss.elemento.IsElement;
+import org.jboss.elemento.TypedBuilder;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.ModelNode;
@@ -30,8 +31,10 @@ import org.jboss.hal.ui.modelbrowser.NoMatch;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
 import org.jboss.hal.ui.resource.FormItemFlags.Scope;
 import org.patternfly.component.HasItems;
+import org.patternfly.component.Severity;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
+import org.patternfly.style.Status;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
@@ -60,7 +63,6 @@ import static org.jboss.hal.ui.resource.ResourceManager.State.NO_ATTRIBUTES;
 import static org.jboss.hal.ui.resource.ResourceManager.State.VIEW;
 import static org.jboss.hal.ui.resource.ResourceToolbar.resourceToolbar;
 import static org.jboss.hal.ui.resource.ViewItemFactory.viewItem;
-import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
@@ -71,12 +73,11 @@ import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHea
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.icon.IconSets.fas.exclamationCircle;
-import static org.patternfly.style.Variable.globalVar;
 
 /**
  * Combines a {@link ResourceFilter} and {@link ResourceToolbar} with a {@link ResourceView} and {@link ResourceForm}.
  */
-public class ResourceManager implements HasElement<HTMLElement, ResourceManager>, Attachable {
+public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManager>, IsElement<HTMLElement>, Attachable {
 
     // ------------------------------------------------------ factory
 
@@ -226,7 +227,7 @@ public class ResourceManager implements HasElement<HTMLElement, ResourceManager>
                         .icon(ban())
                         .text("No attributes"))
                 .addBody(emptyStateBody()
-                        .textContent("This resource contains no attributes."))
+                        .text("This resource contains no attributes."))
                 .element());
     }
 
@@ -234,11 +235,11 @@ public class ResourceManager implements HasElement<HTMLElement, ResourceManager>
         changeState(ERROR);
         rootContainer.append(emptyState()
                 .addHeader(emptyStateHeader()
-                        .icon(exclamationCircle(), globalVar("danger-color", "100"))
+                        .icon(exclamationCircle(), Status.danger)
                         .text("Operation failed"))
                 .addBody(emptyStateBody()
                         .add("Unable to view resource. Operation ")
-                        .add(code().textContent(operation))
+                        .add(code().text(operation))
                         .add(" failed:")
                         .add(errorCode(error)))
                 .addFooter(emptyStateFooter()
@@ -251,10 +252,10 @@ public class ResourceManager implements HasElement<HTMLElement, ResourceManager>
         changeState(ERROR);
         rootContainer.append(emptyState()
                 .addHeader(emptyStateHeader()
-                        .icon(exclamationCircle(), globalVar("danger-color", "100"))
+                        .icon(exclamationCircle(), Status.danger)
                         .text("No metadata"))
                 .addBody(emptyStateBody()
-                        .textContent("Unable to view resource: No metadata found!"))
+                        .text("Unable to view resource: No metadata found!"))
                 .element());
     }
 
@@ -312,7 +313,7 @@ public class ResourceManager implements HasElement<HTMLElement, ResourceManager>
                             return null;
                         })
                         .catch_(error -> {
-                            resourceForm.addAlert(alert(danger, "Update failed").inline()
+                            resourceForm.addAlert(alert(Severity.danger, "Update failed").inline()
                                     .addDescription(String.valueOf(error)));
                             return null;
                         });

@@ -67,15 +67,15 @@ class HelperTexts {
                                         // [<prefix>][${<system-property-name>[:<default-value>]}][<suffix>]*
                                         .add(span().css(halComponent(expression))
                                                 .add(span().css(halComponent(expression, defaultValue))
-                                                        .textContent("[prefix]"))
+                                                        .text("[prefix]"))
                                                 .add(span().css(halComponent(expression, dollar)))
                                                 .add(span().css(halComponent(expression, curlyBraces, start)))
                                                 .add(span().css(halComponent(expression, name))
-                                                        .textContent("<system-property-name>"))
+                                                        .text("<system-property-name>"))
                                                 .add(span().css(halComponent(expression, defaultValue))
-                                                        .textContent("[:<default-value>]"))
+                                                        .text("[:<default-value>]"))
                                                 .add(span().css(halComponent(expression, curlyBraces, end)))
                                                 .add(span().css(halComponent(expression, defaultValue))
-                                                        .textContent("[<suffix>]*"))))));
+                                                        .text("[<suffix>]*"))))));
     }
 }

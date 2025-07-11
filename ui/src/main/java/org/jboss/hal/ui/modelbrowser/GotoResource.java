@@ -94,7 +94,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
     private void show(Event event) {
         popper.show(null);
         input.value("");
-        input.inputElement().element().focus();
+        input.input().element().focus();
     }
 
     private void close(Event event) {

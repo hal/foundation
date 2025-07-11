@@ -112,7 +112,7 @@ class ViewItemFactory {
                     .attr(role, Roles.button)
                     .attr("type", "button")
                     .apply(element -> element.tabIndex = 0)
-                    .textContent(nestedLabel)
+                    .text(nestedLabel)
                     .element();
             attributeDescriptionPopover(nestedLabel, nestedDescription)
                     .trigger(nestedTextElement)
@@ -144,7 +144,7 @@ class ViewItemFactory {
             }
         }
         if (ra.description.deprecation().isDefined()) {
-            term.delegate().classList.add(halModifier(deprecated));
+            term.containerDelegate().classList.add(halModifier(deprecated));
         }
         return term;
     }
@@ -155,7 +155,7 @@ class ViewItemFactory {
         // TODO Implement sensitive constraints
         if (!ra.readable) {
             element = span().css(halModifier(restricted))
-                    .textContent("restricted")
+                    .text("restricted")
                     .add(icon(lock().css(util("ml-sm"))))
                     .element();
 
@@ -189,9 +189,9 @@ class ViewItemFactory {
                             String unit = ra.description.unit();
                             if (unit != null) {
                                 element = span()
-                                        .add(span().textContent(ra.value.asString()))
+                                        .add(span().text(ra.value.asString()))
                                         .add(span().css(halComponent(resource, view, HalClasses.unit))
-                                                .textContent(unit))
+                                                .text(unit))
                                         .element();
                             } else if (ra.description.hasDefined(ALLOWED)) {
                                 List<String> allowed = ra.description.get(ALLOWED)
@@ -251,7 +251,7 @@ class ViewItemFactory {
 
     private static HTMLElement plainText(ResourceAttribute ra) {
         return span()
-                .textContent(ra.value.asString())
+                .text(ra.value.asString())
                 .element();
     }
 }

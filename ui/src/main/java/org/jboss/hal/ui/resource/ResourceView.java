@@ -19,7 +19,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.jboss.elemento.HasElement;
+import org.jboss.elemento.IsElement;
+import org.jboss.elemento.TypedBuilder;
 import org.patternfly.component.HasItems;
 import org.patternfly.component.list.DescriptionList;
 
@@ -40,7 +41,8 @@ import static org.patternfly.style.Orientation.vertical;
 
 /** Element to view an existing resource */
 class ResourceView implements
-        HasElement<HTMLElement, ResourceView>,
+        TypedBuilder<HTMLElement, ResourceView>,
+        IsElement<HTMLElement>,
         HasItems<HTMLElement, ResourceView, ViewItem> {
 
     private final Map<String, ViewItem> items;

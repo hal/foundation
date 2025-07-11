@@ -16,13 +16,13 @@
 package org.jboss.hal.ui.resource;
 
 import org.jboss.hal.resources.Keys;
-import org.patternfly.component.WithIdentifier;
+import org.patternfly.component.HasIdentifier;
 import org.patternfly.core.ComponentContext;
 
 import elemental2.dom.HTMLElement;
 
 interface ManagerItem<I extends ManagerItem<I>> extends ComponentContext<HTMLElement, I>,
-        WithIdentifier<HTMLElement, I> {
+        HasIdentifier<HTMLElement, I> {
 
     default ResourceAttribute resourceAttribute() {
         return get(Keys.RESOURCE_ATTRIBUTE);

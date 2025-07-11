@@ -23,15 +23,15 @@ import org.jboss.hal.op.bootstrap.BootstrapErrorElement;
 import org.jboss.hal.op.resources.Assets;
 import org.jboss.hal.resources.Ids;
 import org.patternfly.component.navigation.Navigation;
+import org.patternfly.component.page.MastheadLogo;
 import org.patternfly.component.page.Page;
 import org.patternfly.component.page.PageMain;
 import org.patternfly.component.toolbar.ToolbarItem;
-import org.patternfly.style.Variable;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
 import static elemental2.dom.DomGlobal.document;
-import static org.jboss.elemento.Elements.a;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
@@ -54,10 +54,13 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.FlexWrap.noWrap;
 import static org.patternfly.layout.flex.SpaceItems.none;
 import static org.patternfly.style.Breakpoint.default_;
+import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.fullHeight;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.static_;
-import static org.patternfly.style.Variable.globalVar;
+import static org.patternfly.style.Variable.componentVar;
+import static org.patternfly.style.Variables.Height;
+import static org.patternfly.token.Token.globalBackgroundColor100;
 
 public class Skeleton implements IsElement<HTMLElement> {
 
@@ -84,9 +87,11 @@ public class Skeleton implements IsElement<HTMLElement> {
                 .addSkipToContent(skipToContent(Ids.MAIN_ID))
                 .addMasthead(masthead()
                         .addMain(mastheadMain()
-                                .addBrand(mastheadBrand(a("/")
-                                        .style("height", "36px")
-                                        .innerHtml(SafeHtmlUtils.fromTrustedString(Assets.INSTANCE.logo().getText())))))
+                                .addBrand(mastheadBrand()
+                                        .addLogo(MastheadLogo.mastheadLogo("/")
+                                                .style(componentVar(component(Classes.brand), Height).name, "36px")
+                                                .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
+                                                        Assets.INSTANCE.logo().getText()).asString()))))
                         .addContent(mastheadContent()
                                 .addToolbar(toolbar().css(modifier(fullHeight), modifier(static_))
                                         .addContent(toolbarContent()
@@ -123,11 +128,10 @@ public class Skeleton implements IsElement<HTMLElement> {
     }
 
     public Skeleton add(BootstrapErrorElement bootstrapError) {
-        Variable white = globalVar("BackgroundColor", "100");
         pageMain.add(pageMainSection()
                 .limitWidth()
                 .add(pageMainBody()
-                        .add(div().style("background-color", "var(" + white.name + ")")
+                        .add(div().style("background-color", globalBackgroundColor100.var)
                                 .add(bootstrapError))));
         return this;
     }

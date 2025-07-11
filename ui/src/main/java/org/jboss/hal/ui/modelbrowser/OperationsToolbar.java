@@ -23,7 +23,7 @@ import org.jboss.hal.model.filter.DeprecatedAttribute;
 import org.jboss.hal.model.filter.GlobalOperationsAttribute;
 import org.jboss.hal.model.filter.ParametersAttribute;
 import org.jboss.hal.model.filter.ReturnValueAttribute;
-import org.jboss.hal.ui.filter.FilterChips;
+import org.jboss.hal.ui.filter.FilterLabels;
 import org.patternfly.component.switch_.Switch;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.core.ObservableValue;
@@ -90,10 +90,10 @@ class OperationsToolbar implements IsElement<HTMLElement> {
                         .addGroup(toolbarGroup()
                                 .add(toolbarFilterChipGroup(filter, "Signature")
                                         .filterAttributes(ParametersAttribute.NAME, ReturnValueAttribute.NAME)
-                                        .filterToChips(FilterChips::parametersReturnValueChips))
+                                        .filterToChips(FilterLabels::parametersReturnValueChips))
                                 .add(toolbarFilterChipGroup(filter, "Status")
                                         .filterAttributes(DeprecatedAttribute.NAME)
-                                        .filterToChips(FilterChips::deprecatedChips)))
+                                        .filterToChips(FilterLabels::deprecatedChips)))
                         .addItem(toolbarItem()
                                 .add(button("Clear all filters").link().inline().onClick((e, c) -> filter.resetAll()))));
 

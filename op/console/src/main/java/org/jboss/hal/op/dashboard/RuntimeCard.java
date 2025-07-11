@@ -80,7 +80,7 @@ class RuntimeCard implements DashboardCard {
     }
 
     private Card hostInfo(ModelNode result) {
-        return card().addTitle(cardTitle().textContent("Host"))
+        return card().addTitle(cardTitle().text("Host"))
                 .addBody(cardBody().add(descriptionList()
                         .addItem(descriptionListGroup("host-name")
                                 .addTerm(descriptionListTerm("Name"))
@@ -97,7 +97,7 @@ class RuntimeCard implements DashboardCard {
     }
 
     private Card jvmInfo(ModelNode result) {
-        return card().addTitle(cardTitle().textContent("JVM"))
+        return card().addTitle(cardTitle().text("JVM"))
                 .addBody(cardBody().add(descriptionList()
                         .addItem(descriptionListGroup("jvm-name")
                                 .addTerm(descriptionListTerm("Name"))

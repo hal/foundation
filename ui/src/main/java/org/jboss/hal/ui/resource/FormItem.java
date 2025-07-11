@@ -19,15 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.elemento.By;
-import org.jboss.elemento.HasElement;
 import org.jboss.elemento.Id;
+import org.jboss.elemento.IsElement;
+import org.jboss.elemento.TypedBuilder;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.BuildingBlocks;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
+import org.patternfly.component.HasIdentifier;
 import org.patternfly.component.ValidationStatus;
-import org.patternfly.component.WithIdentifier;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.form.FormGroup;
 import org.patternfly.component.form.FormGroupControl;
@@ -74,9 +75,10 @@ import static org.patternfly.icon.IconSets.fas.dollarSign;
  */
 abstract class FormItem implements
         ManagerItem<FormItem>,
-        HasElement<HTMLElement, FormItem>,
+        TypedBuilder<HTMLElement, FormItem>,
+        IsElement<HTMLElement>,
         ComponentContext<HTMLElement, FormItem>,
-        WithIdentifier<HTMLElement, FormItem> {
+        HasIdentifier<HTMLElement, FormItem> {
 
     private static final Logger logger = Logger.getLogger(FormItem.class.getName());
 
@@ -369,7 +371,7 @@ abstract class FormItem implements
     }
 
     InputGroupText unitInputGroupText() {
-        return inputGroupText().plain().add(small().textContent(ra.description.unit()));
+        return inputGroupText().plain().add(small().text(ra.description.unit()));
     }
 
     Button resolveExpressionButton() {
@@ -422,7 +424,7 @@ abstract class FormItem implements
      */
     void afterSwitchedToExpressionMode() {
         if (textControl != null) {
-            textControl.inputElement().element().focus();
+            textControl.input().element().focus();
         }
     }
 

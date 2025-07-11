@@ -131,11 +131,11 @@ public class CrudOperations {
 
     private HTMLElement typeElement(String type) {
         String failSafeType = type == null ? "Management model" : new LabelBuilder().label(type);
-        return span().data(crudMessageType, type).textContent(failSafeType).element();
+        return span().data(crudMessageType, type).text(failSafeType).element();
     }
 
     private HTMLElement nameElement(String name) {
         String failSafeName = name == null ? "n/a" : name;
-        return span().data(crudMessageName, name).textContent(failSafeName).element();
+        return span().data(crudMessageName, name).text(failSafeName).element();
     }
 }

@@ -256,7 +256,7 @@ class ResourceList implements IsElement<HTMLElement> {
                         .icon(ban())
                         .text("No child resources"))
                 .addBody(emptyStateBody()
-                        .textContent("This resource has no child resources."))
+                        .text("This resource has no child resources."))
                 .addFooter(emptyStateFooter()
                         .addActions(actions))
                 .element());
@@ -307,14 +307,14 @@ class ResourceList implements IsElement<HTMLElement> {
             Stability stability = metadata.resourceDescription().stability();
             if (uic().environment().highlightStability(stability)) {
                 flex.add(flex().alignItems(center).columnGap(md)
-                        .add(flexItem().id(childId).textContent(child.name))
+                        .add(flexItem().id(childId).text(child.name))
                         .add(flexItem().add(stabilityLabel(stability))));
             } else {
-                flex.addItem(flexItem().id(childId).textContent(child.name));
+                flex.addItem(flexItem().id(childId).text(child.name));
             }
-            flex.add(small().textContent(metadata.resourceDescription().description()));
+            flex.add(small().text(metadata.resourceDescription().description()));
         } else {
-            flex.addItem(flexItem().id(childId).textContent(child.name));
+            flex.addItem(flexItem().id(childId).text(child.name));
         }
         return dataListCell()
                 .run(cell -> {

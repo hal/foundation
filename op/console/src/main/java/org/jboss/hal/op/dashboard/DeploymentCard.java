@@ -52,7 +52,9 @@ import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Orientation.vertical;
-import static org.patternfly.style.Variable.globalVar;
+import static org.patternfly.token.Token.globalColorStatusDanger100;
+import static org.patternfly.token.Token.globalColorStatusSuccess100;
+import static org.patternfly.token.Token.globalColorStatusWarning100;
 
 class DeploymentCard implements DashboardCard {
 
@@ -89,12 +91,12 @@ class DeploymentCard implements DashboardCard {
                             .addHeader(emptyStateHeader()
                                     .icon(IconSets.fas.ban())
                                     .text("No deployments"))
-                            .addBody(emptyStateBody().textContent("This server contains no deployments.")));
+                            .addBody(emptyStateBody().text("This server contains no deployments.")));
                 } else {
                     if (deployments.size() == 1) {
-                        cardTitle.textContent("1 Deployment");
+                        cardTitle.text("1 Deployment");
                     } else {
-                        cardTitle.textContent(deployments.size() + " Deployments");
+                        cardTitle.text(deployments.size() + " Deployments");
                     }
                     Map<DeploymentStatus, Long> status = deployments.stream()
                             .collect(groupingBy(Deployment::status, counting()));
@@ -108,7 +110,7 @@ class DeploymentCard implements DashboardCard {
                                         Map.Entry<DeploymentStatus, Long> entry = iterator.next();
                                         flex.add(flex().spaceItems(sm)
                                                 .add(div().add(status(entry.getKey())))
-                                                .add(div().textContent(String.valueOf(entry.getValue()))));
+                                                .add(div().text(String.valueOf(entry.getValue()))));
                                         if (iterator.hasNext()) {
                                             flex.add(divider(hr).orientation(vertical));
                                         }
@@ -124,21 +126,21 @@ class DeploymentCard implements DashboardCard {
                     .addHeader(emptyStateHeader()
                             .icon(exclamationCircle())
                             .text("Domain mode"))
-                    .addBody(emptyStateBody().textContent("Domain mode is not supported yet.")));
+                    .addBody(emptyStateBody().text("Domain mode is not supported yet.")));
         }
     }
 
     private PredefinedIcon status(DeploymentStatus status) {
         switch (status) {
             case OK:
-                return checkCircle().attr("color", globalVar("success-color", "100").asVar());
+                return checkCircle().attr("color", globalColorStatusSuccess100.var);
             case FAILED:
-                return timesCircle().attr("color", globalVar("danger-color", "100").asVar());
+                return timesCircle().attr("color", globalColorStatusDanger100.var);
             case STOPPED:
                 return pauseCircle();
             case UNDEFINED:
             default:
-                return question().attr("color", globalVar("warning-color", "100").asVar());
+                return question().attr("color", globalColorStatusWarning100.var);
         }
     }
 }

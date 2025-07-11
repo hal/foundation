@@ -36,9 +36,9 @@ import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.p;
+import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.page.PageMainBody.pageMainBody;
 import static org.patternfly.component.page.PageMainSection.pageMainSection;
-import static org.patternfly.component.text.TextContent.textContent;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
@@ -101,9 +101,9 @@ public class DashboardPage implements Page {
 
         HTMLElement header = pageMainSection().limitWidth().background(light)
                 .addBody(pageMainBody()
-                        .add(textContent()
+                        .add(content()
                                 .add(title(1, _3xl).text("WildFly Application Server"))
-                                .add(p().textContent("Dashboard"))))
+                                .add(p().text("Dashboard"))))
                 .element();
         HTMLElement dashboard = pageMainSection().limitWidth()
                 .add(pageMainBody().add(grid().gutter().run(grid -> {

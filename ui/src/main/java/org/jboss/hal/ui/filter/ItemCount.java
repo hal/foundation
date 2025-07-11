@@ -21,7 +21,8 @@ import org.patternfly.core.ObservableValue;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.span;
-import static org.patternfly.style.Variable.globalVar;
+import static org.patternfly.token.Token.globalFontSizeSm;
+import static org.patternfly.token.Token.globalTextColorDisabled;
 
 public class ItemCount implements IsElement<HTMLElement> {
 
@@ -42,8 +43,8 @@ public class ItemCount implements IsElement<HTMLElement> {
         this.singular = singular;
         this.plural = plural;
         this.root = span()
-                .style("color", globalVar("Color", "200").asVar())
-                .style("font-size", globalVar("FontSize", "sm").asVar())
+                .style("color", globalTextColorDisabled.var)
+                .style("font-size", globalFontSizeSm.var)
                 .element();
         visible.subscribe((v, __) -> root.textContent = text(v, total.get()));
         total.subscribe((t, __) -> root.textContent = text(visible.get(), t));

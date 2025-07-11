@@ -26,7 +26,7 @@ import org.jboss.hal.model.filter.DeprecatedAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
-import org.jboss.hal.ui.filter.FilterChips;
+import org.jboss.hal.ui.filter.FilterLabels;
 import org.jboss.hal.ui.resource.ResourceManager.State;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarContent;
@@ -132,15 +132,15 @@ class ResourceToolbar implements IsElement<HTMLElement> {
                         .addGroup(toolbarGroup()
                                 .add(toolbarFilterChipGroup(filter, "Type")
                                         .filterAttributes(TypesAttribute.NAME)
-                                        .filterToChips(FilterChips::typeChips))
+                                        .filterToChips(FilterLabels::typeChips))
                                 .add(toolbarFilterChipGroup(filter, "Status")
                                         .filterAttributes(DefinedAttribute.NAME,
                                                 RequiredAttribute.NAME,
                                                 DeprecatedAttribute.NAME)
-                                        .filterToChips(FilterChips::definedRequiredDeprecatedChips))
+                                        .filterToChips(FilterLabels::definedRequiredDeprecatedChips))
                                 .add(toolbarFilterChipGroup(filter, "Mode")
                                         .filterAttributes(StorageAttribute.NAME, AccessTypeAttribute.NAME)
-                                        .filterToChips(FilterChips::storageAccessTypeChips)))
+                                        .filterToChips(FilterLabels::storageAccessTypeChips)))
                         .addItem(toolbarItem()
                                 .add(button("Clear all filters").link().inline()
                                         .onClick((e, c) -> filter.resetAll()))));

@@ -57,9 +57,9 @@ class CapabilitiesTable implements IsElement<HTMLElement> {
         this.table = table()
                 .addHead(thead().css(util("mt-sm"))
                         .addRow(tr("capabilities-head")
-                                .addItem(th("name").width(width60).textContent("Name"))
-                                .addItem(th("dynamic").width(width10).textContent("Dynamic"))
-                                .addItem(th("dynamic-elements").width(width30).textContent("Dynamic elements"))))
+                                .addItem(th("name").width(width60).text("Name"))
+                                .addItem(th("dynamic").width(width10).text("Dynamic"))
+                                .addItem(th("dynamic-elements").width(width30).text("Dynamic elements"))))
                 .addBody(tbody()
                         .run(tbody -> {
                             if (metadata.resourceDescription().capabilities().isEmpty()) {
@@ -71,13 +71,13 @@ class CapabilitiesTable implements IsElement<HTMLElement> {
                                                                         .icon(ban())
                                                                         .text("No capabilities"))
                                                                 .addBody(emptyStateBody()
-                                                                        .textContent(
+                                                                        .text(
                                                                                 "This resource contains no capabilities."))))));
                             } else {
                                 tbody.addRows(metadata.resourceDescription().capabilities(), capability -> tr(capability.name())
                                         .addItem(td("Name")
                                                 .add(capabilityName(metadata.resourceDescription(), capability)))
-                                        .addItem(td("Dynamic").textContent(String.valueOf(capability.dynamic())))
+                                        .addItem(td("Dynamic").text(String.valueOf(capability.dynamic())))
                                         .addItem(td("Dynamic elements").add(dynamicElements(capability))));
                             }
                         }));
@@ -91,7 +91,7 @@ class CapabilitiesTable implements IsElement<HTMLElement> {
     private Flex capabilityName(ResourceDescription resource, CapabilityDescription capability) {
         if (uic().environment().highlightStability(resource.stability(), capability.stability())) {
             return flex().spaceItems(sm)
-                    .addItem(flexItem().textContent(capability.name()))
+                    .addItem(flexItem().text(capability.name()))
                     .add(flexItem().add(stabilityLabel(capability.stability())));
         } else {
             return flex().add(capability.name());

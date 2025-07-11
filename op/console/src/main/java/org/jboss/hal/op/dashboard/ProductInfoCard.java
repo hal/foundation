@@ -36,7 +36,7 @@ class ProductInfoCard implements DashboardCard {
 
     ProductInfoCard(Environment environment) {
         this.root = card()
-                .addTitle(cardTitle().textContent("Details"))
+                .addTitle(cardTitle().text("Details"))
                 .addBody(cardBody()
                         .add(descriptionList().columns(breakpoints(default_, 2))
                                 .addItem(descriptionListGroup("name")
