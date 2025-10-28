@@ -13,7 +13,7 @@
     "start:server": "node server.js 8234 1234",
     "open:browser": "wait-on http://localhost:8234 && open http://localhost:8234",
     "dev": "concurrently \"npm run start:parcel\" \"npm run start:server\" \"npm run open:browser\"",
-    "prod": "parcel build src/web/index.html --dist-dir target/console",
+    "prod": "parcel build src/web/index.html --dist-dir target/console"
   },
   "dependencies": {
     "@patternfly/patternfly": "^6.4.0"

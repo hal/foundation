@@ -127,7 +127,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
 
     void reload() {
         if (!treeView.selectedItems().isEmpty()) {
-            treeView.selectedItems().getFirst().reload();
+            treeView.selectedItems().get(0).reload();
         } else {
             // no selection → load root
             modelBrowser.load();
@@ -196,7 +196,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
 
     String selectedAddress() {
         if (!treeView.selectedItems().isEmpty()) {
-            TreeViewItem tvi = treeView.selectedItems().getFirst();
+            TreeViewItem tvi = treeView.selectedItems().get(0);
             ModelBrowserNode mbn = tvi.get(Keys.MODEL_BROWSER_NODE);
             if (mbn != null) {
                 return mbn.template.toString();
