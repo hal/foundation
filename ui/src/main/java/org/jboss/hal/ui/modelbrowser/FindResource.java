@@ -38,7 +38,7 @@ import org.patternfly.component.list.ListItem;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.popover.Popover;
 import org.patternfly.core.Timeouts;
-import org.patternfly.icon.IconSets;
+import org.patternfly.icon.IconSets.fas;
 import org.patternfly.layout.flex.FlexItem;
 import org.patternfly.layout.flex.Gap;
 import org.patternfly.style.Breakpoint;
@@ -65,7 +65,6 @@ import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
@@ -281,9 +280,8 @@ class FindResource {
 
         noResults = flexItem()
                 .add(emptyState()
-                        .addHeader(emptyStateHeader()
-                                .icon(IconSets.fas.search())
-                                .text("No results found"))
+                        .icon(fas.search())
+                        .text("No results found")
                         .addBody(emptyStateBody()
                                 .text("No resources match the search criteria.")));
 

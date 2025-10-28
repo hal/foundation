@@ -33,8 +33,8 @@ import org.jboss.hal.meta.tree.ModelTree;
 /**
  * Holds common classes often needed in UI elements.
  * <p>
- * In most cases UI classes take not part in CDI. In case they need one of the classes, use {@link #uic()} to get a reference
- * instead.
+ * In most cases UI classes take not part in CDI. In case they need one of the classes returned by the methods of this class,
+ * use {@link #uic()} to get a reference.
  */
 @Startup
 @ApplicationScoped

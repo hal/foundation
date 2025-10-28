@@ -27,8 +27,8 @@ import org.jboss.hal.resources.HalClasses;
 import org.patternfly.component.breadcrumb.Breadcrumb;
 import org.patternfly.component.icon.Icon;
 import org.patternfly.component.icon.IconSize;
-import org.patternfly.component.page.PageMainBreadcrumb;
-import org.patternfly.component.page.PageMainSection;
+import org.patternfly.component.page.PageBreadcrumb;
+import org.patternfly.component.page.PageSection;
 import org.patternfly.component.title.Title;
 import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.layout.flex.FlexItem;
@@ -57,9 +57,9 @@ import static org.patternfly.component.breadcrumb.Breadcrumb.breadcrumb;
 import static org.patternfly.component.breadcrumb.BreadcrumbItem.breadcrumbItem;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.icon.Icon.icon;
-import static org.patternfly.component.page.PageMainBreadcrumb.pageMainBreadcrumb;
-import static org.patternfly.component.page.PageMainGroup.pageMainGroup;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
+import static org.patternfly.component.page.PageBreadcrumb.pageBreadcrumb;
+import static org.patternfly.component.page.PageGroup.pageGroup;
+import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.icon.IconSets.fas.copy;
@@ -67,7 +67,6 @@ import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.popper.Placement.auto;
-import static org.patternfly.style.Brightness.light;
 import static org.patternfly.style.Size._3xl;
 import static org.patternfly.style.Sticky.top;
 
@@ -76,25 +75,25 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
     static String lastTab = null;
     private final ModelBrowser modelBrowser;
     private final HTMLElement root;
-    private final PageMainBreadcrumb pageMainBreadcrumb;
+    private final PageBreadcrumb pageBreadcrumb;
     private final Title header;
     private final FlexItem stabilityContainer;
     private final HTMLContainerBuilder<HTMLParagraphElement> description;
-    private final PageMainSection pageMainSection;
+    private final PageSection pageSection;
 
     ModelBrowserDetail(ModelBrowser modelBrowser) {
         this.modelBrowser = modelBrowser;
         this.root = div().css(halComponent(HalClasses.modelBrowser, detail))
-                .add(pageMainGroup()
+                .add(pageGroup()
                         .sticky(top)
-                        .addSection(pageMainBreadcrumb = pageMainBreadcrumb())
-                        .addSection(pageMainSection().background(light)
+                        .addSection(pageBreadcrumb = pageBreadcrumb())
+                        .addSection(pageSection()
                                 .add(content()
                                         .add(flex().alignItems(center)
                                                 .addItem(flexItem().add(header = title(1, _3xl, "")))
                                                 .addItem(stabilityContainer = flexItem()))
                                         .add(description = p().text("")))))
-                .add(pageMainSection = pageMainSection().css(halComponent(HalClasses.modelBrowser, detail, content)))
+                .add(pageSection = pageSection().css(halComponent(HalClasses.modelBrowser, detail, content)))
                 .element();
     }
 
@@ -111,11 +110,11 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
             switch (mbn.type) {
                 case SINGLETON_FOLDER:
                 case FOLDER:
-                    pageMainSection.add(new ResourceList(mbn, metadata));
+                    pageSection.add(new ResourceList(mbn, metadata));
                     break;
                 case SINGLETON_RESOURCE:
                 case RESOURCE:
-                    pageMainSection.add(new ResourceDetails(mbn, metadata));
+                    pageSection.add(new ResourceDetails(mbn, metadata));
                     break;
             }
         });
@@ -152,7 +151,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
                         }));
             }
         }
-        pageMainBreadcrumb.addBreadcrumb(breadcrumb);
+        pageBreadcrumb.addBreadcrumb(breadcrumb);
     }
 
     private void adjustHeader(ModelBrowserNode mbn, Metadata metadata) {
@@ -178,11 +177,11 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
     }
 
     private void clear() {
-        removeChildrenFrom(pageMainBreadcrumb);
+        removeChildrenFrom(pageBreadcrumb);
         removeChildrenFrom(stabilityContainer);
         removeChildrenFrom(header);
         removeChildrenFrom(description);
-        removeChildrenFrom(pageMainSection);
+        removeChildrenFrom(pageSection);
     }
 
     private HTMLElement copyToClipboard(AddressTemplate template) {

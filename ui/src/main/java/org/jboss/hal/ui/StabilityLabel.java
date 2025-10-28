@@ -16,9 +16,9 @@
 package org.jboss.hal.ui;
 
 import org.jboss.elemento.ElementClassListMethods;
+import org.jboss.elemento.ElementTextDelegate;
 import org.jboss.elemento.HTMLElementStyleMethods;
 import org.jboss.hal.env.Stability;
-import org.patternfly.component.ElementTextDelegate;
 import org.patternfly.component.label.Label;
 import org.patternfly.core.Aria;
 

@@ -51,9 +51,9 @@ import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarFilterChipGroup.toolbarFilterChipGroup;
 import static org.patternfly.component.toolbar.ToolbarFilterContent.toolbarFilterContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
+import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarGroupType.buttonGroup;
 import static org.patternfly.component.toolbar.ToolbarGroupType.filterGroup;
-import static org.patternfly.component.toolbar.ToolbarGroupType.iconButtonGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
@@ -98,7 +98,7 @@ class ResourceToolbar implements IsElement<HTMLElement> {
         editItem = toolbarItem()
                 .add(button().id(editId).plain().icon(edit()).onClick((e, b) -> resourceManager.load(EDIT)))
                 .add(tooltip(By.id(editId), "Edit resource").placement(auto));
-        viewActionGroup = toolbarGroup(iconButtonGroup).css(modifier("align-right"))
+        viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
                 .addItem(refreshItem)
                 .addItem(resetItem)
                 .addItem(editItem);

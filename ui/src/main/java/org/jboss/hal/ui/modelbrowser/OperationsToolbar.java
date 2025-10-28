@@ -74,7 +74,7 @@ class OperationsToolbar implements IsElement<HTMLElement> {
                                 .addItem(toolbarItem().add(deprecatedMultiSelect(filter, "Status"))))
                         .addItem(toolbarItem().style("align-self", "center")
                                 .add(globalOperationsSwitch = switch_(Id.unique("global-operations"), "global-operations")
-                                        .label("Show global operations", "Omit global operations")
+                                        .label("Show global operations")
                                         .value(showGlobalOperations, false)
                                         .onChange((e, c, v) -> {
                                             uic().settings().set(Settings.Key.SHOW_GLOBAL_OPERATIONS, v);

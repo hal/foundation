@@ -26,7 +26,6 @@ import org.patternfly.component.table.Td;
 import org.patternfly.component.table.TitleCell;
 import org.patternfly.component.table.Tr;
 import org.patternfly.style.Variable;
-import org.patternfly.style.Variables;
 
 import elemental2.dom.HTMLElement;
 
@@ -98,7 +97,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
         if (attribute.hasDefined(STORAGE)) {
             String storageId = Id.unique(attribute.name(), STORAGE);
             String storage = attribute.get(STORAGE).asString();
-            Variable minWidth = utilVar("min-width", Variables.MinWidth);
+            Variable minWidth = utilVar("min-width", "MinWidth");
             if (CONFIGURATION.equals(storage)) {
                 td.add(span().id(storageId)
                         .add(database())

@@ -42,7 +42,7 @@ import static org.jboss.hal.resources.HalClasses.tree;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserEngine.mbn2tvi;
 import static org.patternfly.component.button.Button.button;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
+import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
@@ -99,7 +99,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
         tooltip(collapseButton.element(), "Collapse all").placement(bottom).appendToBody();
 
         root = div().css(halComponent(HalClasses.modelBrowser, tree))
-                .add(pageMainSection().sticky(Sticky.top).padding(noPadding)
+                .add(pageSection().sticky(Sticky.top).padding(noPadding)
                         .add(toolbar().css(modifier(insetNone))
                                 .addContent(toolbarContent()
                                         .addItem(toolbarItem().css(modifier("spacer-none")).add(backButton))
@@ -109,7 +109,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                                         .addItem(toolbarItem().css(modifier("spacer-none")).add(findResource))
                                         .addItem(toolbarItem().css(modifier("spacer-none")).add(gotoResource))
                                         .addItem(toolbarItem().css(modifier("spacer-none")).add(collapseButton)))))
-                .add(pageMainSection().padding(noPadding).add(treeView))
+                .add(pageSection().padding(noPadding).add(treeView))
                 .element();
     }
 
@@ -127,7 +127,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
 
     void reload() {
         if (!treeView.selectedItems().isEmpty()) {
-            treeView.selectedItems().get(0).reload();
+            treeView.selectedItems().getFirst().reload();
         } else {
             // no selection → load root
             modelBrowser.load();
@@ -196,7 +196,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
 
     String selectedAddress() {
         if (!treeView.selectedItems().isEmpty()) {
-            TreeViewItem tvi = treeView.selectedItems().get(0);
+            TreeViewItem tvi = treeView.selectedItems().getFirst();
             ModelBrowserNode mbn = tvi.get(Keys.MODEL_BROWSER_NODE);
             if (mbn != null) {
                 return mbn.template.toString();

@@ -37,7 +37,6 @@ import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.layout.flex.Flex;
 import org.patternfly.style.Color;
 import org.patternfly.style.Variable;
-import org.patternfly.style.Variables;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -77,7 +76,6 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.popover.Popover.popover;
@@ -173,21 +171,15 @@ public class BuildingBlocks {
         if (attribute.hasDefined(RESTART_REQUIRED)) {
             RestartMode restartMode = asEnumValue(attribute, RESTART_REQUIRED, RestartMode::valueOf, UNKNOWN);
             if (restartMode != UNKNOWN) {
-                String text = "";
-                switch (restartMode) {
-                    case ALL_SERVICES:
-                        text = "A modification requires a restart of all services, but does not require a full JVM restart.";
-                        break;
-                    case JVM:
-                        text = "A modification requires a full JVM restart.";
-                        break;
-                    case NO_SERVICES:
-                        text = "A modification doesn't require a restart.";
-                        break;
-                    case RESOURCE_SERVICES:
-                        text = "A modification requires a restart of services, associated with the attribute's resource, but does not require a restart of all services or a full JVM restart.";
-                        break;
-                }
+                String text = switch (restartMode) {
+                    case ALL_SERVICES ->
+                            "A modification requires a restart of all services, but does not require a full JVM restart.";
+                    case JVM -> "A modification requires a full JVM restart.";
+                    case NO_SERVICES -> "A modification doesn't require a restart.";
+                    case RESOURCE_SERVICES ->
+                            "A modification requires a restart of services, associated with the attribute's resource, but does not require a restart of all services or a full JVM restart.";
+                    default -> "";
+                };
                 infos.addItem(listItem().text(text));
             }
         }
@@ -202,7 +194,7 @@ public class BuildingBlocks {
     public static Popover attributeDescriptionPopover(String header, AttributeDescription attribute) {
         return popover()
                 .css(util("min-width"))
-                .style(utilVar("min-width", Variables.MinWidth).name, "40ch")
+                .style(utilVar("min-width", "MinWidth").name, "40ch")
                 .addHeader(header)
                 .addBody(popoverBody()
                         .add(attributeDescription(attribute)));
@@ -262,9 +254,8 @@ public class BuildingBlocks {
 
     public static <T> EmptyState emptyRow(Filter<T> filter) {
         return emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(search())
-                        .text("No results found"))
+                .icon(search())
+                .text("No results found")
                 .addBody(emptyStateBody()
                         .text(
                                 "No results match the filter criteria. Clear all filters and try again."))

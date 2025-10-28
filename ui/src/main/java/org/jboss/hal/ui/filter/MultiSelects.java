@@ -22,15 +22,13 @@ import org.patternfly.component.menu.MenuItem;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterAttribute;
 
-import static java.util.stream.Collectors.toList;
-
 class MultiSelects {
 
     static <T> void setBooleanFilter(Filter<T> filter, String filterAttribute, List<MenuItem> menuItems, String origin) {
         String prefix = filterAttribute + "-";
         List<MenuItem> selected = menuItems.stream()
                 .filter(menuItem -> menuItem.identifier().startsWith(prefix))
-                .collect(toList());
+                .toList();
         if (selected.isEmpty()) {
             filter.reset(filterAttribute, origin);
         } else {

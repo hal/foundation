@@ -31,10 +31,8 @@ import org.jboss.hal.ui.modelbrowser.NoMatch;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
 import org.jboss.hal.ui.resource.FormItemFlags.Scope;
 import org.patternfly.component.HasItems;
-import org.patternfly.component.Severity;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
-import org.patternfly.style.Status;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
@@ -63,16 +61,15 @@ import static org.jboss.hal.ui.resource.ResourceManager.State.NO_ATTRIBUTES;
 import static org.jboss.hal.ui.resource.ResourceManager.State.VIEW;
 import static org.jboss.hal.ui.resource.ResourceToolbar.resourceToolbar;
 import static org.jboss.hal.ui.resource.ViewItemFactory.viewItem;
+import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.ban;
-import static org.patternfly.icon.IconSets.fas.exclamationCircle;
 
 /**
  * Combines a {@link ResourceFilter} and {@link ResourceToolbar} with a {@link ResourceView} and {@link ResourceForm}.
@@ -223,9 +220,8 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private void noAttributes() {
         changeState(NO_ATTRIBUTES);
         rootContainer.append(emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(ban())
-                        .text("No attributes"))
+                .icon(ban())
+                .text("No attributes")
                 .addBody(emptyStateBody()
                         .text("This resource contains no attributes."))
                 .element());
@@ -234,9 +230,8 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private void operationError(String operation, String error) {
         changeState(ERROR);
         rootContainer.append(emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(exclamationCircle(), Status.danger)
-                        .text("Operation failed"))
+                .status(danger)
+                .text("Operation failed")
                 .addBody(emptyStateBody()
                         .add("Unable to view resource. Operation ")
                         .add(code().text(operation))
@@ -251,9 +246,8 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private void metadataError() {
         changeState(ERROR);
         rootContainer.append(emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(exclamationCircle(), Status.danger)
-                        .text("No metadata"))
+                .status(danger)
+                .text("No metadata")
                 .addBody(emptyStateBody()
                         .text("Unable to view resource: No metadata found!"))
                 .element());
@@ -313,7 +307,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                             return null;
                         })
                         .catch_(error -> {
-                            resourceForm.addAlert(alert(Severity.danger, "Update failed").inline()
+                            resourceForm.addAlert(alert(danger, "Update failed").inline()
                                     .addDescription(String.valueOf(error)));
                             return null;
                         });

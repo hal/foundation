@@ -72,7 +72,6 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.list.DataList.dataList;
 import static org.patternfly.component.list.DataListAction.dataListAction;
 import static org.patternfly.component.list.DataListCell.dataListCell;
@@ -87,7 +86,7 @@ import static org.patternfly.component.menu.MenuToggleType.plainText;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
-import static org.patternfly.component.toolbar.ToolbarGroupType.iconButtonGroup;
+import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
@@ -152,7 +151,7 @@ class ResourceList implements IsElement<HTMLElement> {
                         .addItem(toolbarItem()
                                 .style("align-self", "center")
                                 .add(itemCount(visible, total, "resource", "resources")))
-                        .addGroup(toolbarGroup(iconButtonGroup).css(modifier("align-right"))
+                        .addGroup(toolbarGroup(actionGroupPlain).css(modifier("align-right"))
                                 .addItem(addItem)
                                 .addItem(refreshItem)));
         setVisible(toolbar, false); // to avoid visual noise
@@ -252,9 +251,8 @@ class ResourceList implements IsElement<HTMLElement> {
         actions.add(button("Refresh").link().onClick((e, b) -> refresh()));
 
         listContainer.appendChild(emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(ban())
-                        .text("No child resources"))
+                .icon(ban())
+                .text("No child resources")
                 .addBody(emptyStateBody()
                         .text("This resource has no child resources."))
                 .addFooter(emptyStateFooter()

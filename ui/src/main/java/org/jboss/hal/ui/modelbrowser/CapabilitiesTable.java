@@ -30,7 +30,6 @@ import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.table.Table.table;
@@ -67,12 +66,10 @@ class CapabilitiesTable implements IsElement<HTMLElement> {
                                         .addItem(td().colSpan(3)
                                                 .add(bullseye()
                                                         .add(emptyState()
-                                                                .addHeader(emptyStateHeader()
-                                                                        .icon(ban())
-                                                                        .text("No capabilities"))
+                                                                .icon(ban())
+                                                                .text("No capabilities")
                                                                 .addBody(emptyStateBody()
-                                                                        .text(
-                                                                                "This resource contains no capabilities."))))));
+                                                                        .text("This resource contains no capabilities."))))));
                             } else {
                                 tbody.addRows(metadata.resourceDescription().capabilities(), capability -> tr(capability.name())
                                         .addItem(td("Name")

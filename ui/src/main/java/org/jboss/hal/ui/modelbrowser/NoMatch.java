@@ -28,7 +28,6 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.icon.IconSets.fas.search;
 
 public class NoMatch<T> implements IsElement<HTMLElement> {
@@ -36,16 +35,11 @@ public class NoMatch<T> implements IsElement<HTMLElement> {
     private final EmptyState emptyState;
 
     public NoMatch(Filter<T> filter) {
-        this.emptyState = emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(search())
-                        .text("No results found"))
-                .addBody(emptyStateBody()
-                        .text("No results match the filter criteria. Clear all filters and try again."))
-                .addFooter(emptyStateFooter()
-                        .addActions(emptyStateActions()
-                                .add(button("Clear all filters").link()
-                                        .onClick((event, component) -> filter.resetAll()))));
+        this.emptyState = emptyState().icon(search())
+                .text("No results found")
+                .addBody(emptyStateBody().text("No results match the filter criteria. Clear all filters and try again."))
+                .addFooter(emptyStateFooter().addActions(emptyStateActions().add(
+                        button("Clear all filters").link().onClick((event, component) -> filter.resetAll()))));
     }
 
     @Override

@@ -52,7 +52,6 @@ public interface ModelBrowserEvents {
          * @param parent the parent address used to create the event's detail.
          * @param child  the address used to create the event's detail.
          */
-        @SuppressWarnings("unchecked")
         static void dispatch(HTMLElement source, AddressTemplate parent, String child, boolean singleton) {
             Details details = new Details();
             details.parent = parent;
@@ -91,7 +90,6 @@ public interface ModelBrowserEvents {
          * @param source   the source element used to dispatch the event.
          * @param template the address template to delete.
          */
-        @SuppressWarnings("unchecked")
         static void dispatch(HTMLElement source, AddressTemplate template) {
             Details details = new Details();
             details.template = template;
@@ -145,7 +143,6 @@ public interface ModelBrowserEvents {
             dispatch(source, details);
         }
 
-        @SuppressWarnings("unchecked")
         private static void dispatch(HTMLElement source, Details details) {
             //noinspection DuplicatedCode
             CustomEventInit<Details> init = CustomEventInit.create();
