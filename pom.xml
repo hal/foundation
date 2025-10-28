@@ -87,7 +87,6 @@
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
         <version.junit>6.0.0</version.junit>
         <version.kie.j2cl.bom>0.4</version.kie.j2cl.bom>
-        <version.kie.di.bom>0.8.1</version.kie.di.bom>
         <version.mockito>5.20.0</version.mockito>
         <version.node>v24.10.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
@@ -121,9 +120,8 @@
         <j2cl.sourcemaps>true</j2cl.sourcemaps>
         <java.version>21</java.version>
         <javadoc.options/>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.min.version>3.2.5</maven.min.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven.min.version>3.9.9</maven.min.version>
         <npm.script>dev</npm.script>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>

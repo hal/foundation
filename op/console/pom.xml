@@ -139,8 +139,8 @@
                 <groupId>org.kie.j2cl.tools</groupId>
                 <artifactId>j2cl-maven-plugin</artifactId>
                 <configuration>
-                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>
                     <compilationLevel>${j2cl.compilationLevel}</compilationLevel>
+                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>
                     <enableSourcemaps>${j2cl.sourcemaps}</enableSourcemaps>
                     <initialScriptFilename>console.js</initialScriptFilename>
                     <!-- Keep defines for <environment.*/> in sync with

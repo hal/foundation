@@ -10,7 +10,7 @@ The work is in a very early state and very much in progress.
 
 # Technical Stack
 
-- [Java 17](https://jdk.java.net/java-se-ri/17)
+- [Java 21](https://jdk.java.net/java-se-ri/21)
 - [J2CL](https://github.com/google/j2cl)
 - [Crysknife CDI](https://github.com/crysknife-io/crysknife)
 - [Elemento](https://github.com/hal/elemento)
@@ -37,7 +37,7 @@ In another shell run
 
 ```shell
 cd op/console
-npm run watch
+npm run dev
 ```
 
 This will open a browser at http://localhost:1234. Changes to HTML and CSS will be detected by Parcel, and the browser reloads
