@@ -62,13 +62,16 @@ import static org.patternfly.layout.flex.JustifyContent.center;
 import static org.patternfly.layout.flex.SpaceItems.md;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Orientation.vertical;
-import static org.patternfly.style.Variable.globalVar;
+import static org.patternfly.token.Token.chartGlobalDangerColor100;
+import static org.patternfly.token.Token.chartGlobalWarningColor100;
+import static org.patternfly.token.Token.globalColorStatusDanger100;
+import static org.patternfly.token.Token.globalColorStatusSuccess100;
 
 class LogCard implements DashboardCard {
 
     private enum Status {
-        ERROR("errors", () -> timesCircle().attr("color", globalVar("danger-color", "100").asVar())),
-        WARN("warnings", () -> exclamationTriangle().attr("color", globalVar("warning-color", "100").asVar())),
+        ERROR("errors", () -> timesCircle().attr("color", chartGlobalDangerColor100.var)),
+        WARN("warnings", () -> exclamationTriangle().attr("color", chartGlobalWarningColor100.var)),
         SKIP(null, null);
 
         final String text;
@@ -94,7 +97,6 @@ class LogCard implements DashboardCard {
     private final CardTitle cardTitle;
     private final CardBody cardBody;
     private final HTMLElement root;
-    private String logFile = "server.log";
 
     LogCard(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
@@ -113,6 +115,7 @@ class LogCard implements DashboardCard {
 
     @Override
     public void refresh() {
+        String logFile = "server.log";
         cardTitle.text(logFile);
         removeChildrenFrom(cardBody);
 
@@ -132,7 +135,7 @@ class LogCard implements DashboardCard {
                         cardBody.add(flex().justifyContent(center).spaceItems(md)
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem()
-                                                .add(checkCircle().attr("color", globalVar("success-color", "100").asVar())))
+                                                .add(checkCircle().attr("color", globalColorStatusSuccess100.var)))
                                         .add(div().text("No errors or warnings"))));
                     } else if (statusMap.size() == 1) {
                         Map.Entry<Status, Long> entry = statusMap.entrySet().iterator().next();
@@ -157,7 +160,7 @@ class LogCard implements DashboardCard {
                 },
                 (op, error) -> cardBody.add(dashboardEmptyState()
                         .addHeader(emptyStateHeader()
-                                .icon(exclamationCircle().attr("color", globalVar("danger-color", "100").asVar()))
+                                .icon(exclamationCircle().attr("color", globalColorStatusDanger100.var))
                                 .text("Log file not found"))
                         .addBody(emptyStateBody()
                                 .add("The log file ")

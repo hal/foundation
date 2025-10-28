@@ -48,7 +48,7 @@ public class Main {
     @PostConstruct
     void init() {
         bootstrap.run().subscribe(context -> {
-            if (context.successful()) {
+            if (context.isSuccessful()) {
                 insertFirst(document.body, skeleton(environment).add(navigation));
                 placeManager.start();
             } else {
