@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>49</version>
+        <version>51</version>
     </parent>
 
     <groupId>org.jboss.hal</groupId>
@@ -82,26 +82,26 @@
     <properties>
         <!-- Dependency versions -->
         <version.checkstyle.config>1.0.8.Final</version.checkstyle.config>
-        <version.elemento>2.0.0</version.elemento>
+        <version.elemento>2.3.0</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
-        <version.junit>5.13.3</version.junit>
+        <version.junit>6.0.0</version.junit>
         <version.kie.j2cl.bom>0.4</version.kie.j2cl.bom>
         <version.kie.di.bom>0.8.1</version.kie.di.bom>
-        <version.mockito>5.14.2</version.mockito>
-        <version.node>v23.11.0</version.node>
-        <version.patternfly>6.2.3</version.patternfly>
-        <version.patternfly.java>0.2.12-SNAPSHOT</version.patternfly.java>
+        <version.mockito>5.20.0</version.mockito>
+        <version.node>v24.10.0</version.node>
+        <version.patternfly>6.4.0</version.patternfly>
+        <version.patternfly.java>0.3.0</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.8.0</version.central.publishing.plugin>
         <version.editorconfig.plugin>0.1.3</version.editorconfig.plugin>
-        <version.frontend.plugin>1.15.1</version.frontend.plugin>
-        <version.j2cl.plugin>0.23.3</version.j2cl.plugin>
+        <version.enforcer.plugin>3.3.0</version.enforcer.plugin>
+        <version.frontend.plugin>1.15.4</version.frontend.plugin>
+        <version.j2cl.plugin>0.23.4</version.j2cl.plugin>
         <version.impsort.plugin>1.12.0</version.impsort.plugin>
-        <version.javadoc.plugin>3.11.2</version.javadoc.plugin>
+        <version.javadoc.plugin>3.12.0</version.javadoc.plugin>
         <version.keepachangelog>2.1.1</version.keepachangelog>
-        <version.license.plugin>5.0.0</version.license.plugin>
         <version.license.plugin>5.0.0</version.license.plugin>
         <version.nexus.staging.plugin>1.7.0</version.nexus.staging.plugin>
 
@@ -119,7 +119,7 @@
         <j2cl.compilationLevel>BUNDLE_JAR</j2cl.compilationLevel>
         <j2cl.incremental>true</j2cl.incremental>
         <j2cl.sourcemaps>true</j2cl.sourcemaps>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <javadoc.options/>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -127,6 +127,7 @@
         <npm.script>dev</npm.script>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+        <sonatype.url>https://oss.sonatype.org</sonatype.url>
     </properties>
 
     <modules>
@@ -583,8 +584,8 @@
 
     <repositories>
         <repository>
-            <id>central-snapshots</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <id>oss-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -593,8 +594,8 @@
             </snapshots>
         </repository>
         <repository>
-            <id>oss-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>oss-snapshots-01</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
