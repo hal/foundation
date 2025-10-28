@@ -93,7 +93,7 @@ class SelectEndpoint implements Task<FlowContext> {
                     }
                 })
                 .catch_(error -> {
-                    if (context.emptyStack()) {
+                    if (context.isStackEmpty()) {
                         if (error instanceof TypeError) {
                             return fail(context, NETWORK_ERROR, url);
                         } else {

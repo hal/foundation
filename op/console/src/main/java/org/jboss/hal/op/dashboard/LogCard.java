@@ -41,6 +41,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.LINES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_LOG_FILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TAIL;
 import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
+import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
@@ -51,9 +52,7 @@ import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.icon.IconSets.fas.checkCircle;
-import static org.patternfly.icon.IconSets.fas.exclamationCircle;
 import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
 import static org.patternfly.icon.IconSets.fas.timesCircle;
 import static org.patternfly.layout.flex.Flex.flex;
@@ -64,7 +63,6 @@ import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Orientation.vertical;
 import static org.patternfly.token.Token.chartGlobalDangerColor100;
 import static org.patternfly.token.Token.chartGlobalWarningColor100;
-import static org.patternfly.token.Token.globalColorStatusDanger100;
 import static org.patternfly.token.Token.globalColorStatusSuccess100;
 
 class LogCard implements DashboardCard {
@@ -159,9 +157,8 @@ class LogCard implements DashboardCard {
                     }
                 },
                 (op, error) -> cardBody.add(dashboardEmptyState()
-                        .addHeader(emptyStateHeader()
-                                .icon(exclamationCircle().attr("color", globalColorStatusDanger100.var))
-                                .text("Log file not found"))
+                        .status(warning)
+                        .text("Log file not found")
                         .addBody(emptyStateBody()
                                 .add("The log file ")
                                 .add(code().text("server.log"))

@@ -30,16 +30,15 @@ import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PRODUCT_INFO;
 import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
+import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
 import static org.patternfly.component.card.CardTitle.cardTitle;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
-import static org.patternfly.icon.IconSets.fas.exclamationCircle;
 import static org.patternfly.layout.gallery.Gallery.gallery;
 
 class RuntimeCard implements DashboardCard {
@@ -73,7 +72,8 @@ class RuntimeCard implements DashboardCard {
                     return null;
                 }).catch_(error -> {
                     gallery.add(dashboardEmptyState()
-                            .addHeader(emptyStateHeader().icon(exclamationCircle()).text("Runtime error"))
+                            .status(danger)
+                            .text("Runtime error")
                             .addBody(emptyStateBody().add(errorCode(String.valueOf(error)))));
                     return null;
                 });

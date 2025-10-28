@@ -37,8 +37,7 @@ import elemental2.dom.HTMLElement;
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.p;
 import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.page.PageMainBody.pageMainBody;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
+import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
@@ -46,7 +45,6 @@ import static org.patternfly.layout.flex.FlexShorthand._1;
 import static org.patternfly.layout.flex.Gap.md;
 import static org.patternfly.layout.grid.Grid.grid;
 import static org.patternfly.layout.grid.GridItem.gridItem;
-import static org.patternfly.style.Brightness.light;
 import static org.patternfly.style.Size._3xl;
 
 @Dependent
@@ -99,14 +97,13 @@ public class DashboardPage implements Page {
                     runtimeCard));
         }
 
-        HTMLElement header = pageMainSection().limitWidth().background(light)
-                .addBody(pageMainBody()
+        HTMLElement header = pageSection().limitWidth()
                         .add(content()
                                 .add(title(1, _3xl).text("WildFly Application Server"))
-                                .add(p().text("Dashboard"))))
+                                .add(p().text("Dashboard")))
                 .element();
-        HTMLElement dashboard = pageMainSection().limitWidth()
-                .add(pageMainBody().add(grid().gutter().run(grid -> {
+        HTMLElement dashboard = pageSection().limitWidth()
+                .add(grid().gutter().run(grid -> {
                             if (environment.standalone()) {
                                 grid
                                         .addItem(gridItem().span(12)
@@ -133,7 +130,7 @@ public class DashboardPage implements Page {
                                                 .add(documentationCard));
                             }
                         })
-                ))
+                )
                 .element();
         return asList(header, dashboard);
     }

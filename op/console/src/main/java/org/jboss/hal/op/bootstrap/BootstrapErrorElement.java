@@ -16,6 +16,7 @@
 package org.jboss.hal.op.bootstrap;
 
 import org.jboss.elemento.IsElement;
+import org.patternfly.component.Severity;
 import org.patternfly.component.content.Content;
 
 import elemental2.dom.HTMLElement;
@@ -32,9 +33,6 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
-import static org.patternfly.icon.IconSets.fas.exclamationCircle;
-import static org.patternfly.style.Status.danger;
 
 public class BootstrapErrorElement implements IsElement<HTMLElement> {
 
@@ -51,9 +49,8 @@ public class BootstrapErrorElement implements IsElement<HTMLElement> {
     BootstrapErrorElement(BootstrapError error) {
         String selectUrl = location.origin + location.pathname;
         this.root = emptyState()
-                .addHeader(emptyStateHeader()
-                        .icon(exclamationCircle(), danger)
-                        .text(header(error)))
+                .status(Severity.danger)
+                .text(header(error))
                 .addBody(emptyStateBody()
                         .add(details(error)))
                 .addFooter(emptyStateFooter()

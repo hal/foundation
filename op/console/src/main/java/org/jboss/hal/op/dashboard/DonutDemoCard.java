@@ -60,13 +60,13 @@ class DonutDemoCard implements DashboardCard {
                         .add(flex().display(inlineFlex).spaceItems(md)
                                 .addItem(flexItem()
                                         .add(div().text("Heap"))
-                                        .add(div().innerHtml(HEAP_CODE)))
+                                        .add(div().html(HEAP_CODE)))
                                 .addItem(flexItem()
                                         .add(div().text("Non heap"))
-                                        .add(div().innerHtml(NON_HEAP_CODE)))
+                                        .add(div().html(NON_HEAP_CODE)))
                                 .addItem(flexItem()
                                         .add(div().text("Threads"))
-                                        .add(div().innerHtml(THREADS_CODE)))))
+                                        .add(div().html(THREADS_CODE)))))
                 .element();
     }
 

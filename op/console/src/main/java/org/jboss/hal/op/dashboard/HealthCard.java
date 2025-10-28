@@ -28,6 +28,7 @@ import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.patternfly.component.Severity;
 import org.patternfly.component.icon.Icon;
 
 import elemental2.dom.HTMLDivElement;
@@ -45,14 +46,12 @@ import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardHeader.cardHeader;
 import static org.patternfly.component.card.CardTitle.cardTitle;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.list.DataList.dataList;
 import static org.patternfly.component.list.DataListCell.dataListCell;
 import static org.patternfly.component.list.DataListItem.dataListItem;
 import static org.patternfly.icon.IconSets.fas.arrowDown;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
-import static org.patternfly.icon.IconSets.fas.exclamationCircle;
 import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Status.danger;
@@ -109,21 +108,24 @@ class HealthCard implements DashboardCard {
                                         }));
                             } else {
                                 cardBody.add(dashboardEmptyState()
-                                        .addHeader(emptyStateHeader().icon(exclamationTriangle()).text("No checks found")));
+                                        .status(Severity.warning)
+                                        .text("No checks found"));
                             }
                         } else {
                             cardBody.add(dashboardEmptyState()
-                                    .addHeader(emptyStateHeader().icon(exclamationTriangle()).text("No checks found")));
+                                    .status(Severity.warning)
+                                    .text("No checks found"));
                         }
                     } else {
                         cardBody.add(dashboardEmptyState()
-                                .addHeader(emptyStateHeader().icon(exclamationTriangle())
-                                        .text("MicroProfile Health not present")));
+                                .status(Severity.warning)
+                                .text("MicroProfile Health not present"));
                     }
                     return null;
                 }).catch_(error -> {
                     cardBody.add(dashboardEmptyState()
-                            .addHeader(emptyStateHeader().icon(exclamationCircle()).text("MicroProfile Health error"))
+                            .status(Severity.warning)
+                            .text("MicroProfile Health error")
                             .addBody(emptyStateBody().add(errorCode(String.valueOf(error)))));
                     return null;
                 });

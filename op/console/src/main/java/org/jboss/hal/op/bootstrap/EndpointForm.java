@@ -73,7 +73,7 @@ class EndpointForm implements IsElement<HTMLElement> {
                         .addLabel(formGroupLabel("Protocol").noPaddingTop())
                         .addControl(formGroupControl()
                                 .add(secureSwitch = switch_("mi-protocol", "mi-protocol", false)
-                                        .label("HTTPS", "HTTP"))))
+                                        .label("HTTPS"))))
                 .addGroup(formGroup("mi-host").required()
                         .addLabel(formGroupLabel("Host"))
                         .addControl(formGroupControl()

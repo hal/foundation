@@ -61,7 +61,6 @@ public class StabilityBanner implements IsElement<HTMLElement> {
         String moreInfo = "https://docs.wildfly.org/" + environment.productVersionLink() + "/Admin_Guide.html#Feature_stability_levels";
 
         root = banner(color)
-                .sticky()
                 .screenReader("The server has been started with stability level " + serverStability.label)
                 .add(flex().spaceItems(none)
                         .justifyContent(center)

@@ -31,9 +31,8 @@ import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.router.Link.link;
 import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
+import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
-import static org.patternfly.style.Brightness.light;
 import static org.patternfly.style.Size._3xl;
 
 @Dependent
@@ -49,7 +48,7 @@ public class DeploymentsPage implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(pageMainSection().background(light)
+        return singletonList(pageSection()
                 .add(content()
                         .add(title(1, _3xl, "Deployments"))
                         .add(p().text("Not yet implemented!"))

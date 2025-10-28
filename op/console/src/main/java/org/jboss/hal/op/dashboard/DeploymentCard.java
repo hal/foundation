@@ -34,6 +34,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
+import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
 import static org.patternfly.component.card.CardHeader.cardHeader;
@@ -41,9 +42,7 @@ import static org.patternfly.component.card.CardTitle.cardTitle;
 import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.icon.IconSets.fas.checkCircle;
-import static org.patternfly.icon.IconSets.fas.exclamationCircle;
 import static org.patternfly.icon.IconSets.fas.pauseCircle;
 import static org.patternfly.icon.IconSets.fas.question;
 import static org.patternfly.icon.IconSets.fas.timesCircle;
@@ -88,9 +87,8 @@ class DeploymentCard implements DashboardCard {
             deployments.readStandaloneDeployments().then(deployments -> {
                 if (deployments.isEmpty()) {
                     cardBody.add(dashboardEmptyState()
-                            .addHeader(emptyStateHeader()
-                                    .icon(IconSets.fas.ban())
-                                    .text("No deployments"))
+                            .icon(IconSets.fas.ban())
+                            .text("No deployments")
                             .addBody(emptyStateBody().text("This server contains no deployments.")));
                 } else {
                     if (deployments.size() == 1) {
@@ -123,9 +121,8 @@ class DeploymentCard implements DashboardCard {
         } else {
             // TODO Add support for domain mode
             cardBody.add(dashboardEmptyState()
-                    .addHeader(emptyStateHeader()
-                            .icon(exclamationCircle())
-                            .text("Domain mode"))
+                    .status(danger)
+                    .text("Domain mode")
                     .addBody(emptyStateBody().text("Domain mode is not supported yet.")));
         }
     }

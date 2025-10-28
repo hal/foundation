@@ -30,8 +30,7 @@ import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowser.modelBrowser;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
-import static org.patternfly.style.Brightness.light;
+import static org.patternfly.component.page.PageSection.pageSection;
 
 @Dependent
 @Route("/management-model")
@@ -46,9 +45,8 @@ public class ModelBrowserPage implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(
-                pageMainSection().background(light)
-                        .add(modelBrowser)
-                        .element());
+        return singletonList(pageSection()
+                .add(modelBrowser)
+                .element());
     }
 }

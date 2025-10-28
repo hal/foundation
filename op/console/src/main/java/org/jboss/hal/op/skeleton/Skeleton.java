@@ -42,8 +42,7 @@ import static org.patternfly.component.page.MastheadContent.mastheadContent;
 import static org.patternfly.component.page.MastheadMain.mastheadMain;
 import static org.patternfly.component.page.Page.page;
 import static org.patternfly.component.page.PageMain.pageMain;
-import static org.patternfly.component.page.PageMainBody.pageMainBody;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
+import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.skiptocontent.SkipToContent.skipToContent;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
@@ -128,11 +127,10 @@ public class Skeleton implements IsElement<HTMLElement> {
     }
 
     public Skeleton add(BootstrapErrorElement bootstrapError) {
-        pageMain.add(pageMainSection()
+        pageMain.add(pageSection()
                 .limitWidth()
-                .add(pageMainBody()
-                        .add(div().style("background-color", globalBackgroundColor100.var)
-                                .add(bootstrapError))));
+                .add(div().style("background-color", globalBackgroundColor100.var)
+                        .add(bootstrapError)));
         return this;
     }
 

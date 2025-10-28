@@ -15,8 +15,6 @@
  */
 package org.jboss.hal.op.skeleton;
 
-import jakarta.enterprise.context.Dependent;
-
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
@@ -27,21 +25,24 @@ import elemental2.dom.HTMLElement;
 import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.p;
 import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.page.PageMainSection.pageMainSection;
+import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
-import static org.patternfly.style.Brightness.light;
 import static org.patternfly.style.Size._3xl;
 
-@Dependent
 public class NotFound implements Page {
+
+    private final Place notFound;
+
+    public NotFound(Place notFound) {
+        this.notFound = notFound;
+    }
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(pageMainSection()
-                .background(light)
+        return singletonList(pageSection()
                 .add(content()
                         .add(title(1, _3xl, "Not found"))
-                        .add(p().text("Page " + place.route + " not found")))
+                        .add(p().text("Page " + notFound.route + " not found")))
                 .element());
     }
 }

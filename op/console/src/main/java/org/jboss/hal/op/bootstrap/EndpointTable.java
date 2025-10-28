@@ -30,7 +30,6 @@ import elemental2.dom.HTMLElement;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.emptystate.EmptyStateHeader.emptyStateHeader;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.TableText.tableText;
 import static org.patternfly.component.table.Tbody.tbody;
@@ -55,9 +54,9 @@ class EndpointTable implements IsElement<HTMLElement> {
                 .addItem(td().colSpan(4)
                         .add(bullseye()
                                 .add(emptyState()
-                                        .addHeader(emptyStateHeader(2)
-                                                .icon(IconSets.fas.ban())
-                                                .text("No management interfaces found"))
+                                        .icon(IconSets.fas.ban())
+                                        .text("No management interfaces found")
+                                        .headingLevel(2)
                                         .addFooter(emptyStateFooter()
                                                 .add(button().link().text("Add management interface")
                                                         .onClick((event, component) -> create.call()))))));
