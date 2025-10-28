@@ -55,8 +55,8 @@ public class Environment {
         // j2cl-maven-plugin as `<environment.x/>` closure defines (sse POM)
         this.applicationId = System.getProperty("environment.id");
         this.applicationName = System.getProperty("environment.name");
-        this.applicationVersion = Version.parseVersion(System.getProperty("environment.version"));
-        this.base = System.getProperty("environment.base");
+        this.applicationVersion = Version.parseVersion(System.getProperty("environment.version", "0.0.0"));
+        this.base = System.getProperty("environment.base", "/");
         this.buildType = BuildType.parse(System.getProperty("environment.build"), DEVELOPMENT);
         this.builtInStability = Stability.parse(System.getProperty("environment.stability"), COMMUNITY);
 
