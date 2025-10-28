@@ -28,13 +28,13 @@ environment.id = goog.define('environment.id', 'undefined');
 environment.name = goog.define('environment.name', 'undefined');
 
 /** @define {string} */
-environment.version = goog.define('environment.version', 'undefined');
+environment.version = goog.define('environment.version', '0.0.0');
 
 /** @define {string} */
 environment.base = goog.define('environment.base', '/');
 
 /** @define {string} */
-environment.build = goog.define('environment.build', 'undefined');
+environment.build = goog.define('environment.build', 'development');
 
 /** @define {string} */
 environment.stability = goog.define('environment.stability', 'community');
