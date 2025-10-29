@@ -43,6 +43,12 @@ class EndpointDescription implements IsElement<HTMLElement> {
 
     EndpointDescription() {
         String allowedOriginId = Id.unique();
+        popover()
+                .trigger(By.id(allowedOriginId))
+                .addHeader("Allowed origin")
+                .addBody(
+                        "An allowed origin is a trusted origin for sending Cross-Origin Resource Sharing (CORS) requests on the management API once the user is authenticated.")
+                .appendToBody();
         this.root = div()
                 .add(p()
                         .add("HAL runs in standalone mode. To continue, you must connect to the management interface of a WildFly server. This management interface must have an ")
@@ -52,11 +58,6 @@ class EndpointDescription implements IsElement<HTMLElement> {
                         .add(" for ")
                         .add(span().text(location.origin))
                         .add("."))
-                .add(popover()
-                        .trigger(By.id(allowedOriginId))
-                        .addHeader("Allowed origin")
-                        .addBody(
-                                "An allowed origin is a trusted origin for sending Cross-Origin Resource Sharing (CORS) requests on the management API once the user is authenticated."))
                 .add(expandableSection()
                         .addToggle(expandableSectionToggle("Show more", "Show less"))
                         .addContent(expandableSectionContent()

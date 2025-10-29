@@ -140,11 +140,7 @@
                 <artifactId>j2cl-maven-plugin</artifactId>
                 <configuration>
                     <compilationLevel>${j2cl.compilationLevel}</compilationLevel>
-                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>
-                    <enableSourcemaps>${j2cl.sourcemaps}</enableSourcemaps>
-                    <initialScriptFilename>console.js</initialScriptFilename>
-                    <!-- Keep defines for <environment.*/> in sync with
-                    environment/src/main/java/org/jboss/hal/env/environment.js -->
+                    <!-- The defines are used in Environment.java via System.getProperty() calls -->
                     <defines>
                         <goog.LOCALE>en</goog.LOCALE>
                         <environment.id>${project.artifactId}</environment.id>
@@ -154,6 +150,9 @@
                         <environment.build>${environment.build}</environment.build>
                         <environment.stability>${environment.stability}</environment.stability>
                     </defines>
+                    <enableSourcemaps>${j2cl.sourcemaps}</enableSourcemaps>
+                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>
+                    <initialScriptFilename>console.js</initialScriptFilename>
                     <translationsFile>
                         <auto>true</auto>
                     </translationsFile>

@@ -30,7 +30,7 @@ import static org.jboss.hal.env.Version.EMPTY_VERSION;
 @ApplicationScoped
 public class Environment {
 
-    private static final Stability LOWEST_LEVEL_WITHOUT_HIGHLIGH = COMMUNITY;
+    private static final Stability LOWEST_LEVEL_WITHOUT_HIGHLIGHT = COMMUNITY;
 
     private final String applicationId;
     private final String applicationName;
@@ -53,17 +53,17 @@ public class Environment {
     public Environment() {
         // final instance variables must be passed to the
         // j2cl-maven-plugin as `<environment.x/>` closure defines (sse POM)
-        this.applicationId = System.getProperty("environment.id");
-        this.applicationName = System.getProperty("environment.name");
-        this.applicationVersion = Version.parseVersion(System.getProperty("environment.version"));
+        this.applicationId = System.getProperty("environment.id", "undefined-application-id");
+        this.applicationName = System.getProperty("environment.name", "undefined-application-name");
+        this.applicationVersion = Version.parseVersion(System.getProperty("environment.version", "0.0.0"));
         this.base = System.getProperty("environment.base", "/");
         this.buildType = BuildType.parse(System.getProperty("environment.build"), DEVELOPMENT);
         this.builtInStability = Stability.parse(System.getProperty("environment.stability"), COMMUNITY);
 
         // default values for the non-final properties
-        this.instanceName = "undefined";
-        this.instanceOrganization = "undefined";
-        this.productName = "undefined";
+        this.instanceName = "undefined-instance-name";
+        this.instanceOrganization = "undefined-organization";
+        this.productName = "undefined-product-name";
         this.productVersion = EMPTY_VERSION;
         this.managementVersion = EMPTY_VERSION;
         this.operationMode = STANDALONE;
@@ -251,7 +251,7 @@ public class Environment {
 
     private static boolean checkStability(Stability stability, List<Stability> compareToAll) {
         boolean check = stability != null &&
-                stability.order > LOWEST_LEVEL_WITHOUT_HIGHLIGH.order;
+                stability.order > LOWEST_LEVEL_WITHOUT_HIGHLIGHT.order;
         for (Iterator<Stability> iterator = compareToAll.iterator(); iterator.hasNext() && check; ) {
             Stability compareTo = iterator.next();
             check = checkStability(stability, compareTo);
@@ -261,7 +261,7 @@ public class Environment {
 
     private static boolean checkStability(Stability stability, Stability compareTo) {
         return stability != null &&
-                stability.order > LOWEST_LEVEL_WITHOUT_HIGHLIGH.order &&
+                stability.order > LOWEST_LEVEL_WITHOUT_HIGHLIGHT.order &&
                 stability.order >= compareTo.order;
     }
 }
