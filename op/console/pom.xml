@@ -151,7 +151,8 @@
                         <environment.stability>${environment.stability}</environment.stability>
                     </defines>
                     <enableSourcemaps>${j2cl.sourcemaps}</enableSourcemaps>
-                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>
+<!--                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>-->
+                    <incrementalEnabled>false</incrementalEnabled>
                     <initialScriptFilename>console.js</initialScriptFilename>
                     <translationsFile>
                         <auto>true</auto>

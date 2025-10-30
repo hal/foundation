@@ -48,7 +48,9 @@ public class Settings {
                 value = String.valueOf(defaultValue);
             }
         }
-        values.put(key, new Value(value));
+        if (value != null) {
+            values.put(key, new Value(value));
+        }
     }
 
     public Value get(Key key) {
@@ -86,8 +88,9 @@ public class Settings {
 
         SHOW_GLOBAL_OPERATIONS("show-global-operations", true),
 
-        RUN_AS("run-as", false); // can contain multiple roles
-        // separated by ","
+        RUN_AS("run-as", false), // can contain multiple roles separated by ","
+
+        UNDEFINED("undefined", false);
 
         public static Key from(String key) {
             return switch (key) {
@@ -95,7 +98,7 @@ public class Settings {
                 case "locale" -> LOCALE;
                 case "show-global-operations" -> SHOW_GLOBAL_OPERATIONS;
                 case "run-as" -> RUN_AS;
-                default -> null;
+                default -> UNDEFINED;
             };
         }
 
@@ -114,7 +117,7 @@ public class Settings {
 
     public static class Value {
 
-        private static final Value EMPTY = new Value(null);
+        private static final Value EMPTY = new Value("undefined");
         private static final String SEPARATOR_REGEX = "\\|";
 
         private final String value;

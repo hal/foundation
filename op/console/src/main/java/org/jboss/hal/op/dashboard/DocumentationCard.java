@@ -34,12 +34,14 @@ import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
+import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.FlexShorthand._1;
 import static org.patternfly.style.Breakpoint.md;
 import static org.patternfly.style.Breakpoints.breakpoints;
 import static org.patternfly.style.Orientation.vertical;
+import static org.patternfly.style.Size.xl;
 
 class DocumentationCard implements DashboardCard {
 
@@ -69,7 +71,8 @@ class DocumentationCard implements DashboardCard {
                         .alignSelf(AlignSelf.stretch)
                         .addItem(flexItem().flex(_1)
                                 .add(card().fullHeight().plain()
-                                        .addHeader(cardHeader().addTitle(cardTitle().text("General Resources")))
+                                        .addHeader(cardHeader().addTitle(cardTitle().run(ct -> ct.textDelegate()
+                                                .appendChild(title(2, xl, "General Resources").element()))))
                                         .addBody(cardBody().add(list().plain()
                                                 .addItems(GENERAL_RESOURCES, nu ->
                                                         listItem(Id.build("general-resources", nu[0]))
@@ -78,7 +81,8 @@ class DocumentationCard implements DashboardCard {
                         .add(divider(hr).orientation(breakpoints(md, vertical)))
                         .addItem(flexItem().flex(_1)
                                 .add(card().fullHeight().plain()
-                                        .addHeader(cardHeader().addTitle(cardTitle().text("Get Help")))
+                                        .addHeader(cardHeader().addTitle(cardTitle().run(ct -> ct.textDelegate()
+                                                .appendChild(title(2, xl, "Get Help").element()))))
                                         .addBody(cardBody().add(list().plain()
                                                 .addItems(GET_HELP, nu ->
                                                         listItem(Id.build("get-help", nu[0]))

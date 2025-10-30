@@ -27,8 +27,10 @@ import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
+import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Breakpoint.default_;
 import static org.patternfly.style.Breakpoints.breakpoints;
+import static org.patternfly.style.Size.xl;
 
 class ProductInfoCard implements DashboardCard {
 
@@ -36,7 +38,7 @@ class ProductInfoCard implements DashboardCard {
 
     ProductInfoCard(Environment environment) {
         this.root = card()
-                .addTitle(cardTitle().text("Details"))
+                .addTitle(cardTitle().run(ct -> ct.textDelegate().appendChild(title(2, xl, "Details").element())))
                 .addBody(cardBody()
                         .add(descriptionList().columns(breakpoints(default_, 2))
                                 .addItem(descriptionListGroup("name")

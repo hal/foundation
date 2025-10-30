@@ -15,9 +15,9 @@
  */
 
 .hal-c-capability-reference__menu {
-    background-color: var(--pf-v5-global--BackgroundColor--100);
-    box-shadow: var(--pf-v5-global--BoxShadow--lg);
-    padding: var(--pf-v5-global--spacer--sm);
+    background-color: var(--pf-t--global--background--color--100);
+    box-shadow: var(--pf-t--global--box-shadow--lg);
+    padding: var(--pf-t--global--spacer--sm);
     max-width: 60ch;
 }
 
@@ -28,11 +28,11 @@
 
 .hal-c-capability-reference__provided-by {
 
-    .pf-v5-c-button.pf-m-link.pf-m-inline {
-        --pf-v5-c-button--m-link--Color: var(--pf-v5-global--Color--200);
+    .pf-v6-c-button.pf-m-link.pf-m-inline {
+        --pf-v6-c-button--m-link--Color: var(--pf-t--global--text--color--200);
     }
 
-    .pf-v5-c-button.pf-m-link.pf-m-inline:hover {
-        --pf-v5-c-button--m-link--Color: var(--pf-v5-c-button--m-link--m-inline--hover--Color);
+    .pf-v6-c-button.pf-m-link.pf-m-inline:hover {
+        --pf-v6-c-button--m-link--Color: var(--pf-v6-c-button--m-link--m-inline--hover--Color);
     }
 }

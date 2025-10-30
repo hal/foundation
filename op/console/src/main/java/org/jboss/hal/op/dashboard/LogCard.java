@@ -52,6 +52,7 @@ import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
+import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.checkCircle;
 import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
 import static org.patternfly.icon.IconSets.fas.timesCircle;
@@ -61,6 +62,7 @@ import static org.patternfly.layout.flex.JustifyContent.center;
 import static org.patternfly.layout.flex.SpaceItems.md;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Orientation.vertical;
+import static org.patternfly.style.Size.xl;
 import static org.patternfly.token.Token.chartGlobalDangerColor100;
 import static org.patternfly.token.Token.chartGlobalWarningColor100;
 import static org.patternfly.token.Token.globalColorStatusSuccess100;
@@ -114,7 +116,7 @@ class LogCard implements DashboardCard {
     @Override
     public void refresh() {
         String logFile = "server.log";
-        cardTitle.text(logFile);
+        cardTitle.run(ct -> ct.textDelegate().appendChild(title(2, xl, logFile).element()));
         removeChildrenFrom(cardBody);
 
         ResourceAddress address = AddressTemplate.of("subsystem=logging/log-file=" + logFile).resolve();

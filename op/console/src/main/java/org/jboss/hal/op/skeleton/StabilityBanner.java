@@ -71,7 +71,7 @@ public class StabilityBanner implements IsElement<HTMLElement> {
                                         .add("The server has been started with stability level ")
                                         .add(strong().text(serverStability.label)))
                                 .addItem(flexItem().add(icon.get())))
-                        .add(flex().spaceItems(sm).style("position:fixed;right:var(--pf-v5-global--spacer--lg)")
+                        .add(flex().spaceItems(sm).style("position:fixed;right:var(--pf-t--global--spacer--lg)")
                                 .add(button("Got it").link().inline().onClick((event, component) -> gotIt.call()))
                                 .add(divider(hr).orientation(vertical))
                                 .add(a(moreInfo, "_blank").text("More info"))))

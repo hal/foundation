@@ -14,26 +14,26 @@
  *  limitations under the License.
  */
 
-.pf-v5-c-tree-view__list-item.pf-m-disabled {
-    --pf-v5-c-tree-view__node--Color: var(--pf-v5-global--disabled-color--100);
-    --pf-v5-c-tree-view__node-icon--Color: var(--pf-v5-global--disabled-color--200);
-    --pf-v5-c-tree-view__node--m-current--FontWeight: var(--pf-v5-global--FontWeight--normal);
+.pf-v6-c-tree-view__list-item.pf-m-disabled {
+    --pf-v6-c-tree-view__node--Color: var(--pf-t--global--color--disabled--100);
+    --pf-v6-c-tree-view__node-icon--Color: var(--pf-t--global--color--disabled--200);
+    --pf-v6-c-tree-view__node--m-current--FontWeight: var(--pf-t--global--font--weight--body);
     cursor: not-allowed;
 
-    .pf-v5-c-tree-view__node,
-    .pf-v5-c-tree-view__node-container,
-    .pf-v5-c-tree-view__node-toggle,
-    .pf-v5-c-tree-view__node-icon,
-    .pf-v5-c-tree-view__node-text {
+    .pf-v6-c-tree-view__node,
+    .pf-v6-c-tree-view__node-container,
+    .pf-v6-c-tree-view__node-toggle,
+    .pf-v6-c-tree-view__node-icon,
+    .pf-v6-c-tree-view__node-text {
         cursor: not-allowed;
     }
 
-    .pf-v5-c-tree-view__node {
+    .pf-v6-c-tree-view__node {
         pointer-events: none;
     }
 
-    .pf-v5-c-tree-view__content:hover,
-    .pf-v5-c-tree-view__content:focus-within {
+    .pf-v6-c-tree-view__content:hover,
+    .pf-v6-c-tree-view__content:focus-within {
         background-color: unset;
     }
 }

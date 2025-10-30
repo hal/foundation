@@ -24,8 +24,10 @@ import org.jboss.hal.model.deployment.DeploymentStatus;
 import org.jboss.hal.model.deployment.Deployments;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.card.CardTitle;
+import org.patternfly.component.title.Title;
 import org.patternfly.icon.IconSets;
 import org.patternfly.icon.PredefinedIcon;
+import org.patternfly.style.Size;
 
 import elemental2.dom.HTMLElement;
 
@@ -42,6 +44,7 @@ import static org.patternfly.component.card.CardTitle.cardTitle;
 import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
+import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.checkCircle;
 import static org.patternfly.icon.IconSets.fas.pauseCircle;
 import static org.patternfly.icon.IconSets.fas.question;
@@ -91,11 +94,13 @@ class DeploymentCard implements DashboardCard {
                             .text("No deployments")
                             .addBody(emptyStateBody().text("This server contains no deployments.")));
                 } else {
+                    Title title;
                     if (deployments.size() == 1) {
-                        cardTitle.text("1 Deployment");
+                        title = title(2, Size.xl, "1 Deployment");
                     } else {
-                        cardTitle.text(deployments.size() + " Deployments");
+                        title = title(2, Size.xl, deployments.size() + " Deployments");
                     }
+                    cardTitle.textDelegate().appendChild(title.element());
                     Map<DeploymentStatus, Long> status = deployments.stream()
                             .collect(groupingBy(Deployment::status, counting()));
                     if (status.size() == 1) {

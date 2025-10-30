@@ -15,7 +15,7 @@
  */
 
 .hal-m-deprecated {
-    color: var(--pf-v5-global--disabled-color--100);
+    color: var(--pf-t--global--color--disabled--100);
     text-decoration: line-through !important;
 }
 
@@ -24,11 +24,9 @@
 }
 
 .hal-m-help-text {
-    text-decoration: underline;
-    text-decoration-thickness: var(--pf-v5-c-description-list__text--m-help-text--TextDecorationThickness);
-    text-decoration-style: dashed;
-    text-decoration-color: var(--pf-v5-c-description-list__text--m-help-text--TextDecorationColor);
-    text-underline-offset: var(--pf-v5-c-description-list__text--m-help-text--TextDecorationOffset);
+    text-decoration-line: var(--pf-v6-c-description-list__text--m-help-text--TextDecorationLine);
+    text-decoration-style: var(--pf-v6-c-description-list__text--m-help-text--TextDecorationStyle);
+    text-underline-offset: var(--pf-v6-c-description-list__text--m-help-text--TextUnderlineOffset);
     cursor: pointer;
 }
 

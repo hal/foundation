@@ -22,7 +22,8 @@ import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.patternfly.component.card.Card;
-import org.patternfly.layout.gallery.Gallery;
+import org.patternfly.layout.flex.Flex;
+import org.patternfly.layout.flex.Gap;
 
 import elemental2.dom.HTMLElement;
 
@@ -39,18 +40,23 @@ import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
-import static org.patternfly.layout.gallery.Gallery.gallery;
+import static org.patternfly.component.title.Title.title;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.layout.flex.FlexShorthand._1;
+import static org.patternfly.style.Size.xl;
 
 class RuntimeCard implements DashboardCard {
 
     private final StatementContext statementContext;
     private final Dispatcher dispatcher;
-    private final Gallery gallery;
+    private final Flex gallery;
 
     RuntimeCard(StatementContext statementContext, Dispatcher dispatcher) {
         this.statementContext = statementContext;
         this.dispatcher = dispatcher;
-        this.gallery = gallery().gutter().style("--pf-v5-l-gallery--GridTemplateColumns--min: 400px");
+        // this.gallery = gallery().gutter().style("--pf-v5-l-gallery--GridTemplateColumns--min: 400px");
+        this.gallery = flex().gap(Gap.md);
     }
 
     @Override
@@ -67,20 +73,21 @@ class RuntimeCard implements DashboardCard {
         dispatcher.execute(productInfo)
                 .then(result -> {
                     ModelNode summary = result.asList().get(0).get("summary");
-                    gallery.add(hostInfo(summary));
-                    gallery.add(jvmInfo(summary));
+                    gallery.addItem(flexItem().flex(_1).add(hostInfo(summary)));
+                    gallery.addItem(flexItem().flex(_1).add(jvmInfo(summary)));
                     return null;
                 }).catch_(error -> {
-                    gallery.add(dashboardEmptyState()
+                    gallery.addItem(flexItem().flex(_1).add(dashboardEmptyState()
                             .status(danger)
                             .text("Runtime error")
-                            .addBody(emptyStateBody().add(errorCode(String.valueOf(error)))));
+                            .addBody(emptyStateBody().add(errorCode(String.valueOf(error))))));
                     return null;
                 });
     }
 
     private Card hostInfo(ModelNode result) {
-        return card().addTitle(cardTitle().text("Host"))
+        return card().addTitle(cardTitle()
+                        .run(ct -> ct.textDelegate().appendChild(title(2, xl, "Host").element())))
                 .addBody(cardBody().add(descriptionList()
                         .addItem(descriptionListGroup("host-name")
                                 .addTerm(descriptionListTerm("Name"))
@@ -97,7 +104,8 @@ class RuntimeCard implements DashboardCard {
     }
 
     private Card jvmInfo(ModelNode result) {
-        return card().addTitle(cardTitle().text("JVM"))
+        return card().addTitle(cardTitle()
+                        .run(ct -> ct.textDelegate().appendChild(title(2, xl, "JVM").element())))
                 .addBody(cardBody().add(descriptionList()
                         .addItem(descriptionListGroup("jvm-name")
                                 .addTerm(descriptionListTerm("Name"))

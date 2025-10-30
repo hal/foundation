@@ -17,7 +17,6 @@ package org.jboss.hal.op.dashboard;
 
 import java.util.List;
 
-import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
@@ -29,12 +28,11 @@ import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.component.Severity;
+import org.patternfly.component.card.CardBody;
 import org.patternfly.component.icon.Icon;
 
-import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHECKS;
@@ -43,6 +41,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STATUS;
 import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
 import static org.patternfly.component.card.Card.card;
+import static org.patternfly.component.card.CardBody.cardBody;
 import static org.patternfly.component.card.CardHeader.cardHeader;
 import static org.patternfly.component.card.CardTitle.cardTitle;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
@@ -50,10 +49,12 @@ import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.list.DataList.dataList;
 import static org.patternfly.component.list.DataListCell.dataListCell;
 import static org.patternfly.component.list.DataListItem.dataListItem;
+import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowDown;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
 import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
 import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Size.xl;
 import static org.patternfly.style.Status.danger;
 import static org.patternfly.style.Status.success;
 import static org.patternfly.style.Status.warning;
@@ -61,16 +62,17 @@ import static org.patternfly.style.Status.warning;
 class HealthCard implements DashboardCard {
 
     private final Dispatcher dispatcher;
-    private final HTMLContainerBuilder<HTMLDivElement> cardBody;
+    private final CardBody cardBody;
     private final HTMLElement root;
 
     HealthCard(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
         this.root = card()
                 .addHeader(cardHeader()
-                        .addTitle(cardTitle().text("Health"))
+                        .addTitle(cardTitle()
+                                .run(ct -> ct.textDelegate().appendChild(title(2, xl, "Health").element())))
                         .addActions(refreshActions()))
-                .add(cardBody = div())
+                .add(cardBody = cardBody())
                 .element();
     }
 

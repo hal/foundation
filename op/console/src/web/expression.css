@@ -24,7 +24,7 @@
     .hal-c-expression__curly-braces-start,
     .hal-c-expression__curly-braces-end,
     .hal-c-expression__colon {
-        color: var(--pf-v5-global--palette--purple-600);
+        color: var(--pf-t--global--color--status--info--200);
     }
 
     .hal-c-expression__dollar::after {
@@ -44,11 +44,11 @@
     }
 
     .hal-c-expression__name {
-        color: var(--pf-v5-global--palette--cyan-300);
+        color: var(--pf-t--global--color--status--custom--default);
     }
 
     .hal-c-expression__default-value {
-        color: var(--pf-v5-global--palette--black-500);
+        color: var(--pf-t--global--text--color--disabled);
     }
 
     .hal-c-expression__start {
