@@ -96,11 +96,11 @@ class EndpointTable implements IsElement<HTMLElement> {
                     .clickable()
                     .addItem(td("Name").text(endpoint.name))
                     .addItem(td("URL").text(endpoint.url))
-                    .addItem(td("Edit").wrap(fitContent)
+                    .addItem(td("Edit").action().wrap(fitContent)
                             .add(tableText()
                                     .add(button().plain().icon(pencilAlt())
                                             .onClick((event, component) -> update.accept(endpoint)))))
-                    .addItem(td("Remove").wrap(fitContent)
+                    .addItem(td("Remove").action().wrap(fitContent)
                             .add(tableText()
                                     .add(button().plain().icon(trash())
                                             .onClick((event, component) -> delete.accept(endpoint))))));

@@ -43,7 +43,7 @@ class LoadSettings implements Task<FlowContext> {
     }
 
     @Override
-    public Promise<FlowContext> apply(final FlowContext context) {
+    public Promise<FlowContext> apply(FlowContext context) {
         settings.load(TITLE, Names.BROWSER_DEFAULT_TITLE);
         settings.load(LOCALE, DEFAULT_LOCALE);
         settings.load(SHOW_GLOBAL_OPERATIONS, false);

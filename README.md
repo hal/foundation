@@ -21,7 +21,7 @@ The work is in a very early state and very much in progress.
 
 ## Development mode
 
-In the root folder, run
+In the root folder run
 
 ```shell
 mvn j2cl:watch -P op

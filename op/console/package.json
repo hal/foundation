@@ -9,9 +9,10 @@
     "src/web/index.html"
   ],
   "scripts": {
-    "start:parcel": "parcel watch src/web/dev.html --dist-dir target/console --port 1234",
-    "start:server": "node server.js 8234 1234",
-    "open:browser": "wait-on http://localhost:8234 && open http://localhost:8234",
+    "start:parcel": "parcel watch src/web/dev.html --dist-dir target/console --port 1235",
+    "start:server": "node server.js 1234 1235",
+    "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
+    "parcel": "parcel serve src/web/index.html --dist-dir target/console --port 1234 --open",
     "dev": "concurrently \"npm run start:parcel\" \"npm run start:server\" \"npm run open:browser\"",
     "prod": "parcel build src/web/index.html --dist-dir target/console"
   },

@@ -90,18 +90,13 @@ public class Settings {
         // separated by ","
 
         public static Key from(String key) {
-            switch (key) {
-                case "title":
-                    return TITLE;
-                case "locale":
-                    return LOCALE;
-                case "show-global-operations":
-                    return SHOW_GLOBAL_OPERATIONS;
-                case "run-as":
-                    return RUN_AS;
-                default:
-                    return null;
-            }
+            return switch (key) {
+                case "title" -> TITLE;
+                case "locale" -> LOCALE;
+                case "show-global-operations" -> SHOW_GLOBAL_OPERATIONS;
+                case "run-as" -> RUN_AS;
+                default -> null;
+            };
         }
 
         private final String key;

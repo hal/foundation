@@ -26,7 +26,6 @@ import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.p;
-import static org.jboss.elemento.Elements.small;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.patternfly.component.codeblock.CodeBlock.codeBlock;
@@ -35,7 +34,6 @@ import static org.patternfly.component.expandable.ExpandableSectionContent.expan
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.style.Classes.helpText;
-import static org.patternfly.style.Classes.util;
 
 class EndpointDescription implements IsElement<HTMLElement> {
 
@@ -61,17 +59,16 @@ class EndpointDescription implements IsElement<HTMLElement> {
                 .add(expandableSection()
                         .addToggle(expandableSectionToggle("Show more", "Show less"))
                         .addContent(expandableSectionContent()
-                                .add(p().css(util("mb-sm"))
+                                .add(p()
                                         .add("Use the following CLI commands to add an allowed origin for ")
                                         .add(span().text(location.origin))
                                         .add(".")
                                         .add(br())
-                                        .add(small()
-                                                .add("For domain mode prepend the first command with ")
-                                                .add(code().text("/host=primary"))
-                                                .add(" and use ")
-                                                .add(code().text("reload --host=primary"))
-                                                .add(" to reload the domain.")))
+                                        .add("For domain mode prepend the first command with ")
+                                        .add(code().text("/host=primary"))
+                                        .add(" and use ")
+                                        .add(code().text("reload --host=primary"))
+                                        .add(" to reload the domain."))
                                 .add(codeBlock()
                                         .code("/core-service=management/management-interface=http-interface:list-add(name=allowed-origins,value=" + location.origin + ")\nreload"))))
                 .element();

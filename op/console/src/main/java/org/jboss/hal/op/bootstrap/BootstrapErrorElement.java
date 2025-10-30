@@ -16,7 +16,6 @@
 package org.jboss.hal.op.bootstrap;
 
 import org.jboss.elemento.IsElement;
-import org.patternfly.component.Severity;
 import org.patternfly.component.content.Content;
 
 import elemental2.dom.HTMLElement;
@@ -27,6 +26,7 @@ import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.Elements.pre;
+import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
@@ -49,13 +49,13 @@ public class BootstrapErrorElement implements IsElement<HTMLElement> {
     BootstrapErrorElement(BootstrapError error) {
         String selectUrl = location.origin + location.pathname;
         this.root = emptyState()
-                .status(Severity.danger)
+                .status(danger)
                 .text(header(error))
                 .addBody(emptyStateBody()
                         .add(details(error)))
                 .addFooter(emptyStateFooter()
                         .addActions(emptyStateActions()
-                                .add(button("Select management interface", selectUrl))))
+                                .add(button("Select management interface", selectUrl).primary())))
                 .element();
     }
 
