@@ -40,7 +40,7 @@ import static org.patternfly.style.Classes.start;
 class HelperTexts {
 
     static HelperText unsupported() {
-        return helperText().addItem(helperTextItem("The type of this attribute type is not yet supported.", warning));
+        return helperText("The type of this attribute type is not yet supported.", warning);
     }
 
     static HelperText required(ResourceAttribute ra) {

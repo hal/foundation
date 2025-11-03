@@ -14,6 +14,10 @@
  *  limitations under the License.
  */
 
+.hal-m-data, .hal-m-attributes, .hal-m-operations {
+    padding-top: var(--pf-t--global--spacer--md);
+}
+
 .hal-c-resource {
     --hal-resource-label-width-on-md: 20ch;
     --hal-resource-label-width-on-lg: 23ch;

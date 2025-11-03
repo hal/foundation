@@ -55,7 +55,8 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
 
     GotoResource() {
         this.button = button().plain().icon(compass()).element();
-        this.input = textInput("goto").placeholder("Goto resource");
+        this.input = textInput("goto").placeholder("Goto resource")
+                .onKeyup((event, component, value) -> gotoResource(event));
         this.menu = div().css(halComponent(modelBrowser, goto_))
                 .style("display", "none")
                 .add(input)
@@ -74,7 +75,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
                         Modifiers.hide(),
                         Modifiers.placement(),
                         Modifiers.eventListeners(false))
-                .registerHandler(EnumSet.of(TriggerAction.stayOpen), this::show, this::close)
+                .registerHandler(EnumSet.of(TriggerAction.stayOpen), this::show, null)
                 .removePopperOnTriggerDetach()
                 .build();
     }
@@ -97,7 +98,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
         input.input().element().focus();
     }
 
-    private void close(Event event) {
+    private void gotoResource(Event event) {
         if (Key.Enter.match(event)) {
             HTMLInputElement inputElement = (HTMLInputElement) event.target;
             AddressTemplate template = AddressTemplate.of(inputElement.value);
@@ -105,7 +106,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
             inputElement.value = "";
             event.stopPropagation();
             event.preventDefault();
+            popper.hide(null);
         }
-        popper.hide(null);
     }
 }

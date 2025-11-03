@@ -17,13 +17,16 @@ package org.jboss.hal.ui.modelbrowser;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.HalClasses;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.resource.ResourceManager.resourceManager;
 import static org.patternfly.component.tabs.Tab.tab;
 import static org.patternfly.component.tabs.TabContent.tabContent;
 import static org.patternfly.component.tabs.Tabs.tabs;
+import static org.patternfly.style.Classes.util;
 
 class ResourceDetails implements IsElement<HTMLElement> {
 
@@ -33,17 +36,21 @@ class ResourceDetails implements IsElement<HTMLElement> {
         this.root = tabs()
                 .initialSelection(ModelBrowserDetail.lastTab)
                 .addItem(tab("data", "Data")
-                        .addContent(tabContent().add(resourceManager(mbn.template, metadata))))
+                        .addContent(tabContent().css(util("pt-md"))
+                                .add(resourceManager(mbn.template, metadata))))
                 .run(tbs -> {
                     if (!metadata.resourceDescription().attributes().isEmpty()) {
                         tbs.addItem(tab("attributes", "Attributes")
-                                .addContent(tabContent().add(new AttributesTable(metadata))));
+                                .addContent(tabContent().css(util("pt-md"))
+                                        .add(new AttributesTable(metadata))));
                     }
                 })
                 .addItem(tab("operations", "Operations")
-                        .addContent(tabContent().add(new OperationsTable(mbn.template, metadata))))
+                        .addContent(tabContent().css(util("pt-md"))
+                                .add(new OperationsTable(mbn.template, metadata))))
                 .addItem(tab("capabilities", "Capabilities")
-                        .addContent(tabContent().add(new CapabilitiesTable(metadata))))
+                        .addContent(tabContent()
+                                .add(new CapabilitiesTable(metadata))))
                 .onSelect((e, tab, selected) -> ModelBrowserDetail.lastTab = tab.identifier())
                 .element();
     }

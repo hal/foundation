@@ -75,8 +75,8 @@ public class ModelBrowser implements IsElement<HTMLElement> {
                                                                 .add(div().css(halComponent(modelBrowser, resize, handle))))))
                                         .add(detail))
                 */
-                .addItem(gridItem().add(tree))
-                .addItem(gridItem().add(detail))
+                .addItem(gridItem().span(3).add(tree))
+                .addItem(gridItem().span(9).add(detail))
                 .element();
 
         AddResource.listen(root, this::add);

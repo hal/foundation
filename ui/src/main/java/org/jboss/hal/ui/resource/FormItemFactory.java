@@ -31,7 +31,9 @@ import org.jboss.hal.resources.Keys;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.core.Aria;
+import org.patternfly.core.Roles;
 import org.patternfly.icon.IconSets;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
@@ -59,11 +61,20 @@ import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
 import static org.jboss.hal.ui.resource.ResourceManager.State.EDIT;
 import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
+import static org.patternfly.core.Attributes.role;
+import static org.patternfly.core.Attributes.tabindex;
+import static org.patternfly.core.Attributes.type;
+import static org.patternfly.icon.IconSets.fas.questionCircle;
+import static org.patternfly.style.Classes.button;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.form;
 import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.help;
+import static org.patternfly.style.Classes.icon;
 import static org.patternfly.style.Classes.label;
+import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Classes.noPadding;
+import static org.patternfly.style.Classes.plain;
 import static org.patternfly.style.Classes.text;
 import static org.patternfly.style.Classes.util;
 
@@ -98,10 +109,14 @@ class FormItemFactory {
                         .add(span().css(component(form, label, text))
                                 .text(parentLabel))
                         .element();
-                HTMLButtonElement parentHelpButton = Elements.button(ButtonType.button)
-                        .css(component(form, group, label, help))
-                        .aria(Aria.label, parentLabel + " description")
-                        .add(IconSets.patternfly.help())
+                HTMLElement parentHelpButton = span().css(component(form, group, Classes.label, help), util("ml-xs"))
+                        .add(span().css(component(button), modifier(plain), modifier(noPadding))
+                                .attr(type, "button")
+                                .attr(role, Roles.button)
+                                .attr(tabindex, 0)
+                                .aria(Aria.label, parentLabel + " description")
+                                .add(span().css(component(button, icon))
+                                        .add(questionCircle())))
                         .element();
                 // Use insert-first calls and add the elements in reverse order
                 // to not mess with the required marker added in FormGroupLabel.attach()

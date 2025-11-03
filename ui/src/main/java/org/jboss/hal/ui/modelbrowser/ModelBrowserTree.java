@@ -45,6 +45,8 @@ import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
+import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
+import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.component.tree.TreeView.treeView;
@@ -61,6 +63,8 @@ import static org.patternfly.popper.Placement.bottomStart;
 import static org.patternfly.style.Classes.insetNone;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Padding.noPadding;
+import static org.patternfly.style.Size.sm;
+import static org.patternfly.style.Sticky.top;
 
 class ModelBrowserTree implements IsElement<HTMLElement> {
 
@@ -99,16 +103,17 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
         tooltip(collapseButton.element(), "Collapse all").placement(bottom).appendToBody();
 
         root = div().css(halComponent(HalClasses.modelBrowser, tree))
-                .add(pageSection().sticky(Sticky.top).padding(noPadding)
-                        .add(toolbar().css(modifier(insetNone))
+                .add(pageSection().sticky(top).padding(noPadding)
+                        .add(toolbar()
                                 .addContent(toolbarContent()
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(backButton))
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(forwardButton))
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(refreshButton))
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(homeButton))
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(findResource))
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(gotoResource))
-                                        .addItem(toolbarItem().css(modifier("spacer-none")).add(collapseButton)))))
+                                        .addGroup(toolbarGroup(actionGroupPlain).css(modifier("wrap"))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(backButton))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(forwardButton))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(homeButton))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(refreshButton))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(findResource))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(gotoResource))
+                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(collapseButton))))))
                 .add(pageSection().padding(noPadding).add(treeView))
                 .element();
     }

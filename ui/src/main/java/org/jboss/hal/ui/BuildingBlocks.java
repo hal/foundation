@@ -37,6 +37,7 @@ import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.layout.flex.Flex;
 import org.patternfly.style.Color;
 import org.patternfly.style.Variable;
+import org.patternfly.token.Token;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -131,6 +132,7 @@ public class BuildingBlocks {
 
         org.patternfly.component.list.List infos = list().plain()
                 .css(util("mt-sm"))
+                .style("color", Token.globalTextColorSubtle.var)
                 .style(marginTop.name, 0)
                 .style(marginLeft.name, 0);
         if (attribute.get(REQUIRED).asBoolean(false)) {
@@ -186,7 +188,7 @@ public class BuildingBlocks {
 
         return description(attribute).run(description -> {
             if (!infos.isEmpty()) {
-                description.add(small().add(infos));
+                description.add(infos);
             }
         });
     }

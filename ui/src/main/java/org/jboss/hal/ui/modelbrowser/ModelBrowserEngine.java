@@ -22,20 +22,22 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.jboss.elemento.By;
+import org.jboss.elemento.Id;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.Keys;
-import org.patternfly.component.popover.Popover;
 import org.patternfly.component.tree.TreeViewItem;
 
 import elemental2.promise.Promise;
 
+import static elemental2.dom.DomGlobal.document;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
@@ -164,9 +166,6 @@ class ModelBrowserEngine {
                         }
                     } else {
                         tvi.css(modifier(disabled));
-                        // This popover is used for the initial load. It is removed together with the
-                        // tree view item when the parent is collapsed.
-                        tvi.add(nonExistingSingletonPopover(mbn));
                     }
                 })
                 .onToggle((event, tvi, expanded) -> {
@@ -175,10 +174,17 @@ class ModelBrowserEngine {
                             if (item.element().classList.contains(modifier(disabled))) {
                                 ModelBrowserNode m = item.get(Keys.MODEL_BROWSER_NODE);
                                 if (m != null) {
-                                    // This popover is used when the paren item is collapsed/expanded
-                                    // This is necessary because the initial popover has been removed
-                                    // on collapsed.
-                                    item.add(nonExistingSingletonPopover(m));
+                                    nonExistingSingletonPopover(m);
+                                }
+                            }
+                        }
+                    } else {
+                        for (TreeViewItem item : tvi.items()) {
+                            if (item.element().classList.contains(modifier(disabled))) {
+                                ModelBrowserNode m = item.get(Keys.MODEL_BROWSER_NODE);
+                                if (m != null) {
+                                    logger.debug("Remove popover for non-existing singleton resource %s", m.identifier);
+                                    failSafeRemoveFromParent(document.getElementById(popoverId(m)));
                                 }
                             }
                         }
@@ -186,14 +192,26 @@ class ModelBrowserEngine {
                 });
     }
 
-    private static Popover nonExistingSingletonPopover(ModelBrowserNode mbn) {
-        AddressTemplate anonymous = mbn.template.anonymiseLast(); // /a=b/c=d -> /a=b/c=*
-        return popover(By.data(identifier, mbn.identifier))
-                .addHeader(mbn.name)
-                .addBody(popoverBody()
-                        .add(div().add("This resource does not yet exist."))
-                        .add(div().add(button("Add resource").link().inline()
-                                .onClick((e, b) -> ModelBrowserEvents.AddResource.dispatch(b.element(),
-                                        anonymous, mbn.name, true)))));
+    private static void nonExistingSingletonPopover(ModelBrowserNode mbn) {
+        String popoverId = popoverId(mbn);
+        if (document.getElementById(popoverId) != null) {
+            logger.debug("Add popover for non-existing singleton resource %s", mbn.identifier);
+            AddressTemplate anonymous = mbn.template.anonymiseLast(); // /a=b/c=d -> /a=b/c=*
+            popover(By.data(identifier, mbn.identifier))
+                    .id(popoverId)
+                    .addHeader(mbn.name)
+                    .addBody(popoverBody()
+                            .add(div().add("This resource does not yet exist."))
+                            .add(div().add(button("Add resource").link().inline()
+                                    .onClick((e, b) -> ModelBrowserEvents.AddResource.dispatch(b.element(),
+                                            anonymous, mbn.name, true)))))
+                    .appendToBody();
+        } else {
+            logger.warn("Add popover for non-existing singleton resource %s already exists", mbn.identifier);
+        }
+    }
+
+    private static String popoverId(ModelBrowserNode mbn) {
+        return Id.build("add", "nonexisting", mbn.identifier);
     }
 }

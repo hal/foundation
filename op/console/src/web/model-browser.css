@@ -21,14 +21,6 @@
     --hal-c-model-browser-offset: var(--hal-masthead--Height);
 }
 
-.hal-c-model-browser > *:first-child {
-    --pf-v6-l-grid__item--GridColumnEnd: var(--hal-c-model-browser-tree-columns);
-}
-
-.hal-c-model-browser > *:last-child {
-    --pf-v6-l-grid__item--GridColumnEnd: var(--hal-c-model-browser-detail-columns);
-}
-
 .hal-stability-marker {
     .hal-c-model-browser {
         --hal-c-model-browser-offset: calc(var(--hal-banner-Height) + var(--hal-masthead--Height));
@@ -36,9 +28,10 @@
 }
 
 .hal-c-model-browser__detail, .hal-c-model-browser__tree {
-    height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd));
-    max-height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd));
-    overflow: scroll;
+    height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px);
+    max-height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px);
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .hal-c-model-browser__copy {
@@ -57,6 +50,13 @@
 .hal-c-model-browser__detail {
     --pf-v6-c-page--section--m-sticky-top--BoxShadow: none;
 }
+
+.hal-c-model-browser__detail {
+    .pf-v6-c-page__main-breadcrumb {
+        --pf-v6-c-page__main-breadcrumb--PaddingBlockStart: var(--pf-t--global--spacer--action--horizontal--plain--default);
+    }
+}
+
 
 .hal-c-model-browser__detail-item {
     --pf-v6-l-grid__item--GridColumnEnd: var(--hal-c-model-browser-detail-columns);

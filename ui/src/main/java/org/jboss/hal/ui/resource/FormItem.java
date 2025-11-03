@@ -74,11 +74,11 @@ import static org.patternfly.icon.IconSets.fas.dollarSign;
  * subclasses!
  */
 abstract class FormItem implements
-        ManagerItem<FormItem>,
-        TypedBuilder<HTMLElement, FormItem>,
-        IsElement<HTMLElement>,
         ComponentContext<HTMLElement, FormItem>,
-        HasIdentifier<HTMLElement, FormItem> {
+        HasIdentifier<HTMLElement, FormItem>,
+        IsElement<HTMLElement>,
+        ManagerItem<FormItem>,
+        TypedBuilder<HTMLElement, FormItem> {
 
     private static final Logger logger = Logger.getLogger(FormItem.class.getName());
 
