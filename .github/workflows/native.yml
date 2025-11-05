@@ -1,4 +1,4 @@
-name: Native Builds (Linux/macOS/Windows)
+name: Native Build
 
 on:
   release:

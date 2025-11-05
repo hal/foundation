@@ -1,4 +1,4 @@
-name: HAL On Premise Container
+name: Container
 
 on:
   workflow_run:

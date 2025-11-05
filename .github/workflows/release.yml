@@ -1,4 +1,4 @@
-name: Release HAL Foundation
+name: Release
 
 on:
   push:
