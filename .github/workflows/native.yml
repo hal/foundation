@@ -27,8 +27,9 @@ jobs:
       - run: |
           echo "Runner OS: $RUNNER_OS"
           echo "JAVA_HOME: $JAVA_HOME"
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
           java -version
-          gu --version
+          $GRAALVM_HOME/bin/gu --version
         shell: bash
       - run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
