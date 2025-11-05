@@ -18,17 +18,18 @@ jobs:
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: 21
-          distribution: graalvm-community
+          distribution: mandrel
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          components: native-image
           cache: maven
       - if: matrix.os == 'ubuntu-latest'
-        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -P op,prod,native
+        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
       - if: matrix.os == 'macos-latest'
-        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -P op,prod,native
+        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
       - if: matrix.os == 'windows-latest'
         run: |
           "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -DskipTests -P op,prod,native
+          .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
       - name: Upload native artifacts
         uses: actions/upload-artifact@v4
         with:
