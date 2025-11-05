@@ -31,7 +31,6 @@ import org.patternfly.component.button.Button;
 import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.component.tree.TreeView;
 import org.patternfly.component.tree.TreeViewItem;
-import org.patternfly.style.Sticky;
 
 import elemental2.dom.HTMLElement;
 
@@ -60,7 +59,6 @@ import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.icon.IconSets.fas.search;
 import static org.patternfly.popper.Placement.bottom;
 import static org.patternfly.popper.Placement.bottomStart;
-import static org.patternfly.style.Classes.insetNone;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Padding.noPadding;
 import static org.patternfly.style.Size.sm;

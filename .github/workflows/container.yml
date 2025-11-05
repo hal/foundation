@@ -1,4 +1,4 @@
-name: Container
+name: HAL On Premise Container
 
 on:
   workflow_run:
@@ -7,7 +7,6 @@ on:
 
 jobs:
   container:
-    name: Container
     runs-on: ubuntu-latest
     env:
       MVN: ./mvnw --show-version --batch-mode --no-transfer-progress

@@ -15,7 +15,6 @@
  */
 package org.jboss.hal.ui.resource;
 
-import org.jboss.elemento.ButtonType;
 import org.jboss.elemento.Elements;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.LabelBuilder;
@@ -32,10 +31,8 @@ import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.core.Aria;
 import org.patternfly.core.Roles;
-import org.patternfly.icon.IconSets;
 import org.patternfly.style.Classes;
 
-import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.insertFirst;

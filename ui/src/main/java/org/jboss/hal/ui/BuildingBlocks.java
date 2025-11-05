@@ -46,7 +46,6 @@ import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.i;
-import static org.jboss.elemento.Elements.small;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.strong;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;

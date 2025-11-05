@@ -17,11 +17,9 @@ package org.jboss.hal.ui.modelbrowser;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.resources.HalClasses;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.resource.ResourceManager.resourceManager;
 import static org.patternfly.component.tabs.Tab.tab;
 import static org.patternfly.component.tabs.TabContent.tabContent;

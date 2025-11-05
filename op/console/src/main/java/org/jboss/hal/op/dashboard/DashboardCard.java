@@ -17,7 +17,6 @@ package org.jboss.hal.op.dashboard;
 
 import org.jboss.elemento.IsElement;
 import org.patternfly.component.card.CardActions;
-import org.patternfly.component.card.CardTitle;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.style.Size;
 
