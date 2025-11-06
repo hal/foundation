@@ -23,13 +23,13 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-code-parent</artifactId>
+        <artifactId>hal-fnd-code-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../code-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-event</artifactId>
+    <artifactId>hal-fnd-event</artifactId>
     <packaging>jar</packaging>
-    <name>HAL Event</name>
+    <name>HAL Foundation Event</name>
     <description>Events in HAL</description>
 </project>

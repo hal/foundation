@@ -23,32 +23,32 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-code-parent</artifactId>
+        <artifactId>hal-fnd-code-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../code-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-model</artifactId>
+    <artifactId>hal-fnd-model</artifactId>
     <packaging>jar</packaging>
-    <name>HAL Model</name>
+    <name>HAL Foundation Model</name>
     <description>HAL model classes (ddd)</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-environment</artifactId>
+            <artifactId>hal-fnd-environment</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-dmr</artifactId>
+            <artifactId>hal-fnd-dmr</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-meta</artifactId>
+            <artifactId>hal-fnd-meta</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-resources</artifactId>
+            <artifactId>hal-fnd-resources</artifactId>
         </dependency>
         <dependency>
             <groupId>org.patternfly</groupId>

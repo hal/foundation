@@ -21,14 +21,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-foundation-parent</artifactId>
+        <artifactId>hal-fnd-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-code-parent</artifactId>
+    <artifactId>hal-fnd-code-parent</artifactId>
     <packaging>pom</packaging>
-    <name>HAL Code Parent</name>
+    <name>HAL Foundation Code Parent</name>
     <description>Parent for modules with code. Contains dependencies and plugin management</description>
 
     <dependencyManagement>
@@ -36,7 +36,7 @@
             <!-- HAL -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-bom</artifactId>
+                <artifactId>hal-fnd-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>

@@ -23,24 +23,24 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-code-parent</artifactId>
+        <artifactId>hal-fnd-code-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../code-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-dmr</artifactId>
+    <artifactId>hal-fnd-dmr</artifactId>
     <packaging>jar</packaging>
-    <name>HAL DMR</name>
+    <name>HAL Foundation DMR</name>
     <description>Contains classes to talk to the domain controller using the DMR protocol</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-event</artifactId>
+            <artifactId>hal-fnd-event</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-environment</artifactId>
+            <artifactId>hal-fnd-environment</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.elemento</groupId>

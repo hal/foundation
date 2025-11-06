@@ -23,44 +23,44 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-code-parent</artifactId>
+        <artifactId>hal-fnd-code-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../code-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-ui</artifactId>
+    <artifactId>hal-fnd-ui</artifactId>
     <packaging>jar</packaging>
-    <name>HAL UI</name>
+    <name>HAL Foundation UI</name>
     <description>User interface related classes</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-core</artifactId>
+            <artifactId>hal-fnd-core</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-dmr</artifactId>
+            <artifactId>hal-fnd-dmr</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-environment</artifactId>
+            <artifactId>hal-fnd-environment</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-event</artifactId>
+            <artifactId>hal-fnd-event</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-meta</artifactId>
+            <artifactId>hal-fnd-meta</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-model</artifactId>
+            <artifactId>hal-fnd-model</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-resources</artifactId>
+            <artifactId>hal-fnd-resources</artifactId>
         </dependency>
         <dependency>
             <groupId>org.patternfly</groupId>

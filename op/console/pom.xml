@@ -36,35 +36,35 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-db</artifactId>
+            <artifactId>hal-fnd-db</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-dmr</artifactId>
+            <artifactId>hal-fnd-dmr</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-environment</artifactId>
+            <artifactId>hal-fnd-environment</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-event</artifactId>
+            <artifactId>hal-fnd-event</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-meta</artifactId>
+            <artifactId>hal-fnd-meta</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-model</artifactId>
+            <artifactId>hal-fnd-model</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-resources</artifactId>
+            <artifactId>hal-fnd-resources</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-ui</artifactId>
+            <artifactId>hal-fnd-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.elemento</groupId>

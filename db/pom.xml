@@ -23,13 +23,13 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-code-parent</artifactId>
+        <artifactId>hal-fnd-code-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../code-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-db</artifactId>
+    <artifactId>hal-fnd-db</artifactId>
     <packaging>jar</packaging>
-    <name>HAL DB</name>
+    <name>HAL Foundation DB</name>
     <description>Local database based on PouchDB</description>
 </project>

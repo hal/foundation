@@ -21,14 +21,14 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-foundation-parent</artifactId>
+        <artifactId>hal-fnd-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-build-config</artifactId>
+    <artifactId>hal-fnd-build-config</artifactId>
     <packaging>jar</packaging>
-    <name>HAL Build Config</name>
+    <name>HAL Foundation Build Config</name>
     <description>Build configuration for checkstyle, editorconfig and license check</description>
 
     <build>

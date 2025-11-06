@@ -29,7 +29,7 @@
     </parent>
 
     <groupId>org.jboss.hal</groupId>
-    <artifactId>hal-bom</artifactId>
+    <artifactId>hal-fnd-bom</artifactId>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>HAL Foundation BOM</name>
@@ -100,47 +100,47 @@
             -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-core</artifactId>
+                <artifactId>hal-fnd-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-db</artifactId>
+                <artifactId>hal-fnd-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-dmr</artifactId>
+                <artifactId>hal-fnd-dmr</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-environment</artifactId>
+                <artifactId>hal-fnd-environment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-event</artifactId>
+                <artifactId>hal-fnd-event</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-meta</artifactId>
+                <artifactId>hal-fnd-meta</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-model</artifactId>
+                <artifactId>hal-fnd-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-resources</artifactId>
+                <artifactId>hal-fnd-resources</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>hal-ui</artifactId>
+                <artifactId>hal-fnd-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

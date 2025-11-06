@@ -28,7 +28,7 @@
     </parent>
 
     <groupId>org.jboss.hal</groupId>
-    <artifactId>hal-foundation-parent</artifactId>
+    <artifactId>hal-fnd-parent</artifactId>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>HAL Foundation Parent</name>

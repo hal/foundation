@@ -23,20 +23,20 @@
 
     <parent>
         <groupId>org.jboss.hal</groupId>
-        <artifactId>hal-code-parent</artifactId>
+        <artifactId>hal-fnd-code-parent</artifactId>
         <version>0.0.2-SNAPSHOT</version>
         <relativePath>../code-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>hal-environment</artifactId>
+    <artifactId>hal-fnd-environment</artifactId>
     <packaging>jar</packaging>
-    <name>HAL Environment</name>
+    <name>HAL Foundation Environment</name>
     <description>Infos about the environment</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hal-resources</artifactId>
+            <artifactId>hal-fnd-resources</artifactId>
         </dependency>
     </dependencies>
 </project>
