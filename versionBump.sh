@@ -101,5 +101,5 @@ parse_params "$@"
 setup_colors
 
 msg "Update version to ${CYAN}${NEW_VERSION}${NOFORMAT}"
-mvn --quiet versions:set -DnewVersion="${NEW_VERSION}" &> /dev/null
+mvn --quiet versions:set -DnewVersion="${NEW_VERSION}" -P op,os &> /dev/null
 msg "    ${YELLOW}✓${NOFORMAT} Maven POMs"
