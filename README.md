@@ -19,9 +19,7 @@ The work is in a very early state and very much in progress.
 
 # HAL On Premise
 
-## Get Started
-
-### Development mode
+## Development
 
 In the root folder run
 
@@ -46,7 +44,7 @@ This will open a browser at http://localhost:1234. Changes to HTML and CSS will 
 the page automatically. Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser
 manually.
 
-### Production mode
+## Production mode
 
 In the root folder, run
 
@@ -74,7 +72,9 @@ to start it and open a browser at http://localhost:9090.
 
 ## Native Binaries
 
-For each release native binaries are available at https://github.com/hal/foundation/releases. Download the binary for your platform and run it. Then open a browser at http://localhost:9090. You can specify these two properties:
+For each release, native binaries are available at https://github.com/hal/foundation/releases. Download the binary for your platform and run it. Then open a browser at http://localhost:9090.
+
+You can usa these properties to customize the native binary:
 
 - `-Dquarkus.http.port=<port>` to change the port
 - `-Dbrowser.open=true` to open the browser automatically
