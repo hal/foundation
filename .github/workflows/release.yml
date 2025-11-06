@@ -36,6 +36,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   deploy:
+    needs: deploy-bom
     runs-on: ubuntu-latest
     env:
       MVN: ./mvnw --show-version --batch-mode --no-transfer-progress
@@ -84,7 +85,7 @@ jobs:
           draft: false
           prerelease: false
 
-  op-container:
+  hal-op-image:
     needs: release
     runs-on: ubuntu-latest
     env:
@@ -132,7 +133,7 @@ jobs:
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_ROBOT_TOKEN }}
 
-  op-natives:
+  hal-op-natives:
     needs: release
     runs-on: ${{ matrix.os }}
     strategy:
