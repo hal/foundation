@@ -29,7 +29,7 @@ jobs:
       - if: matrix.os == 'windows-latest'
         run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
       - name: Upload native artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: hal-op-standalone-${{ runner.os }}
           path: op/standalone/target/hal-op-standalone-*-runner
