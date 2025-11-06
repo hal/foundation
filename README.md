@@ -74,7 +74,10 @@ to start it and open a browser at http://localhost:9090.
 
 ## Native Binaries
 
+For each release native binaries are available at https://github.com/hal/foundation/releases. Download the binary for your platform and run it. Then open a browser at http://localhost:9090. You can specify these two properties:
 
+- `-Dquarkus.http.port=<port>` to change the port
+- `-Dbrowser.open=true` to open the browser automatically
 
 # HAL OpenShift
 
