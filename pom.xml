@@ -103,17 +103,13 @@
         <version.keepachangelog>2.1.1</version.keepachangelog>
         <version.license.plugin>5.0.0</version.license.plugin>
 
-        <!-- Repos & URLs -->
-        <github.org>hal</github.org>
-        <github.name>foundation</github.name>
-        <repo.scm.connection>git@github.com:hal/foundation.git</repo.scm.connection>
-        <repo.scm.url>https://github.com/hal/foundation</repo.scm.url>
-
         <!-- Build related -->
         <encoding>UTF-8</encoding>
         <environment.base>/</environment.base>
         <environment.build>development</environment.build>
         <environment.stability>community</environment.stability>
+        <github.org>hal</github.org>
+        <github.name>foundation</github.name>
         <j2cl.compilationLevel>BUNDLE_JAR</j2cl.compilationLevel>
         <j2cl.incremental>true</j2cl.incremental>
         <j2cl.sourcemaps>true</j2cl.sourcemaps>
@@ -128,7 +124,6 @@
     </properties>
 
     <modules>
-        <module>bom</module>
         <module>build-config</module>
         <module>code-parent</module>
         <module>core</module>
