@@ -149,7 +149,7 @@ done
 
 msg ""
 ./versionBump.sh "${FINAL_VERSION}"
-msg "Update README & changelog"
+msg "Update changelog"
 mvn --quiet -DskipModules keepachangelog:release &> /dev/null
 msg "Push changes"
 git commit --quiet -am "Release ${RELEASE_VERSION}"

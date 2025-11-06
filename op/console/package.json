@@ -1,5 +1,5 @@
 {
-  "name": "console-op",
+  "name": "hal-op",
   "private": true,
   "parcelIgnore": [
     "console.js"
@@ -12,7 +12,6 @@
     "start:parcel": "parcel watch src/web/dev.html --dist-dir target/console --port 1235",
     "start:server": "node server.js 1234 1235",
     "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
-    "parcel": "parcel serve src/web/index.html --dist-dir target/console --port 1234 --open",
     "dev": "concurrently \"npm run start:parcel\" \"npm run start:server\" \"npm run open:browser\"",
     "prod": "parcel build src/web/index.html --dist-dir target/console"
   },
@@ -20,14 +19,14 @@
     "@patternfly/patternfly": "^6.4.0"
   },
   "devDependencies": {
-    "@parcel/core": "^2.16.0",
-    "@parcel/reporter-cli": "^2.16.0",
-    "@parcel/resolver-glob": "^2.16.0",
+    "@parcel/core": "^2.16.1",
+    "@parcel/reporter-cli": "^2.16.1",
+    "@parcel/resolver-glob": "^2.16.1",
     "concurrently": "^9.2.1",
     "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "open": "^10.2.0",
-    "parcel": "^2.16.0",
+    "parcel": "^2.16.1",
     "parcel-resolver-ignore": "^2.2.1",
     "wait-on": "^9.0.1"
   }

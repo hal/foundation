@@ -27,8 +27,55 @@ jobs:
           server-password: CENTRAL_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - run: $MVN deploy -P release
+      - run: $MVN deploy -P op,prod,release
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+  container:
+    needs: deploy
+    runs-on: ubuntu-latest
+    env:
+      MVN: ./mvnw --show-version --batch-mode --no-transfer-progress
+    steps:
+      - id: get-version
+        uses: battila7/get-version-action@v2.3.0
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+      - run: $MVN install -DskipTests -P op,prod,native
+      - uses: redhat-actions/podman-login@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+      - id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          tags: quay.io/halconsole/halop:${{ steps.get-version.outputs.version-without-v }}
+          platforms: linux/amd64,linux/arm64
+          labels: |
+            maintainer=hpehl@redhat.com
+            org.opencontainers.image.authors=hpehl@redhat.com
+            org.opencontainers.image.description=HAL console on premise
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.revision=${{ steps.get-version.outputs.version-without-v }}
+            org.opencontainers.image.source=https://github.com/hal/foundation
+            org.opencontainers.image.title=HAL On Premise
+            org.opencontainers.image.url=https://hal.github.io
+            org.opencontainers.image.vendor=Red Hat
+          containerfiles: op/standalone/src/main/docker/Dockerfile.native-micro
+          context: op/standalone
+      - uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
