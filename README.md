@@ -17,9 +17,11 @@ The work is in a very early state and very much in progress.
 - [PatternFly Java](https://github.com/patternfly-java)
 - [Maven](https://maven.apache.org/), [Parcel](https://parceljs.org/), and [NPM](https://www.npmjs.com/)
 
-# Get Started
+# HAL On Premise
 
-## Development mode
+## Get Started
+
+### Development mode
 
 In the root folder run
 
@@ -44,7 +46,7 @@ This will open a browser at http://localhost:1234. Changes to HTML and CSS will 
 the page automatically. Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser
 manually.
 
-## Production mode
+### Production mode
 
 In the root folder, run
 
@@ -69,6 +71,14 @@ podman run -it -p 9090:9090 quay.io/halconsole/halop
 ```
 
 to start it and open a browser at http://localhost:9090.
+
+## Native Binaries
+
+
+
+# HAL OpenShift
+
+Not yet implemented!
 
 # Contributing
 

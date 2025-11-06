@@ -1,7 +1,6 @@
 name: Native Build
 
 on:
-  workflow_dispatch:
   release:
     types: [created]
 
@@ -27,7 +26,7 @@ jobs:
       - if: matrix.os == 'macos-latest'
         run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
       - if: matrix.os == 'windows-latest'
-        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -DskipTests "-Dquarkus.native.container-build=false" -P op,prod,native
       - run: |
           APP_NAME="halop"
           VERSION="${{ github.ref_name }}"
