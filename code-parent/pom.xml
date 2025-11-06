@@ -137,7 +137,7 @@
                     <dependencies>
                         <dependency>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>hal-build-config</artifactId>
+                            <artifactId>hal-fnd-build-config</artifactId>
                             <version>${project.version}</version>
                         </dependency>
                     </dependencies>
@@ -151,7 +151,7 @@
                     <dependencies>
                         <dependency>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>hal-build-config</artifactId>
+                            <artifactId>hal-fnd-build-config</artifactId>
                             <version>${project.version}</version>
                         </dependency>
                     </dependencies>
