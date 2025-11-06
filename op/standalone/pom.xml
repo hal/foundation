@@ -154,7 +154,6 @@
             </activation>
             <properties>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
-                <quarkus.native.container-build>true</quarkus.native.container-build>
             </properties>
         </profile>
     </profiles>
