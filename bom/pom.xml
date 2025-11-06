@@ -83,7 +83,6 @@
     <properties>
         <github.org>hal</github.org>
         <github.name>foundation</github.name>
-        <sonatype.url>https://oss.sonatype.org</sonatype.url>
         <version.central.publishing.plugin>0.9.0</version.central.publishing.plugin>
     </properties>
 

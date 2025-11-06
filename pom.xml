@@ -208,13 +208,14 @@
                                     <exclude>CODEOWNERS</exclude>
                                     <exclude>LICENSE</exclude>
                                     <exclude>README.md</exclude>
-                                    <exclude>release.main.kts</exclude>
                                     <exclude>**/*license*.txt</exclude>
                                     <exclude>**/.dockerignore</exclude>
                                     <exclude>**/.parcel-cache/**</exclude>
                                     <exclude>**/banner.txt</exclude>
+                                    <exclude>**/cert.pem</exclude>
                                     <exclude>**/Dockerfile*</exclude>
                                     <exclude>**/js-cookie.js</exclude>
+                                    <exclude>**/key.pem</exclude>
                                     <exclude>**/node/**</exclude>
                                     <exclude>**/node_modules/**</exclude>
                                     <exclude>**/src/demo/java/**</exclude>
