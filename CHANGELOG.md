@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Rename maven artifacts.
+
 ## [0.0.1] - 2025-11-06
 
 Initial release.
