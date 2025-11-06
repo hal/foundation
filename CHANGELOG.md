@@ -7,10 +7,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Rename maven artifacts.
-
-## [0.0.1] - 2025-11-06
-
 Initial release.
 
 <!--
@@ -44,5 +40,3 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/hal/foundation/compare/vTemplate...v0.0.1
