@@ -27,7 +27,7 @@ import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.alert.AlertGroup.toastAlertGroup;
 
 /**
- * Static methods for creating notifications based {@link Alert} and added to {@link AlertGroup#toastAlertGroup()}
+ * Static methods for creating notifications based on {@link Alert} that are added to {@link AlertGroup#toastAlertGroup()}
  */
 public class Notifications {
 

@@ -21,16 +21,19 @@ import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.elemento.Elements.div;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OPERATION;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
+import static org.jboss.hal.resources.HalClasses.resize;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserEngine.parseChildren;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.RESOURCE;
@@ -38,6 +41,7 @@ import static org.jboss.hal.ui.resource.ResourceDialogs.addResource;
 import static org.jboss.hal.ui.resource.ResourceDialogs.deleteResource;
 import static org.patternfly.layout.grid.Grid.grid;
 import static org.patternfly.layout.grid.GridItem.gridItem;
+import static org.patternfly.style.Classes.handle;
 
 public class ModelBrowser implements IsElement<HTMLElement> {
 
@@ -75,8 +79,8 @@ public class ModelBrowser implements IsElement<HTMLElement> {
                                                                 .add(div().css(halComponent(modelBrowser, resize, handle))))))
                                         .add(detail))
                 */
-                .addItem(gridItem().span(3).add(tree))
-                .addItem(gridItem().span(9).add(detail))
+                .addItem(gridItem().span(4).add(tree))
+                .addItem(gridItem().span(8).add(detail))
                 .element();
 
         AddResource.listen(root, this::add);

@@ -68,7 +68,7 @@ public class MetadataRepository {
      * Template resolver used by this metadata repository. The template resolver is applied
      * <ol>
      *     <li>to address templates in {@link #get(AddressTemplate)} and {@link #lookup(AddressTemplate)} to check if a metadata is in the cache and</li>
-     *     <li>to resource addresses from the rrd-payload in {@link #addMetadata(Metadata)} when adding meta to the cache</li>
+     *     <li>to resource addresses from the rrd-payload in {@link #addMetadata(Metadata)} when adding metadata to the cache</li>
      * </ol>
      */
     private final TemplateResolver resolver;
@@ -136,7 +136,7 @@ public class MetadataRepository {
     /**
      * Performs a lookup for metadata based on the given address template.
      *
-     * @param template the address template to perform the lookup for
+     * @param template  the address template to perform the lookup for
      * @param onSuccess the consumer to accept the retrieved metadata
      */
     public void lookup(AddressTemplate template, Consumer<Metadata> onSuccess) {

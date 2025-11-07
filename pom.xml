@@ -520,6 +520,7 @@
                             <publishingServerId>central</publishingServerId>
                             <autoPublish>true</autoPublish>
                             <waitUntil>published</waitUntil>
+                            <waitMaxTime>86400</waitMaxTime> <!-- 24h -->
                         </configuration>
                     </plugin>
                 </plugins>
