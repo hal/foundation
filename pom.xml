@@ -29,7 +29,7 @@
 
     <groupId>org.jboss.hal</groupId>
     <artifactId>hal-fnd-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>HAL Foundation Parent</name>
     <description>HAL foundation for HAL on premise and OpenShift</description>
@@ -85,6 +85,7 @@
         <version.elemento>2.3.2</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
+        <version.jakarta.ee>10.0.0</version.jakarta.ee>
         <version.junit>6.0.1</version.junit>
         <version.kie.j2cl.bom>0.4</version.kie.j2cl.bom>
         <version.mockito>5.20.0</version.mockito>
@@ -446,7 +447,9 @@
                 <impsort.skip>true</impsort.skip>
                 <license.skip>true</license.skip>
                 <maven.javadoc.skip>true</maven.javadoc.skip>
+                <npm.skip>true</npm.skip>
                 <skip.gwt>true</skip.gwt>
+                <kip.npm>true</kip.npm>
                 <skipITs>true</skipITs>
                 <skipTests>true</skipTests>
             </properties>

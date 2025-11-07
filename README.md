@@ -37,7 +37,7 @@ In another shell run
 
 ```shell
 cd op/console
-npm run dev
+npm run watch
 ```
 
 This will open a browser at http://localhost:1234. Changes to HTML and CSS will be detected by Parcel, and the browser reloads

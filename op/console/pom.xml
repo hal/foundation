@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.jboss.hal</groupId>
         <artifactId>hal-op-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -151,7 +151,7 @@
                         <environment.stability>${environment.stability}</environment.stability>
                     </defines>
                     <enableSourcemaps>${j2cl.sourcemaps}</enableSourcemaps>
-<!--                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>-->
+                    <incrementalEnabled>${j2cl.incremental}</incrementalEnabled>
                     <incrementalEnabled>false</incrementalEnabled>
                     <initialScriptFilename>console.js</initialScriptFilename>
                     <translationsFile>
