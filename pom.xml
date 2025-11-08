@@ -85,7 +85,7 @@
         <version.elemento>2.3.2</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
-        <version.jakarta.ee>10.0.0</version.jakarta.ee>
+        <version.jakarta.ee>11.0.0</version.jakarta.ee>
         <version.junit>6.0.1</version.junit>
         <version.kie.j2cl.bom>0.4</version.kie.j2cl.bom>
         <version.mockito>5.20.0</version.mockito>
