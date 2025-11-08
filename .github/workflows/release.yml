@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   deploy-bom:
     runs-on: ubuntu-latest
@@ -76,8 +79,6 @@ jobs:
           path: ./CHANGELOG.md
           version: ${{ steps.get-version.outputs.version-without-v }}
       - uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get-version.outputs.version }}
           name: HAL Foundation ${{ steps.get-version.outputs.version-without-v }}
@@ -169,7 +170,5 @@ jobs:
           fi
         shell: bash
       - uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: hal-op-${{ steps.get-version.outputs.version-without-v }}-*

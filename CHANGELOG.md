@@ -7,8 +7,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.0.2] - 2025-11-08
-
 Test release w/o major changes.
 
 ## [0.0.1] - 2025-11-08
@@ -46,6 +44,5 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.0.2...HEAD
-[0.0.2]: https://github.com/hal/foundation/compare/v0.0.1...v0.0.2
+[Unreleased]: https://github.com/hal/foundation/compare/v0.0.1...HEAD
 [0.0.1]: https://github.com/hal/foundation/compare/vTemplate...v0.0.1
