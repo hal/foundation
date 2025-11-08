@@ -35,7 +35,6 @@
 
     <modules>
         <module>console</module>
-        <module>standalone</module>
     </modules>
 
     <dependencyManagement>
@@ -54,4 +53,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <modules>
+                <module>standalone</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

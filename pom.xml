@@ -118,7 +118,6 @@
         <javadoc.options/>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.min.version>3.9.9</maven.min.version>
-        <npm.script>dev</npm.script>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
         <sonatype.url>https://oss.sonatype.org</sonatype.url>
@@ -429,7 +428,6 @@
                 <j2cl.compilationLevel>ADVANCED</j2cl.compilationLevel>
                 <j2cl.incremental>false</j2cl.incremental>
                 <j2cl.sourcemaps>false</j2cl.sourcemaps>
-                <npm.script>prod</npm.script>
                 <environment.build>production</environment.build>
             </properties>
         </profile>
@@ -449,7 +447,7 @@
                 <maven.javadoc.skip>true</maven.javadoc.skip>
                 <npm.skip>true</npm.skip>
                 <skip.gwt>true</skip.gwt>
-                <kip.npm>true</kip.npm>
+                <skip.npm>true</skip.npm>
                 <skipITs>true</skipITs>
                 <skipTests>true</skipTests>
             </properties>
@@ -525,54 +523,6 @@
                             <waitUntil>published</waitUntil>
                             <waitMaxTime>86400</waitMaxTime> <!-- 24h -->
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>snippets</id>
-            <properties>
-                <java.version>19</java.version>
-                <javadoc.options>--snippet-path ${project.basedir}/src/demo/java</javadoc.options>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <inherited>false</inherited>
-                        <executions>
-                            <execution>
-                                <id>copy-apidocs</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <copy todir="target/site/apidocs/org/jboss/hal"
-                                              overwrite="true"
-                                              failonerror="false">
-                                            <fileset dir="db/target/site/apidocs/org/patternfly">
-                                                <exclude name="**/class-use/**"/>
-                                                <exclude name="package-*.html"/>
-                                            </fileset>
-                                            <fileset dir="dmr/target/site/apidocs/org/patternfly">
-                                                <exclude name="**/class-use/**"/>
-                                                <exclude name="package-*.html"/>
-                                            </fileset>
-                                            <fileset dir="meta/target/site/apidocs/org/patternfly">
-                                                <exclude name="**/class-use/**"/>
-                                                <exclude name="package-*.html"/>
-                                            </fileset>
-                                            <fileset dir="ui/target/site/apidocs/org/patternfly">
-                                                <exclude name="**/class-use/**"/>
-                                                <exclude name="package-*.html"/>
-                                            </fileset>
-                                        </copy>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

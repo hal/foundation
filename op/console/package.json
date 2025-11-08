@@ -13,7 +13,6 @@
     "start:server": "node server.js 1234 1235",
     "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
     "watch": "concurrently \"npm run start:parcel\" \"npm run start:server\" \"npm run open:browser\"",
-    "dev": "parcel build src/web/dev.html --dist-dir target/console --no-optimize --no-scope-hoist --no-content-hash",
     "prod": "parcel build src/web/index.html --dist-dir target/console"
   },
   "dependencies": {
