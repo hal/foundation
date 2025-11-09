@@ -17,11 +17,16 @@ The work is in a very early state and very much in progress.
 - [PatternFly Java](https://github.com/patternfly-java)
 - [Maven](https://maven.apache.org/), [Parcel](https://parceljs.org/), and [NPM](https://www.npmjs.com/)
 
-# HAL On Premise
+# halOP (HAL On Premise)
 
 ## Development
 
-To start the development mode, run
+The development mode of HAL on premise is based on J2CL and Parcel. The Java code is transpiled to JavaScript using J2CL.
+The HTML and CSS are transpiled to JavaScript using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser
+reloads the page automatically. Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the
+browser manually.
+
+To start HAL on premise in development mode, run
 
 ```shell
 mvn j2cl:watch -P op
@@ -40,15 +45,18 @@ cd op/console
 npm run watch
 ```
 
-This will open a browser at http://localhost:1234. Changes to HTML and CSS will be detected by Parcel, and the browser reloads
-the page automatically. Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser
-manually.
+This will open a browser at http://localhost:1234. Select or create a management interface to connect to a running WildFly
+instance.
 
-## Standalone Console
+## Standalone
 
-You can run the console on its own. This starts a local web server and serves the console on its own without being part of a WildFly installation. The console is “just” a single page application (SPA) without any server side dependencies. The only requirement is a management interface of a running WIldFly instance.
+You can run halOP on its own. This starts a local web server and serves the console on its own without being part of a
+WildFly installation. halOP is “just” a single-page application (SPA) without any server side dependencies. The only
+requirement is a management interface of a running WIldFly instance.
 
-To build the standalone console, run
+### Java
+
+To build halOP as a Java application, run
 
 ```shell
 mvn install -P op,prod
@@ -62,33 +70,35 @@ java -jar op/standalone/target/quarkus-app/quarkus-run.jar
 
 and open a browser at http://localhost:9090.
 
-## Native Binaries
+### Native Binaries
 
-To build the native binary of the standalone console, run
+To build the native binary of halOP, run
 
 ```shell
 mvn install -P op,prod,native -Dquarkus.native.container-build=false
 ```
 
-Please make sure that you have a recent version of GraalVM installed. See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
+Please make sure that you have a recent version of GraalVM installed.
+See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
 
-Native binaries for Linux, macOS and Windows are also attached to every [release](https://github.com/hal/foundation/releases). Download the binary for your platform and run it. Then open a browser at http://localhost:9090.
+Native binaries for Linux, macOS and Windows are also attached to every [release](https://github.com/hal/foundation/releases).
+Download the binary for your platform and run it. Then open a browser at http://localhost:9090.
 
 ## Container
 
-The standalone console is also available as a container image at https://quay.io/repository/halconsole/hal-op. Use
+halOP is also available as a container image at https://quay.io/repository/halconsole/hal-op. Use
 
 ```shell
-podman run -it -p 9090:9090 quay.io/halconsole/halop
+podman run -it -p 9090:9090 quay.io/halconsole/hal-op
 ```
 
 to start it and open a browser at http://localhost:9090.
 
 ## Customization
 
-If you want to customize the port of the standalone console (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
+If you want to customize the port of halOP (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
 
-# HAL OpenShift
+# halOS (HAL on OpenShift)
 
 Not yet implemented!
 
