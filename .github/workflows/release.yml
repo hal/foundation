@@ -158,7 +158,7 @@ jobs:
       - if: matrix.os == 'macos-latest'
         run: ./mvnw --show-version --batch-mode --no-transfer-progress install -Dquickly -P op,prod,native -Dskip.npm=false -Dquarkus.native.container-build=false
       - if: matrix.os == 'windows-latest'
-        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -Dquickly -P op,prod,native -Dskip.npm=false "-Dquarkus.native.container-build=false"
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -Dquickly -P op,prod,native "-Dskip.npm=false" "-Dquarkus.native.container-build=false"
       - run: |
           APP_NAME="hal-op"
           VERSION="${{ steps.get-version.outputs.version-without-v }}"
