@@ -19,12 +19,14 @@ The work is in a very early state and very much in progress.
 
 # halOP (HAL On Premise)
 
+This version of HAL is shipped with WildFly or can be run as a standalone application to connect to arbitrary WildFly
+instances.
+
 ## Development
 
-The development mode of HAL on premise is based on J2CL and Parcel. The Java code is transpiled to JavaScript using J2CL.
-The HTML and CSS are transpiled to JavaScript using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser
-reloads the page automatically. Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the
-browser manually.
+In the development mode, the Java code is transpiled on the fly to JavaScript using J2CL. The HTML and CSS are transpiled to
+JavaScript using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser reloads the page automatically.
+Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser manually.
 
 To start HAL on premise in development mode, run
 
@@ -45,8 +47,7 @@ cd op/console
 npm run watch
 ```
 
-This will open a browser at http://localhost:1234. Select or create a management interface to connect to a running WildFly
-instance.
+This will open a browser at http://localhost:1234.
 
 ## Standalone
 
@@ -100,7 +101,9 @@ If you want to customize the port of halOP (Java-based and native), please use `
 
 # halOS (HAL on OpenShift)
 
-Not yet implemented!
+This version of HAL integrates with the OpenShift console. It can be used to manage WildFly insstances running on OpenShift.
+
+halOS is not yet implemented!
 
 # Contributing
 
