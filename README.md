@@ -28,7 +28,7 @@ In the development mode, the Java code is transpiled on the fly to JavaScript us
 JavaScript using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser reloads the page automatically.
 Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser manually.
 
-To start HAL on premise in development mode, run
+To start halOP in development mode, run
 
 ```shell
 mvn j2cl:watch -P op
@@ -71,7 +71,7 @@ java -jar op/standalone/target/quarkus-app/quarkus-run.jar
 
 and open a browser at http://localhost:9090.
 
-### Native Binaries
+### Native
 
 To build the native binary of halOP, run
 
