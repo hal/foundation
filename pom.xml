@@ -445,8 +445,6 @@
                 <impsort.skip>true</impsort.skip>
                 <license.skip>true</license.skip>
                 <maven.javadoc.skip>true</maven.javadoc.skip>
-                <npm.skip>true</npm.skip>
-                <skip.gwt>true</skip.gwt>
                 <skip.npm>true</skip.npm>
                 <skipITs>true</skipITs>
                 <skipTests>true</skipTests>

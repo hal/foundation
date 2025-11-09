@@ -129,6 +129,7 @@ jobs:
           context: op/standalone
       - uses: redhat-actions/push-to-registry@v2
         with:
+          registry: quay.io/halconsole
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
           username: ${{ secrets.QUAY_USERNAME }}
@@ -153,11 +154,11 @@ jobs:
           components: native-image
           cache: maven
       - if: matrix.os == 'ubuntu-latest'
-        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
+        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -Dquickly -P op,prod,native -Dskip.npm=false -Dquarkus.native.container-build=false
       - if: matrix.os == 'macos-latest'
-        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -DskipTests -Dquarkus.native.container-build=false -P op,prod,native
+        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -Dquickly -P op,prod,native -Dskip.npm=false -Dquarkus.native.container-build=false
       - if: matrix.os == 'windows-latest'
-        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -DskipTests "-Dquarkus.native.container-build=false" -P op,prod,native
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -Dquickly -P op,prod,native -Dskip.npm=false "-Dquarkus.native.container-build=false"
       - run: |
           APP_NAME="hal-op"
           VERSION="${{ steps.get-version.outputs.version-without-v }}"
