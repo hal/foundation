@@ -7,6 +7,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Change image name for the halOP console to quay.io/halconsole/hal-op
+
+### Removed
+
+- Remove flag to open the browser for the halOP console (does not work nicely with native binaries)
+
 ## [0.0.4] - 2025-11-09
 
 ### Changed

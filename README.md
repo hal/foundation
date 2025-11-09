@@ -21,7 +21,7 @@ The work is in a very early state and very much in progress.
 
 ## Development
 
-In the root folder run
+To start the development mode, run
 
 ```shell
 mvn j2cl:watch -P op
@@ -44,25 +44,39 @@ This will open a browser at http://localhost:1234. Changes to HTML and CSS will 
 the page automatically. Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser
 manually.
 
-## Production mode
+## Standalone Console
 
-In the root folder, run
+You can run the console on its own. This starts a local web server and serves the console on its own without being part of a WildFly installation. The console is “just” a single page application (SPA) without any server side dependencies. The only requirement is a management interface of a running WIldFly instance.
+
+To build the standalone console, run
 
 ```shell
-mvn clean install -P op,prod
+mvn install -P op,prod
 ```
 
-This will create a standalone console served by a simple, Quarkus-based HTTP server. To start it, run
+This will package the transpiled HTML, CSS and JavaScript resources into a Quarkus-based HTTP server. To start it, run
 
 ```shell
 java -jar op/standalone/target/quarkus-app/quarkus-run.jar
 ```
 
-Open a browser at http://localhost:9090.
+and open a browser at http://localhost:9090.
+
+## Native Binaries
+
+To build the native binary of the standalone console, run
+
+```shell
+mvn install -P op,prod,native -Dquarkus.native.container-build=false
+```
+
+Please make sure that you have a recent version of GraalVM installed. See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
+
+Native binaries for Linux, macOS and Windows are also attached to every [release](https://github.com/hal/foundation/releases). Download the binary for your platform and run it. Then open a browser at http://localhost:9090.
 
 ## Container
 
-The latest version is also available as a container image at https://quay.io/repository/halconsole/halop. Use
+The standalone console is also available as a container image at https://quay.io/repository/halconsole/hal-op. Use
 
 ```shell
 podman run -it -p 9090:9090 quay.io/halconsole/halop
@@ -70,14 +84,9 @@ podman run -it -p 9090:9090 quay.io/halconsole/halop
 
 to start it and open a browser at http://localhost:9090.
 
-## Native Binaries
+## Customization
 
-For each release, native binaries are available at https://github.com/hal/foundation/releases. Download the binary for your platform and run it. Then open a browser at http://localhost:9090.
-
-You can usa these properties to customize the native binary:
-
-- `-Dquarkus.http.port=<port>` to change the port
-- `-Dbrowser.open=true` to open the browser automatically
+If you want to customize the port of the standalone console (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
 
 # HAL OpenShift
 
