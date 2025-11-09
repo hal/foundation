@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.0.5] - 2025-11-09
+
 ### Changed
 
 - Change image name for the halOP console to quay.io/halconsole/hal-op
@@ -66,7 +68,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/hal/foundation/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/hal/foundation/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/hal/foundation/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/hal/foundation/compare/v0.0.1...v0.0.2
