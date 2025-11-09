@@ -103,7 +103,7 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
-      - run: $MVN install -DskipTests -Dquarkus.native.container-build=true -P op,prod,native
+      - run: $MVN install -Dquickly -P op,prod,native -Dskip.npm=false -Dquarkus.native.container-build=true
       - uses: redhat-actions/podman-login@v1
         with:
           registry: quay.io
