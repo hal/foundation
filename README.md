@@ -1,10 +1,10 @@
 # HAL Foundation
 
 This repository contains the foundation for the next major version of the HAL management console (halOP) and the upcoming
-OpenShift version (halOS).
+OpenShift version (halOS). To distinguish between the two editions, we introduce the following names:
 
 - halOP: HAL on premise
-- halOS: HAL OpenShift
+- halOS: HAL on OpenShift
 
 The work is in a very early state and very much in progress.
 
@@ -19,13 +19,13 @@ The work is in a very early state and very much in progress.
 
 # halOP (HAL On Premise)
 
-This version of HAL is shipped with WildFly or can be run as a standalone application to connect to arbitrary WildFly
-instances.
+This edition is the successor of the current [HAL management console](https://github.com/hal/console). It is shipped with
+WildFly or can be run as a standalone application to connect to arbitrary WildFly instances.
 
 ## Development
 
-In the development mode, the Java code is transpiled on the fly to JavaScript using J2CL. The HTML and CSS are transpiled to
-JavaScript using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser reloads the page automatically.
+In the development mode, the Java code is transpiled to JavaScript using J2CL. The HTML and CSS are transpiled to JavaScript
+using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser reloads the page automatically.
 Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser manually.
 
 To start halOP in development mode, run
@@ -51,13 +51,13 @@ This will open a browser at http://localhost:1234.
 
 ## Standalone
 
-You can run halOP on its own. This starts a local web server and serves the console on its own without being part of a
-WildFly installation. halOP is “just” a single-page application (SPA) without any server side dependencies. The only
-requirement is a management interface of a running WIldFly instance.
+halOP can run on its own. In this mode halOP starts a local web server and serves the console on its own without being part of a
+WildFly installation. halOP is “just” a single-page application (SPA) without any server side dependencies. The only requirement
+is a management interface of a running WIldFly instance.
 
 ### Java
 
-To build halOP as a Java application, run
+To build halOP as a standalone Java application, run
 
 ```shell
 mvn install -P op,prod
@@ -83,7 +83,14 @@ Please make sure that you have a recent version of GraalVM installed.
 See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
 
 Native binaries for Linux, macOS and Windows are also attached to every [release](https://github.com/hal/foundation/releases).
-Download the binary for your platform and run it. Then open a browser at http://localhost:9090.
+Download the binary for your platform, make it executable and run it. Then open a browser at http://localhost:9090.
+
+To make the binary executable, you might need to run something like this:
+
+```shell
+chmod u+x hal-op-*
+xattr -d com.apple.quarantine hal-op-*
+```
 
 ## Container
 
