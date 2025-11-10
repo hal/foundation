@@ -15,6 +15,11 @@
  */
 
 .hal-c-model-browser {
+    --hal-c-model-browser-tree-width: 400px;
+    --hal-c-model-browser-splitter-width: 8px;
+    --hal-c-model-browser-tree-min-width: 0px;
+    --hal-c-model-browser-tree-max-width: 60vw;
+
     --hal-c-model-browser-tree-columns: span 3;
     --hal-c-model-browser-detail-columns: span 9;
     --hal-c-model-browser-toolbar--Height: 68px; /* TODO Replace hard-coded value */

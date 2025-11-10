@@ -88,7 +88,7 @@ Download the binary for your platform, make it executable and run it. Then open 
 To make the binary executable, you might need to run something like this:
 
 ```shell
-chmod u+x hal-op-*
+chmod +x hal-op-*
 xattr -d com.apple.quarantine hal-op-*
 ```
 
