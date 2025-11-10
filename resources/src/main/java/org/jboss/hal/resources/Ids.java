@@ -31,7 +31,6 @@ public interface Ids {
 
     String COOKIE = "hal-cookie";
     String MAIN_ID = "hal-main-id";
-    String ENDPOINTS = "hal-endpoints";
     String STANDALONE_HOST = "hal-standalone-host";
     String STANDALONE_SERVER = "hal-standalone-server";
 

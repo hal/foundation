@@ -25,7 +25,6 @@ public interface HalClasses {
     String content = "content";
     String copy = "copy";
     String curlyBraces = "curly-braces";
-    String dashboard = "dashboard";
     String deprecated = "deprecated";
     String detail = "detail";
     String defaultValue = "default-value";
@@ -34,7 +33,6 @@ public interface HalClasses {
     String expression = "expression";
     String filtered = "filtered";
     String goto_ = "goto";
-    String health = "health";
     String modelBrowser = "model-browser";
     String name = "name";
     String nestedLabel = "nested-label";
@@ -42,7 +40,6 @@ public interface HalClasses {
     String rbacHidden = "rbac-hidden";
     String resource = "resource";
     String restricted = "restricted";
-    String resize = "resize";
     String results = "results";
     String stabilityLevel = "stability-level";
     String status = "status";

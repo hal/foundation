@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.LocalStorage;
 
 import elemental2.core.JsArray;
 import elemental2.webstorage.Storage;
@@ -40,7 +40,7 @@ class EndpointStorage {
     EndpointStorage() {
         this.endpoints = new HashMap<>();
         this.storage = WebStorageWindow.of(window).localStorage;
-        String payload = storage.getItem(Ids.ENDPOINTS);
+        String payload = storage.getItem(LocalStorage.ENDPOINTS);
         if (payload != null && !payload.isEmpty()) {
             JsArray<Endpoint> eps = (JsArray<Endpoint>) JSON.parse(payload);
             for (int i = 0; i < eps.length; i++) {
@@ -86,6 +86,6 @@ class EndpointStorage {
     private void save() {
         JsArray<Endpoint> eps = new JsArray<>();
         endpoints.values().forEach(eps::push);
-        storage.setItem(Ids.ENDPOINTS, JSON.stringify(eps));
+        storage.setItem(LocalStorage.ENDPOINTS, JSON.stringify(eps));
     }
 }

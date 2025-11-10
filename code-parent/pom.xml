@@ -60,13 +60,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Jakarta EE -->
-            <dependency>
-                <groupId>jakarta.platform</groupId>
-                <artifactId>jakarta.jakartaee-api</artifactId>
-                <version>${version.jakarta.ee}</version>
-            </dependency>
-
             <!-- J2CL / GWT -->
             <dependency>
                 <groupId>org.kie.j2cl.tools</groupId>
@@ -84,6 +77,15 @@
                 <groupId>org.gwtproject.safehtml</groupId>
                 <artifactId>gwt-safehtml</artifactId>
                 <version>${version.gwt.safehtml}</version>
+            </dependency>
+
+            <!-- Jakarta EE -->
+            <!-- Not a real dependency, just here for CDI support in the IDE -->
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${version.jakarta.ee}</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- Test -->
@@ -111,11 +113,9 @@
             <groupId>org.jboss.elemento</groupId>
             <artifactId>elemento-logger</artifactId>
         </dependency>
-        <!-- Not a real dependency, just here for CDI support in the IDE -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.kie.j2cl.tools.di</groupId>
