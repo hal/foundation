@@ -24,9 +24,9 @@
 }
 
 .hal-m-help-text {
-    text-decoration-line: var(--pf-v6-c-description-list__text--m-help-text--TextDecorationLine);
-    text-decoration-style: var(--pf-v6-c-description-list__text--m-help-text--TextDecorationStyle);
-    text-underline-offset: var(--pf-v6-c-description-list__text--m-help-text--TextUnderlineOffset);
+    text-decoration-line: var(--pf-t--global--text-decoration--help-text--line--default);
+    text-decoration-style: var(--pf-t--global--text-decoration--help-text--style--default);
+    text-underline-offset: 0.25rem;
     cursor: pointer;
 }
 

@@ -48,7 +48,7 @@ class DocumentationCard implements DashboardCard {
     private static final List<String[]> GENERAL_RESOURCES = asList(
             new String[]{"WildFly homepage", "https://www.wildfly.org"},
             new String[]{"WildFly documentation", "https://docs.wildfly.org/%v/"},
-            new String[]{"Model reference", "https://docs.wildfly.org/%v/wildscribe"},
+            new String[]{"WildFly catalog", "https://wildfly-extras.github.io/wildfly-catalog/%v.0.0.Final/index.html"},
             new String[]{"Latest news", "https://www.wildfly.org/news/"},
             new String[]{"Browse issues", "https://issues.jboss.org/browse/WFLY"}
     );

@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Resizable model browser
+
 ## [0.0.5] - 2025-11-09
 
 ### Changed

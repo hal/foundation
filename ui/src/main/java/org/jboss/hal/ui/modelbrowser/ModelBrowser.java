@@ -32,7 +32,6 @@ import org.patternfly.style.Classes;
 import elemental2.dom.AddEventListenerOptions;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DOMRect;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 import elemental2.dom.MutationRecord;
@@ -44,7 +43,6 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.EventType.bind;
 import static org.jboss.elemento.EventType.mousemove;
 import static org.jboss.elemento.EventType.mouseup;
-import static org.jboss.elemento.EventType.resize;
 import static org.jboss.elemento.EventType.touchcancel;
 import static org.jboss.elemento.EventType.touchend;
 import static org.jboss.elemento.EventType.touchmove;
@@ -96,7 +94,6 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     private HandlerRegistration mouseMoveHandler;
     private HandlerRegistration touchStartHandler;
     private HandlerRegistration touchMoveHandler;
-    private HandlerRegistration resizeHandler;
 
     public ModelBrowser(AddressTemplate template) {
         this.template = template;
@@ -154,20 +151,10 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 bind(window, touchcancel, once, this::touchEnd);
             }
         });
-        resizeHandler = EventType.bind(window, resize, event -> {
-            if (!dragging) {return;}
-            // Adjust current width to respect new clamp range
-            CSSStyleDeclaration styles = org.jboss.elemento.DomGlobal.window.getComputedStyle(root);
-            double current = parseCSSLength(styles.getPropertyValue(TREE_WIDTH).trim(), TREE_DEFAULT_WIDTH);
-            onMove(containerLeft + current);
-        });
     }
 
     @Override
     public void detach(MutationRecord mutationRecord) {
-        if (resizeHandler != null) {
-            resizeHandler.removeHandler();
-        }
         if (touchMoveHandler != null) {
             touchMoveHandler.removeHandler();
         }

@@ -102,6 +102,7 @@ import static org.patternfly.layout.flex.Gap.md;
 import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.componentVar;
 
 class ResourceList implements IsElement<HTMLElement> {
@@ -143,7 +144,7 @@ class ResourceList implements IsElement<HTMLElement> {
 
         Variable spacer = componentVar(component(Classes.toolbar), "spacer");
         Variable filterGroupSpacer = componentVar(component(Classes.toolbar, Classes.group), "m-filter-group", "spacer");
-        toolbar = toolbar()
+        toolbar = toolbar().css(util("pt-xs"))
                 .addContent(toolbarContent()
                         .addItem(toolbarItem(searchFilter)
                                 .style(spacer.name, filterGroupSpacer.asVar()) // override spacing

@@ -69,7 +69,7 @@ class CapabilitiesTable implements IsElement<HTMLElement> {
                                                                 .icon(ban())
                                                                 .text("No capabilities")
                                                                 .addBody(emptyStateBody()
-                                                                        .text("This resource contains no capabilities."))))));
+                                                                        .text("This resource provides no capabilities."))))));
                             } else {
                                 tbody.addRows(metadata.resourceDescription().capabilities(), capability -> tr(capability.name())
                                         .addItem(td("Name")
