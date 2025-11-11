@@ -115,6 +115,7 @@ class LogCard implements DashboardCard {
 
     @Override
     public void refresh() {
+        // TODO On refresh the card title is duplicated!
         String logFile = "server.log";
         cardTitle.run(ct -> ct.textDelegate().appendChild(title(2, xl, logFile).element()));
         removeChildrenFrom(cardBody);
