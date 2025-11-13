@@ -4,4 +4,5 @@ public interface LocalStorage {
 
     String ENDPOINTS = "hal-endpoints";
     String MODEL_BROWSER_TREE_WIDTH = "hal-model-browser-tree-width";
+    String HAL_THEME = "hal-theme";
 }

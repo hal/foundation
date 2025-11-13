@@ -28,6 +28,8 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.a;
 import static org.jboss.elemento.Elements.strong;
+import static org.jboss.hal.resources.Urls.STABILITY_LEVELS;
+import static org.jboss.hal.resources.Urls.replaceVersion;
 import static org.jboss.hal.ui.BuildingBlocks.stabilityColor;
 import static org.jboss.hal.ui.BuildingBlocks.stabilityIconSupplier;
 import static org.patternfly.component.banner.Banner.banner;
@@ -58,7 +60,6 @@ public class StabilityBanner implements IsElement<HTMLElement> {
         Stability serverStability = environment.serverStability();
         Color color = stabilityColor(serverStability);
         Supplier<PredefinedIcon> icon = stabilityIconSupplier(serverStability);
-        String moreInfo = "https://docs.wildfly.org/" + environment.productVersionLink() + "/Admin_Guide.html#Feature_stability_levels";
 
         root = banner(color)
                 .screenReader("The server has been started with stability level " + serverStability.label)
@@ -74,7 +75,8 @@ public class StabilityBanner implements IsElement<HTMLElement> {
                         .add(flex().spaceItems(sm).style("position:fixed;right:var(--pf-t--global--spacer--lg)")
                                 .add(button("Got it").link().inline().onClick((event, component) -> gotIt.call()))
                                 .add(divider(hr).orientation(vertical))
-                                .add(a(moreInfo, "_blank").text("More info"))))
+                                .add(a(replaceVersion(STABILITY_LEVELS, environment.productVersionLink()), "_blank").text(
+                                        "More info"))))
                 .element();
     }
 

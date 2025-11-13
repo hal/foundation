@@ -26,6 +26,17 @@ import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.a;
+import static org.jboss.hal.resources.Urls.BROWSE_ISSUES;
+import static org.jboss.hal.resources.Urls.DEVELOPER_MAILING_LIST;
+import static org.jboss.hal.resources.Urls.FORUM;
+import static org.jboss.hal.resources.Urls.GETTING_STARTED;
+import static org.jboss.hal.resources.Urls.LATEST_NEWS;
+import static org.jboss.hal.resources.Urls.WILDFLY_CATALOG;
+import static org.jboss.hal.resources.Urls.WILDFLY_DOCUMENTATION;
+import static org.jboss.hal.resources.Urls.WILDFLY_GUIDES;
+import static org.jboss.hal.resources.Urls.WILDFLY_HOMEPAGE;
+import static org.jboss.hal.resources.Urls.ZULIP_CHAT;
+import static org.jboss.hal.resources.Urls.replaceVersion;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
 import static org.patternfly.component.card.CardHeader.cardHeader;
@@ -46,26 +57,24 @@ import static org.patternfly.style.Size.xl;
 class DocumentationCard implements DashboardCard {
 
     private static final List<String[]> GENERAL_RESOURCES = asList(
-            new String[]{"WildFly homepage", "https://www.wildfly.org"},
-            new String[]{"WildFly documentation", "https://docs.wildfly.org/%v/"},
-            new String[]{"WildFly catalog", "https://wildfly-extras.github.io/wildfly-catalog/%v.0.0.Final/index.html"},
-            new String[]{"Latest news", "https://www.wildfly.org/news/"},
-            new String[]{"Browse issues", "https://issues.jboss.org/browse/WFLY"}
+            new String[]{"WildFly homepage", WILDFLY_HOMEPAGE},
+            new String[]{"WildFly documentation", WILDFLY_DOCUMENTATION},
+            new String[]{"WildFly catalog", WILDFLY_CATALOG},
+            new String[]{"Latest news", LATEST_NEWS},
+            new String[]{"Browse issues", BROWSE_ISSUES}
     );
 
     private static final List<String[]> GET_HELP = asList(
-            new String[]{"Getting started", "https://www.wildfly.org/get-started/"},
-            new String[]{"WildFly guides", "https://www.wildfly.org/guides/"},
-            new String[]{"Join the forum", "https://groups.google.com/forum/#!forum/wildfly"},
-            new String[]{"Join Zulip chat", "https://wildfly.zulipchat.com/"},
-            new String[]{"Developer mailing list", "https://lists.jboss.org/archives/list/wildfly-dev@lists.jboss.org/"}
+            new String[]{"Getting started", GETTING_STARTED},
+            new String[]{"WildFly guides", WILDFLY_GUIDES},
+            new String[]{"Join the forum", FORUM},
+            new String[]{"Join Zulip chat", ZULIP_CHAT},
+            new String[]{"Developer mailing list", DEVELOPER_MAILING_LIST}
     );
 
-    private final String version;
     private final HTMLElement root;
 
     DocumentationCard(Environment environment) {
-        this.version = environment.productVersionLink();
         this.root = card().add(flex()
                         .alignItems(AlignItems.stretch)
                         .alignSelf(AlignSelf.stretch)
@@ -76,7 +85,8 @@ class DocumentationCard implements DashboardCard {
                                         .addBody(cardBody().add(list().plain()
                                                 .addItems(GENERAL_RESOURCES, nu ->
                                                         listItem(Id.build("general-resources", nu[0]))
-                                                                .add(a(replaceVersion(nu[1]), "_blank")
+                                                                .add(a(replaceVersion(nu[1], environment.productVersionLink()),
+                                                                        "_blank")
                                                                         .text(nu[0])))))))
                         .add(divider(hr).orientation(breakpoints(md, vertical)))
                         .addItem(flexItem().flex(_1)
@@ -86,7 +96,8 @@ class DocumentationCard implements DashboardCard {
                                         .addBody(cardBody().add(list().plain()
                                                 .addItems(GET_HELP, nu ->
                                                         listItem(Id.build("get-help", nu[0]))
-                                                                .add(a(replaceVersion(nu[1]), "_blank")
+                                                                .add(a(replaceVersion(nu[1], environment.productVersionLink()),
+                                                                        "_blank")
                                                                         .text(nu[0]))))))))
                 .element();
     }
@@ -99,9 +110,5 @@ class DocumentationCard implements DashboardCard {
     @Override
     public void refresh() {
         // nop
-    }
-
-    private String replaceVersion(String url) {
-        return url.replace("%v", version);
     }
 }

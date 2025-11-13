@@ -19,18 +19,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.component.card.CardBody;
-import org.patternfly.component.card.CardTitle;
+import org.patternfly.component.title.Title;
 import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.layout.flex.Flex;
 
 import elemental2.dom.HTMLElement;
 
-import static elemental2.dom.DomGlobal.alert;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
@@ -94,15 +94,17 @@ class LogCard implements DashboardCard {
     }
 
     private final Dispatcher dispatcher;
-    private final CardTitle cardTitle;
+    private final Title title;
     private final CardBody cardBody;
     private final HTMLElement root;
 
     LogCard(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
+        this.title = title(2, xl, "");
         this.root = card()
                 .addHeader(cardHeader()
-                        .addTitle(cardTitle = cardTitle())
+                        .addTitle(cardTitle()
+                                .run(ct -> ct.textDelegate().appendChild(title.element())))
                         .addActions(refreshActions()))
                 .addBody(cardBody = cardBody().style("text-align", "center"))
                 .element();
@@ -115,9 +117,8 @@ class LogCard implements DashboardCard {
 
     @Override
     public void refresh() {
-        // TODO On refresh the card title is duplicated!
         String logFile = "server.log";
-        cardTitle.run(ct -> ct.textDelegate().appendChild(title(2, xl, logFile).element()));
+        title.text(logFile);
         removeChildrenFrom(cardBody);
 
         ResourceAddress address = AddressTemplate.of("subsystem=logging/log-file=" + logFile).resolve();
@@ -175,6 +176,6 @@ class LogCard implements DashboardCard {
 
     private void chooseLogFile() {
         // TODO Implement choose log file
-        alert("Not yet implemented");
+        Notifications.nyi();
     }
 }

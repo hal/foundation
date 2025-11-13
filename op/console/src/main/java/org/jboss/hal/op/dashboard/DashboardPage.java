@@ -98,9 +98,9 @@ public class DashboardPage implements Page {
         }
 
         HTMLElement header = pageSection().limitWidth()
-                        .add(content()
-                                .add(title(1, _3xl).text("WildFly Application Server"))
-                                .add(p().text("Dashboard")))
+                .add(content()
+                        .add(title(1, _3xl).text("WildFly Application Server"))
+                        .add(p().text("Dashboard")))
                 .element();
         HTMLElement dashboard = pageSection().limitWidth()
                 .add(grid().gutter().run(grid -> {

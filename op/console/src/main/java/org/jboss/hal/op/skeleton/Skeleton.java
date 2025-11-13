@@ -34,8 +34,12 @@ import elemental2.dom.HTMLElement;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.hal.core.Notifications.nyi;
+import static org.jboss.hal.op.skeleton.EndpointManager.endpointManager;
+import static org.jboss.hal.op.skeleton.GlobalSearch.globalSearch;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.patternfly.component.backtotop.BackToTop.backToTop;
+import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -46,7 +50,10 @@ import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.skiptocontent.SkipToContent.skipToContent;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
+import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
+import static org.patternfly.componentgroup.theme.ThemeSelector.themeSelector;
+import static org.patternfly.icon.IconSets.fas.cog;
 import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
@@ -78,7 +85,7 @@ public class Skeleton implements IsElement<HTMLElement> {
     private static final String STABILITY_MARKER = "hal-stability-marker";
     private final Page page;
     private final PageMain pageMain;
-    private final ToolbarItem toolbarItem;
+    private final ToolbarItem navigationToolbarItem;
     private HTMLElement root;
 
     Skeleton(Environment environment) {
@@ -94,7 +101,16 @@ public class Skeleton implements IsElement<HTMLElement> {
                         .addContent(mastheadContent()
                                 .addToolbar(toolbar().css(modifier(fullHeight), modifier(static_))
                                         .addContent(toolbarContent()
-                                                .add(toolbarItem = toolbarItem().css(modifier("overflow-container")))))))
+                                                .add(navigationToolbarItem = toolbarItem().css(modifier("overflow-container")))
+                                                .addGroup(toolbarGroup().css(modifier("align-end"))
+                                                        .addItem(toolbarItem().add(globalSearch()))
+                                                        .addItem(toolbarItem().add(button(cog()).plain()
+                                                                .css(modifier("settings"))
+                                                                .onClick((event, component) -> nyi())))
+                                                        .addItem(toolbarItem().add(themeSelector("hal")
+                                                                .withContrast()))
+                                                        .addItem(toolbarItem().add(endpointManager())))
+                                        ))))
                 .addMain(pageMain = pageMain(Ids.MAIN_ID))
                 .add(backToTop()
                         .scrollableSelector(By.id(Ids.MAIN_ID)));
@@ -122,7 +138,7 @@ public class Skeleton implements IsElement<HTMLElement> {
     // ------------------------------------------------------ add
 
     public Skeleton add(Navigation navigation) {
-        toolbarItem.add(navigation.element());
+        navigationToolbarItem.add(navigation.element());
         return this;
     }
 
