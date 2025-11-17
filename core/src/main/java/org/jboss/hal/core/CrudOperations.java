@@ -37,8 +37,8 @@ import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 
 import static org.jboss.elemento.Elements.span;
-import static org.jboss.hal.core.Notifications.success;
-import static org.jboss.hal.core.Notifications.warning;
+import static org.jboss.hal.core.Notification.success;
+import static org.jboss.hal.core.Notification.warning;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 import static org.jboss.hal.resources.Dataset.crudMessageName;
@@ -59,14 +59,16 @@ public class CrudOperations {
     private final Dispatcher dispatcher;
     private final StatementContext statementContext;
     private final MetadataRepository metadataRepository;
+    private final Notifications notifications;
 
     @Inject
     public CrudOperations(Environment environment, Dispatcher dispatcher, StatementContext statementContext,
-            MetadataRepository metadataRepository) {
+            MetadataRepository metadataRepository, Notifications notifications) {
         this.environment = environment;
         this.dispatcher = dispatcher;
         this.statementContext = statementContext;
         this.metadataRepository = metadataRepository;
+        this.notifications = notifications;
     }
 
     // ------------------------------------------------------ create
@@ -78,7 +80,7 @@ public class CrudOperations {
                 .build();
         return dispatcher.execute(operation)
                 .then(result -> {
-                    success("Resource added", description(typeName).add(" has been successfully added."));
+                    notifications.send(success("Resource added", typeName + " has been successfully added."));
                     return Promise.resolve(result);
                 });
     }
@@ -91,11 +93,11 @@ public class CrudOperations {
             Composite composite = new Composite(operations);
             return dispatcher.execute(composite)
                     .then(result -> {
-                        success("Update successful", description(typeName).add(" has been successfully updated."));
+                        notifications.send(success("Update successful", typeName + " has been successfully updated."));
                         return Promise.resolve(result);
                     });
         } else {
-            warning("Not modified", description(typeName).add(" has not been modified."));
+            notifications.send(warning("Not modified", typeName + " has not been modified."));
             return Promise.resolve(new CompositeResult(new ModelNode()));
         }
     }
@@ -107,8 +109,7 @@ public class CrudOperations {
         Operation operation = new Operation.Builder(template.resolve(statementContext), REMOVE).build();
         return dispatcher.execute(operation)
                 .then(result -> {
-                    success("Resource deleted",
-                            description(typeName).add(" has been successfully deleted."));
+                    notifications.send(success("Resource deleted", typeName + " has been successfully deleted."));
                     return Promise.resolve(result);
                 });
     }

@@ -18,7 +18,6 @@ package org.jboss.hal.ui.resource;
 import java.util.List;
 
 import org.jboss.hal.core.LabelBuilder;
-import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
@@ -41,6 +40,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
@@ -96,7 +96,7 @@ public class ResourceDialogs {
                                 .addFooter(modalFooter()
                                         .addButton(button("Add").primary(),
                                                 (__, modal) -> addResource(resolved, modal, resourceForm, resolve))
-                                        .addButton(button("Cancel").link(), (__, modal) -> cancel(modal, resolve)))
+                                        .addButton(button("Cancel").link(), (__, modal) -> onCancel(modal, resolve)))
                                 .appendToBody()
                                 .open();
                     } else {
@@ -137,7 +137,7 @@ public class ResourceDialogs {
                 resolved = AddressTemplate.of(template);
             }
             uic().crud().create(resolved, payload)
-                    .then(result -> success(modal, result, resolve))
+                    .then(result -> onSuccess(modal, result, resolve))
                     .catch_(error -> {
                         resourceForm.addAlert(
                                 alert(danger, "Failed to add resource").inline()
@@ -181,12 +181,12 @@ public class ResourceDialogs {
                             executeOperation(template, operationDescription, resourceForm, resultContainer);
                         }
                     } else {
-                        Notifications.error("Operation failed", "No operation definition found for " + operation);
+                        uic().notifications().send(error("Operation failed", "No operation definition found for " + operation));
                     }
                     return null;
                 })
                 .catch_(error -> {
-                    Notifications.error("Operation failed", String.valueOf(error));
+                    uic().notifications().send(error("Operation failed", String.valueOf(error)));
                     return null;
                 });
     }
@@ -253,28 +253,28 @@ public class ResourceDialogs {
                         .add("?"))
                 .addFooter(modalFooter()
                         .addButton(button("Delete").primary(), (__, modal) -> uic().crud().delete(resolvedTemplate)
-                                .then(result -> success(modal, result, resolve))
-                                .catch_(error -> error(modal, error, reject)))
-                        .addButton(button("Cancel").link(), (__, modal) -> cancel(modal, resolve)))
+                                .then(result -> onSuccess(modal, result, resolve))
+                                .catch_(error -> onError(modal, error, reject)))
+                        .addButton(button("Cancel").link(), (__, modal) -> onCancel(modal, resolve)))
                 .appendToBody()
                 .open());
     }
 
     // ------------------------------------------------------ internal
 
-    private static IThenable<ModelNode> success(Modal modal, ModelNode modelNode, ResolveCallbackFn<ModelNode> resolve) {
+    private static IThenable<ModelNode> onSuccess(Modal modal, ModelNode modelNode, ResolveCallbackFn<ModelNode> resolve) {
         modal.close();
         resolve.onInvoke(modelNode);
         return null;
     }
 
-    private static IThenable<ModelNode> error(Modal modal, Object error, RejectCallbackFn reject) {
+    private static IThenable<ModelNode> onError(Modal modal, Object error, RejectCallbackFn reject) {
         modal.close();
         reject.onInvoke(error);
         return null;
     }
 
-    private static void cancel(Modal modal, ResolveCallbackFn<ModelNode> resolve) {
+    private static void onCancel(Modal modal, ResolveCallbackFn<ModelNode> resolve) {
         modal.close();
         resolve.onInvoke(new ModelNode());
     }

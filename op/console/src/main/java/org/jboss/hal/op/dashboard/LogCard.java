@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
@@ -37,10 +36,12 @@ import static java.util.stream.Collectors.groupingBy;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
+import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.LINES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_LOG_FILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TAIL;
 import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.Card.card;
@@ -176,6 +177,6 @@ class LogCard implements DashboardCard {
 
     private void chooseLogFile() {
         // TODO Implement choose log file
-        Notifications.nyi();
+        uic().notifications().send(nyi());
     }
 }

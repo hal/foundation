@@ -15,103 +15,104 @@
  */
 package org.jboss.hal.core;
 
-import org.patternfly.component.alert.Alert;
-import org.patternfly.component.alert.AlertDescription;
-import org.patternfly.component.alert.AlertGroup;
+import java.util.List;
+import java.util.Map;
 
-import static org.patternfly.component.Severity.danger;
-import static org.patternfly.component.Severity.info;
-import static org.patternfly.component.Severity.success;
-import static org.patternfly.component.Severity.warning;
-import static org.patternfly.component.alert.Alert.alert;
-import static org.patternfly.component.alert.AlertGroup.toastAlertGroup;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
-/**
- * Static methods for creating notifications based on {@link Alert} that are added to {@link AlertGroup#toastAlertGroup()}
- */
+import org.jboss.elemento.logger.Logger;
+import org.jboss.hal.db.LRUCache;
+
+import static org.jboss.hal.core.NotificationModification.CLEAR;
+import static org.jboss.hal.core.NotificationModification.READ;
+import static org.jboss.hal.core.NotificationModification.REMOVE;
+
+@ApplicationScoped
 public class Notifications {
 
-    // ------------------------------------------------------ success
+    // TODO Add support for 2nd level cache!
+    private static final int FIRST_LEVEL_CACHE_SIZE = 500;
+    private static final Logger logger = Logger.getLogger(Notifications.class.getName());
 
-    public static void success(String message) {
-        success(alert(success, message));
+    @Inject Event<NotificationAddEvent> addEvent;
+    @Inject Event<NotificationModificationEvent> modificationEvent;
+    private final LRUCache<String, Notification> cache;
+
+    public Notifications() {
+        cache = new LRUCache<>(FIRST_LEVEL_CACHE_SIZE);
+        cache.addRemovalHandler((id, __) -> {
+            modificationEvent.fire(new NotificationModificationEvent(REMOVE, List.of(id)));
+            logger.debug("LRU notification for %s has been removed", id);
+        });
     }
 
-    public static void success(String message, String details) {
-        success(alert(success, message).addDescription(details));
+    // ------------------------------------------------------ api
+
+    public void send(Notification notification) {
+        addEvent.fire(new NotificationAddEvent(notification));
     }
 
-    public static void success(String message, AlertDescription details) {
-        success(alert(success, message).addDescription(details));
+    public void read(String id) {
+        readInternal(id);
+        modificationEvent.fire(new NotificationModificationEvent(READ, List.of(id)));
     }
 
-    public static void success(Alert alert) {
-        notification(alert);
+    public void read(List<String> ids) {
+        for (String id : ids) {
+            readInternal(id);
+        }
+        modificationEvent.fire(new NotificationModificationEvent(READ, ids));
     }
 
-    // ------------------------------------------------------ info
-
-    public static void info(String message) {
-        info(alert(info, message));
+    public void clear(String id) {
+        // mark all other notifications as not cleared to support the 'Unclear last' feature
+        unclearAll();
+        clearInternal(id);
+        modificationEvent.fire(new NotificationModificationEvent(CLEAR, List.of(id)));
     }
 
-    public static void info(String message, String details) {
-        info(alert(info, message).addDescription(details));
+    public void clear(List<String> ids) {
+        // mark all other notifications as not cleared to support the 'Unclear last' feature
+        unclearAll();
+        for (String id : ids) {
+            clearInternal(id);
+        }
+        modificationEvent.fire(new NotificationModificationEvent(CLEAR, ids));
     }
 
-    public static void info(String message, AlertDescription details) {
-        info(alert(info, message).addDescription(details));
+    public void remove(String id) {
+        cache.remove(id);
+        modificationEvent.fire(new NotificationModificationEvent(REMOVE, List.of(id)));
     }
 
-    public static void info(Alert alert) {
-        notification(alert);
-    }
-
-    // ------------------------------------------------------ warning
-
-    public static void warning(String message) {
-        warning(alert(warning, message));
-    }
-
-    public static void warning(String message, String details) {
-        warning(alert(warning, message).addDescription(details));
-    }
-
-    public static void warning(String message, AlertDescription details) {
-        warning(alert(warning, message).addDescription(details));
-    }
-
-    public static void warning(Alert alert) {
-        notification(alert);
-    }
-
-    // ------------------------------------------------------ error
-
-    public static void error(String message) {
-        error(alert(danger, message));
-    }
-
-    public static void error(String message, String details) {
-        error(alert(danger, message).addDescription(details));
-    }
-
-    public static void error(String message, AlertDescription details) {
-        error(alert(danger, message).addDescription(details));
-    }
-
-    public static void error(Alert alert) {
-        notification(alert);
-    }
-
-    // ------------------------------------------------------ special
-
-    public static void nyi() {
-        info("Not yet implemented", "This feature is not yet implemented");
+    public void remove(List<String> ids) {
+        for (String id : ids) {
+            cache.remove(id);
+        }
+        modificationEvent.fire(new NotificationModificationEvent(REMOVE, ids));
     }
 
     // ------------------------------------------------------ internal
 
-    private static void notification(Alert alert) {
-        toastAlertGroup().add(alert);
+    private void unclearAll() {
+        for (Map.Entry<String, LRUCache.Node<String, Notification>> entry : cache.entries()) {
+            entry.getValue().value.cleared = false;
+        }
+    }
+
+    private void clearInternal(String id) {
+        Notification notification = cache.get(id);
+        if (notification != null) {
+            notification.cleared = true;
+        }
+    }
+
+    private void readInternal(String id) {
+        Notification notification = cache.get(id);
+        if (notification != null) {
+            notification.read = true;
+        }
     }
 }

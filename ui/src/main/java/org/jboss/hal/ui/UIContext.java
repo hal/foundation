@@ -22,6 +22,7 @@ import jakarta.inject.Inject;
 
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.CrudOperations;
+import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Settings;
@@ -54,32 +55,38 @@ public class UIContext {
     // ------------------------------------------------------ instance
 
     private static final Logger logger = Logger.getLogger(UIContext.class.getName());
-    private final Environment environment;
-    private final Settings settings;
-    private final Dispatcher dispatcher;
-    private final StatementContext statementContext;
-    private final ModelTree modelTree;
+
     private final CapabilityRegistry capabilityRegistry;
-    private final MetadataRepository metadataRepository;
     private final CrudOperations crud;
+    private final Dispatcher dispatcher;
+    private final Environment environment;
+    private final MetadataRepository metadataRepository;
+    private final ModelTree modelTree;
+    private final Notifications notifications;
+    private final Settings settings;
+    private final StatementContext statementContext;
 
     @Inject
-    public UIContext(Environment environment,
-            Settings settings,
-            Dispatcher dispatcher,
-            StatementContext statementContext,
-            ModelTree modelTree,
+    public UIContext(
             CapabilityRegistry capabilityRegistry,
+            CrudOperations crud,
+            Dispatcher dispatcher,
+            Environment environment,
             MetadataRepository metadataRepository,
-            CrudOperations crud) {
-        this.environment = environment;
-        this.settings = settings;
-        this.dispatcher = dispatcher;
-        this.statementContext = statementContext;
-        this.modelTree = modelTree;
+            ModelTree modelTree,
+            Notifications notifications,
+            Settings settings,
+            StatementContext statementContext
+    ) {
         this.capabilityRegistry = capabilityRegistry;
-        this.metadataRepository = metadataRepository;
         this.crud = crud;
+        this.dispatcher = dispatcher;
+        this.environment = environment;
+        this.metadataRepository = metadataRepository;
+        this.modelTree = modelTree;
+        this.notifications = notifications;
+        this.settings = settings;
+        this.statementContext = statementContext;
     }
 
     @PostConstruct
@@ -87,35 +94,39 @@ public class UIContext {
         UIContext.instance = this;
     }
 
-    public Environment environment() {
-        return environment;
+    public CapabilityRegistry capabilityRegistry() {
+        return capabilityRegistry;
     }
 
-    public Settings settings() {
-        return settings;
+    public CrudOperations crud() {
+        return crud;
     }
 
     public Dispatcher dispatcher() {
         return dispatcher;
     }
 
-    public StatementContext statementContext() {
-        return statementContext;
-    }
-
-    public ModelTree modelTree() {
-        return modelTree;
-    }
-
-    public CapabilityRegistry capabilityRegistry() {
-        return capabilityRegistry;
+    public Environment environment() {
+        return environment;
     }
 
     public MetadataRepository metadataRepository() {
         return metadataRepository;
     }
 
-    public CrudOperations crud() {
-        return crud;
+    public ModelTree modelTree() {
+        return modelTree;
+    }
+
+    public Notifications notifications() {
+        return notifications;
+    }
+
+    public Settings settings() {
+        return settings;
+    }
+
+    public StatementContext statementContext() {
+        return statementContext;
     }
 }

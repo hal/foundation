@@ -21,7 +21,7 @@ public class ProcessStateEvent implements ApplicationEvent {
 
     public final ProcessState processState;
 
-    public ProcessStateEvent(ProcessState processState) {
+    ProcessStateEvent(ProcessState processState) {
         this.processState = processState;
     }
 }

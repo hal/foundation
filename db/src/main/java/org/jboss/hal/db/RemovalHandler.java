@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.meta;
+package org.jboss.hal.db;
 
 @FunctionalInterface
-interface RemovalHandler<K, V> {
+public interface RemovalHandler<K, V> {
 
     void onRemoval(K key, V value);
 }

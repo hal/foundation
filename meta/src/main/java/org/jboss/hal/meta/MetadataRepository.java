@@ -31,6 +31,7 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
+import org.jboss.hal.db.LRUCache;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Settings;
 

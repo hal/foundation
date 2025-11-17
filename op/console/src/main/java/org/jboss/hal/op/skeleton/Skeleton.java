@@ -34,10 +34,11 @@ import elemental2.dom.HTMLElement;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.hal.core.Notifications.nyi;
+import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.op.skeleton.EndpointManager.endpointManager;
 import static org.jboss.hal.op.skeleton.GlobalSearch.globalSearch;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.backtotop.BackToTop.backToTop;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.page.Masthead.masthead;
@@ -106,7 +107,8 @@ public class Skeleton implements IsElement<HTMLElement> {
                                                         .addItem(toolbarItem().add(globalSearch()))
                                                         .addItem(toolbarItem().add(button(cog()).plain()
                                                                 .css(modifier("settings"))
-                                                                .onClick((event, component) -> nyi())))
+                                                                .onClick((event, component) ->
+                                                                        uic().notifications().send(nyi()))))
                                                         .addItem(toolbarItem().add(themeSelector("hal")
                                                                 .withContrast()))
                                                         .addItem(toolbarItem().add(endpointManager())))

@@ -13,10 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.event;
+package org.jboss.hal.core;
 
-/**
- * Marker interface for HAL application events managed and sent by CDI.
- */
-public interface ApplicationEvent {
+public enum NotificationModification {
+    READ, CLEAR, REMOVE
 }

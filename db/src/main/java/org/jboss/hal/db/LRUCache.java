@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.meta;
+package org.jboss.hal.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-class LRUCache<K, V> {
+public class LRUCache<K, V> {
 
     private final int capacity;
     private final LinkedList<Node<K, V>> cacheList;
     private final HashMap<K, Node<K, V>> cacheMap;
     private final List<RemovalHandler<K, V>> removalHandlers;
 
-    LRUCache(int capacity) {
+    public LRUCache(int capacity) {
         this.capacity = capacity;
         this.cacheList = new LinkedList<>();
         this.cacheMap = new HashMap<>();
@@ -39,15 +39,15 @@ class LRUCache<K, V> {
 
     // ------------------------------------------------------ api
 
-    boolean contains(K key) {
+    public boolean contains(K key) {
         return cacheMap.containsKey(key);
     }
 
-    int size() {
+    public int size() {
         return cacheMap.size();
     }
 
-    V get(K key) {
+    public V get(K key) {
         Node<K, V> node = cacheMap.get(key);
         if (node == null) {
             return null;
@@ -57,7 +57,11 @@ class LRUCache<K, V> {
         return node.value;
     }
 
-    void put(K key, V value) {
+    public Set<Map.Entry<K, Node<K, V>>> entries() {
+        return cacheMap.entrySet();
+    }
+
+    public void put(K key, V value) {
         Node<K, V> existingNode = cacheMap.get(key);
         if (existingNode != null) {
             existingNode.value = value;
@@ -74,7 +78,7 @@ class LRUCache<K, V> {
         }
     }
 
-    V remove(K key) {
+    public V remove(K key) {
         Node<K, V> existingNode = cacheMap.remove(key);
         if (existingNode != null) {
             cacheList.remove(existingNode);
@@ -83,7 +87,7 @@ class LRUCache<K, V> {
         return null;
     }
 
-    void addRemovalHandler(RemovalHandler<K, V> handler) {
+    public void addRemovalHandler(RemovalHandler<K, V> handler) {
         removalHandlers.add(handler);
     }
 
@@ -93,10 +97,6 @@ class LRUCache<K, V> {
     @SuppressWarnings("unchecked")
     K[] keys() {
         return (K[]) cacheList.stream().map(n -> n.key).toArray();
-    }
-
-    Set<Map.Entry<K, Node<K, V>>> entries() {
-        return cacheMap.entrySet();
     }
 
     private void moveToHead(Node<K, V> node) {
@@ -114,10 +114,10 @@ class LRUCache<K, V> {
 
     // ------------------------------------------------------ inner classes
 
-    static class Node<K, V> {
+    public static class Node<K, V> {
 
-        final K key;
-        V value;
+        public final K key;
+        public V value;
 
         private Node(K key, V value) {
             this.key = key;

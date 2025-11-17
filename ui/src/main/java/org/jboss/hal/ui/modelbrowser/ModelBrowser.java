@@ -20,7 +20,6 @@ import org.jboss.elemento.Attachable;
 import org.jboss.elemento.EventType;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.logger.Logger;
-import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
@@ -47,6 +46,7 @@ import static org.jboss.elemento.EventType.touchcancel;
 import static org.jboss.elemento.EventType.touchend;
 import static org.jboss.elemento.EventType.touchmove;
 import static org.jboss.elemento.EventType.touchstart;
+import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OPERATION;
 import static org.jboss.hal.resources.HalClasses.halComponent;
@@ -219,7 +219,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                     return null;
                 })
                 .catch_(error -> {
-                    Notifications.error("Failed to delete resource", String.valueOf(error));
+                    uic().notifications().send(error("Failed to delete resource", String.valueOf(error)));
                     return null;
                 });
     }

@@ -22,7 +22,6 @@ import org.jboss.elemento.Attachable;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
 import org.jboss.elemento.logger.Logger;
-import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
@@ -42,6 +41,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
+import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
@@ -293,7 +293,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     void reset() {
         if (state == VIEW) {
             // TODO Implement me!
-            Notifications.nyi();
+            uic().notifications().send(nyi());
         }
     }
 

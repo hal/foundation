@@ -13,10 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.event;
+package org.jboss.hal.core;
 
-/**
- * Marker interface for HAL application events managed and sent by CDI.
- */
-public interface ApplicationEvent {
+import java.util.List;
+
+import org.jboss.hal.event.ApplicationEvent;
+
+public class NotificationModificationEvent implements ApplicationEvent {
+
+    public final NotificationModification modification;
+    public final List<String> ids;
+
+    NotificationModificationEvent(NotificationModification modification, List<String> ids) {
+        this.modification = modification;
+        this.ids = ids;
+    }
 }

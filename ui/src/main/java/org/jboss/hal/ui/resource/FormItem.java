@@ -23,7 +23,6 @@ import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
 import org.jboss.elemento.logger.Logger;
-import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.BuildingBlocks;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
@@ -44,12 +43,14 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.elemento.Elements.small;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.Expression.containsExpression;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
 import static org.jboss.hal.ui.BuildingBlocks.resolveExpression;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.EXISTING_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.NEW_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemInputMode.EXPRESSION;
@@ -379,7 +380,7 @@ abstract class FormItem implements
                 .onClick((e, b) -> {
                     if (textControl != null) {
                         // TODO Resolve expression
-                        Notifications.nyi();
+                        uic().notifications().send(nyi());
                         logger.info("Resolve expression: %s", textControl.value());
                     }
                 });
