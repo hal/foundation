@@ -35,6 +35,12 @@ public interface Keys {
     /** org.jboss.hal.ui.modelbrowser.ModelBrowserNode */
     String MODEL_BROWSER_NODE = "model-browser-node";
 
+    /** org.jboss.hal.core.Notification */
+    String NOTIFICATION = "notification";
+
+    /** double */
+    String NOTIFICATION_TIMESTAMP = "notification-timestamp";
+
     /** org.jboss.hal.meta.description.OperationDescription */
     String OPERATION_DESCRIPTION = "operation-description";
 

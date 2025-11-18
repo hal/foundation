@@ -2,6 +2,12 @@
 
 This document highlights the new features of the management console.
 
+## Header
+
+- Notification badge / drawer
+- Theme, contrast selector
+- Endpoint selector
+
 ## Stability level
 
 - Highlight of stability levels for resources, attributes, operations and parameters.
@@ -21,6 +27,7 @@ The model browser has been greatly improved:
 - Copy the current address to the clipboard
 - Descriptions in resources list views
 - Follow capability references
+- Resizable tree view
 
 ### Data
 

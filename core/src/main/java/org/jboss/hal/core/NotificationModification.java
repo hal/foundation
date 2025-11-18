@@ -16,5 +16,5 @@
 package org.jboss.hal.core;
 
 public enum NotificationModification {
-    READ, CLEAR, REMOVE
+    READ, CLEAR, REMOVE, UNCLEAR
 }

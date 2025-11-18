@@ -19,6 +19,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.PlaceManager;
+import org.jboss.hal.core.Notifications;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
@@ -29,7 +30,7 @@ import org.patternfly.component.navigation.Navigation;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
-import static org.jboss.hal.op.skeleton.Skeleton.errorSkeleton;
+import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
 
 @Application(packages = {"org.jboss.hal"})
@@ -39,6 +40,7 @@ public class Main {
     @Inject Environment environment;
     @Inject PlaceManager placeManager;
     @Inject Navigation navigation;
+    @Inject Notifications notifications;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -49,7 +51,7 @@ public class Main {
     void init() {
         bootstrap.run().subscribe(context -> {
             if (context.isSuccessful()) {
-                insertFirst(document.body, skeleton(environment).add(navigation));
+                insertFirst(document.body, skeleton(environment, notifications).add(navigation));
                 placeManager.start();
             } else {
                 BootstrapError error = context.pop(BootstrapError.UNKNOWN);

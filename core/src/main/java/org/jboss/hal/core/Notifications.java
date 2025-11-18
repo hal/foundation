@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.jboss.hal.db.LRUCache;
 import static org.jboss.hal.core.NotificationModification.CLEAR;
 import static org.jboss.hal.core.NotificationModification.READ;
 import static org.jboss.hal.core.NotificationModification.REMOVE;
+import static org.jboss.hal.core.NotificationModification.UNCLEAR;
 
 @ApplicationScoped
 public class Notifications {
@@ -50,7 +52,12 @@ public class Notifications {
 
     // ------------------------------------------------------ api
 
+    public Notification get(String id) {
+        return cache.get(id);
+    }
+
     public void send(Notification notification) {
+        cache.put(notification.id, notification);
         addEvent.fire(new NotificationAddEvent(notification));
     }
 
@@ -66,20 +73,37 @@ public class Notifications {
         modificationEvent.fire(new NotificationModificationEvent(READ, ids));
     }
 
+    public void readAll() {
+        read(new ArrayList<>(cache.keys()));
+    }
+
     public void clear(String id) {
-        // mark all other notifications as not cleared to support the 'Unclear last' feature
-        unclearAll();
         clearInternal(id);
         modificationEvent.fire(new NotificationModificationEvent(CLEAR, List.of(id)));
     }
 
     public void clear(List<String> ids) {
-        // mark all other notifications as not cleared to support the 'Unclear last' feature
-        unclearAll();
         for (String id : ids) {
             clearInternal(id);
         }
         modificationEvent.fire(new NotificationModificationEvent(CLEAR, ids));
+    }
+
+    public void clearAll() {
+        clear(new ArrayList<>(cache.keys()));
+    }
+
+    public void unclearLast() {
+        List<String> uncleared = new ArrayList<>();
+        for (Map.Entry<String, LRUCache.Node<String, Notification>> entry : cache.entries()) {
+            if (entry.getValue().value.cleared) {
+                uncleared.add(entry.getKey());
+                entry.getValue().value.cleared = false;
+            }
+        }
+        if (!uncleared.isEmpty()) {
+            modificationEvent.fire(new NotificationModificationEvent(UNCLEAR, uncleared));
+        }
     }
 
     public void remove(String id) {
@@ -94,13 +118,11 @@ public class Notifications {
         modificationEvent.fire(new NotificationModificationEvent(REMOVE, ids));
     }
 
-    // ------------------------------------------------------ internal
-
-    private void unclearAll() {
-        for (Map.Entry<String, LRUCache.Node<String, Notification>> entry : cache.entries()) {
-            entry.getValue().value.cleared = false;
-        }
+    public int unread() {
+        return (int) cache.values().stream().filter(n -> !n.read).count();
     }
+
+    // ------------------------------------------------------ internal
 
     private void clearInternal(String id) {
         Notification notification = cache.get(id);

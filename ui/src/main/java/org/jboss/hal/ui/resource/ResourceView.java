@@ -26,6 +26,7 @@ import org.patternfly.component.list.DescriptionList;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
@@ -105,5 +106,11 @@ class ResourceView implements
     public void clear() {
         dl.clear();
         items.clear();
+    }
+
+    @Override
+    public void removeItem(String identifier) {
+        ViewItem item = items.remove(identifier);
+        failSafeRemoveFromParent(item);
     }
 }

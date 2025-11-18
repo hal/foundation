@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 public class LRUCache<K, V> {
 
     private final int capacity;
@@ -61,6 +64,14 @@ public class LRUCache<K, V> {
         return cacheMap.entrySet();
     }
 
+    public Set<K> keys() {
+        return cacheMap.values().stream().map(n -> n.key).collect(toSet());
+    }
+
+    public List<V> values() {
+        return cacheMap.values().stream().map(n -> n.value).collect(toList());
+    }
+
     public void put(K key, V value) {
         Node<K, V> existingNode = cacheMap.get(key);
         if (existingNode != null) {
@@ -95,7 +106,7 @@ public class LRUCache<K, V> {
 
     // for testing purposes
     @SuppressWarnings("unchecked")
-    K[] keys() {
+    K[] keysArray() {
         return (K[]) cacheList.stream().map(n -> n.key).toArray();
     }
 

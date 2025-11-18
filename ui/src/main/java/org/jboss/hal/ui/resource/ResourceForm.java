@@ -34,6 +34,7 @@ import org.patternfly.component.form.Form;
 import elemental2.dom.HTMLElement;
 
 import static java.util.stream.Collectors.toList;
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
@@ -108,6 +109,12 @@ class ResourceForm implements
     public void clear() {
         form.clear();
         items.clear();
+    }
+
+    @Override
+    public void removeItem(String identifier) {
+        FormItem item = items.remove(identifier);
+        failSafeRemoveFromParent(item);
     }
 
     // ------------------------------------------------------ validation

@@ -37,6 +37,7 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.wrapHtmlContainer;
+import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
@@ -163,8 +164,9 @@ class ViewItemFactory {
             if (ra.expression) {
                 HTMLElement resolveButton = button().plain().inline().icon(resolveExpression().get())
                         .onClick((e, b) -> {
-                            logger.info("Resolve expression: %s", ra.value.asString());
                             // TODO Resolve expression
+                            uic().notifications().send(nyi());
+                            logger.info("Resolve expression: %s", ra.value.asString());
                         })
                         .element();
                 element = span()

@@ -81,7 +81,7 @@ public class Notification {
     // ------------------------------------------------------ instance
 
     @JsOverlay
-    private static final double RELATIVE_TIME_THRESHOLD = 3_600_000;
+    public static final double RELATIVE_TIME_THRESHOLD = 3_600_000;
 
     public String id;
     public String severity; // String instead of Severity to support JSON (de)serialization
@@ -114,9 +114,13 @@ public class Notification {
     }
 
     @JsOverlay
+    public final double age() {
+        return JsDate.now() - timestamp;
+    }
+
+    @JsOverlay
     public final String timestamp() {
-        double age = JsDate.now() - timestamp;
-        if (age < RELATIVE_TIME_THRESHOLD) {
+        if (age() < RELATIVE_TIME_THRESHOLD) {
             RelativeTime relativeTime = new RelativeTime();
             return relativeTime.from(timestamp);
         } else {

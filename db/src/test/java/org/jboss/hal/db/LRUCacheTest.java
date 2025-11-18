@@ -42,51 +42,51 @@ class LRUCacheTest {
         cache.put(3, "C");
         assertNull(recorder.lastKey);
         assertNull(recorder.lastValue);
-        assertArrayEquals(new Integer[]{3, 2, 1}, cache.keys());
+        assertArrayEquals(new Integer[]{3, 2, 1}, cache.keysArray());
 
         // new entry (4:D, 3:C, 2:B) [1:A]
         cache.put(4, "D");
         assertEquals(1, recorder.lastKey);
         assertEquals("A", recorder.lastValue);
-        assertArrayEquals(new Integer[]{4, 3, 2}, cache.keys());
+        assertArrayEquals(new Integer[]{4, 3, 2}, cache.keysArray());
 
         // update entry (2:b, 4:D, 3:C)
         cache.put(2, "b");
         assertEquals(1, recorder.lastKey);
         assertEquals("A", recorder.lastValue);
-        assertArrayEquals(new Integer[]{2, 4, 3}, cache.keys());
+        assertArrayEquals(new Integer[]{2, 4, 3}, cache.keysArray());
 
         // get entry (3:C, 2:b, 4:D)
         value = cache.get(3);
         assertEquals("C", value);
         assertEquals(1, recorder.lastKey);
         assertEquals("A", recorder.lastValue);
-        assertArrayEquals(new Integer[]{3, 2, 4}, cache.keys());
+        assertArrayEquals(new Integer[]{3, 2, 4}, cache.keysArray());
 
         // new entry (5:E, 3:C, 2:b) [4:D]
         cache.put(5, "E");
         assertEquals(4, recorder.lastKey);
         assertEquals("D", recorder.lastValue);
-        assertArrayEquals(new Integer[]{5, 3, 2}, cache.keys());
+        assertArrayEquals(new Integer[]{5, 3, 2}, cache.keysArray());
 
         // remove entry (5:E, 2:b)
         value = cache.remove(3);
         assertEquals("C", value);
         assertEquals(4, recorder.lastKey);
         assertEquals("D", recorder.lastValue);
-        assertArrayEquals(new Integer[]{5, 2}, cache.keys());
+        assertArrayEquals(new Integer[]{5, 2}, cache.keysArray());
 
         // new entry (6:F, 5:E, 2:b)
         cache.put(6, "F");
         assertEquals(4, recorder.lastKey);
         assertEquals("D", recorder.lastValue);
-        assertArrayEquals(new Integer[]{6, 5, 2}, cache.keys());
+        assertArrayEquals(new Integer[]{6, 5, 2}, cache.keysArray());
 
         // new entry (7:G, 6:F, 5:E) [2:b]
         cache.put(7, "G");
         assertEquals(2, recorder.lastKey);
         assertEquals("b", recorder.lastValue);
-        assertArrayEquals(new Integer[]{7, 6, 5}, cache.keys());
+        assertArrayEquals(new Integer[]{7, 6, 5}, cache.keysArray());
     }
 
     @Test
