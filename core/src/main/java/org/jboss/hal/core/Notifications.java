@@ -23,21 +23,32 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.intl.DateTimeFormat;
+import org.jboss.elemento.intl.DateTimeFormatOptions;
+import org.jboss.elemento.intl.RelativeTime;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.db.LRUCache;
+import org.jboss.hal.env.Settings;
 
+import elemental2.core.JsDate;
+
+import static org.jboss.elemento.intl.Format.short_;
 import static org.jboss.hal.core.NotificationModification.CLEAR;
 import static org.jboss.hal.core.NotificationModification.READ;
 import static org.jboss.hal.core.NotificationModification.REMOVE;
 import static org.jboss.hal.core.NotificationModification.UNCLEAR;
+import static org.jboss.hal.env.Settings.Key.LOCALE;
+import static org.patternfly.component.Severity.danger;
 
 @ApplicationScoped
 public class Notifications {
 
+    public static final double RELATIVE_TIME_THRESHOLD = 3_600_000;
     // TODO Add support for 2nd level cache!
     private static final int FIRST_LEVEL_CACHE_SIZE = 500;
     private static final Logger logger = Logger.getLogger(Notifications.class.getName());
 
+    @Inject Settings settings;
     @Inject Event<NotificationAddEvent> addEvent;
     @Inject Event<NotificationModificationEvent> modificationEvent;
     private final LRUCache<String, Notification> cache;
@@ -61,20 +72,20 @@ public class Notifications {
         addEvent.fire(new NotificationAddEvent(notification));
     }
 
-    public void read(String id) {
+    public void markAsRead(String id) {
         readInternal(id);
         modificationEvent.fire(new NotificationModificationEvent(READ, List.of(id)));
     }
 
-    public void read(List<String> ids) {
+    public void markAsRead(List<String> ids) {
         for (String id : ids) {
             readInternal(id);
         }
         modificationEvent.fire(new NotificationModificationEvent(READ, ids));
     }
 
-    public void readAll() {
-        read(new ArrayList<>(cache.keys()));
+    public void markAllAsRead() {
+        markAsRead(new ArrayList<>(cache.keys()));
     }
 
     public void clear(String id) {
@@ -118,8 +129,33 @@ public class Notifications {
         modificationEvent.fire(new NotificationModificationEvent(REMOVE, ids));
     }
 
-    public int unread() {
-        return (int) cache.values().stream().filter(n -> !n.read).count();
+    public String timestamp(String id) {
+        Notification notification = cache.get(id);
+        if (notification != null) {
+            String locale = settings.get(LOCALE).value();
+            if (notification.age() < RELATIVE_TIME_THRESHOLD) {
+                RelativeTime relativeTime = new RelativeTime(locale);
+                return relativeTime.from(notification.timestamp);
+            } else {
+                return new DateTimeFormat(locale, DateTimeFormatOptions.create()
+                        .dateStyle(short_)
+                        .timeStyle(short_))
+                        .format(new JsDate(notification.timestamp));
+            }
+        }
+        return "";
+    }
+
+    public int countUnread() {
+        return (int) cache.values().stream()
+                .filter(n -> !n.read)
+                .count();
+    }
+
+    public int countUnreadDanger() {
+        return (int) cache.values().stream()
+                .filter(n -> !n.read && danger.name().equals(n.severity))
+                .count();
     }
 
     // ------------------------------------------------------ internal
@@ -127,6 +163,7 @@ public class Notifications {
     private void clearInternal(String id) {
         Notification notification = cache.get(id);
         if (notification != null) {
+            notification.read = true;
             notification.cleared = true;
         }
     }

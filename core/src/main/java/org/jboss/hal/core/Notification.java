@@ -15,9 +15,7 @@
  */
 package org.jboss.hal.core;
 
-import org.jboss.elemento.intl.DateTimeFormat;
-import org.jboss.elemento.intl.DateTimeFormatOptions;
-import org.jboss.elemento.intl.RelativeTime;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.patternfly.component.Severity;
 
 import elemental2.core.JsArray;
@@ -27,7 +25,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 import static org.jboss.elemento.Id.uuid;
-import static org.jboss.elemento.intl.Format.short_;
 import static org.jboss.hal.core.NotificationDetails.notificationDetails;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.Severity.info;
@@ -70,21 +67,18 @@ public class Notification {
         notification.id = uuid();
         notification.read = false;
         notification.cleared = false;
-        notification.timestamp = (long) JsDate.now();
+        notification.timestamp = JsDate.now();
         notification.details = new JsArray<>();
         notification.severity = severity.name();
-        notification.title = title;
-        notification.description = description;
+        notification.title = SafeHtmlUtils.htmlEscape(title);
+        notification.description = SafeHtmlUtils.htmlEscape(description);
         return notification;
     }
 
     // ------------------------------------------------------ instance
 
-    @JsOverlay
-    public static final double RELATIVE_TIME_THRESHOLD = 3_600_000;
-
     public String id;
-    public String severity; // String instead of Severity to support JSON (de)serialization
+    public String severity; // String instead of Severity to make this a native JavaScript object
     public String title;
     public String description;
     public JsArray<NotificationDetails> details;
@@ -116,18 +110,5 @@ public class Notification {
     @JsOverlay
     public final double age() {
         return JsDate.now() - timestamp;
-    }
-
-    @JsOverlay
-    public final String timestamp() {
-        if (age() < RELATIVE_TIME_THRESHOLD) {
-            RelativeTime relativeTime = new RelativeTime();
-            return relativeTime.from(timestamp);
-        } else {
-            return new DateTimeFormat(DateTimeFormatOptions.create()
-                    .dateStyle(short_)
-                    .timeStyle(short_))
-                    .format(new JsDate(timestamp));
-        }
     }
 }

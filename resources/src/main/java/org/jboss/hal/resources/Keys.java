@@ -38,7 +38,7 @@ public interface Keys {
     /** org.jboss.hal.core.Notification */
     String NOTIFICATION = "notification";
 
-    /** double */
+    /** String (not double to prevent cast issues when reading from the context) */
     String NOTIFICATION_TIMESTAMP = "notification-timestamp";
 
     /** org.jboss.hal.meta.description.OperationDescription */

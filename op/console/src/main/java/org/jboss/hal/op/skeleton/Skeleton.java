@@ -97,6 +97,7 @@ public class Skeleton implements IsElement<HTMLElement> {
     private final Page page;
     private final ToolbarItem navigationToolbarItem;
     private HTMLElement root;
+    private StabilityBanner stabilityBanner;
 
     Skeleton(Environment environment, Notifications notifications) {
         MastheadLogo logo = mastheadLogo("/")
@@ -134,7 +135,7 @@ public class Skeleton implements IsElement<HTMLElement> {
                                         .addContent(menuContent()
                                                 .addList(menuList()
                                                         .addItem(menuItem("mark-all-read", "Mark all read")
-                                                                .onClick((e, c) -> notifications.readAll()))
+                                                                .onClick((e, c) -> notifications.markAllAsRead()))
                                                         .addItem(menuItem("clear-all", "Clear all")
                                                                 .onClick((e, c) -> notifications.clearAll()))
                                                         .addItem(menuItem("unclear-last", "Unclear last")
@@ -161,8 +162,8 @@ public class Skeleton implements IsElement<HTMLElement> {
                 for (NotificationDrawerItem item : notificationDrawerList.items()) {
                     Notification notification = item.get(Keys.NOTIFICATION);
                     if (notification != null) {
-                        if (notification.age() < Notification.RELATIVE_TIME_THRESHOLD) {
-                            item.timestamp(notification.timestamp());
+                        if (notification.age() < Notifications.RELATIVE_TIME_THRESHOLD) {
+                            item.timestamp(notifications.timestamp(notification.id));
                         }
                     }
                 }
@@ -177,7 +178,7 @@ public class Skeleton implements IsElement<HTMLElement> {
                     .flexWrap(noWrap)
                     .spaceItems(none)
                     .style("height", "100%")
-                    .add(stabilityBanner(environment, this::dismiss))
+                    .add(stabilityBanner = stabilityBanner(environment, this::dismiss))
                     .addItem(flexItem().grow(default_).style("min-height", 0)
                             .add(page))
                     .element();
@@ -201,11 +202,7 @@ public class Skeleton implements IsElement<HTMLElement> {
     // ------------------------------------------------------ internal
 
     private void dismiss() {
-        if (root != page.element()) {
-            document.body.prepend(page.element());
-            failSafeRemoveFromParent(root);
-            root = page.element();
-            document.documentElement.classList.remove(STABILITY_MARKER);
-        }
+        failSafeRemoveFromParent(stabilityBanner);
+        document.documentElement.classList.remove(STABILITY_MARKER);
     }
 }

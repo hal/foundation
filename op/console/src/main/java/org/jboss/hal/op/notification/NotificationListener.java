@@ -19,6 +19,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.Elements;
 import org.jboss.hal.core.Notification;
 import org.jboss.hal.core.NotificationAddEvent;
 import org.jboss.hal.core.NotificationModification;
@@ -36,8 +37,9 @@ import org.patternfly.component.notification.NotificationDrawerItem;
 import org.patternfly.component.notification.NotificationDrawerList;
 import org.patternfly.style.NotificationStatus;
 
-import elemental2.dom.HTMLElement;
+import elemental2.dom.Element;
 
+import static java.lang.Double.parseDouble;
 import static org.patternfly.component.ComponentRegistry.componentRegistry;
 import static org.patternfly.component.alert.AlertDescription.alertDescription;
 import static org.patternfly.component.alert.AlertGroup.toastAlertGroup;
@@ -50,7 +52,7 @@ import static org.patternfly.component.notification.NotificationDrawerItemBody.n
 import static org.patternfly.icon.IconSets.fas.ellipsisV;
 
 @ApplicationScoped
-public class NotificationManager {
+public class NotificationListener {
 
     @Inject Notifications notifications;
 
@@ -72,8 +74,8 @@ public class NotificationManager {
             drawerList.addItem(notificationDrawerItem(event.notification).read(false));
         }
 
-        // execute last!
-        updateCount();
+        // execute last after notifications have been added/removed!
+        updateState();
     }
 
     public void onNotificationModification(@Observes NotificationModificationEvent event) {
@@ -101,18 +103,21 @@ public class NotificationManager {
             }
         }
 
-        // execute last!
-        updateCount();
+        // execute last after notifications have been added/removed!
+        updateState();
     }
 
     // ------------------------------------------------------ internal
 
-    private void updateCount() {
-        int unread = notifications.unread();
+    private void updateState() {
+        int unread = notifications.countUnread();
+        int unreadDanger = notifications.countUnreadDanger();
         NotificationBadge notificationBadge = notificationBadge();
         if (notificationBadge != null) {
             notificationBadge.count(unread);
-            if (unread != 0) {
+            if (unreadDanger > 0) {
+                notificationBadge.status(NotificationStatus.attention);
+            } else if (unread > 0) {
                 notificationBadge.status(NotificationStatus.unread);
             } else {
                 notificationBadge.status(NotificationStatus.read);
@@ -132,18 +137,27 @@ public class NotificationManager {
         NotificationDrawerList drawerList = notificationDrawerList();
         if (drawerBody != null && drawerList != null) {
             drawerBody.markEmpty(drawerList.isEmpty());
+            if (!drawerList.isEmpty()) {
+                for (NotificationDrawerItem item : drawerList.items()) {
+                    Notification notification = item.get(Keys.NOTIFICATION);
+                    if (notification != null) {
+                        if (notification.age() < Notifications.RELATIVE_TIME_THRESHOLD) {
+                            item.timestamp(notifications.timestamp(notification.id));
+                        }
+                    }
+                }
+            }
         }
     }
 
     private NotificationDrawerItem findPreviousItem(NotificationDrawerList drawerList, double timestamp) {
-        NotificationDrawerItem previousItem = null;
         for (NotificationDrawerItem item : drawerList.items()) {
-            double itemTimestamp = item.get(Keys.NOTIFICATION_TIMESTAMP, 0);
-            if (itemTimestamp < timestamp) {
-                previousItem = item;
+            double itemTimestamp = parseDouble(item.get(Keys.NOTIFICATION_TIMESTAMP, "0"));
+            if (itemTimestamp > timestamp) {
+                return item;
             }
         }
-        return previousItem;
+        return null;
     }
 
     // ------------------------------------------------------ internal lookup
@@ -181,19 +195,19 @@ public class NotificationManager {
                         .addContent(menuContent()
                                 .addList(menuList()
                                         .addItem(menuItem("mark-all-read", "Mark as read")
-                                                .onClick((e, c) -> notifications.read(notification.id)))
+                                                .onClick((e, c) -> notifications.markAsRead(notification.id)))
                                         .addItem(menuItem("clear-all", "Clear")
                                                 .onClick((e, c) -> notifications.clear(notification.id))))));
         return NotificationDrawerItem.notificationDrawerItem(notification.severity(), notification.id,
                         notification.id.substring(0, 8) + ": " + notification.title)
                 .hoverable()
-                .timestamp(notification.timestamp())
+                .timestamp(notifications.timestamp(notification.id))
                 .store(Keys.NOTIFICATION, notification)
-                .store(Keys.NOTIFICATION_TIMESTAMP, notification.timestamp)
+                .store(Keys.NOTIFICATION_TIMESTAMP, String.valueOf(notification.timestamp))
                 .onClick((event, component) -> {
-                    HTMLElement target = (HTMLElement) event.target;
-                    if (target != actions.element()) {
-                        notifications.read(notification.id);
+                    Element target = (Element) event.target;
+                    if (target != actions.element() && !actions.element().contains(target)) {
+                        notifications.markAsRead(notification.id);
                     }
                 })
                 .addAction(actions)
