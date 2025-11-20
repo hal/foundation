@@ -16,7 +16,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Endpoint selector
 - Notification system (badge and drawer)
 
-### ### Upgrades
+### Upgrades
 
 - Bump Elemento to 2.4.1
 - Bump PatternFly Java to 0.3.1
