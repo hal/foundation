@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix standalone image build
+
 ## [0.0.6] - 2025-11-20
 
 ### Added
