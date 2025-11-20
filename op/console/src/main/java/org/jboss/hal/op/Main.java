@@ -23,6 +23,7 @@ import org.jboss.hal.core.Notifications;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
+import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.kie.j2cl.tools.di.annotation.Application;
 import org.kie.j2cl.tools.processors.annotations.GWT3EntryPoint;
 import org.patternfly.component.navigation.Navigation;
@@ -37,6 +38,7 @@ import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
 public class Main {
 
     @Inject Bootstrap bootstrap;
+    @Inject EndpointStorage endpointStorage;
     @Inject Environment environment;
     @Inject PlaceManager placeManager;
     @Inject Navigation navigation;
@@ -51,7 +53,7 @@ public class Main {
     void init() {
         bootstrap.run().subscribe(context -> {
             if (context.isSuccessful()) {
-                insertFirst(document.body, skeleton(environment, notifications).add(navigation));
+                insertFirst(document.body, skeleton(environment, endpointStorage, notifications).add(navigation));
                 placeManager.start();
             } else {
                 BootstrapError error = context.pop(BootstrapError.UNKNOWN);

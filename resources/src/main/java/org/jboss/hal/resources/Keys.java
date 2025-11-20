@@ -26,8 +26,14 @@ public interface Keys {
     /** org.jboss.hal.ui.filter.AccessTypeValue */
     String ACCESS_TYPE_VALUE = "access-type-value";
 
+    /** List<AddressTemplate> */
+    String ADDRESS_TEMPLATES = "address-templates";
+
     /** org.jboss.hal.meta.description.AttributeDescription */
     String ATTRIBUTE_DESCRIPTION = "attribute-description";
+
+    /** org.jboss.hal.op.endpoint.Endpoint */
+    String ENDPOINT = "endpoint";
 
     /** List<String> */
     String HOSTS = "hosts";
@@ -44,17 +50,14 @@ public interface Keys {
     /** org.jboss.hal.meta.description.OperationDescription */
     String OPERATION_DESCRIPTION = "operation-description";
 
+    /** List<String> */
+    String PROVIDER_POINTS = "provider-points";
+
     /** org.jboss.hal.ui.resource.ResourceAttribute */
     String RESOURCE_ATTRIBUTE = "resource-attribute";
 
     /** org.jboss.hal.ui.filter.StorageValue */
     String STORAGE_VALUE = "storage-value";
-
-    /** List<String> */
-    String PROVIDER_POINTS = "provider-points";
-
-    /** List<AddressTemplate> */
-    String ADDRESS_TEMPLATES = "address-templates";
 
     /** org.jboss.hal.ui.filter.TypeValues */
     String TYPE_VALUES = "type-values";

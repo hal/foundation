@@ -10,6 +10,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Resizable model browser
+- Theme and contrast selector
+- Endpoint selector
+- Notification system (badge and drawer)
+
+### ### Upgrades
+
+- Bump Elemento to 2.4.1
+- Bump PatternFly Java to 0.3.1
 
 ## [0.0.5] - 2025-11-09
 

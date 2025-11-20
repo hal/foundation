@@ -21,6 +21,7 @@ import org.jboss.elemento.IsElement;
 import org.jboss.hal.core.Notification;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.env.Environment;
+import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.resources.Assets;
 import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.Keys;
@@ -40,7 +41,7 @@ import elemental2.dom.HTMLElement;
 
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.hal.op.skeleton.EndpointManager.endpointManager;
+import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.patternfly.component.backtotop.BackToTop.backToTop;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
@@ -87,19 +88,18 @@ public class Skeleton implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    public static Skeleton skeleton(Environment environment, Notifications notifications) {
-        return new Skeleton(environment, notifications);
+    public static Skeleton skeleton(Environment environment, EndpointStorage endpointStorage, Notifications notifications) {
+        return new Skeleton(environment, endpointStorage, notifications);
     }
 
     // ------------------------------------------------------ instance
 
     private static final String STABILITY_MARKER = "hal-stability-marker";
-    private final Page page;
+    private final HTMLElement root;
     private final ToolbarItem navigationToolbarItem;
-    private HTMLElement root;
     private StabilityBanner stabilityBanner;
 
-    Skeleton(Environment environment, Notifications notifications) {
+    Skeleton(Environment environment, EndpointStorage endpointStorage, Notifications notifications) {
         MastheadLogo logo = mastheadLogo("/")
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
@@ -115,7 +115,7 @@ public class Skeleton implements IsElement<HTMLElement> {
                                 .addItem(toolbarItem().add(notificationBadge))
                                 .addItem(toolbarItem().add(themeSelector("hal")
                                         .withContrast()))
-                                .addItem(toolbarItem().add(endpointManager()))));
+                                .addItem(toolbarItem().add(endpointSelector(endpointStorage)))));
 
         NotificationDrawerList notificationDrawerList = notificationDrawerList()
                 .registerSubComponent();
@@ -142,7 +142,7 @@ public class Skeleton implements IsElement<HTMLElement> {
                                                                 .onClick((e, c) -> notifications.unclearLast())))))))
                 .addBody(notificationDrawerBody);
 
-        page = page()
+        Page page = page()
                 .addSkipToContent(skipToContent(Ids.MAIN_ID))
                 .addMasthead(masthead()
                         .addMain(mastheadMain()

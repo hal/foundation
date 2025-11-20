@@ -27,6 +27,7 @@ import org.jboss.hal.env.Settings;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.model.user.Current;
 import org.jboss.hal.model.user.User;
+import org.jboss.hal.op.endpoint.EndpointStorage;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.flow.Flow.sequential;
@@ -36,6 +37,7 @@ import static org.jboss.elemento.flow.Flow.sequential;
 public class Bootstrap {
 
     @Inject Endpoints endpoints;
+    @Inject EndpointStorage endpointStorage;
     @Inject Dispatcher dispatcher;
     @Inject Environment environment;
     @Inject StatementContext statementContext;
@@ -45,7 +47,7 @@ public class Bootstrap {
     public Subscription<FlowContext> run() {
         return sequential(new FlowContext(), asList(
                 new SetLogLevel(),
-                new SelectEndpoint(endpoints),
+                new SelectEndpoint(endpoints, endpointStorage),
                 new SingleSignOnSupport(),
                 new ReadEnvironment(dispatcher, environment, user),
                 new ReadHostNames(dispatcher, environment),

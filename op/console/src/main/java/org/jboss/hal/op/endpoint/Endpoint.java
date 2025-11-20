@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.bootstrap;
+package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.Id;
 import org.jboss.elemento.logger.Logger;
@@ -31,13 +31,16 @@ import jsinterop.annotations.JsType;
 import static elemental2.dom.DomGlobal.fetch;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-class Endpoint {
+public class Endpoint {
+
+    @JsOverlay
+    public static final String CONNECT_PARAMETER = "connect";
 
     @JsOverlay
     private static final Logger logger = Logger.getLogger(Endpoint.class.getName());
 
     @JsOverlay
-    static Promise<Boolean> ping(String url) {
+    public static Promise<Boolean> ping(String url) {
         String managementEndpoint = url + Urls.MANAGEMENT;
         if (url.contains("://") && !validUrl(managementEndpoint)) {
             logger.error("'%s' is not a valid URL", managementEndpoint);
@@ -82,7 +85,7 @@ class Endpoint {
     }
 
     @JsOverlay
-    static Endpoint endpoint(String name, String url) {
+    public static Endpoint endpoint(String name, String url) {
         Endpoint endpoint = new Endpoint();
         endpoint.id = Id.uuid();
         endpoint.name = name;
@@ -90,7 +93,12 @@ class Endpoint {
         return endpoint;
     }
 
-    String id;
-    String name;
-    String url;
+    public String id;
+    public String name;
+    public String url;
+
+    @JsOverlay
+    public final String failSafeUrl() {
+        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+    }
 }

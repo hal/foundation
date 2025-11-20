@@ -19,8 +19,11 @@ import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.env.Endpoints;
+import org.jboss.hal.op.endpoint.Endpoint;
+import org.jboss.hal.op.endpoint.EndpointStorage;
 
 import elemental2.core.TypeError;
+import elemental2.dom.URL;
 import elemental2.dom.URLSearchParams;
 import elemental2.promise.Promise;
 
@@ -31,17 +34,18 @@ import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NOT_AN_ENDPOINT;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NO_ENDPOINT_FOUND;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NO_ENDPOINT_SPECIFIED;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.UNKNOWN;
+import static org.jboss.hal.op.endpoint.Endpoint.CONNECT_PARAMETER;
+import static org.jboss.hal.op.endpoint.EndpointModal.endpointModal;
 
 class SelectEndpoint implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(SelectEndpoint.class.getName());
-    private static final String CONNECT_PARAMETER = "connect";
     private final Endpoints endpoints;
     private final EndpointStorage endpointStorage;
 
-    SelectEndpoint(Endpoints endpoints) {
+    SelectEndpoint(Endpoints endpoints, EndpointStorage endpointStorage) {
         this.endpoints = endpoints;
-        this.endpointStorage = new EndpointStorage();
+        this.endpointStorage = endpointStorage;
     }
 
     @Override
@@ -52,11 +56,21 @@ class SelectEndpoint implements Task<FlowContext> {
                 String connect = query.get(CONNECT_PARAMETER);
                 if (connect != null) {
                     if (connect.contains("://")) {
-                        return connect(context, connect, true);
+                        if (URL.canParse(connect)) {
+                            URL url = new URL(connect);
+                            Endpoint endpoint = endpointStorage.findByName(url.host);
+                            if (endpoint == null) {
+                                endpoint = Endpoint.endpoint(url.host, connect);
+                                endpointStorage.add(endpoint);
+                            }
+                            return connect(context, endpoint);
+                        } else {
+                            return fail(context, NOT_AN_ENDPOINT, connect);
+                        }
                     } else {
                         Endpoint endpoint = endpointStorage.findByName(connect);
                         if (endpoint != null) {
-                            return connect(context, endpoint.url, true);
+                            return connect(context, endpoint);
                         } else {
                             return fail(context, NO_ENDPOINT_FOUND, connect);
                         }
@@ -65,37 +79,33 @@ class SelectEndpoint implements Task<FlowContext> {
                     return fail(context, NO_ENDPOINT_SPECIFIED, CONNECT_PARAMETER);
                 }
             } else {
-                return connect(context, "", false);
+                return endpointModal(endpointStorage, false).open()
+                        .then(endpoint -> connect(context, endpoint));
             }
         } else {
-            return connect(context, "", false);
+            return endpointModal(endpointStorage, false).open()
+                    .then(endpoint -> connect(context, endpoint));
         }
     }
 
-    private Promise<FlowContext> connect(FlowContext context, String url, boolean failFast) {
-        String failSafeUrl = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+    private Promise<FlowContext> connect(FlowContext context, Endpoint endpoint) {
+        String failSafeUrl = endpoint.failSafeUrl();
         return Endpoint.ping(failSafeUrl)
                 .then(valid -> {
                     if (valid) {
                         endpoints.init(failSafeUrl);
-                        if (!url.isEmpty()) {
-                            logger.info("Endpoint: %s", url);
-                        }
+                        endpointStorage.connect(endpoint);
+                        logger.info("Endpoint: %o", endpoint);
                         return context.resolve();
                     } else {
-                        if (failFast) {
-                            context.push(new BootstrapError(NOT_AN_ENDPOINT, url));
-                            return context.reject("failed");
-                        } else {
-                            return new EndpointModal(endpointStorage).open()
-                                    .then(endpoint -> connect(context, endpoint.url, true));
-                        }
+                        context.push(new BootstrapError(NOT_AN_ENDPOINT, endpoint.url));
+                        return context.reject("failed");
                     }
                 })
                 .catch_(error -> {
                     if (context.isStackEmpty()) {
                         if (error instanceof TypeError) {
-                            return fail(context, NETWORK_ERROR, url);
+                            return fail(context, NETWORK_ERROR, endpoint.url);
                         } else {
                             return fail(context, UNKNOWN, String.valueOf(error));
                         }
@@ -105,5 +115,4 @@ class SelectEndpoint implements Task<FlowContext> {
                     }
                 });
     }
-
 }

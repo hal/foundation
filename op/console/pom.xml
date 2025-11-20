@@ -134,7 +134,10 @@
                 <artifactId>j2cl-maven-plugin</artifactId>
                 <configuration>
                     <compilationLevel>${j2cl.compilationLevel}</compilationLevel>
-                    <!-- The defines are used in Environment.java via System.getProperty() calls -->
+                    <!--
+                        The <environment.*/> defines are used in System.getProperty() calls.
+                        Keep in sync with org.jboss.hal.env.Environment and environment.js
+                    -->
                     <defines>
                         <goog.LOCALE>en</goog.LOCALE>
                         <environment.id>${project.artifactId}</environment.id>

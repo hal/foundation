@@ -19,7 +19,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 
-import org.jboss.elemento.Elements;
 import org.jboss.hal.core.Notification;
 import org.jboss.hal.core.NotificationAddEvent;
 import org.jboss.hal.core.NotificationModification;

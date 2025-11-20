@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.bootstrap;
+package org.jboss.hal.op.endpoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,26 +21,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+
 import org.jboss.hal.resources.LocalStorage;
 
 import elemental2.core.JsArray;
-import elemental2.webstorage.Storage;
 import elemental2.webstorage.WebStorageWindow;
 
 import static elemental2.core.Global.JSON;
 import static elemental2.dom.DomGlobal.window;
 import static java.util.Comparator.comparing;
 
-class EndpointStorage {
+@ApplicationScoped
+public class EndpointStorage {
 
     private final Map<String, Endpoint> endpoints;
-    private final Storage storage;
+    private Endpoint current;
 
-    @SuppressWarnings("unchecked")
-    EndpointStorage() {
+    public EndpointStorage() {
         this.endpoints = new HashMap<>();
-        this.storage = WebStorageWindow.of(window).localStorage;
-        String payload = storage.getItem(LocalStorage.ENDPOINTS);
+        this.current = null;
+    }
+
+    @PostConstruct
+    @SuppressWarnings("unchecked")
+    void init() {
+        String payload = WebStorageWindow.of(window).localStorage.getItem(LocalStorage.ENDPOINTS);
         if (payload != null && !payload.isEmpty()) {
             JsArray<Endpoint> eps = (JsArray<Endpoint>) JSON.parse(payload);
             for (int i = 0; i < eps.length; i++) {
@@ -49,10 +56,29 @@ class EndpointStorage {
         }
     }
 
-    void add(Endpoint endpoint) {
+    public Endpoint findByName(String name) {
+        for (Endpoint endpoint : endpoints.values()) {
+            if (endpoint.name.equals(name)) {
+                return endpoint;
+            }
+        }
+        return null;
+    }
+
+    public void connect(Endpoint endpoint) {
+        this.current = endpoint;
+    }
+
+    public Endpoint current() {
+        return current;
+    }
+
+    public void add(Endpoint endpoint) {
         endpoints.put(endpoint.id, endpoint);
         save();
     }
+
+    // ------------------------------------------------------ internal
 
     void remove(String id) {
         endpoints.remove(id);
@@ -61,15 +87,6 @@ class EndpointStorage {
 
     Endpoint get(String id) {
         return endpoints.get(id);
-    }
-
-    Endpoint findByName(String name) {
-        for (Endpoint endpoint : endpoints.values()) {
-            if (endpoint.name.equals(name)) {
-                return endpoint;
-            }
-        }
-        return null;
     }
 
     boolean isEmpty() {
@@ -86,6 +103,6 @@ class EndpointStorage {
     private void save() {
         JsArray<Endpoint> eps = new JsArray<>();
         endpoints.values().forEach(eps::push);
-        storage.setItem(LocalStorage.ENDPOINTS, JSON.stringify(eps));
+        WebStorageWindow.of(window).localStorage.setItem(LocalStorage.ENDPOINTS, JSON.stringify(eps));
     }
 }

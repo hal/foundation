@@ -13,14 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.bootstrap;
+package org.jboss.hal.op.endpoint;
 
 import java.util.List;
 
 import org.jboss.elemento.logger.Logger;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.modal.Modal;
-import org.patternfly.component.toolbar.Toolbar;
 
 import elemental2.promise.Promise;
 import elemental2.promise.Promise.PromiseExecutorCallbackFn.RejectCallbackFn;
@@ -30,39 +29,44 @@ import static java.util.Collections.emptyList;
 import static org.jboss.elemento.Elements.isVisible;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.list.ActionList.actionList;
+import static org.patternfly.component.list.ActionListGroup.actionListGroup;
+import static org.patternfly.component.list.ActionListItem.actionListItem;
 import static org.patternfly.component.modal.Modal.modal;
 import static org.patternfly.component.modal.ModalBody.modalBody;
 import static org.patternfly.component.modal.ModalFooter.modalFooter;
 import static org.patternfly.component.modal.ModalHeader.modalHeader;
 import static org.patternfly.component.modal.ModalHeaderDescription.modalHeaderDescription;
-import static org.patternfly.component.toolbar.Toolbar.toolbar;
-import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
-import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.style.Size.md;
 
-class EndpointModal {
+public class EndpointModal {
 
     private static final Logger logger = Logger.getLogger(EndpointModal.class.getName());
 
+    public static EndpointModal endpointModal(EndpointStorage storage, boolean closable) {
+        return new EndpointModal(storage, closable);
+    }
+
     private final EndpointStorage storage;
+    private final Button add;
     private final Button ok;
     private final Button cancel;
     private final EndpointForm form;
     private final Modal modal;
     private final EndpointTable table;
-    private final Toolbar toolbar;
+    private final boolean closable;
     private Endpoint endpoint;
     private ResolveCallbackFn<Endpoint> resolve;
     private RejectCallbackFn reject;
 
-    EndpointModal(EndpointStorage storage) {
+    EndpointModal(EndpointStorage storage, boolean closable) {
         this.storage = storage;
+        this.closable = closable;
         this.endpoint = null;
 
-        toolbar = toolbar()
-                .addContent(toolbarContent()
-                        .addItem(toolbarItem()
-                                .add(button().primary().text("Add").onClick((event, component) -> newEndpoint()))));
+        add = button("Add")
+                .secondary()
+                .onClick((event, component) -> newEndpoint());
         ok = button("Connect")
                 .primary()
                 .disabled()
@@ -84,25 +88,27 @@ class EndpointModal {
                 .size(md)
                 .hideClose()
                 .autoClose(false)
+                .closeOnEsc(closable)
                 .addHeader(modalHeader()
                         .addTitle("Connect to WildFly")
                         .addDescription(modalHeaderDescription()
                                 .add(new EndpointDescription())))
                 .addBody(modalBody()
                         .add(form)
-                        .add(toolbar)
                         .add(table))
                 .addFooter(modalFooter()
-                        .addButton(ok)
-                        .addButton(cancel))
+                        .add(actionList()
+                                .addItem(actionListGroup()
+                                        .addItem(actionListItem().add(ok))
+                                        .addItem(actionListItem().add(add))
+                                        .addItem(actionListItem().add(cancel)))))
                 .appendToBody();
 
         setVisible(form, false);
-        setVisible(toolbar, false);
         setVisible(table, false);
     }
 
-    Promise<Endpoint> open() {
+    public Promise<Endpoint> open() {
         return new Promise<>((resolve, reject) -> {
             this.resolve = resolve;
             this.reject = reject;
@@ -126,9 +132,9 @@ class EndpointModal {
         ok.text("Connect").disabled(true);
 
         setVisible(form, false);
-        setVisible(toolbar, false);
         setVisible(table, true);
-        setVisible(cancel, false);
+        setVisible(add, false);
+        setVisible(cancel, closable);
     }
 
     private void existingEndpoints(List<Endpoint> endpoints) {
@@ -136,9 +142,9 @@ class EndpointModal {
         ok.text("Connect").disabled(true); // will be enabled on endpoint selection
 
         setVisible(form, false);
-        setVisible(toolbar, true);
         setVisible(table, true);
-        setVisible(cancel, false);
+        setVisible(add, true);
+        setVisible(cancel, closable);
     }
 
     void newEndpoint() {
@@ -147,8 +153,8 @@ class EndpointModal {
         ok.text("Add").disabled(false);
 
         setVisible(form, true);
-        setVisible(toolbar, false);
         setVisible(table, false);
+        setVisible(add, false);
         setVisible(cancel, true);
     }
 
@@ -158,8 +164,8 @@ class EndpointModal {
         ok.text("Save").disabled(false);
 
         setVisible(form, true);
-        setVisible(toolbar, false);
         setVisible(table, false);
+        setVisible(add, false);
         setVisible(cancel, true);
     }
 
@@ -190,6 +196,10 @@ class EndpointModal {
     }
 
     private void cancel() {
-        showEndpoints();
+        if (isVisible(form)) {
+            showEndpoints();
+        } else if (closable) {
+            modal.close();
+        }
     }
 }
