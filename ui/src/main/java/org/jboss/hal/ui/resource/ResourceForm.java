@@ -15,10 +15,12 @@
  */
 package org.jboss.hal.ui.resource;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
@@ -54,11 +56,15 @@ class ResourceForm implements
 
     private final AddressTemplate template;
     private final Map<String, FormItem> items;
+    private final List<BiConsumer<ResourceForm, FormItem>> onAdd;
+    private final List<BiConsumer<ResourceForm, FormItem>> onRemove;
     private final Form form;
 
     ResourceForm(AddressTemplate template) {
         this.template = template;
         this.items = new LinkedHashMap<>();
+        this.onAdd = new ArrayList<>();
+        this.onRemove = new ArrayList<>();
         this.form = form().css(halComponent(resource, HalClasses.form))
                 .horizontal();
     }
@@ -77,6 +83,7 @@ class ResourceForm implements
     public ResourceForm add(FormItem item) {
         items.put(item.identifier(), item);
         form.addItem(item.formGroup);
+        onAdd.forEach(bc -> bc.accept(this, item));
         return this;
     }
 
@@ -106,15 +113,33 @@ class ResourceForm implements
     }
 
     @Override
-    public void clear() {
-        form.clear();
-        items.clear();
-    }
-
-    @Override
     public void removeItem(String identifier) {
         FormItem item = items.remove(identifier);
         failSafeRemoveFromParent(item);
+        if (item != null) {
+            onRemove.forEach(bc -> bc.accept(this, item));
+        }
+    }
+
+    @Override
+    public void clear() {
+        form.clear();
+        items.values().forEach(item -> onRemove.forEach(bc -> bc.accept(this, item)));
+        items.clear();
+    }
+
+    // ------------------------------------------------------ events
+
+    @Override
+    public ResourceForm onAdd(BiConsumer<ResourceForm, FormItem> onAdd) {
+        this.onAdd.add(onAdd);
+        return this;
+    }
+
+    @Override
+    public ResourceForm onRemove(BiConsumer<ResourceForm, FormItem> onRemove) {
+        this.onRemove.add(onRemove);
+        return this;
     }
 
     // ------------------------------------------------------ validation

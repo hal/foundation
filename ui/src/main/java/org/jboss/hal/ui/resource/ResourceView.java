@@ -15,9 +15,12 @@
  */
 package org.jboss.hal.ui.resource;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
@@ -46,11 +49,15 @@ class ResourceView implements
         IsElement<HTMLElement>,
         HasItems<HTMLElement, ResourceView, ViewItem> {
 
-    private final Map<String, ViewItem> items;
     private final DescriptionList dl;
+    private final List<BiConsumer<ResourceView, ViewItem>> onAdd;
+    private final List<BiConsumer<ResourceView, ViewItem>> onRemove;
+    private final Map<String, ViewItem> items;
 
     ResourceView() {
         this.items = new LinkedHashMap<>();
+        this.onAdd = new ArrayList<>();
+        this.onRemove = new ArrayList<>();
         this.dl = descriptionList().css(halComponent(resource, view))
                 .orientation(breakpoints(
                         sm, vertical,
@@ -74,6 +81,7 @@ class ResourceView implements
     public ResourceView add(ViewItem item) {
         items.put(item.identifier(), item);
         dl.addItem(item.descriptionListGroup);
+        onAdd.forEach(bc -> bc.accept(this, item));
         return this;
     }
 
@@ -103,14 +111,32 @@ class ResourceView implements
     }
 
     @Override
-    public void clear() {
-        dl.clear();
-        items.clear();
-    }
-
-    @Override
     public void removeItem(String identifier) {
         ViewItem item = items.remove(identifier);
         failSafeRemoveFromParent(item);
+        if (item != null) {
+            onRemove.forEach(bc -> bc.accept(this, item));
+        }
+    }
+
+    @Override
+    public void clear() {
+        dl.clear();
+        items.values().forEach(item -> onRemove.forEach(bc -> bc.accept(this, item)));
+        items.clear();
+    }
+
+    // ------------------------------------------------------ events
+
+    @Override
+    public ResourceView onAdd(BiConsumer<ResourceView, ViewItem> onAdd) {
+        this.onAdd.add(onAdd);
+        return this;
+    }
+
+    @Override
+    public ResourceView onRemove(BiConsumer<ResourceView, ViewItem> onRemove) {
+        this.onRemove.add(onRemove);
+        return this;
     }
 }
