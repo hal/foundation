@@ -529,7 +529,7 @@
 
     <repositories>
         <repository>
-            <id>central-portal-snapshots</id>
+            <id>central-snapshots</id>
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
@@ -539,7 +539,7 @@
             </snapshots>
         </repository>
         <repository>
-            <id>jboss-nexus</id>
+            <id>jboss-public</id>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
             <snapshots>
                 <enabled>false</enabled>
@@ -551,7 +551,7 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>jboss-nexus</id>
+            <id>jboss-releases</id>
             <url>https://repository.jboss.org/nexus/repository/releases/</url>
             <releases>
                 <enabled>true</enabled>
