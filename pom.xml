@@ -91,7 +91,7 @@
         <version.mockito>5.20.0</version.mockito>
         <version.node>v24.10.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
-        <version.patternfly.java>0.3.1</version.patternfly.java>
+        <version.patternfly.java>0.3.2-SNAPSHOT</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.9.0</version.central.publishing.plugin>
