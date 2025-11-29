@@ -78,7 +78,7 @@ abstract class FormItem implements
         ComponentContext<HTMLElement, FormItem>,
         HasIdentifier<HTMLElement, FormItem>,
         IsElement<HTMLElement>,
-        ManagerItem<FormItem>,
+        ResourceItem<FormItem>,
         TypedBuilder<HTMLElement, FormItem> {
 
     private static final Logger logger = Logger.getLogger(FormItem.class.getName());
@@ -278,7 +278,7 @@ abstract class FormItem implements
     // ------------------------------------------------------ building blocks
 
     /**
-     * Sets up the default form DOM tree based on the resource attribute's description.
+     * Sets up the default DOM tree based on the resource attribute's description.
      * <p>
      * The method performs the following actions:
      * <ol>

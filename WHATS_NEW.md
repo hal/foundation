@@ -12,6 +12,10 @@ This document highlights the new features of the management console.
 
 - Highlight of stability levels for resources, attributes, operations and parameters.
 
+Examples:
+
+- TODO
+
 ## Dashboard
 
 Pending...

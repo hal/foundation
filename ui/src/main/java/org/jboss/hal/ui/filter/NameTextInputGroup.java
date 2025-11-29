@@ -15,14 +15,15 @@
  */
 package org.jboss.hal.ui.filter;
 
+import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.model.filter.NameAttribute;
-import org.patternfly.component.textinputgroup.TextInputGroup;
+import org.patternfly.component.textinputgroup.SearchInput;
 import org.patternfly.filter.Filter;
 
 import elemental2.dom.HTMLElement;
 
-import static org.patternfly.component.textinputgroup.TextInputGroup.searchInputGroup;
+import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
 
 public class NameTextInputGroup<T> implements IsElement<HTMLElement> {
 
@@ -34,21 +35,21 @@ public class NameTextInputGroup<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ instance
 
-    private final TextInputGroup textInputGroup;
+    private final SearchInput searchInput;
 
     NameTextInputGroup(Filter<T> filter) {
-        textInputGroup = searchInputGroup("Filter by name")
+        searchInput = searchInput(Id.unique()).placeholder("Filter by name")
                 .onChange((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value));
-        textInputGroup.main().inputElement().apply(input -> input.autocomplete = "off");
+        searchInput.input().apply(input -> input.autocomplete = "off");
         filter.onChange((f, origin) -> {
             if (!f.defined(NameAttribute.NAME)) {
-                textInputGroup.clear(false);
+                searchInput.value("", false);
             }
         });
     }
 
     @Override
     public HTMLElement element() {
-        return textInputGroup.element();
+        return searchInput.element();
     }
 }

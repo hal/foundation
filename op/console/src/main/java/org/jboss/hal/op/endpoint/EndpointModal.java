@@ -28,6 +28,7 @@ import elemental2.promise.Promise.PromiseExecutorCallbackFn.ResolveCallbackFn;
 import static java.util.Collections.emptyList;
 import static org.jboss.elemento.Elements.isVisible;
 import static org.jboss.elemento.Elements.setVisible;
+import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.list.ActionList.actionList;
 import static org.patternfly.component.list.ActionListGroup.actionListGroup;
@@ -176,6 +177,7 @@ public class EndpointModal {
                 storage.add(endpoint);
                 showEndpoints();
                 table.select(endpoint.id);
+                endpointSelector(storage).refresh();
             }
         } else {
             if (endpoint != null) {
@@ -200,6 +202,7 @@ public class EndpointModal {
             showEndpoints();
         } else if (closable) {
             modal.close();
+            reject.onInvoke("Cancelled");
         }
     }
 }

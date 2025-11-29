@@ -103,7 +103,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private boolean inlineEdit;
     private State state;
     private Operation operation;
-    private HasItems<HTMLElement, ?, ? extends ManagerItem<?>> items;
+    private HasItems<HTMLElement, ?, ? extends ResourceItem<?>> items;
     private ResourceForm resourceForm;
 
     ResourceManager(AddressTemplate template, Metadata metadata) {
@@ -261,7 +261,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
             int matchingItems;
             if (filter.defined()) {
                 matchingItems = 0;
-                for (ManagerItem<?> item : items) {
+                for (ResourceItem<?> item : items) {
                     ResourceAttribute ra = item.resourceAttribute();
                     if (ra != null) {
                         boolean match = filter.match(ra);

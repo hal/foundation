@@ -21,7 +21,7 @@ import org.patternfly.core.ComponentContext;
 
 import elemental2.dom.HTMLElement;
 
-interface ManagerItem<I extends ManagerItem<I>> extends ComponentContext<HTMLElement, I>,
+interface ResourceItem<I extends ResourceItem<I>> extends ComponentContext<HTMLElement, I>,
         HasIdentifier<HTMLElement, I> {
 
     default ResourceAttribute resourceAttribute() {

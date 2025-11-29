@@ -17,6 +17,7 @@ package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.Keys;
+import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleSelect;
 
 import elemental2.dom.HTMLElement;
@@ -33,16 +34,31 @@ import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.SingleSelect.singleSelect;
 import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
 
+/**
+ * The EndpointSelector class is responsible for managing and presenting a list of available endpoints in the user interface. It
+ * allows users to select an endpoint, connect to it, and dynamically refresh the list of endpoints when necessary.
+ * <p>
+ * The class is implemented as a singleton to ensure a single instance is shared across the application. It uses components such
+ * as SingleSelect, MenuList, and other utility methods to build an interactive UI for endpoint selection.
+ */
 public class EndpointSelector implements IsElement<HTMLElement> {
 
+    private static EndpointSelector instance;
+
     public static EndpointSelector endpointSelector(EndpointStorage storage) {
-        return new EndpointSelector(storage);
+        if (instance == null) {
+            instance = new EndpointSelector(storage);
+        }
+        return instance;
     }
 
+    private final EndpointStorage storage;
     private final SingleSelect singleSelect;
+    private final MenuList menuList;
 
     EndpointSelector(EndpointStorage storage) {
-        singleSelect = singleSelect(storage.current().name)
+        this.storage = storage;
+        this.singleSelect = singleSelect(storage.current().name)
                 .add(singleSelectMenu()
                         .onSingleSelect((event, component, selected) -> {
                             Endpoint endpoint = component.get(Keys.ENDPOINT);
@@ -52,7 +68,7 @@ public class EndpointSelector implements IsElement<HTMLElement> {
                         })
                         .addContent(menuContent()
                                 .addGroup(menuGroup("Management interfaces")
-                                        .addList(menuList()
+                                        .addList(menuList = menuList()
                                                 .addItems(storage.endpoints(), endpoint ->
                                                         menuItem(endpoint.id, endpoint.name)
                                                                 .store(Keys.ENDPOINT, endpoint)
@@ -63,15 +79,23 @@ public class EndpointSelector implements IsElement<HTMLElement> {
                                         .inline()
                                         .onClick((event, component) ->
                                                 endpointModal(storage, true).open().then(endpoint -> {
-                                            connect(endpoint);
-                                            return null;
-                                        })))));
+                                                    connect(endpoint);
+                                                    return null;
+                                                })))));
         singleSelect.select(storage.current().id, false);
     }
 
     @Override
     public HTMLElement element() {
         return singleSelect.element();
+    }
+
+    public void refresh() {
+        menuList.clear();
+        menuList.addItems(storage.endpoints(), endpoint ->
+                menuItem(endpoint.id, endpoint.name)
+                        .store(Keys.ENDPOINT, endpoint)
+                        .description(endpoint.url));
     }
 
     private void connect(Endpoint endpoint) {

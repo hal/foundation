@@ -15,7 +15,7 @@
  */
 
 .hal-m-deprecated {
-    color: var(--pf-t--global--color--disabled--100);
+    color: var(--pf-t--global--color--disabled--200);
     text-decoration: line-through !important;
 }
 

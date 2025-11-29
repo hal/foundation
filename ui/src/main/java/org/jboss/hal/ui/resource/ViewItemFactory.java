@@ -224,7 +224,7 @@ class ViewItemFactory {
                                     ? ra.description.get(VALUE_TYPE).asType()
                                     : null;
                             if (valueType != null && valueType.simple()) {
-                                element = list().plain()
+                                element = list().plain().inline()
                                         .addItems(ra.value.asList().stream().map(ModelNode::asString).collect(toList()),
                                                 v -> listItem(Id.build(v, "value")).text(v))
                                         .element();

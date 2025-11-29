@@ -32,7 +32,7 @@ import static org.patternfly.component.list.DescriptionListGroup.descriptionList
 
 /** An item for a {@link ResourceView} based on a {@link DescriptionListGroup} */
 class ViewItem implements
-        ManagerItem<ViewItem>,
+        ResourceItem<ViewItem>,
         TypedBuilder<HTMLElement, ViewItem>,
         IsElement<HTMLElement>,
         ComponentContext<HTMLElement, ViewItem>,

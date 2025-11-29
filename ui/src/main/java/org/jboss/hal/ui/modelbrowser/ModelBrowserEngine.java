@@ -29,6 +29,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.Keys;
+import org.patternfly.component.AsyncItems;
 import org.patternfly.component.tree.TreeViewItem;
 
 import elemental2.promise.Promise;
@@ -66,7 +67,7 @@ class ModelBrowserEngine {
      * Returns a function that returns a promise to read the child resources of the selected tree view item. Uses
      * {@link #parseChildren(ModelBrowserNode, ModelNode, boolean)} and {@link #mbn2tvi(Dispatcher)}.
      */
-    static Function<TreeViewItem, Promise<Iterable<TreeViewItem>>> readChildrenOperation(Dispatcher dispatcher) {
+    static AsyncItems<TreeViewItem, TreeViewItem> readChildrenOperation(Dispatcher dispatcher) {
         return tvi -> {
             ModelBrowserNode mbn = tvi.get(Keys.MODEL_BROWSER_NODE);
             if (mbn != null) {
