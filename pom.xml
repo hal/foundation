@@ -88,14 +88,14 @@
         <version.jakarta.ee>11.0.0</version.jakarta.ee>
         <version.junit>6.0.1</version.junit>
         <version.kie.j2cl.bom>0.5</version.kie.j2cl.bom>
-        <version.mockito>5.20.0</version.mockito>
+        <version.mockito>5.21.0</version.mockito>
         <version.node>v24.10.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
         <version.patternfly.java>0.3.2-SNAPSHOT</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.9.0</version.central.publishing.plugin>
-        <version.editorconfig.plugin>0.1.17</version.editorconfig.plugin>
+        <version.editorconfig.plugin>0.2.0</version.editorconfig.plugin>
         <version.enforcer.plugin>3.3.0</version.enforcer.plugin>
         <version.frontend.plugin>1.15.4</version.frontend.plugin>
         <version.j2cl.plugin>0.23.6</version.j2cl.plugin>
