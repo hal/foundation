@@ -19,6 +19,7 @@ import org.jboss.hal.dmr.NamedNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
+import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.NameAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
@@ -36,5 +37,6 @@ public class AttributesFilter extends Filter<AttributeDescription> {
         add(new DeprecatedAttribute<>(ad -> ad));
         add(new StorageAttribute<>(ad -> ad));
         add(new AccessTypeAttribute<>(ad -> ad));
+        add(new ExpressionAttribute<>(ad -> ad));
     }
 }

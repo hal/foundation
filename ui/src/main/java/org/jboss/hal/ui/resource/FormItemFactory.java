@@ -18,6 +18,7 @@ package org.jboss.hal.ui.resource;
 import org.jboss.elemento.Elements;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.LabelBuilder;
+import org.jboss.hal.dmr.ModelDescriptionConstants;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.dmr.Property;
@@ -55,6 +56,7 @@ import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.nestedElementSeparator;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.resource.FormItemProviders.specialFormItems;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
 import static org.jboss.hal.ui.resource.ResourceManager.State.EDIT;
 import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
@@ -77,15 +79,103 @@ import static org.patternfly.style.Classes.util;
 
 class FormItemFactory {
 
-    // TODO Add support to create and return specific form items based on the address template and attribute.
-    // For instance /subsystem=logging/pattern-formatter=*@color-map
-    // Accepts a comma delimited list of colors to be used for different levels with a pattern formatter.
-    // The format for the color mapping pattern is level-name:color-name.
-    // Valid Levels: severe, fatal, error, warn, warning, info, debug, trace, config, fine, finer, finest
-    // Valid Colors: black, green, red, yellow, blue, magenta, cyan, white, brightblack, brightred, brightgreen, brightblue,
-    // brightyellow, brightmagenta, brightcyan, brightwhit
-
     private static final Logger logger = Logger.getLogger(FormItemFactory.class.getName());
+
+    static FormItem nameFormItem(Metadata metadata) {
+        AttributeDescription nameDescription = metadata.resourceDescription().attributes().get(NAME);
+        if (!nameDescription.isDefined()) {
+            ModelNode modelNode = new ModelNode();
+            modelNode.get(DESCRIPTION).set("The name of the resource");
+            modelNode.get(TYPE).set(ModelType.STRING);
+            nameDescription = new AttributeDescription(new Property(NAME, modelNode));
+        }
+        // Even if the name description already exists, make sure that these properties have the right value.
+        nameDescription.get(REQUIRED).set(true);
+        nameDescription.get(ACCESS_TYPE).set(READ_WRITE);
+        nameDescription.get(EXPRESSIONS_ALLOWED).set(false);
+
+        ResourceAttribute ra = new ResourceAttribute(new ModelNode(), nameDescription, SecurityContext.RWX);
+        String identifier = identifier(ra, EDIT);
+        FormGroupLabel formGroupLabel = label(identifier, metadata, ra);
+        return new StringFormItem(identifier, ra, formGroupLabel,
+                new FormItemFlags(FormItemFlags.Scope.NEW_RESOURCE, Placeholder.NONE));
+    }
+
+    static FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
+        FormItem formItem = null;
+        for (FormItemProvider fip : specialFormItems) {
+            if (fip.test(template, metadata, ra, flags)) {
+                formItem = fip.formItem(template, metadata, ra, flags);
+                break;
+            }
+        }
+        if (formItem == null) {
+            String identifier = identifier(ra, EDIT);
+            FormGroupLabel formGroupLabel = label(identifier, metadata, ra);
+
+            if (!ra.readable) {
+                formItem = new RestrictedFormItem(identifier, ra, formGroupLabel, flags);
+            } else {
+                if (ra.description.hasDefined(TYPE)) {
+                    ModelType type = ra.description.get(TYPE).asType();
+                    switch (type) {
+                        case BOOLEAN:
+                            formItem = new BooleanFormItem(identifier, ra, formGroupLabel, flags);
+                            break;
+
+                        case INT:
+                        case LONG:
+                        case DOUBLE:
+                            formItem = new NumberFormItem(identifier, ra, formGroupLabel, flags);
+                            break;
+
+                        case STRING:
+                            if (ra.description.hasDefined(ALLOWED)) {
+                                formItem = new SelectFormItem(identifier, ra, formGroupLabel, flags);
+                            } else if (ra.description.hasDefined(CAPABILITY_REFERENCE)) {
+                                String capability = ra.description.get(ModelDescriptionConstants.CAPABILITY_REFERENCE)
+                                        .asString();
+                                formItem = new SingleTypeaheadFormItem(identifier, ra, formGroupLabel, flags, template,
+                                        capability);
+                            } else {
+                                formItem = new StringFormItem(identifier, ra, formGroupLabel, flags);
+                            }
+                            break;
+
+                        case LIST:
+                            // TODO Support simple list types depending on the VALUE_TYPE
+                            formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                            break;
+
+                        case OBJECT:
+                            // TODO Support simple object types like key=value pairs
+                            formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                            break;
+
+                        // unsupported types
+                        case BIG_DECIMAL:
+                        case BIG_INTEGER:
+                        case BYTES:
+                        case EXPRESSION:
+                        case PROPERTY:
+                        case TYPE:
+                        case UNDEFINED:
+                            formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                            logger.warn("Unsupported type %s for attribute %s in resource %s. " +
+                                    "Unable to create a form item. Attribute will be skipped.", type.name(), ra.name, template);
+                            break;
+
+                        default:
+                            formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                            break;
+                    }
+                } else {
+                    formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                }
+            }
+        }
+        return formItem.store(Keys.RESOURCE_ATTRIBUTE, ra);
+    }
 
     private static FormGroupLabel label(String identifier, Metadata metadata, ResourceAttribute ra) {
         FormGroupLabel formGroupLabel;
@@ -146,89 +236,5 @@ class FormItemFactory {
             formGroupLabel = formGroupLabel(labelBuilder.label(ra.name));
         }
         return formGroupLabel;
-    }
-
-    static FormItem nameFormItem(Metadata metadata) {
-        AttributeDescription nameDescription = metadata.resourceDescription().attributes().get(NAME);
-        if (!nameDescription.isDefined()) {
-            ModelNode modelNode = new ModelNode();
-            modelNode.get(DESCRIPTION).set("The name of the resource");
-            modelNode.get(TYPE).set(ModelType.STRING);
-            nameDescription = new AttributeDescription(new Property(NAME, modelNode));
-        }
-        // Even if the name description already exists, make sure that these properties have the right value.
-        nameDescription.get(REQUIRED).set(true);
-        nameDescription.get(ACCESS_TYPE).set(READ_WRITE);
-        nameDescription.get(EXPRESSIONS_ALLOWED).set(false);
-
-        ResourceAttribute ra = new ResourceAttribute(new ModelNode(), nameDescription, SecurityContext.RWX);
-        String identifier = identifier(ra, EDIT);
-        FormGroupLabel formGroupLabel = label(identifier, metadata, ra);
-        return new StringFormItem(identifier, ra, formGroupLabel,
-                new FormItemFlags(FormItemFlags.Scope.NEW_RESOURCE, Placeholder.NONE));
-    }
-
-    static FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
-        FormItem formItem;
-        String identifier = identifier(ra, EDIT);
-        FormGroupLabel formGroupLabel = label(identifier, metadata, ra);
-
-        if (!ra.readable) {
-            formItem = new RestrictedFormItem(identifier, ra, formGroupLabel, flags);
-        } else {
-            if (ra.description.hasDefined(TYPE)) {
-                ModelType type = ra.description.get(TYPE).asType();
-                switch (type) {
-                    case BOOLEAN:
-                        formItem = new BooleanFormItem(identifier, ra, formGroupLabel, flags);
-                        break;
-
-                    case INT:
-                    case LONG:
-                    case DOUBLE:
-                        formItem = new NumberFormItem(identifier, ra, formGroupLabel, flags);
-                        break;
-
-                    case STRING:
-                        if (ra.description.hasDefined(ALLOWED)) {
-                            formItem = new SelectFormItem(identifier, ra, formGroupLabel, flags);
-                        } else if (ra.description.hasDefined(CAPABILITY_REFERENCE)) {
-                            // TODO Replace with type-ahead form item
-                            formItem = new StringFormItem(identifier, ra, formGroupLabel, flags);
-                        } else {
-                            formItem = new StringFormItem(identifier, ra, formGroupLabel, flags);
-                        }
-                        break;
-
-                    case LIST:
-                        formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
-                        break;
-
-                    case OBJECT:
-                        formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
-                        break;
-
-                    // unsupported types
-                    case BIG_DECIMAL:
-                    case BIG_INTEGER:
-                    case BYTES:
-                    case EXPRESSION:
-                    case PROPERTY:
-                    case TYPE:
-                    case UNDEFINED:
-                        formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
-                        logger.warn("Unsupported type %s for attribute %s in resource %s. " +
-                                "Unable to create a form item. Attribute will be skipped.", type.name(), ra.name, template);
-                        break;
-
-                    default:
-                        formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
-                        break;
-                }
-            } else {
-                formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
-            }
-        }
-        return formItem.store(Keys.RESOURCE_ATTRIBUTE, ra);
     }
 }

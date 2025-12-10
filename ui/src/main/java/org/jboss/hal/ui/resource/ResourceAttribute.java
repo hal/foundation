@@ -16,7 +16,10 @@
 package org.jboss.hal.ui.resource;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import org.jboss.hal.dmr.ModelNode;
@@ -110,10 +113,32 @@ class ResourceAttribute {
         return resourceAttributes;
     }
 
+    static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
+        List<ResourceAttribute> ungrouped = new ArrayList<>();
+        TreeMap<String, List<ResourceAttribute>> groups = new TreeMap<>();
+        for (ResourceAttribute attribute : attributes) {
+            if (attribute.group == null) {
+                ungrouped.add(attribute);
+            } else {
+                groups.computeIfAbsent(attribute.group, k -> new ArrayList<>()).add(attribute);
+
+            }
+        }
+        if (ungrouped.isEmpty()) {
+            return groups;
+        } else {
+            // Groups are sorted, but ungrouped is always the last one
+            LinkedHashMap<String, List<ResourceAttribute>> withUngrouped = new LinkedHashMap<>(groups);
+            withUngrouped.put("ungrouped", ungrouped);
+            return withUngrouped;
+        }
+    }
+
     // ------------------------------------------------------ instance
 
     final String fqn;
     final String name;
+    final String group;
     final ModelNode value;
     final AttributeDescription description;
     final boolean readable;
@@ -123,6 +148,7 @@ class ResourceAttribute {
     ResourceAttribute(ModelNode value, AttributeDescription description, SecurityContext securityContext) {
         this.fqn = description.fullyQualifiedName();
         this.name = description.name();
+        this.group = description.group();
         this.value = value;
         this.description = description;
         this.expression = value.isDefined() && value.getType() == EXPRESSION;

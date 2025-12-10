@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.Attachable;
+import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
 import org.jboss.elemento.logger.Logger;
@@ -33,6 +34,7 @@ import org.patternfly.component.HasItems;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
 
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
@@ -98,7 +100,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private final Filter<ResourceAttribute> filter;
     private final NoMatch<ResourceAttribute> noMatch;
     private final ResourceToolbar toolbar;
-    private final HTMLElement rootContainer;
+    private final HTMLContainerBuilder<HTMLDivElement> rootContainer;
     private final HTMLElement root;
     private boolean inlineEdit;
     private State state;
@@ -122,8 +124,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                 .build();
         this.root = div().css(halComponent(resource))
                 .add(toolbar = resourceToolbar(this, filter, visible, total))
-                .add(rootContainer = div().css(halComponent(resource, body))
-                        .element())
+                .add(rootContainer = div().css(halComponent(resource, body)))
                 .element();
 
         setVisible(toolbar, false);
@@ -206,7 +207,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                         }
                         toolbar.adjust(state, metadata.securityContext());
                         setVisible(toolbar, true);
-                        rootContainer.append(items.element());
+                        rootContainer.add(items);
                     }
                 } else {
                     noAttributes();
@@ -219,17 +220,16 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
 
     private void noAttributes() {
         changeState(NO_ATTRIBUTES);
-        rootContainer.append(emptyState()
+        rootContainer.add(emptyState()
                 .icon(ban())
                 .text("No attributes")
                 .addBody(emptyStateBody()
-                        .text("This resource contains no attributes."))
-                .element());
+                        .text("This resource contains no attributes.")));
     }
 
     private void operationError(String operation, String error) {
         changeState(ERROR);
-        rootContainer.append(emptyState()
+        rootContainer.add(emptyState()
                 .status(danger)
                 .text("Operation failed")
                 .addBody(emptyStateBody()
@@ -239,18 +239,16 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                         .add(errorCode(error)))
                 .addFooter(emptyStateFooter()
                         .addActions(emptyStateActions()
-                                .add(button("Try again").link().onClick((e, b) -> refresh()))))
-                .element());
+                                .add(button("Try again").link().onClick((e, b) -> refresh())))));
     }
 
     private void metadataError() {
         changeState(ERROR);
-        rootContainer.append(emptyState()
+        rootContainer.add(emptyState()
                 .status(danger)
                 .text("No metadata")
                 .addBody(emptyStateBody()
-                        .text("Unable to view resource: No metadata found!"))
-                .element());
+                        .text("Unable to view resource: No metadata found!")));
     }
 
     // ------------------------------------------------------ filter
@@ -271,10 +269,10 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                         }
                     }
                 }
-                noMatch.toggle(rootContainer, matchingItems == 0);
+                noMatch.toggle(rootContainer.element(), matchingItems == 0);
             } else {
                 matchingItems = total.get();
-                noMatch.toggle(rootContainer, false);
+                noMatch.toggle(rootContainer.element(), false);
                 items.items().forEach(item -> item.element().classList.remove(halModifier(filtered)));
             }
             visible.set(matchingItems);

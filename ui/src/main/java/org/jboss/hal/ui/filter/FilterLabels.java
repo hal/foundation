@@ -22,6 +22,7 @@ import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.AccessTypeValue;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
+import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.ParametersAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.ReturnValueAttribute;
@@ -37,33 +38,43 @@ import static org.patternfly.filter.FilterAttributeModifier.collectionRemove;
 
 public class FilterLabels {
 
-    public static <T> List<Label> definedRequiredDeprecatedChips(Filter<T> filter) {
+    public static <T> List<Label> deReDeExLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         labels.addAll(booleanLabels(filter, DefinedAttribute.NAME, "Defined", "Undefined"));
-        labels.addAll(booleanLabels(filter, RequiredAttribute.NAME, "Required", "Optional"));
-        labels.addAll(deprecatedChips(filter));
+        labels.addAll(requiredLabels(filter));
+        labels.addAll(deprecatedLabels(filter));
+        labels.addAll(expressionLabels(filter));
         return labels;
     }
 
-    public static <T> List<Label> requiredDeprecatedChips(Filter<T> filter) {
+    public static <T> List<Label> reDeExLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
-        labels.addAll(booleanLabels(filter, RequiredAttribute.NAME, "Required", "Optional"));
-        labels.addAll(deprecatedChips(filter));
+        labels.addAll(requiredLabels(filter));
+        labels.addAll(deprecatedLabels(filter));
+        labels.addAll(expressionLabels(filter));
         return labels;
     }
 
-    public static <T> List<Label> deprecatedChips(Filter<T> filter) {
+    public static <T> List<Label> requiredLabels(Filter<T> filter) {
+        return booleanLabels(filter, RequiredAttribute.NAME, "Required", "Optional");
+    }
+
+    public static <T> List<Label> deprecatedLabels(Filter<T> filter) {
         return booleanLabels(filter, DeprecatedAttribute.NAME, "Deprecated", "Not deprecated");
     }
 
-    public static <T> List<Label> storageAccessTypeChips(Filter<T> filter) {
+    public static <T> List<Label> expressionLabels(Filter<T> filter) {
+        return booleanLabels(filter, ExpressionAttribute.NAME, "Expressions allowed", "No expressions allowed");
+    }
+
+    public static <T> List<Label> storageAccessTypeLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
-        labels.addAll(storageChips(filter));
-        labels.addAll(accessTypeChips(filter));
+        labels.addAll(storageLabels(filter));
+        labels.addAll(accessTypeLabels(filter));
         return labels;
     }
 
-    public static <T> List<Label> storageChips(Filter<T> filter) {
+    public static <T> List<Label> storageLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         if (filter.defined(StorageAttribute.NAME)) {
             StorageValue storageValue = filter.<StorageValue>get(StorageAttribute.NAME).value();
@@ -73,7 +84,7 @@ public class FilterLabels {
         return labels;
     }
 
-    public static <T> List<Label> accessTypeChips(Filter<T> filter) {
+    public static <T> List<Label> accessTypeLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         if (filter.defined(AccessTypeAttribute.NAME)) {
             AccessTypeValue accessTypeValue = filter.<AccessTypeValue>get(AccessTypeAttribute.NAME).value();
@@ -83,7 +94,7 @@ public class FilterLabels {
         return labels;
     }
 
-    public static <T> List<Label> typeChips(Filter<T> filter) {
+    public static <T> List<Label> typeLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         if (filter.defined(TypesAttribute.NAME)) {
             List<TypeValues> value = filter.<List<TypeValues>>get(TypesAttribute.NAME).value();
@@ -95,7 +106,7 @@ public class FilterLabels {
         return labels;
     }
 
-    public static <T> List<Label> parametersReturnValueChips(Filter<T> filter) {
+    public static <T> List<Label> parametersReturnValueLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         labels.addAll(booleanLabels(filter, ParametersAttribute.NAME, "Parameters", "No parameters"));
         labels.addAll(booleanLabels(filter, ReturnValueAttribute.NAME, "Return value", "No return value"));

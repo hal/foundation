@@ -18,6 +18,7 @@ package org.jboss.hal.ui.resource;
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
+import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.NameAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
@@ -36,5 +37,6 @@ class ResourceFilter extends Filter<ResourceAttribute> {
         add(new DeprecatedAttribute<>(ra -> ra.description));
         add(new StorageAttribute<>(ra -> ra.description));
         add(new AccessTypeAttribute<>(ra -> ra.description));
+        add(new ExpressionAttribute<>(ra -> ra.description));
     }
 }

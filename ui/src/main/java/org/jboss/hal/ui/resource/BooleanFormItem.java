@@ -16,7 +16,6 @@
 package org.jboss.hal.ui.resource;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.ui.BuildingBlocks;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
@@ -30,6 +29,7 @@ import static org.jboss.hal.resources.HalClasses.expression;
 import static org.jboss.hal.resources.HalClasses.form;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
+import static org.jboss.hal.ui.BuildingBlocks.expressionModeIcon;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.EXISTING_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.NEW_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemInputMode.EXPRESSION;
@@ -59,7 +59,7 @@ public class BooleanFormItem extends FormItem {
     }
 
     FormGroupControl readOnlyGroup() {
-        TextInput textControl = textControl().readonly();
+        TextInput textControl = readOnlyTextControl();
         if (ra.expression) {
             return formGroupControl()
                     .addInputGroup(inputGroup()
@@ -77,16 +77,19 @@ public class BooleanFormItem extends FormItem {
     }
 
     HTMLElement nativeContainer() {
-        return flex().alignItems(center).spaceItems(none)
-                .css(halComponent(resource, form, expression, switch_))
-                .addItem(flexItem().add(switchToExpressionModeButton()))
-                .addItem(flexItem().add(switchControl()))
-                .element();
+        if (nativeContainer == null) {
+            nativeContainer = flex().alignItems(center).spaceItems(none)
+                    .css(halComponent(resource, form, expression, switch_))
+                    .addItem(flexItem().add(switchToExpressionModeButton()))
+                    .addItem(flexItem().add(switchControl()))
+                    .element();
+        }
+        return nativeContainer;
     }
 
     @Override
     Button switchToExpressionModeButton() {
-        return button().id(switchToExpressionModeId).plain().icon(BuildingBlocks.expressionMode().get())
+        return button().id(switchToExpressionModeId).plain().icon(expressionModeIcon().get())
                 .onClick((e, b) -> switchToExpressionMode());
     }
 

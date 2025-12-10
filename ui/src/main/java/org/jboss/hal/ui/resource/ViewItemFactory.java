@@ -57,12 +57,13 @@ import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.modelNodeCode;
 import static org.jboss.hal.ui.BuildingBlocks.nestedElementSeparator;
 import static org.jboss.hal.ui.BuildingBlocks.renderExpression;
-import static org.jboss.hal.ui.BuildingBlocks.resolveExpression;
+import static org.jboss.hal.ui.BuildingBlocks.resolveExpressionIcon;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.CapabilityReference.capabilityReference;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
 import static org.jboss.hal.ui.resource.ResourceManager.State.VIEW;
+import static org.jboss.hal.ui.resource.ViewItemProviders.specialViewItems;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
@@ -86,10 +87,20 @@ class ViewItemFactory {
     private static final Logger logger = Logger.getLogger(ViewItemFactory.class.getName());
 
     static ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
-        DescriptionListTerm descriptionListTerm = label(metadata, ra);
-        HTMLElement valueElement = value(template, ra);
-        return new ViewItem(identifier(ra, VIEW), descriptionListTerm, valueElement)
-                .store(Keys.RESOURCE_ATTRIBUTE, ra);
+        ViewItem viewItem = null;
+        for (ViewItemProvider vip : specialViewItems) {
+            if (vip.test(template, metadata, ra)) {
+                viewItem = vip.viewItem(template, metadata, ra);
+                break;
+            }
+        }
+        if (viewItem == null) {
+            DescriptionListTerm descriptionListTerm = label(metadata, ra);
+            HTMLElement valueElement = value(template, ra);
+            viewItem = new ViewItem(identifier(ra, VIEW), descriptionListTerm, valueElement)
+                    .store(Keys.RESOURCE_ATTRIBUTE, ra);
+        }
+        return viewItem.store(Keys.RESOURCE_ATTRIBUTE, ra);
     }
 
     private static DescriptionListTerm label(Metadata metadata, ResourceAttribute ra) {
@@ -162,7 +173,7 @@ class ViewItemFactory {
 
         } else {
             if (ra.expression) {
-                HTMLElement resolveButton = button().plain().inline().icon(resolveExpression().get())
+                HTMLElement resolveButton = button().plain().inline().icon(resolveExpressionIcon().get())
                         .onClick((e, b) -> {
                             // TODO Resolve expression
                             uic().notifications().send(nyi());

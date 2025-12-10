@@ -318,7 +318,7 @@ class FindResource {
     }
 
     private void search() {
-        if (continuation.isRunning()) {
+        if (continuation.running()) {
             continuation.stop();
         } else {
             if (nameInput.value().isEmpty()) {

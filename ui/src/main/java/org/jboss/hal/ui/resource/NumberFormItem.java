@@ -135,7 +135,7 @@ class NumberFormItem extends FormItem {
     }
 
     FormGroupControl readOnlyGroup() {
-        TextInput textControl = textControl().readonly();
+        TextInput textControl = readOnlyTextControl();
         if (ra.expression) {
             return formGroupControl()
                     .addInputGroup(inputGroup()
@@ -181,16 +181,19 @@ class NumberFormItem extends FormItem {
     }
 
     HTMLElement nativeContainer() {
-        InputGroup inputGroup = inputGroup().addItem(inputGroupItem().addButton(switchToExpressionModeButton()));
-        if (ra.description.hasDefined(ALLOWED)) {
-            inputGroup.addItem(inputGroupItem().fill().addControl(allowedValuesControl()));
-        } else {
-            inputGroup.addItem(inputGroupItem().fill().addControl(minMaxControl()));
+        if (nativeContainer == null) {
+            InputGroup inputGroup = inputGroup().addItem(inputGroupItem().addButton(switchToExpressionModeButton()));
+            if (ra.description.hasDefined(ALLOWED)) {
+                inputGroup.addItem(inputGroupItem().fill().addControl(allowedValuesControl()));
+            } else {
+                inputGroup.addItem(inputGroupItem().fill().addControl(minMaxControl()));
+            }
+            if (ra.description.unit() != null) {
+                inputGroup.addText(unitInputGroupText());
+            }
+            nativeContainer = inputGroup.element();
         }
-        if (ra.description.unit() != null) {
-            inputGroup.addText(unitInputGroupText());
-        }
-        return inputGroup.element();
+        return nativeContainer;
     }
 
     private FormSelect allowedValuesControl() {
@@ -220,7 +223,7 @@ class NumberFormItem extends FormItem {
                     if (ra.value.isDefined()) {
                         ti.value(ra.value.asString());
                     }
-                    applyPlaceholder(ti);
+                    applyPlaceholder(ti.input());
                 });
         ModelType type = ra.description.get(TYPE).asType();
         if (type == ModelType.INT) {
@@ -436,10 +439,10 @@ class NumberFormItem extends FormItem {
     // ------------------------------------------------------ events
 
     @Override
+    @SuppressWarnings("DuplicatedCode")
     void afterSwitchedToNativeMode() {
         boolean wasDefined = ra.value.isDefined();
         if (allowedValuesControl != null) {
-            //noinspection DuplicatedCode
             if (wasDefined && !ra.expression) {
                 String originalValue = ra.value.asString();
                 failSafeSelectValue(originalValue);

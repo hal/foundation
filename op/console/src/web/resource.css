@@ -65,7 +65,7 @@
 }
 
 .hal-c-resource__view-undefined {
-    color: var(--pf-t--global--color--disabled--100);
+    color: var(--pf-t--global--text--color--disabled);
 }
 
 @media (min-width: 992px) {

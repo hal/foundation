@@ -13,25 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.meta.tree;
+package org.jboss.hal.model.filter;
 
-/**
- * Class representing the control mechanism for managing the traversal process. The {@code TraverseContinuation} object can be
- * used to control the traversal by stopping the traversal operation.
- */
-public class TraverseContinuation {
+import java.util.function.Function;
 
-    boolean running;
+import org.jboss.hal.meta.description.AttributeDescription;
+import org.patternfly.filter.FilterAttribute;
 
-    public TraverseContinuation() {
-        running = false;
-    }
+import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
 
-    public void stop() {
-        running = false;
-    }
+public class ExpressionAttribute<T> extends FilterAttribute<T, Boolean> {
 
-    public boolean running() {
-        return running;
+    public static final String NAME = "expression";
+
+    public ExpressionAttribute(Function<T, AttributeDescription> adf) {
+        super(NAME, (object, expressionAllowed) -> expressionAllowed == adf.apply(object).find(EXPRESSIONS_ALLOWED).asBoolean());
     }
 }

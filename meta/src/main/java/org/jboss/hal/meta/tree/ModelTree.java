@@ -72,7 +72,7 @@ public class ModelTree {
      * context. DMR errors are caught by this method and won't cause the promise to be rejected. Other errors will reject the
      * promise, though.
      * <p>
-     * The {@linkplain TraverseContinuation#isRunning() running state} of the continuation is controlled by this method: It is
+     * The {@linkplain TraverseContinuation#running() running state} of the continuation is controlled by this method: It is
      * set to {@code true} when the traversal starts and to {@code false} if the traversal ends, fails, or has been aborted by
      * calling {@link TraverseContinuation#stop()}.
      *

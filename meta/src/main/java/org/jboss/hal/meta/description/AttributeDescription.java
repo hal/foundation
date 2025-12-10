@@ -27,6 +27,7 @@ import org.jboss.hal.dmr.Property;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_CONSTRAINTS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTE_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.METRIC;
@@ -94,6 +95,10 @@ public class AttributeDescription extends NamedNode implements Description {
 
     public boolean sensitive() {
         return ModelNodeHelper.nested(this, String.join(".", ACCESS_CONSTRAINTS, SENSITIVE)).isDefined();
+    }
+
+    public String group() {
+        return hasDefined(ATTRIBUTE_GROUP) ? get(ATTRIBUTE_GROUP).asString() : null;
     }
 
     public String unit() {

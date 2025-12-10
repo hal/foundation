@@ -21,7 +21,7 @@ import org.patternfly.component.form.FormControl;
 import org.patternfly.component.form.FormGroupLabel;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
-import static org.jboss.hal.ui.resource.HelperTexts.unsupported;
+import static org.jboss.hal.ui.resource.HelperTexts.unsupportedType;
 import static org.patternfly.component.ValidationStatus.warning;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
@@ -72,7 +72,7 @@ class UnsupportedFormItem extends FormItem {
                 .addLabel(label)
                 .addControl(formGroupControl()
                         .addControl(control)
-                        .addHelperText(unsupported()));
+                        .addHelperText(unsupportedType(ra.description.formatType())));
     }
 
     @Override

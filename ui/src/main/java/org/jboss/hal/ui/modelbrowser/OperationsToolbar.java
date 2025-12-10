@@ -40,8 +40,8 @@ import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.switch_.Switch.switch_;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
-import static org.patternfly.component.toolbar.ToolbarFilterChipGroup.toolbarFilterChipGroup;
 import static org.patternfly.component.toolbar.ToolbarFilterContent.toolbarFilterContent;
+import static org.patternfly.component.toolbar.ToolbarFilterLabelGroup.toolbarFilterLabelGroup;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarGroupType.filterGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
@@ -85,15 +85,17 @@ class OperationsToolbar implements IsElement<HTMLElement> {
                                 .css(modifier("align-right"))
                                 .add(itemCount(visible, total, "operation", "operations"))))
                 .addFilterContent(toolbarFilterContent()
-                        .bindVisibility(filter, ParametersAttribute.NAME, ReturnValueAttribute.NAME,
+                        .bindVisibility(filter,
+                                ParametersAttribute.NAME,
+                                ReturnValueAttribute.NAME,
                                 DeprecatedAttribute.NAME)
                         .addGroup(toolbarGroup()
-                                .add(toolbarFilterChipGroup(filter, "Signature")
+                                .add(toolbarFilterLabelGroup(filter, "Signature")
                                         .filterAttributes(ParametersAttribute.NAME, ReturnValueAttribute.NAME)
-                                        .filterToChips(FilterLabels::parametersReturnValueChips))
-                                .add(toolbarFilterChipGroup(filter, "Status")
+                                        .filterToLabels(FilterLabels::parametersReturnValueLabels))
+                                .add(toolbarFilterLabelGroup(filter, "Status")
                                         .filterAttributes(DeprecatedAttribute.NAME)
-                                        .filterToChips(FilterLabels::deprecatedChips)))
+                                        .filterToLabels(FilterLabels::deprecatedLabels)))
                         .addItem(toolbarItem()
                                 .add(button("Clear all filters").link().inline().onClick((e, c) -> filter.resetAll()))));
 

@@ -71,7 +71,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                         tr.addTitleCell(titleCell
                                 .add(attributeName(attribute, () -> uic().environment().highlightStability(resource.stability(),
                                         attribute.stability())))
-                                .add(attributeDescription(attribute)
+                                .add(attributeDescription(attribute, false)
                                         .style("cursor", "initial")
                                         .css(util("mt-sm"))));
                         if (attribute.listOrObjectValueType()) {
@@ -85,7 +85,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                         tr.addItem(td("Name")
                                 .add(attributeName(attribute, () -> uic().environment().highlightStability(resource.stability(),
                                         attribute.stability())))
-                                .add(attributeDescription(attribute).css(util("mt-sm"))));
+                                .add(attributeDescription(attribute, false).css(util("mt-sm"))));
                     }
                 })
                 .addItem(td("Type").text(attribute.formatType()))

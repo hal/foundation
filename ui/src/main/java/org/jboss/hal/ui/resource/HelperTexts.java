@@ -39,8 +39,8 @@ import static org.patternfly.style.Classes.start;
 
 class HelperTexts {
 
-    static HelperText unsupported() {
-        return helperText("The type of this attribute type is not yet supported.", warning);
+    static HelperText unsupportedType(String type) {
+        return helperText("The type of this attribute is not yet supported: " + type, warning);
     }
 
     static HelperText required(ResourceAttribute ra) {
@@ -67,7 +67,7 @@ class HelperTexts {
                                         // [<prefix>][${<system-property-name>[:<default-value>]}][<suffix>]*
                                         .add(span().css(halComponent(expression))
                                                 .add(span().css(halComponent(expression, defaultValue))
-                                                        .text("[prefix]"))
+                                                        .text("[<prefix>]"))
                                                 .add(span().css(halComponent(expression, dollar)))
                                                 .add(span().css(halComponent(expression, curlyBraces, start)))
                                                 .add(span().css(halComponent(expression, name))

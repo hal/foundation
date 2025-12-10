@@ -27,6 +27,18 @@ import static java.util.stream.Collectors.joining;
 /** Generates human-readable labels from terms used in the management model. */
 public class LabelBuilder {
 
+    // ------------------------------------------------------ factory
+
+    public static String labelBuilder(String name) {
+        return new LabelBuilder().label(name);
+    }
+
+    public static String labelBuilder(List<String> names, String conjunction) {
+        return new LabelBuilder().enumeration(names, conjunction);
+    }
+
+    // ------------------------------------------------------ instance
+
     private static final String QUOTE = "'";
     private static final String SPACE = " ";
 
@@ -143,6 +155,8 @@ public class LabelBuilder {
         }
         return enumeration;
     }
+
+    // ------------------------------------------------------ internal
 
     private String replaceSpecial(String label) {
         List<String> replacedParts = new ArrayList<>();

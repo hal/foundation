@@ -19,12 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.elemento.By;
+import org.jboss.elemento.HTMLInputElementBuilder;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.ui.BuildingBlocks;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
 import org.patternfly.component.HasIdentifier;
 import org.patternfly.component.ValidationStatus;
@@ -38,6 +38,7 @@ import org.patternfly.component.inputgroup.InputGroupText;
 import org.patternfly.core.ComponentContext;
 
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
@@ -49,7 +50,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
-import static org.jboss.hal.ui.BuildingBlocks.resolveExpression;
+import static org.jboss.hal.ui.BuildingBlocks.expressionModeIcon;
+import static org.jboss.hal.ui.BuildingBlocks.normalModeIcon;
+import static org.jboss.hal.ui.BuildingBlocks.resolveExpressionIcon;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.EXISTING_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.NEW_RESOURCE;
@@ -66,10 +69,11 @@ import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
-import static org.patternfly.icon.IconSets.fas.dollarSign;
+import static org.patternfly.icon.IconSets.fas.lock;
 
 /**
- * An item for a {@link ResourceForm} based on a {@link FormGroup}
+ * An item for a {@link ResourceForm} based on a {@link FormGroup}. Form items should be stateless. They're created every time
+ * the user switches to the edit mode. The value of a form item is passed at construction time.
  * <p>
  * Do <strong>not</strong> register event handlers for form controls here. Event handlers must only be registered in
  * subclasses!
@@ -88,7 +92,7 @@ abstract class FormItem implements
     final FormItemFlags flags;
     final String switchToExpressionModeId;
     final String resolveExpressionId;
-    private final String switchToNativeModeId;
+    final String switchToNativeModeId;
     private final Map<String, Object> data;
     private final FormGroupLabel label;
 
@@ -275,7 +279,7 @@ abstract class FormItem implements
         return textControl != null ? textControl.value() : "";
     }
 
-    // ------------------------------------------------------ building blocks
+    // ------------------------------------------------------ customizable UI setup
 
     /**
      * Sets up the default DOM tree based on the resource attribute's description.
@@ -285,7 +289,7 @@ abstract class FormItem implements
      * <li>Checks if the description is read-only.</li>
      * <li>If read-only, it sets the form group control to a read-only group by calling {@link #readOnlyGroup()}.</li>
      * <li>If not read-only, it checks if expressions are allowed.</li>
-     * <li>If expressions are allowed, it sets up both expression and native modes by calling {@link #expressionContainer()} and {@link #nativeContainer()} and assigns the relevant form group control. It then switches to the appropriate mode based on  the current expression state.</li>
+     * <li>If expressions are allowed, it sets up both expression and native modes by calling {@link #expressionContainer()} and {@link #nativeContainer()} and assigns the relevant form group control. It then switches to the appropriate mode based on the current expression state.</li>
      * <li>If expressions are not allowed, it sets the form group control to a native group by calling {@link #nativeGroup()}.</li>
      * <li>Finally, it creates and configures a form group with the specified identifier, required status, label, and form group control.</li>
      * </ol>
@@ -295,8 +299,8 @@ abstract class FormItem implements
             formGroupControl = readOnlyGroup();
         } else {
             if (ra.description.expressionAllowed()) {
-                expressionContainer = expressionContainer();
-                nativeContainer = nativeContainer();
+                expressionContainer();
+                nativeContainer();
                 formGroupControl = formGroupControl();
                 if (ra.expression) {
                     switchToExpressionMode();
@@ -330,53 +334,55 @@ abstract class FormItem implements
     }
 
     /**
-     * Creates and returns the container for the native form controls and a button to switch to the expression mode. Must be
-     * overridden in subclasses if {@link #defaultSetup()} is used.
+     * Creates and returns the container for the native form controls and a button to switch to the expression mode.
+     * <p>
+     * Must be overridden in subclasses if {@link #defaultSetup()} is used. This implementation creates the native container
+     * only once. It's up to the subclass to decide whether to create and cache the native container or whether to create the
+     * native container on the fly every time it's necessary. The assignment to {@link #nativeContainer} must be done in any
+     * case.
      */
     HTMLElement nativeContainer() {
-        return div().element();
+        if (nativeContainer == null) {
+            nativeContainer = div().element();
+        }
+        return nativeContainer;
     }
 
     /**
-     * Creates and returns the container for the expression form controls and a button to switch to the native mode. May be
-     * overridden in subclasses
+     * Creates and returns the container for the expression form controls and a button to switch to the native mode.
+     * <p>
+     * This implementation creates the expression container * only once. It's up to the subclass to decide whether to create and
+     * cache the expression container or whether to create the expression container on the fly every time it's necessary. The
+     * assignment to {@link #expressionContainer} must be done in any case.
      */
     HTMLElement expressionContainer() {
-        return inputGroup()
-                .addItem(inputGroupItem().addButton(switchToNormalModeButton()))
-                .addItem(inputGroupItem().fill().addControl(textControl()))
-                .addItem(inputGroupItem().addButton(resolveExpressionButton()))
-                .run(ig -> {
-                    if (ra.description.unit() != null) {
-                        ig.addText(unitInputGroupText());
-                    }
-                })
-                .element();
-    }
-
-    /**
-     * Creates and returns a text control mostly used for the expression mode. Should not be overridden in subclasses unless
-     * necessary.
-     */
-    TextInput textControl() {
-        if (textControl == null) {
-            textControl = textInput(identifier)
-                    .run(ti -> {
-                        if (ra.value.isDefined()) {
-                            ti.value(ra.value.asString());
+        if (expressionContainer == null) {
+            expressionContainer = inputGroup()
+                    .addItem(inputGroupItem().addButton(switchToNormalModeButton()))
+                    .addItem(inputGroupItem().fill().addControl(textControl()))
+                    .addItem(inputGroupItem().addButton(resolveExpressionButton()))
+                    .run(ig -> {
+                        if (ra.description.unit() != null) {
+                            ig.addText(unitInputGroupText());
                         }
-                        applyPlaceholder(ti);
-                    });
+                    })
+                    .element();
         }
-        return textControl;
+        return expressionContainer;
     }
 
-    InputGroupText unitInputGroupText() {
-        return inputGroupText().plain().add(small().text(ra.description.unit()));
+    Button switchToExpressionModeButton() {
+        return button().id(switchToExpressionModeId).control().icon(expressionModeIcon().get())
+                .onClick((e, b) -> switchToExpressionMode());
+    }
+
+    Button switchToNormalModeButton() {
+        return button().id(switchToNativeModeId).control().icon(normalModeIcon().get())
+                .onClick((e, b) -> switchToNativeMode());
     }
 
     Button resolveExpressionButton() {
-        return button().id(resolveExpressionId).control().icon(resolveExpression().get())
+        return button().id(resolveExpressionId).control().icon(resolveExpressionIcon().get())
                 .onClick((e, b) -> {
                     if (textControl != null) {
                         // TODO Resolve expression
@@ -386,17 +392,7 @@ abstract class FormItem implements
                 });
     }
 
-    Button switchToExpressionModeButton() {
-        return button().id(switchToExpressionModeId).control().icon(dollarSign())
-                .onClick((e, b) -> switchToExpressionMode());
-    }
-
-    Button switchToNormalModeButton() {
-        return button().id(switchToNativeModeId).control().icon(BuildingBlocks.normalMode().get())
-                .onClick((e, b) -> switchToNativeMode());
-    }
-
-    void applyPlaceholder(TextInput textInput) {
+    void applyPlaceholder(HTMLInputElementBuilder<HTMLInputElement> textInput) {
         if (flags.placeholder == Placeholder.UNDEFINED) {
             textInput.placeholder(UNDEFINED);
         } else if (flags.placeholder == Placeholder.DEFAULT_VALUE) {
@@ -406,15 +402,65 @@ abstract class FormItem implements
         }
     }
 
+    // ------------------------------------------------------ final UI setup
+
+    /**
+     * Creates and returns a form group control that includes a text control returned by {@link #readOnlyTextControl()} and a
+     * {@link #resolveExpressionButton()} if the attribute supports expressions. Otherwise, return a form group control that
+     * just contains a text control returned by {@link #readOnlyTextControl()}. used for the implementation of
+     * {@link #readOnlyGroup()}.
+     * <p>
+     * Is used as default implementation in overridden {@link #readOnlyGroup()} methods.
+     */
+    final FormGroupControl readOnlyGroupWithExpressionSwitch() {
+        TextInput textControl = readOnlyTextControl();
+        if (ra.expression) {
+            return formGroupControl()
+                    .addInputGroup(inputGroup()
+                            .addItem(inputGroupItem().fill().addControl(textControl))
+                            .addItem(inputGroupItem().addButton(resolveExpressionButton())));
+        } else {
+            return formGroupControl()
+                    .addControl(textControl);
+        }
+    }
+
+    /**
+     * Creates and returns a read-only text control with a lock icon.
+     */
+    final TextInput readOnlyTextControl() {
+        return textControl().readonly().icon(lock());
+    }
+
+    /**
+     * Creates and returns a text control mostly used for the expression mode.
+     */
+    final TextInput textControl() {
+        if (textControl == null) {
+            textControl = textInput(identifier)
+                    .run(ti -> {
+                        if (ra.value.isDefined()) {
+                            ti.value(ra.value.asString());
+                        }
+                        applyPlaceholder(ti.input());
+                    });
+        }
+        return textControl;
+    }
+
+    final InputGroupText unitInputGroupText() {
+        return inputGroupText().plain().add(small().text(ra.description.unit()));
+    }
+
     // ------------------------------------------------------ events
 
     final void switchToExpressionMode() {
         resetValidation();
         failSafeRemoveFromParent(nativeContainer);
-        formGroupControl.add(expressionContainer);
+        formGroupControl.add(expressionContainer = expressionContainer());
         tooltip(By.id(switchToNativeModeId), "Switch to native mode").appendTo(expressionContainer);
         tooltip(By.id(resolveExpressionId), "Resolve expression").appendTo(expressionContainer);
-        inputMode = FormItemInputMode.EXPRESSION;
+        inputMode = EXPRESSION;
         afterSwitchedToExpressionMode();
     }
 
@@ -432,9 +478,9 @@ abstract class FormItem implements
     final void switchToNativeMode() {
         resetValidation();
         failSafeRemoveFromParent(expressionContainer);
-        formGroupControl.add(nativeContainer);
+        formGroupControl.add(nativeContainer = nativeContainer());
         tooltip(By.id(switchToExpressionModeId), "Switch to expression mode").appendTo(nativeContainer);
-        inputMode = FormItemInputMode.NATIVE;
+        inputMode = NATIVE;
         afterSwitchedToNativeMode();
     }
 

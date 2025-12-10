@@ -23,6 +23,7 @@ import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
+import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
@@ -38,7 +39,7 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.hal.ui.filter.DefinedRequiredDeprecatedMultiSelect.definedRequiredDeprecatedMultiSelect;
+import static org.jboss.hal.ui.filter.DeReDeExMultiSelect.deReDeExMultiSelect;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.NameTextInputGroup.nameFilterTextInputGroup;
 import static org.jboss.hal.ui.filter.StorageAccessTypeMultiSelect.storageAccessTypeMultiSelect;
@@ -48,8 +49,8 @@ import static org.jboss.hal.ui.resource.ResourceManager.State.VIEW;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
-import static org.patternfly.component.toolbar.ToolbarFilterChipGroup.toolbarFilterChipGroup;
 import static org.patternfly.component.toolbar.ToolbarFilterContent.toolbarFilterContent;
+import static org.patternfly.component.toolbar.ToolbarFilterLabelGroup.toolbarFilterLabelGroup;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarGroupType.buttonGroup;
@@ -116,7 +117,7 @@ class ResourceToolbar implements IsElement<HTMLElement> {
                         .addItem(toolbarItem(searchFilter).add(nameFilterTextInputGroup(filter)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(typesFilterMultiSelect(filter)))
-                                .addItem(toolbarItem().add(definedRequiredDeprecatedMultiSelect(filter)))
+                                .addItem(toolbarItem().add(deReDeExMultiSelect(filter)))
                                 .addItem(toolbarItem().add(storageAccessTypeMultiSelect(filter))))
                         .addItem(toolbarItem()
                                 .style("align-self", "center")
@@ -128,19 +129,21 @@ class ResourceToolbar implements IsElement<HTMLElement> {
                                 RequiredAttribute.NAME,
                                 DeprecatedAttribute.NAME,
                                 StorageAttribute.NAME,
-                                AccessTypeAttribute.NAME)
+                                AccessTypeAttribute.NAME,
+                                ExpressionAttribute.NAME)
                         .addGroup(toolbarGroup()
-                                .add(toolbarFilterChipGroup(filter, "Type")
+                                .add(toolbarFilterLabelGroup(filter, "Type")
                                         .filterAttributes(TypesAttribute.NAME)
-                                        .filterToChips(FilterLabels::typeChips))
-                                .add(toolbarFilterChipGroup(filter, "Status")
+                                        .filterToLabels(FilterLabels::typeLabels))
+                                .add(toolbarFilterLabelGroup(filter, "Status")
                                         .filterAttributes(DefinedAttribute.NAME,
                                                 RequiredAttribute.NAME,
-                                                DeprecatedAttribute.NAME)
-                                        .filterToChips(FilterLabels::definedRequiredDeprecatedChips))
-                                .add(toolbarFilterChipGroup(filter, "Mode")
+                                                DeprecatedAttribute.NAME,
+                                                ExpressionAttribute.NAME)
+                                        .filterToLabels(FilterLabels::deReDeExLabels))
+                                .add(toolbarFilterLabelGroup(filter, "Mode")
                                         .filterAttributes(StorageAttribute.NAME, AccessTypeAttribute.NAME)
-                                        .filterToChips(FilterLabels::storageAccessTypeChips)))
+                                        .filterToLabels(FilterLabels::storageAccessTypeLabels)))
                         .addItem(toolbarItem()
                                 .add(button("Clear all filters").link().inline()
                                         .onClick((e, c) -> filter.resetAll()))));

@@ -118,6 +118,7 @@ public class ResourceDialogs {
             resourceForm.addItem(nameFormItem(metadata));
         }
         for (ResourceAttribute ra : resourceAttributes) {
+            // TODO Support attribute groups
             resourceForm.addItem(formItem(template, metadata, ra,
                     new FormItemFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE)));
         }

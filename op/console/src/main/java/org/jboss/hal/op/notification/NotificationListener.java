@@ -183,8 +183,7 @@ public class NotificationListener {
     // ------------------------------------------------------ internal factory methods
 
     private Alert alert(Notification notification) {
-        return Alert.alert(notification.severity(), notification.id,
-                        notification.id.substring(0, 8) + ": " + notification.title)
+        return Alert.alert(notification.severity(), notification.id, notification.title)
                 .addDescription(alertDescription(notification.description));
     }
 

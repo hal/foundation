@@ -15,87 +15,101 @@
  */
 package org.jboss.hal.ui.resource;
 
-import java.util.List;
-
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.meta.AddressTemplate;
+import org.patternfly.component.AsyncItems;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
-import org.patternfly.component.form.FormSelect;
-import org.patternfly.component.form.FormSelectOption;
+import org.patternfly.component.menu.MenuItem;
+import org.patternfly.component.menu.MenuList;
+import org.patternfly.component.menu.MenuToggle;
+import org.patternfly.component.menu.SingleTypeahead;
 
 import elemental2.dom.HTMLElement;
+import elemental2.promise.Promise;
 
 import static java.util.stream.Collectors.toList;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.EXISTING_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemFlags.Scope.NEW_RESOURCE;
 import static org.jboss.hal.ui.resource.FormItemInputMode.EXPRESSION;
 import static org.jboss.hal.ui.resource.FormItemInputMode.NATIVE;
 import static org.jboss.hal.ui.resource.HelperTexts.required;
+import static org.jboss.hal.ui.resource.SearchReloadInput.searchReloadInput;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
-import static org.patternfly.component.form.FormSelect.formSelect;
-import static org.patternfly.component.form.FormSelectOption.formSelectOption;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
+import static org.patternfly.component.menu.MenuContent.menuContent;
+import static org.patternfly.component.menu.MenuItem.menuItem;
+import static org.patternfly.component.menu.MenuList.menuList;
+import static org.patternfly.component.menu.MenuToggle.menuToggle;
+import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
+import static org.patternfly.component.menu.SingleTypeaheadMenu.singleTypeaheadMenu;
 
-class SelectFormItem extends FormItem {
+class SingleTypeaheadFormItem extends FormItem {
 
-    // The select control is created in the constructor by defaultSetup() -> nativeContainer() -> selectControl().
+    private final AddressTemplate template;
+    private final String capability;
+    // The single typeahead control is created in the constructor by defaultSetup() -> nativeContainer() -> singleTypeaheadControl().
     // It's, so to speak, final and never null!
-    private /*final*/ FormSelect selectControl;
+    private /*final*/ SingleTypeahead singleTypeahead;
 
-    SelectFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
+    SingleTypeaheadFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags,
+            AddressTemplate template, String capability) {
         super(identifier, ra, label, flags);
+        this.template = template;
+        this.capability = capability;
         defaultSetup();
     }
 
-    @Override
     FormGroupControl readOnlyGroup() {
         return readOnlyGroupWithExpressionSwitch();
     }
 
     @Override
     FormGroupControl nativeGroup() {
-        return formGroupControl().addControl(selectControl());
+        return formGroupControl().add(singleTypeaheadControl());
     }
 
     @Override
     HTMLElement nativeContainer() {
-        if (nativeContainer == null) {
-            nativeContainer = inputGroup()
-                    .addItem(inputGroupItem().addButton(switchToExpressionModeButton()))
-                    .addItem(inputGroupItem().fill().addControl(selectControl()))
-                    .element();
-        }
+        // Recreate every time the container is requested. Otherwise, the popper/menu won't work as expected.
+        nativeContainer = inputGroup()
+                .addItem(inputGroupItem().addButton(switchToExpressionModeButton()))
+                .addItem(inputGroupItem().fill().add(singleTypeaheadControl()))
+                .element();
         return nativeContainer;
     }
 
-    private FormSelect selectControl() {
-        List<String> allowedValues = ra.description.get(ALLOWED)
-                .asList()
-                .stream()
-                .map(ModelNode::asString)
-                .collect(toList());
-        selectControl = formSelect(identifier)
-                .run(fs -> {
-                    if (ra.description.nillable() && !ra.description.hasDefault()) {
-                        fs.addOption(formSelectOption(UNDEFINED));
-                    }
-                })
-                .addOptions(allowedValues, lbl -> FormSelectOption.formSelectOption(lbl, lbl))
-                .run(fs -> {
-                    if (ra.value.isDefined()) {
-                        fs.value(ra.value.asString());
-                    } else if (ra.description.hasDefault()) {
-                        fs.value(ra.description.get(DEFAULT).asString());
-                    } else if (ra.description.nillable()) {
-                        fs.value(UNDEFINED);
-                    }
-                });
-        return selectControl;
+    private SingleTypeahead singleTypeaheadControl() {
+        AsyncItems<MenuList, MenuItem> asyncItems = ml -> uic().capabilityRegistry().suggestCapabilities(template, capability)
+                .then(capabilities -> Promise.resolve(capabilities.stream()
+                        .sorted()
+                        .map(c -> menuItem(c, c))
+                        .collect(toList())));
+        SearchReloadInput searchReloadInput = searchReloadInput(identifier)
+                .plain()
+                .placeholder("")
+                .onReload((e, c) -> singleTypeahead.menu().reload());
+        MenuToggle menuToggle = menuToggle(searchReloadInput).fullWidth();
+        singleTypeahead = singleTypeahead(menuToggle)
+                .addMenu(singleTypeaheadMenu()
+                        .addContent(menuContent()
+                                .addList(menuList()
+                                        .addItems(asyncItems))));
+
+        if (ra.value.isDefined()) {
+            failSafeSelectValue(ra.value.asString());
+        } else if (ra.description.hasDefault()) {
+            searchReloadInput.placeholder(ra.description.get(DEFAULT).asString());
+        } else if (ra.description.nillable()) {
+            searchReloadInput.placeholder(UNDEFINED);
+        }
+
+        return singleTypeahead;
     }
 
     // ------------------------------------------------------ validation
@@ -103,14 +117,14 @@ class SelectFormItem extends FormItem {
     @Override
     void resetValidation() {
         super.resetValidation();
-        selectControl.resetValidation();
+        singleTypeahead.menuToggle().resetValidation();
     }
 
     @Override
     boolean validate() {
         if (inputMode == NATIVE) {
-            if (requiredOnItsOwn() && UNDEFINED.equals(selectControl.value())) {
-                selectControl.validated(error);
+            if (requiredOnItsOwn() && singleTypeahead.value().isEmpty()) {
+                singleTypeahead.menuToggle().validated(error);
                 formGroupControl.addHelperText(required(ra));
                 return false;
             }
@@ -127,11 +141,11 @@ class SelectFormItem extends FormItem {
         if (ra.readable && !ra.description.readOnly()) {
             if (flags.scope == NEW_RESOURCE) {
                 if (inputMode == NATIVE) {
-                    String selectedValue = selectControl.value();
+                    String value = singleTypeahead.value();
                     if (ra.description.hasDefault()) {
-                        return !ra.description.get(DEFAULT).asString().equals(selectedValue);
+                        return !ra.description.get(DEFAULT).asString().equals(value);
                     } else {
-                        return !UNDEFINED.equals(selectedValue);
+                        return value != null && !value.isEmpty();
                     }
                 } else if (inputMode == EXPRESSION) {
                     return isExpressionModified();
@@ -139,13 +153,13 @@ class SelectFormItem extends FormItem {
             } else if (flags.scope == EXISTING_RESOURCE) {
                 boolean wasDefined = ra.value.isDefined();
                 if (inputMode == NATIVE) {
-                    String selectedValue = selectControl.value();
+                    String value = singleTypeahead.value();
                     if (wasDefined) {
                         // modified if the original value was an expression or is different from the current user input
                         String originalValue = ra.value.asString();
-                        return ra.expression || !originalValue.equals(selectedValue);
+                        return ra.expression || !originalValue.equals(value);
                     } else {
-                        return !UNDEFINED.equals(selectedValue);
+                        return value != null && !value.isEmpty();
                     }
                 } else if (inputMode == EXPRESSION) {
                     return isExpressionModified();
@@ -160,11 +174,11 @@ class SelectFormItem extends FormItem {
     @Override
     ModelNode modelNode() {
         if (inputMode == NATIVE) {
-            String selectedValue = selectControl.value();
-            if (UNDEFINED.equals(selectedValue)) {
+            String value = singleTypeahead.value();
+            if (value == null || value.isEmpty()) {
                 return new ModelNode();
             } else {
-                return new ModelNode().set(selectedValue);
+                return new ModelNode().set(value);
             }
         } else if (inputMode == EXPRESSION) {
             return expressionModelNode();
@@ -176,27 +190,27 @@ class SelectFormItem extends FormItem {
 
     @Override
     @SuppressWarnings("DuplicatedCode")
-    void afterSwitchedToNativeMode() {
+    void afterSwitchedToExpressionMode() {
         boolean wasDefined = ra.value.isDefined();
         if (wasDefined && !ra.expression) {
             String originalValue = ra.value.asString();
             failSafeSelectValue(originalValue);
         } else {
             if (ra.description.hasDefault()) {
+                singleTypeahead.menuToggle().searchInput().placeholder(ra.description.get(DEFAULT).asString());
                 failSafeSelectValue(ra.description.get(DEFAULT).asString());
             } else if (ra.description.nillable()) {
-                failSafeSelectValue(UNDEFINED);
-            } else {
-                selectControl.selectFirstValue(false);
+                singleTypeahead.menuToggle().searchInput().placeholder(UNDEFINED);
             }
         }
     }
 
     private void failSafeSelectValue(String value) {
-        if (selectControl.containsValue(value)) {
-            selectControl.value(value, false);
+        if (singleTypeahead.menu().hasAsyncItems()) {
+            singleTypeahead.menuToggle().text(value);
+            singleTypeahead.onLoaded((__, st) -> st.select(value));
         } else {
-            selectControl.selectFirstValue(false);
+            singleTypeahead.select(value);
         }
     }
 }

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import org.jboss.elemento.ElementClassListMethods;
+import org.jboss.elemento.HTMLElementStyleMethods;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
 import org.patternfly.component.HasItems;
@@ -47,7 +49,8 @@ import static org.patternfly.style.Orientation.vertical;
 class ResourceView implements
         TypedBuilder<HTMLElement, ResourceView>,
         IsElement<HTMLElement>,
-        HasItems<HTMLElement, ResourceView, ViewItem> {
+        HasItems<HTMLElement, ResourceView, ViewItem>,
+        ElementClassListMethods<HTMLElement, ResourceView> {
 
     private final DescriptionList dl;
     private final List<BiConsumer<ResourceView, ViewItem>> onAdd;

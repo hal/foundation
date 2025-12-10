@@ -39,9 +39,11 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.DEPENDENT_ADDRESS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.GET_PROVIDER_POINTS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.SUGGEST_CAPABILITIES;
 
 @ApplicationScoped
 public class CapabilityRegistry {
@@ -58,15 +60,36 @@ public class CapabilityRegistry {
         this.statementContext = statementContext;
     }
 
+    public Promise<List<String>> suggestCapabilities(AddressTemplate address, String capability) {
+        ResourceAddress resourceAddress = address.resolve(statementContext);
+        Operation operation = new Operation.Builder(TEMPLATE.resolve(statementContext), SUGGEST_CAPABILITIES)
+                .param(NAME, capability)
+                .param(DEPENDENT_ADDRESS, resourceAddress)
+                .build();
+        return dispatcher.execute(operation)
+                .then(result -> {
+                    if (result.isDefined()) {
+                        List<String> capabilities = result.asList().stream().map(ModelNode::asString).collect(toList());
+                        logger.debug("Capabilities for %s at %s: %s", capability, address, capabilities);
+                        return Promise.resolve(capabilities);
+                    } else {
+                        return Promise.resolve(emptyList());
+                    }
+                });
+    }
+
     public Promise<List<String>> providerPoints(String capability) {
         Operation operation = new Operation.Builder(TEMPLATE.resolve(statementContext), GET_PROVIDER_POINTS)
                 .param(NAME, capability)
                 .build();
         return dispatcher.execute(operation)
                 .then(result -> {
-                    List<String> providerPoints = result.asList().stream().map(ModelNode::asString).collect(toList());
-                    logger.debug("Provider points for %s: %s", capability, providerPoints);
-                    return Promise.resolve(providerPoints);
+                    if (result.isDefined()) {
+                        List<String> providerPoints = result.asList().stream().map(ModelNode::asString).collect(toList());
+                        logger.debug("Provider points for %s: %s", capability, providerPoints);
+                        return Promise.resolve(providerPoints);
+                    }
+                    return Promise.resolve(emptyList());
                 });
     }
 

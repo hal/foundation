@@ -24,17 +24,21 @@ import java.util.TreeMap;
 
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.Attachable;
+import org.jboss.elemento.ButtonType;
+import org.jboss.elemento.Elements;
 import org.jboss.elemento.EventType;
+import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.Key;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
-import org.patternfly.component.button.Button;
+import org.patternfly.component.label.Label;
 import org.patternfly.popper.Modifiers;
 import org.patternfly.popper.Popper;
 import org.patternfly.popper.PopperBuilder;
 import org.patternfly.popper.TriggerAction;
+import org.patternfly.style.Color;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
@@ -51,18 +55,18 @@ import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isVisible;
 import static org.jboss.elemento.Elements.setVisible;
-import static org.jboss.elemento.Elements.small;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.strong;
 import static org.jboss.elemento.EventType.bind;
+import static org.jboss.elemento.EventType.click;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PROFILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER_GROUP;
 import static org.jboss.hal.resources.HalClasses.capabilityReference;
 import static org.jboss.hal.resources.HalClasses.halComponent;
-import static org.jboss.hal.resources.HalClasses.providedBy;
 import static org.jboss.hal.resources.HalClasses.value;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
@@ -74,6 +78,8 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.popper.Placement.bottom;
 import static org.patternfly.style.Classes.list;
 import static org.patternfly.style.Classes.menu;
+import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Classes.overflow;
 
 class CapabilityReference implements IsElement<HTMLElement>, Attachable {
 
@@ -98,7 +104,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
     private final String capability;
     private final ResourceAttribute ra;
     private final List<HandlerRegistration> handlerRegistrations;
-    private final Button providedByButton;
+    private final Label providedBy;
     private final HTMLElement menuElement;
     private final HTMLElement menuCountElement;
     private final org.patternfly.component.list.List menuList;
@@ -120,8 +126,9 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                 .add(span().css(halComponent(capabilityReference, value))
                         .text(ra.value.asString())
                         .element())
-                .add(small().css(halComponent(capabilityReference, providedBy))
-                        .add(providedByButton = button("").link().inline().onClick((e, btn) -> onClick())))
+                .add(providedBy = label(Elements.button(ButtonType.button), Id.build("provided-by", capability), "", Color.blue)
+                        .css(modifier(overflow))
+                        .on(click, event -> onClick()))
                 .element();
 
         this.menuElement = div()
@@ -143,14 +150,14 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                 .element();
 
         setVisible(menuElement, false);
-        setVisible(providedByButton, false);
+        setVisible(providedBy, false);
         body().add(menuElement);
         Attachable.register(this, this);
     }
 
     @Override
     public void attach(MutationRecord mutationRecord) {
-        popper = new PopperBuilder("CapabilityReference", providedByButton.element(), menuElement)
+        popper = new PopperBuilder("CapabilityReference", providedBy.element(), menuElement)
                 .zIndex(Z_INDEX)
                 .placement(bottom)
                 .addModifier(Modifiers.offset(DISTANCE),
@@ -164,10 +171,10 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                 .removePopperOnTriggerDetach()
                 .build();
 
-        handlerRegistrations.add(bind(document, EventType.click, true, e -> {
+        handlerRegistrations.add(bind(document, click, true, e -> {
             if (isVisible(menuElement)) {
                 Node target = (Node) e.target;
-                if (target != providedByButton.element() && !menuElement.contains(target)) {
+                if (target != providedBy.element() && !menuElement.contains(target)) {
                     popper.hide(null);
                 }
             }
@@ -179,9 +186,9 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
         }));
 
         findResources().then(__ -> {
-            setVisible(providedByButton, state == State.ONE_RESOURCE || state == State.MULTIPLE_RESOURCES);
+            setVisible(providedBy, state == State.ONE_RESOURCE || state == State.MULTIPLE_RESOURCES);
             if (state == State.ONE_RESOURCE && singleTemplate != null) {
-                tooltip(providedByButton.element(), singleTemplate.toString()).appendToBody();
+                tooltip(providedBy.element(), singleTemplate.toString()).appendToBody();
             }
             return null;
         });
@@ -224,13 +231,13 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
 
                     if (templates.isEmpty()) {
                         state = State.NO_RESOURCES;
-                        setVisible(providedByButton.element(), false);
+                        setVisible(providedBy.element(), false);
                         logger.warn("No resources found for capability %s and attribute %s", capability, ra);
 
                     } else if (templates.size() == 1) {
                         state = State.ONE_RESOURCE;
                         singleTemplate = templates.get(0);
-                        providedByButton.text("provided by 1 resource");
+                        providedBy.text("provided by 1 resource");
 
                     } else {
                         state = State.MULTIPLE_RESOURCES;
@@ -242,7 +249,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                                             .onClick((e, btn) -> SelectInTree.dispatch(element(), tpl))));
                         }
                         menuCountElement.textContent = size;
-                        providedByButton.text("provided by " + size + " resources");
+                        providedBy.text("provided by " + size + " resources");
                     }
                     return Promise.resolve((Void) null);
                 })

@@ -13,25 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.meta.tree;
+package org.jboss.hal.ui.resource;
 
-/**
- * Class representing the control mechanism for managing the traversal process. The {@code TraverseContinuation} object can be
- * used to control the traversal by stopping the traversal operation.
- */
-public class TraverseContinuation {
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
 
-    boolean running;
+interface ViewItemProvider {
 
-    public TraverseContinuation() {
-        running = false;
-    }
+    /** Tests must be cheap and fast! They're executed every time a view item is created. */
+    boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
 
-    public void stop() {
-        running = false;
-    }
-
-    public boolean running() {
-        return running;
-    }
+    ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
 }

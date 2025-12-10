@@ -125,7 +125,8 @@ public class BuildingBlocks {
         }
     }
 
-    public static HTMLContainerBuilder<HTMLDivElement> attributeDescription(AttributeDescription attribute) {
+    public static HTMLContainerBuilder<HTMLDivElement> attributeDescription(AttributeDescription attribute,
+            boolean includeReadOnly) {
         Variable marginTop = componentVar(component(list), "li", "MarginTop");
         Variable marginLeft = componentVar(component(list), "nested", "MarginLeft");
 
@@ -134,6 +135,9 @@ public class BuildingBlocks {
                 .style("color", Token.globalTextColorSubtle.var)
                 .style(marginTop.name, 0)
                 .style(marginLeft.name, 0);
+        if (includeReadOnly && attribute.readOnly()) {
+            infos.add(listItem().text("Read-only."));
+        }
         if (attribute.get(REQUIRED).asBoolean(false)) {
             infos.add(listItem().text("Required."));
         }
@@ -198,7 +202,7 @@ public class BuildingBlocks {
                 .style(utilVar("min-width", "MinWidth").name, "40ch")
                 .addHeader(header)
                 .addBody(popoverBody()
-                        .add(attributeDescription(attribute)));
+                        .add(attributeDescription(attribute, true)));
     }
 
     public static HTMLElement nestedElementSeparator() {
@@ -306,15 +310,15 @@ public class BuildingBlocks {
 
     // ------------------------------------------------------ icons
 
-    public static Supplier<PredefinedIcon> expressionMode() {
+    public static Supplier<PredefinedIcon> expressionModeIcon() {
         return IconSets.fas::dollarSign;
     }
 
-    public static Supplier<PredefinedIcon> normalMode() {
+    public static Supplier<PredefinedIcon> normalModeIcon() {
         return IconSets.fas::terminal;
     }
 
-    public static Supplier<PredefinedIcon> resolveExpression() {
+    public static Supplier<PredefinedIcon> resolveExpressionIcon() {
         return IconSets.fas::link;
     }
 

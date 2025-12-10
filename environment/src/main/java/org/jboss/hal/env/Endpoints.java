@@ -61,7 +61,7 @@ public class Endpoints {
      * @return {@code true} if the console is served from a WildFly / EAP instance, {@code false} if it runs standalone and
      * connected to an arbitrary management endpoint.
      */
-    public boolean isSameOrigin() {
+    public boolean sameOrigin() {
         return sameOrigin;
     }
 }

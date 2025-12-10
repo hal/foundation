@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
+import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.patternfly.component.menu.MultiSelect;
 import org.patternfly.filter.Filter;
@@ -35,38 +37,54 @@ import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectGroupMenu;
 
-public class RequiredDeprecatedMultiSelect<T> implements IsElement<HTMLElement> {
+/**
+ * (De)fined, (Re)quired, (De)precated, (Ex)pression multi select.
+ */
+public class DeReDeExMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    public static <T> RequiredDeprecatedMultiSelect<T> requiredDeprecatedMultiSelect(Filter<T> filter) {
-        return new RequiredDeprecatedMultiSelect<>(filter);
+    public static <T> DeReDeExMultiSelect<T> deReDeExMultiSelect(Filter<T> filter) {
+        return new DeReDeExMultiSelect<>(filter);
     }
 
     // ------------------------------------------------------ instance
 
-    private static final String ORIGIN = "RequiredDeprecatedMultiSelect";
+    private static final String ORIGIN = "DeReDeExMultiSelect";
     private final MultiSelect multiSelect;
 
-    RequiredDeprecatedMultiSelect(Filter<T> filter) {
+    DeReDeExMultiSelect(Filter<T> filter) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text("Status"))
                 .stayOpen()
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> {
+                            setBooleanFilter(filter, DefinedAttribute.NAME, menuItems, ORIGIN);
                             setBooleanFilter(filter, RequiredAttribute.NAME, menuItems, ORIGIN);
                             setBooleanFilter(filter, DeprecatedAttribute.NAME, menuItems, ORIGIN);
+                            setBooleanFilter(filter, ExpressionAttribute.NAME, menuItems, ORIGIN);
                         })
                         .addContent(menuContent()
-                                .addGroup(menuGroup("Required")
+                                .addGroup(menuGroup()
+                                        .addList(menuList()
+                                                .addItem(menuItem(DefinedAttribute.NAME + "-true", "Defined"))
+                                                .addItem(menuItem(DefinedAttribute.NAME + "-false", "Undefined"))))
+                                .addDivider()
+                                .addGroup(menuGroup()
                                         .addList(menuList()
                                                 .addItem(menuItem(RequiredAttribute.NAME + "-true", "Required"))
                                                 .addItem(menuItem(RequiredAttribute.NAME + "-false", "Optional"))))
                                 .addDivider()
-                                .addGroup(menuGroup("Deprecated")
+                                .addGroup(menuGroup()
                                         .addList(menuList()
                                                 .addItem(menuItem(DeprecatedAttribute.NAME + "-true", "Deprecated"))
-                                                .addItem(menuItem(DeprecatedAttribute.NAME + "-false", "Not deprecated"))))));
+                                                .addItem(menuItem(DeprecatedAttribute.NAME + "-false", "Not deprecated"))))
+                                .addDivider()
+                                .addGroup(menuGroup()
+                                        .addList(menuList()
+                                                .addItem(menuItem(ExpressionAttribute.NAME + "-true", "Expressions allowed"))
+                                                .addItem(menuItem(ExpressionAttribute.NAME + "-false", "No expressions allowed"))))
+                        ));
     }
 
     @Override
@@ -80,10 +98,14 @@ public class RequiredDeprecatedMultiSelect<T> implements IsElement<HTMLElement> 
         if (!origin.equals(ORIGIN)) {
             multiSelect.clear(false);
             List<String> identifiers = new ArrayList<>();
+            MultiSelects.<T, Boolean>collectIdentifiers(identifiers, filter, DefinedAttribute.NAME,
+                    value -> DefinedAttribute.NAME + "-" + value);
             MultiSelects.<T, Boolean>collectIdentifiers(identifiers, filter, RequiredAttribute.NAME,
                     value -> RequiredAttribute.NAME + "-" + value);
             MultiSelects.<T, Boolean>collectIdentifiers(identifiers, filter, DeprecatedAttribute.NAME,
                     value -> DeprecatedAttribute.NAME + "-" + value);
+            MultiSelects.<T, Boolean>collectIdentifiers(identifiers, filter, ExpressionAttribute.NAME,
+                    value -> ExpressionAttribute.NAME + "-" + value);
             multiSelect.selectIdentifiers(identifiers, false);
         }
     }

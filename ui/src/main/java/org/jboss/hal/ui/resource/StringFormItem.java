@@ -19,7 +19,6 @@ import org.jboss.elemento.By;
 import org.jboss.hal.dmr.ModelNode;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
-import org.patternfly.component.form.TextInput;
 
 import static org.jboss.hal.dmr.Expression.containsExpression;
 import static org.jboss.hal.ui.resource.FormItemInputMode.MIXED;
@@ -53,16 +52,7 @@ class StringFormItem extends FormItem {
     }
 
     FormGroupControl readOnlyGroup() {
-        TextInput textControl = textControl().readonly();
-        if (ra.expression) {
-            return formGroupControl()
-                    .addInputGroup(inputGroup()
-                            .addItem(inputGroupItem().fill().addControl(textControl))
-                            .addItem(inputGroupItem().addButton(resolveExpressionButton())));
-        } else {
-            return formGroupControl()
-                    .addControl(textControl);
-        }
+        return readOnlyGroupWithExpressionSwitch();
     }
 
     private FormGroupControl expressionGroup() {

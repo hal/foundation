@@ -83,4 +83,8 @@ public class AttributeDescriptions implements Iterable<AttributeDescription> {
     public AttributeDescription parent() {
         return parent;
     }
+
+    public boolean hasGroups() {
+        return attributes.values().stream().anyMatch(ad -> ad.group() != null);
+    }
 }

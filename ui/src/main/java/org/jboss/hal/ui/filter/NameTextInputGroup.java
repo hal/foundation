@@ -39,7 +39,8 @@ public class NameTextInputGroup<T> implements IsElement<HTMLElement> {
 
     NameTextInputGroup(Filter<T> filter) {
         searchInput = searchInput(Id.unique()).placeholder("Filter by name")
-                .onChange((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value));
+                .onKeyup((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value))
+                .onClear((event, textInputGroup) -> filter.reset(NameAttribute.NAME));
         searchInput.input().apply(input -> input.autocomplete = "off");
         filter.onChange((f, origin) -> {
             if (!f.defined(NameAttribute.NAME)) {

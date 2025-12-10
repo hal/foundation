@@ -186,7 +186,7 @@ class OperationsTable implements IsElement<HTMLElement> {
                                 .alignItems(center).spaceItems(xs)
                                 .add(span().text(":"))
                                 .add(span().text(parameter.formatType())))
-                        .add(attributeDescription(parameter).css(util("mt-sm"))));
+                        .add(attributeDescription(parameter, false).css(util("mt-sm"))));
     }
 
     private HTMLContainerBuilder<HTMLDivElement> returnValue(AttributeDescription returnValue) {
