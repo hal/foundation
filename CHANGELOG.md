@@ -7,9 +7,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Enhanced dashboard
+
 ### Fixed
 
 - Fix standalone image build
+
+### ### Upgrades
+
+- Bump PatternFly Java to 0.4.1
 
 ## [0.0.6] - 2025-11-20
 
