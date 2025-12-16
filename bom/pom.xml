@@ -30,7 +30,7 @@
 
     <groupId>org.jboss.hal</groupId>
     <artifactId>hal-fnd-bom</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>HAL Foundation BOM</name>
     <description>Bill of materials</description>
