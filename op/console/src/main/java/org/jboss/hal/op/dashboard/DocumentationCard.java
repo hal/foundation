@@ -21,6 +21,7 @@ import org.jboss.elemento.Id;
 import org.jboss.hal.env.Environment;
 import org.patternfly.layout.flex.AlignItems;
 import org.patternfly.layout.flex.AlignSelf;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
@@ -51,6 +52,7 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.FlexShorthand._1;
 import static org.patternfly.style.Breakpoint.md;
 import static org.patternfly.style.Breakpoints.breakpoints;
+import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Orientation.vertical;
 import static org.patternfly.style.Size.xl;
 
@@ -75,7 +77,7 @@ class DocumentationCard implements DashboardCard {
     private final HTMLElement root;
 
     DocumentationCard(Environment environment) {
-        this.root = card().add(flex()
+        this.root = card().fullHeight().add(flex().css(util("h-100"))
                         .alignItems(AlignItems.stretch)
                         .alignSelf(AlignSelf.stretch)
                         .addItem(flexItem().flex(_1)

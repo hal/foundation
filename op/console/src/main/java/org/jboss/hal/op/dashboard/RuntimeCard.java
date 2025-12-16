@@ -36,7 +36,6 @@ import org.patternfly.layout.flex.Flex;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
-import static elemental2.dom.DomGlobal.clearInterval;
 import static elemental2.dom.DomGlobal.setInterval;
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
@@ -76,7 +75,7 @@ import static org.patternfly.layout.flex.Gap.md;
 import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Size.xl;
 
-class RuntimeCard implements Attachable, DashboardCard {
+class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
 
     private static final String METADATA_KEY = "metadata";
     private static final String PAYLOAD_KEY = "payload";
@@ -104,7 +103,7 @@ class RuntimeCard implements Attachable, DashboardCard {
 
     @Override
     public void detach(MutationRecord mutationRecord) {
-        clearInterval(intervalHandle);
+        stopAutoRefresh();
     }
 
     @Override
@@ -146,7 +145,7 @@ class RuntimeCard implements Attachable, DashboardCard {
                 gallery.addItem(flexItem().flex(_1).add(jvmInfoCard(summary, attributeDescriptions)));
                 gallery.addItem(flexItem().flex(_1).add(memoryCard()));
                 updateMemory(memory);
-                intervalHandle = setInterval(__ -> readMemory(), 1000);
+                intervalHandle = startAutoRefresh();
             } else {
                 error(context.failureReason());
             }
@@ -229,25 +228,6 @@ class RuntimeCard implements Attachable, DashboardCard {
                                         .thresholds(75, 90))));
     }
 
-    private void readMemory() {
-        if (memoryUtilization != null) {
-            AddressTemplate memoryTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=memory");
-            Operation memoryOp = new Operation.Builder(memoryTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
-                    .param(ATTRIBUTES_ONLY, true)
-                    .param(INCLUDE_RUNTIME, true)
-                    .build();
-            dispatcher.execute(memoryOp)
-                    .then(result -> {
-                        updateMemory(result.get("heap-memory-usage"));
-                        return null;
-                    })
-                    .catch_(error -> {
-                        error(String.valueOf(error));
-                        return null;
-                    });
-        }
-    }
-
     private void updateMemory(ModelNode heapMemoryNode) {
         long used = heapMemoryNode.get("used").asLong();
         long max = heapMemoryNode.get("max").asLong();
@@ -267,5 +247,37 @@ class RuntimeCard implements Attachable, DashboardCard {
                 .status(danger)
                 .text("Runtime error")
                 .addBody(emptyStateBody().add(errorCode(error)))));
+    }
+
+    // ------------------------------------------------------ auto refresh
+
+    @Override
+    public double interval() {
+        return 2_000;
+    }
+
+    @Override
+    public double handle() {
+        return intervalHandle;
+    }
+
+    @Override
+    public void autoRefresh() {
+        if (memoryUtilization != null) {
+            AddressTemplate template = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=memory");
+            Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
+                    .param(ATTRIBUTES_ONLY, true)
+                    .param(INCLUDE_RUNTIME, true)
+                    .build();
+            dispatcher.execute(operation)
+                    .then(result -> {
+                        updateMemory(result.get("heap-memory-usage"));
+                        return null;
+                    })
+                    .catch_(error -> {
+                        error(String.valueOf(error));
+                        return null;
+                    });
+        }
     }
 }

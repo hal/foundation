@@ -39,8 +39,6 @@ import org.patternfly.style.Size;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
-import static elemental2.dom.DomGlobal.clearInterval;
-import static elemental2.dom.DomGlobal.setInterval;
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.flow.Flow.parallel;
@@ -65,13 +63,8 @@ import static org.patternfly.component.list.DescriptionListTerm.descriptionListT
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
 import static org.patternfly.icon.IconSets.fas.home;
-import static org.patternfly.style.Breakpoint._2xl;
-import static org.patternfly.style.Breakpoint.lg;
-import static org.patternfly.style.Breakpoint.md;
-import static org.patternfly.style.Breakpoint.xl;
-import static org.patternfly.style.Breakpoints.breakpoints;
 
-class OverviewCard implements Attachable, DashboardCard {
+class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
 
     private static final String ROOT_KEY = "root";
     private static final String ENV_KEY = "env";
@@ -107,7 +100,7 @@ class OverviewCard implements Attachable, DashboardCard {
 
     @Override
     public void detach(MutationRecord mutationRecord) {
-        clearInterval(intervalHandle);
+        stopAutoRefresh();
     }
 
     @Override
@@ -165,26 +158,23 @@ class OverviewCard implements Attachable, DashboardCard {
 
                 cardBody.add(descriptionList()
                         .autoFit()
-                        .autoFitMin(breakpoints(
-                                md, "100px",
-                                lg, "150px",
-                                xl, "200px",
-                                _2xl, "300px"))
                         .addItem(dlg(rootAttributes, rootNode, "product-name"))
-                        .addItem(dlg(rootAttributes, rootNode, "name"))
                         .addItem(dlg(rootAttributes, rootNode, "product-version"))
+                        .addItem(dlg(rootAttributes, rootNode, "name"))
                         .addItem(descriptionListGroup("console-version")
                                 .addTerm(descriptionListTerm(new LabelBuilder().label("console-version")))
                                 .addDescription(descriptionListDescription(environment.applicationVersion().toString())))
                         .addItem(dlg(envAttributes, "stability", dld ->
                                 dld.add(stabilityLabel(environment.serverStability()))))
-                        .addItem(dlg(rootAttributes, rootNode, "launch-type"))
+                        .addItem(descriptionListGroup("operation-mode")
+                                .addTerm(descriptionListTerm(new LabelBuilder().label("operation-mode")))
+                                .addDescription(descriptionListDescription(environment.operationMode().name())))
                         .addItem(dlg(envAttributes, envNode, "home-dir", home()))
                         .addItem(dlg(runtimeAttributes, "uptime", arrowUp(), dld -> {
                             uptimeDld = dld;
                             dld.text(Format.duration(runtimeNode.get("uptime").asLong()));
                         })));
-                intervalHandle = setInterval(__ -> readUptime(), 10 * 1000);
+                intervalHandle = startAutoRefresh();
 
             } else {
                 cardBody.add(dashboardEmptyState()
@@ -196,7 +186,20 @@ class OverviewCard implements Attachable, DashboardCard {
         });
     }
 
-    private void readUptime() {
+    // ------------------------------------------------------ auto refresh
+
+    @Override
+    public double interval() {
+        return 10_000;
+    }
+
+    @Override
+    public double handle() {
+        return intervalHandle;
+    }
+
+    @Override
+    public void autoRefresh() {
         if (uptimeDld != null) {
             AddressTemplate template = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=runtime");
             Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)

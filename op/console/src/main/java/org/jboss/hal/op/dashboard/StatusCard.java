@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.op.dashboard;
 
+import org.jboss.elemento.Attachable;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.hal.dmr.ModelNode;
@@ -32,12 +33,13 @@ import org.jboss.hal.model.RuntimeConfigurationState;
 import org.jboss.hal.model.SuspendState;
 import org.jboss.hal.model.host.Host;
 import org.jboss.hal.model.server.Server;
-import org.jboss.hal.ui.BuildingBlocks;
 import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
+import org.patternfly.component.list.DescriptionListDescription;
 import org.patternfly.popper.Placement;
 
 import elemental2.dom.HTMLElement;
+import elemental2.dom.MutationRecord;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
@@ -47,10 +49,13 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
+import static org.jboss.hal.ui.BuildingBlocks.runningModeLabel;
+import static org.jboss.hal.ui.BuildingBlocks.runningStateLabel;
 import static org.jboss.hal.ui.BuildingBlocks.runtimeConfigurationStateLabel;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
+import static org.jboss.hal.ui.BuildingBlocks.suspendStateLabel;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
@@ -59,13 +64,8 @@ import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
-import static org.patternfly.style.Breakpoint._2xl;
-import static org.patternfly.style.Breakpoint.lg;
-import static org.patternfly.style.Breakpoint.md;
-import static org.patternfly.style.Breakpoint.xl;
-import static org.patternfly.style.Breakpoints.breakpoints;
 
-class StatusCard implements DashboardCard {
+class StatusCard implements Attachable, AutoRefresh, DashboardCard {
 
     private static final String METADATA_KEY = "metadata";
     private static final String PAYLOAD_KEY = "payload";
@@ -76,6 +76,11 @@ class StatusCard implements DashboardCard {
     private final MetadataRepository metadataRepository;
     private final Card card;
     private final CardBody cardBody;
+    private DescriptionListDescription stateDld;
+    private DescriptionListDescription runningModeDld;
+    private DescriptionListDescription hostOrServerStateDld;
+    private DescriptionListDescription suspendStateDld;
+    private double intervalHandle;
 
     StatusCard(Environment environment, StatementContext statementContext, Dispatcher dispatcher,
             MetadataRepository metadataRepository) {
@@ -84,6 +89,16 @@ class StatusCard implements DashboardCard {
         this.dispatcher = dispatcher;
         this.metadataRepository = metadataRepository;
         this.card = card().addBody(cardBody = cardBody());
+    }
+
+    @Override
+    public void attach(MutationRecord mutationRecord) {
+        // nop
+    }
+
+    @Override
+    public void detach(MutationRecord mutationRecord) {
+        stopAutoRefresh();
     }
 
     @Override
@@ -133,24 +148,26 @@ class StatusCard implements DashboardCard {
                 }
                 cardBody.add(descriptionList()
                         .autoFit()
-                        .autoFitMin(breakpoints(
-                                md, "100px",
-                                lg, "150px",
-                                xl, "200px",
-                                _2xl, "300px"))
                         .addItem(descriptionListGroup("runtime-configuration-state")
-                                .addTerm(descriptionListTerm("State")
-                                        .help(attributeDescriptionPopover("State",
+                                .addTerm(descriptionListTerm("Configuration state")
+                                        .help(attributeDescriptionPopover("Configuration state",
                                                 rootAttributes.get("runtime-configuration-state"), descriptionOnly)
                                                 .placement(Placement.auto)))
-                                .addDescription(descriptionListDescription()
+                                .addDescription(stateDld = descriptionListDescription()
                                         .add(runtimeConfigurationStateLabel(runtimeConfigurationState))))
-                        .addItem(dlg(rootAttributes, "running-mode", dld ->
-                                dld.add(BuildingBlocks.runningModeLabel(runningMode))))
-                        .addItem(dlg(rootAttributes, hostOrServerStateName, dld ->
-                                dld.add(BuildingBlocks.runningStateLabel(hostOrServerStateValue))))
-                        .addItem(dlg(rootAttributes, "suspend-state", dld ->
-                                dld.add(BuildingBlocks.suspendStateLabel(suspendState)))));
+                        .addItem(dlg(rootAttributes, "running-mode", dld -> {
+                            runningModeDld = dld;
+                            dld.add(runningModeLabel(runningMode));
+                        }))
+                        .addItem(dlg(rootAttributes, hostOrServerStateName, dld -> {
+                            hostOrServerStateDld = dld;
+                            dld.add(runningStateLabel(hostOrServerStateValue));
+                        }))
+                        .addItem(dlg(rootAttributes, "suspend-state", dld -> {
+                            suspendStateDld = dld;
+                            dld.add(suspendStateLabel(suspendState));
+                        })));
+                intervalHandle = startAutoRefresh();
             } else {
                 cardBody.add(dashboardEmptyState()
                         .status(danger)
@@ -159,5 +176,63 @@ class StatusCard implements DashboardCard {
                         .element());
             }
         });
+    }
+
+    // ------------------------------------------------------ auto refresh
+
+    @Override
+    public double interval() {
+        return 5_000;
+    }
+
+    @Override
+    public double handle() {
+        return intervalHandle;
+    }
+
+    @Override
+    public void autoRefresh() {
+        AddressTemplate template = AddressTemplate.of("{domain.controller}");
+        Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
+                .param(ATTRIBUTES_ONLY, true)
+                .param(INCLUDE_RUNTIME, true)
+                .build();
+        dispatcher.execute(operation)
+                .then(result -> {
+                    RuntimeConfigurationState runtimeConfigurationState;
+                    RunningMode runningMode;
+                    RunningState hostOrServerStateValue;
+                    SuspendState suspendState;
+                    if (environment.standalone()) {
+                        Server server = Server.standalone().addServerAttributes(result);
+                        runtimeConfigurationState = server.getRuntimeConfigurationState();
+                        runningMode = server.getRunningMode();
+                        hostOrServerStateValue = server.getServerState();
+                        suspendState = server.getSuspendState();
+                    } else {
+                        Host host = new Host(result);
+                        runtimeConfigurationState = host.getRuntimeConfigurationState();
+                        hostOrServerStateValue = host.getHostState();
+                        runningMode = host.getRunningMode();
+                        suspendState = host.getSuspendState();
+                    }
+                    if (stateDld != null) {
+                        removeChildrenFrom(stateDld);
+                        stateDld.add(runtimeConfigurationStateLabel(runtimeConfigurationState));
+                    }
+                    if (runningModeDld != null) {
+                        removeChildrenFrom(runningModeDld);
+                        runningModeDld.add(runningModeLabel(runningMode));
+                    }
+                    if (hostOrServerStateDld != null) {
+                        removeChildrenFrom(hostOrServerStateDld);
+                        hostOrServerStateDld.add(runningStateLabel(hostOrServerStateValue));
+                    }
+                    if (suspendStateDld != null) {
+                        removeChildrenFrom(suspendStateDld);
+                        suspendStateDld.add(suspendStateLabel(suspendState));
+                    }
+                    return null;
+                });
     }
 }

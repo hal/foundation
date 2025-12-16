@@ -16,18 +16,20 @@
 package org.jboss.hal.op.dashboard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.router.LoadData;
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.core.Notifications;
+import org.jboss.hal.dmr.Operation;
+import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
@@ -37,8 +39,11 @@ import org.jboss.hal.model.deployment.Deployments;
 import org.patternfly.layout.flex.FlexItem;
 
 import elemental2.dom.HTMLElement;
+import elemental2.promise.Promise;
 
 import static java.util.Arrays.asList;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
@@ -54,7 +59,16 @@ import static org.patternfly.style.Size._3xl;
 @Route("/")
 public class DashboardPage implements Page {
 
-    private static final double REFRESH_INTERVAL = 5_000;
+    // Use a loader to check whether the health subsystem is available
+    public static LoadData<Boolean> checkHealth() {
+        return (place, parameter) -> {
+            ResourceAddress address = AddressTemplate.of("/subsystem=microprofile-health-smallrye").resolve();
+            Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION).build();
+            return uic().dispatcher().execute(operation)
+                    .then(result -> Promise.resolve(true))
+                    .catch_(error -> Promise.resolve(false));
+        };
+    }
 
     private final Environment environment;
     private final StatementContext statementContext;
@@ -82,6 +96,7 @@ public class DashboardPage implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
+        Boolean healthAvailable = data.get();
         DashboardCard deploymentCard = new DeploymentCard(environment, deployments);
         DashboardCard documentationCard = new DocumentationCard(environment);
         DashboardCard healthCard = new HealthCard(dispatcher);
@@ -94,17 +109,20 @@ public class DashboardPage implements Page {
             cards.addAll(asList(
                     deploymentCard,
                     documentationCard,
-                    healthCard,
                     logCard,
                     overviewCard,
                     runtimeCard,
                     statusCard));
+            if (healthAvailable) {
+                cards.add(healthCard);
+            }
         } else {
             cards.addAll(asList(
                     deploymentCard,
                     documentationCard,
                     overviewCard,
-                    runtimeCard));
+                    runtimeCard,
+                    statusCard));
         }
 
         HTMLElement header = pageSection().limitWidth()
@@ -114,30 +132,30 @@ public class DashboardPage implements Page {
                 .add(grid().gutter().run(grid -> {
                             if (environment.standalone()) {
                                 grid
-                                        .addItem(gridItem().span(12)
-                                                .add(overviewCard))
-                                        .addItem(gridItem().span(12)
-                                                .add(statusCard))
-                                        .addItem(gridItem().span(9)
-                                                .add(runtimeCard))
-                                        .addItem(gridItem().span(3).rowSpan(3)
-                                                .add(flex().direction(column).gap(md)
-                                                        .addItem(FlexItem.flexItem().flex(_1).add(logCard))
-                                                        .addItem(FlexItem.flexItem().flex(_1).add(healthCard))))
-                                        .addItem(gridItem().span(9)
-                                                .add(deploymentCard))
-                                        .addItem(gridItem().span(9)
-                                                .add(documentationCard));
+                                        .addItem(gridItem().span(12).add(overviewCard))
+                                        .addItem(gridItem().span(12).add(statusCard))
+                                        .addItem(gridItem().span(9).add(runtimeCard));
+                                if (healthAvailable) {
+                                    grid
+                                            .addItem(gridItem().span(3).rowSpan(3)
+                                                    .add(flex().direction(column).gap(md)
+                                                            .addItem(FlexItem.flexItem().flex(_1).add(logCard))
+                                                            .addItem(FlexItem.flexItem().flex(_1).add(healthCard))))
+                                            .addItem(gridItem().span(9).add(deploymentCard))
+                                            .addItem(gridItem().span(9).add(documentationCard));
+                                } else {
+                                    grid
+                                            .addItem(gridItem().span(3).add(logCard))
+                                            .addItem(gridItem().span(6).add(deploymentCard))
+                                            .addItem(gridItem().span(6).add(documentationCard));
+                                }
                             } else {
                                 grid
-                                        .addItem(gridItem().span(12)
-                                                .add(overviewCard))
-                                        .addItem(gridItem().span(6)
-                                                .add(runtimeCard))
-                                        .addItem(gridItem().span(6)
-                                                .add(deploymentCard))
-                                        .addItem(gridItem().span(12)
-                                                .add(documentationCard));
+                                        .addItem(gridItem().span(12).add(overviewCard))
+                                        .addItem(gridItem().span(12).add(statusCard))
+                                        .addItem(gridItem().span(12).add(runtimeCard))
+                                        .addItem(gridItem().span(6).add(deploymentCard))
+                                        .addItem(gridItem().span(6).add(documentationCard));
                             }
                         })
                 )
@@ -152,8 +170,8 @@ public class DashboardPage implements Page {
 
     private void refresh() {
         // Look up all necessary metadata for all cards here.
-        // The lookup in the cards will be from the cache then.
-        metadataRepository.lookup(Arrays.asList(
+        // The metadata in the cards will then be read from the cache.
+        metadataRepository.lookup(asList(
                 AddressTemplate.of("{domain.controller}"),
                 environment.standalone()
                         ? AddressTemplate.of("core-service=server-environment")

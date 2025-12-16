@@ -48,15 +48,15 @@ import static java.util.stream.Collectors.toList;
 /**
  * Repository for metadata. Contains a first and second-level cache for metadata.
  * <p>
- * Metadata can be obtained synchronously via {@link #get(AddressTemplate)} or asynchronously via
- * {@link #lookup(AddressTemplate, Consumer)} and {@link #lookup(AddressTemplate)}.
+ * Metadata can be obtained synchronously via {@link #get(AddressTemplate)} or asynchronously via {@link #lookup(List)},
+ * {@link #lookup(AddressTemplate, Consumer)}, and {@link #lookup(AddressTemplate)}.
  */
 @ApplicationScoped
 public class MetadataRepository {
 
     // TODO Do not cache specific resources (they have different attributes/operations depending on their state):
     //  /host=*
-    //  /host=*server=*
+    //  /host=*/server=*
     //  /server-group=* ?
     //  anything else?
 
@@ -107,33 +107,18 @@ public class MetadataRepository {
 
     // ------------------------------------------------------ api
 
-    public Metadata get(AddressTemplate template) {
-        String address = resolveTemplate(template);
-        Metadata metadata = internalGet(address);
-        if (metadata != null) {
-            logger.debug("Get metadata for %s → %s from cache", template, address);
-            return metadata;
-        } else {
-            Set<String> processed = processedInCache(address);
-            if (processed.isEmpty()) {
-                logger.error("No metadata found for %s → %s. Returning an empty metadata", template, address);
-                return Metadata.undefined();
-            } else if (processed.size() == 1) {
-                address = processed.iterator().next();
-                metadata = internalGet(address);
-                if (metadata == null) {
-                    logger.error("No metadata found for %s → %s. Returning an empty metadata", template, address);
-                    return Metadata.undefined();
-                } else {
-                    logger.debug("Get metadata for %s → %s from cache", template, address);
-                    return metadata;
-                }
-            } else {
-                logger.debug("Metadata for %s → %s has been processed, but resulted in multiple metadata. " +
-                        "Returning an empty metadata", template, address);
-                return Metadata.undefined();
-            }
-        }
+    /**
+     * Performs a parallel lookup for metadata based on a list of address templates. Each template in the list is processed and
+     * the associated metadata is retrieved.
+     *
+     * @param templates the list of address templates to perform the lookup for
+     * @return a Promise that resolves to {@code Void} when all lookups have been completed
+     */
+    public Promise<Void> lookup(List<AddressTemplate> templates) {
+        List<Task<FlowContext>> tasks = templates.stream()
+                .map(template -> (Task<FlowContext>) context -> lookup(template).then(__ -> context.resolve()))
+                .collect(toList());
+        return Flow.parallel(new FlowContext(), tasks).then(context -> Promise.resolve((Void) null));
     }
 
     /**
@@ -184,11 +169,43 @@ public class MetadataRepository {
         }
     }
 
-    public Promise<Void> lookup(List<AddressTemplate> templates) {
-        List<Task<FlowContext>> tasks = templates.stream()
-                .map(template -> (Task<FlowContext>) context -> lookup(template).then(__ -> context.resolve()))
-                .collect(toList());
-        return Flow.parallel(new FlowContext(), tasks).then(context -> Promise.resolve((Void) null));
+    /**
+     * Retrieves the {@link Metadata} associated with the provided {@link AddressTemplate}. The method first resolves the
+     * address template and attempts to retrieve the corresponding metadata from an internal cache. If the metadata is not
+     * found, it checks for processed entries and applies specific fallback logic to either retrieve or return an undefined
+     * metadata object.
+     *
+     * @param template the {@link AddressTemplate} used to resolve and retrieve the associated metadata
+     * @return the {@link Metadata} associated with the resolved address, or an undefined metadata object if no corresponding
+     * metadata can be retrieved
+     */
+    public Metadata get(AddressTemplate template) {
+        String address = resolveTemplate(template);
+        Metadata metadata = internalGet(address);
+        if (metadata != null) {
+            logger.debug("Get metadata for %s → %s from cache", template, address);
+            return metadata;
+        } else {
+            Set<String> processed = processedInCache(address);
+            if (processed.isEmpty()) {
+                logger.error("No metadata found for %s → %s. Returning an empty metadata", template, address);
+                return Metadata.undefined();
+            } else if (processed.size() == 1) {
+                address = processed.iterator().next();
+                metadata = internalGet(address);
+                if (metadata == null) {
+                    logger.error("No metadata found for %s → %s. Returning an empty metadata", template, address);
+                    return Metadata.undefined();
+                } else {
+                    logger.debug("Get metadata for %s → %s from cache", template, address);
+                    return metadata;
+                }
+            } else {
+                logger.debug("Metadata for %s → %s has been processed, but resulted in multiple metadata. " +
+                        "Returning an empty metadata", template, address);
+                return Metadata.undefined();
+            }
+        }
     }
 
     // ------------------------------------------------------ js api
@@ -289,10 +306,6 @@ public class MetadataRepository {
 
     private String resolveTemplate(AddressTemplate template) {
         return resolver.resolve(template).template;
-    }
-
-    private boolean inCache(String address) {
-        return cache.contains(address);
     }
 
     private Metadata internalGet(String address) {

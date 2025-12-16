@@ -27,7 +27,9 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.title.Title;
 import org.patternfly.icon.PredefinedIcon;
+import org.patternfly.layout.flex.AlignItems;
 import org.patternfly.layout.flex.Flex;
+import org.patternfly.layout.flex.JustifyContent;
 
 import elemental2.dom.HTMLElement;
 
@@ -42,7 +44,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.LINES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_LOG_FILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TAIL;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
-import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.Card.card;
@@ -61,9 +62,9 @@ import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
 import static org.patternfly.icon.IconSets.fas.timesCircle;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.layout.flex.JustifyContent.center;
 import static org.patternfly.layout.flex.SpaceItems.md;
 import static org.patternfly.layout.flex.SpaceItems.sm;
+import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Orientation.vertical;
 import static org.patternfly.style.Size.xl;
 import static org.patternfly.token.Token.chartGlobalDangerColor100;
@@ -104,14 +105,16 @@ class LogCard implements DashboardCard {
     }
 
     private final Dispatcher dispatcher;
+    private final Notifications notifications;
     private final Title title;
     private final CardBody cardBody;
     private final HTMLElement root;
 
     LogCard(Dispatcher dispatcher, Notifications notifications) {
         this.dispatcher = dispatcher;
+        this.notifications = notifications;
         this.title = title(2, xl, "");
-        this.root = card()
+        this.root = card().fullHeight()
                 .addHeader(cardHeader()
                         .addTitle(cardTitle()
                                 .run(ct -> ct.textDelegate().appendChild(title.element())))
@@ -148,20 +151,29 @@ class LogCard implements DashboardCard {
                             .filter(status -> status != Status.SKIP)
                             .collect(groupingBy(identity(), counting()));
                     if (statusMap.isEmpty()) {
-                        cardBody.add(flex().justifyContent(center).spaceItems(md)
+                        cardBody.add(flex().css(util("h-100"))
+                                .justifyContent(JustifyContent.center)
+                                .alignItems(AlignItems.center)
+                                .spaceItems(md)
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem()
                                                 .add(checkCircle().attr("color", globalColorStatusSuccess100.var)))
                                         .add(div().text("No errors or warnings"))));
                     } else if (statusMap.size() == 1) {
                         Map.Entry<Status, Long> entry = statusMap.entrySet().iterator().next();
-                        cardBody.add(flex().justifyContent(center).spaceItems(md)
+                        cardBody.add(flex().css(util("h-100"))
+                                .justifyContent(JustifyContent.center)
+                                .alignItems(AlignItems.center)
+                                .spaceItems(md)
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem().add(entry.getKey().icon.get()))
                                         .add(div().text(entry.getValue() + " " + entry.getKey().text(entry.getValue())))));
                     } else {
-                        Flex flex = flex();
-                        cardBody.add(flex.justifyContent(center).spaceItems(md));
+                        Flex flex = flex().css(util("h-100"))
+                                .justifyContent(JustifyContent.center)
+                                .alignItems(AlignItems.center)
+                                .spaceItems(md);
+                        cardBody.add(flex);
                         for (Iterator<Map.Entry<Status, Long>> iterator = statusMap.entrySet().iterator();
                                 iterator.hasNext(); ) {
                             Map.Entry<Status, Long> entry = iterator.next();
@@ -190,6 +202,6 @@ class LogCard implements DashboardCard {
 
     private void chooseLogFile() {
         // TODO Implement choose log file
-        uic().notifications().send(nyi());
+        notifications.send(nyi());
     }
 }
