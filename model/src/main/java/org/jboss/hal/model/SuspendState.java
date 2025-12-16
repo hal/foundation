@@ -13,21 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.jboss.hal.model;
 
-// External first
-import "@patternfly/patternfly/patternfly.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly-java/charts/dist/charts";
-
-// Variables second
-import "./variables.css"
-
-// Remaining third (a-z)
-import "./capability.css"
-import "./dashboard.css"
-import "./expression.css"
-import "./model-browser.css"
-import "./resource.css"
-import "./stability.css"
-import "./tree-view.css"
-import "./ui.css"
+/** Suspend state defined by {@code host.suspend-state} */
+public enum SuspendState {
+    RUNNING, PRE_SUSPEND, SUSPENDING, SUSPENDED, UNDEFINED
+}

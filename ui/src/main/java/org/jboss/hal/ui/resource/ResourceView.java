@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import org.jboss.elemento.ElementClassListMethods;
-import org.jboss.elemento.HTMLElementStyleMethods;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
 import org.patternfly.component.HasItems;

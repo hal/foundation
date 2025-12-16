@@ -44,7 +44,7 @@ public class AttributeDescriptions implements Iterable<AttributeDescription> {
         attributes.forEach(ad -> this.attributes.put(ad.name(), ad));
     }
 
-    AttributeDescriptions(ModelNode modelNode) {
+    public AttributeDescriptions(ModelNode modelNode) {
         this.parent = null;
         this.attributes = modelNode.isDefined()
                 ? modelNode.asPropertyList()

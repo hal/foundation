@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.model.server;
+package org.jboss.hal.model;
 
-/** State as defined by {@code host.host-state}, {@code server.server-state} */
-public enum RunningState {
-    STARTING, RUNNING, STOPPED, RESTART_REQUIRED, RELOAD_REQUIRED, UNDEFINED
+/** Mode as defined by {@code host.running-mode}, {@code server.running-mode} */
+public enum RunningMode {
+    NORMAL, ADMIN_ONLY, UNDEFINED
 }

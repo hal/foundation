@@ -25,9 +25,7 @@ import org.jboss.hal.dmr.CompositeResult;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
-import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
 import org.patternfly.component.alert.AlertDescription;
@@ -55,19 +53,14 @@ import static org.patternfly.core.Tuple.tuple;
 @ApplicationScoped
 public class CrudOperations {
 
-    private final Environment environment;
     private final Dispatcher dispatcher;
     private final StatementContext statementContext;
-    private final MetadataRepository metadataRepository;
     private final Notifications notifications;
 
     @Inject
-    public CrudOperations(Environment environment, Dispatcher dispatcher, StatementContext statementContext,
-            MetadataRepository metadataRepository, Notifications notifications) {
-        this.environment = environment;
+    public CrudOperations(Dispatcher dispatcher, StatementContext statementContext, Notifications notifications) {
         this.dispatcher = dispatcher;
         this.statementContext = statementContext;
-        this.metadataRepository = metadataRepository;
         this.notifications = notifications;
     }
 

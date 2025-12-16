@@ -27,8 +27,14 @@ import org.jboss.hal.meta.description.Deprecation;
 import org.jboss.hal.meta.description.Description;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.description.RestartMode;
+import org.jboss.hal.model.RunningMode;
+import org.jboss.hal.model.RunningState;
+import org.jboss.hal.model.RuntimeConfigurationState;
+import org.jboss.hal.model.SuspendState;
 import org.patternfly.component.codeblock.CodeBlock;
 import org.patternfly.component.emptystate.EmptyState;
+import org.patternfly.component.label.Label;
+import org.patternfly.component.list.List;
 import org.patternfly.component.list.ListItem;
 import org.patternfly.component.popover.Popover;
 import org.patternfly.filter.Filter;
@@ -69,13 +75,19 @@ import static org.jboss.hal.resources.HalClasses.expression;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.name;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.allButReadOnly;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.patternfly.component.Severity.danger;
+import static org.patternfly.component.Severity.success;
+import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.codeblock.CodeBlock.codeBlock;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
+import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.popover.Popover.popover;
@@ -94,6 +106,7 @@ import static org.patternfly.style.Classes.list;
 import static org.patternfly.style.Classes.start;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Color.blue;
+import static org.patternfly.style.Color.grey;
 import static org.patternfly.style.Color.orange;
 import static org.patternfly.style.Color.red;
 import static org.patternfly.style.Variable.componentVar;
@@ -103,6 +116,10 @@ import static org.patternfly.style.Variable.utilVar;
 public class BuildingBlocks {
 
     // ------------------------------------------------------ attributes
+
+    public enum AttributeDescriptionContent {
+        all, allButReadOnly, descriptionOnly;
+    }
 
     public static Flex attributeName(AttributeDescription attribute, Supplier<Boolean> stabilityCheck) {
         return attributeName(attribute, false, stabilityCheck);
@@ -126,66 +143,68 @@ public class BuildingBlocks {
     }
 
     public static HTMLContainerBuilder<HTMLDivElement> attributeDescription(AttributeDescription attribute,
-            boolean includeReadOnly) {
+            AttributeDescriptionContent content) {
         Variable marginTop = componentVar(component(list), "li", "MarginTop");
         Variable marginLeft = componentVar(component(list), "nested", "MarginLeft");
 
-        org.patternfly.component.list.List infos = list().plain()
+        List infos = list().plain()
                 .css(util("mt-sm"))
                 .style("color", Token.globalTextColorSubtle.var)
                 .style(marginTop.name, 0)
                 .style(marginLeft.name, 0);
-        if (includeReadOnly && attribute.readOnly()) {
+        if (content == all && attribute.readOnly()) {
             infos.add(listItem().text("Read-only."));
         }
-        if (attribute.get(REQUIRED).asBoolean(false)) {
-            infos.add(listItem().text("Required."));
-        }
-        if (attribute.hasDefined(CAPABILITY_REFERENCE)) {
-            infos.addItem(listItem()
-                    .add("References the capability ")
-                    .add(code().text(attribute.get(CAPABILITY_REFERENCE).asString()))
-                    .add("."));
-        }
-        if (attribute.get(EXPRESSIONS_ALLOWED).asBoolean(false)) {
-            infos.add(listItem()
-                    .add("Supports expressions."));
-        }
-        if (attribute.hasDefined(UNIT)) {
-            infos.addItem(listItem()
-                    .add("Uses ")
-                    .add(i().text(attribute.get(UNIT).asString()))
-                    .add(" as unit."));
-        }
-        if (attribute.hasDefined(DEFAULT)) {
-            infos.addItem(listItem()
-                    .add("Defaults to ")
-                    .add(i().text(attribute.get(DEFAULT).asString()))
-                    .add(" when undefined."));
-        }
-        if (attribute.hasDefined(REQUIRES)) {
-            infos.addItem(listItem()
-                    .add("Requires ")
-                    .run(listItem -> enumerate(listItem, attribute.get(REQUIRES).asList())));
-        }
-        if (attribute.hasDefined(ALTERNATIVES)) {
-            infos.addItem(listItem()
-                    .add("Mutually exclusive to ")
-                    .run(listItem -> enumerate(listItem, attribute.get(ALTERNATIVES).asList())));
-        }
-        if (attribute.hasDefined(RESTART_REQUIRED)) {
-            RestartMode restartMode = asEnumValue(attribute, RESTART_REQUIRED, RestartMode::valueOf, UNKNOWN);
-            if (restartMode != UNKNOWN) {
-                String text = switch (restartMode) {
-                    case ALL_SERVICES ->
-                            "A modification requires a restart of all services, but does not require a full JVM restart.";
-                    case JVM -> "A modification requires a full JVM restart.";
-                    case NO_SERVICES -> "A modification doesn't require a restart.";
-                    case RESOURCE_SERVICES ->
-                            "A modification requires a restart of services, associated with the attribute's resource, but does not require a restart of all services or a full JVM restart.";
-                    default -> "";
-                };
-                infos.addItem(listItem().text(text));
+        if (content == all || content == allButReadOnly) {
+            if (attribute.get(REQUIRED).asBoolean(false)) {
+                infos.add(listItem().text("Required."));
+            }
+            if (attribute.hasDefined(CAPABILITY_REFERENCE)) {
+                infos.addItem(listItem()
+                        .add("References the capability ")
+                        .add(code().text(attribute.get(CAPABILITY_REFERENCE).asString()))
+                        .add("."));
+            }
+            if (attribute.get(EXPRESSIONS_ALLOWED).asBoolean(false)) {
+                infos.add(listItem()
+                        .add("Supports expressions."));
+            }
+            if (attribute.hasDefined(UNIT)) {
+                infos.addItem(listItem()
+                        .add("Uses ")
+                        .add(i().text(attribute.get(UNIT).asString()))
+                        .add(" as unit."));
+            }
+            if (attribute.hasDefined(DEFAULT)) {
+                infos.addItem(listItem()
+                        .add("Defaults to ")
+                        .add(i().text(attribute.get(DEFAULT).asString()))
+                        .add(" when undefined."));
+            }
+            if (attribute.hasDefined(REQUIRES)) {
+                infos.addItem(listItem()
+                        .add("Requires ")
+                        .run(listItem -> enumerate(listItem, attribute.get(REQUIRES).asList())));
+            }
+            if (attribute.hasDefined(ALTERNATIVES)) {
+                infos.addItem(listItem()
+                        .add("Mutually exclusive to ")
+                        .run(listItem -> enumerate(listItem, attribute.get(ALTERNATIVES).asList())));
+            }
+            if (attribute.hasDefined(RESTART_REQUIRED)) {
+                RestartMode restartMode = asEnumValue(attribute, RESTART_REQUIRED, RestartMode::valueOf, UNKNOWN);
+                if (restartMode != UNKNOWN) {
+                    String text = switch (restartMode) {
+                        case ALL_SERVICES ->
+                                "A modification requires a restart of all services, but does not require a full JVM restart.";
+                        case JVM -> "A modification requires a full JVM restart.";
+                        case NO_SERVICES -> "A modification doesn't require a restart.";
+                        case RESOURCE_SERVICES ->
+                                "A modification requires a restart of services, associated with the attribute's resource, but does not require a restart of all services or a full JVM restart.";
+                        default -> "";
+                    };
+                    infos.addItem(listItem().text(text));
+                }
             }
         }
 
@@ -196,13 +215,14 @@ public class BuildingBlocks {
         });
     }
 
-    public static Popover attributeDescriptionPopover(String header, AttributeDescription attribute) {
+    public static Popover attributeDescriptionPopover(String header, AttributeDescription attribute,
+            AttributeDescriptionContent content) {
         return popover()
                 .css(util("min-width"))
                 .style(utilVar("min-width", "MinWidth").name, "40ch")
                 .addHeader(header)
                 .addBody(popoverBody()
-                        .add(attributeDescription(attribute, true)));
+                        .add(attributeDescription(attribute, content)));
     }
 
     public static HTMLElement nestedElementSeparator() {
@@ -350,5 +370,43 @@ public class BuildingBlocks {
 
     public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
         return () -> stabilityIcon(stability);
+    }
+
+    // ------------------------------------------------------ host and server state
+
+    public static Label runtimeConfigurationStateLabel(RuntimeConfigurationState value) {
+        return switch (value) {
+            case STARTING, STOPPING -> label(value.name(), blue);
+            case OK -> label(value.name()).status(success);
+            case RELOAD_REQUIRED, RESTART_REQUIRED -> label(value.name()).status(warning);
+            case STOPPED -> label(value.name(), grey);
+            case UNDEFINED -> label(RuntimeConfigurationState.UNDEFINED.name()).status(danger);
+        };
+    }
+
+    public static Label runningModeLabel(RunningMode value) {
+        return switch (value) {
+            case NORMAL -> label(value.name()).status(success);
+            case ADMIN_ONLY -> label(value.name(), grey);
+            default -> label(RunningMode.UNDEFINED.name()).status(danger);
+        };
+    }
+
+    public static Label runningStateLabel(RunningState value) {
+        return switch (value) {
+            case STARTING -> label(value.name(), blue);
+            case RUNNING -> label(value.name()).status(success);
+            case STOPPED -> label(value.name(), grey);
+            case RESTART_REQUIRED, RELOAD_REQUIRED -> label(value.name()).status(warning);
+            case UNDEFINED -> label(RunningState.UNDEFINED.name()).status(danger);
+        };
+    }
+
+    public static Label suspendStateLabel(SuspendState value) {
+        return switch (value) {
+            case RUNNING -> label(value.name()).status(success);
+            case PRE_SUSPEND, SUSPENDED, SUSPENDING -> label(value.name(), blue);
+            case UNDEFINED -> label(SuspendState.UNDEFINED.name()).status(danger);
+        };
     }
 }

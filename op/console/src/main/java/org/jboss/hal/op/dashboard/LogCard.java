@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
@@ -40,12 +41,13 @@ import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.LINES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_LOG_FILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TAIL;
-import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
+import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
+import static org.patternfly.component.card.CardFooter.cardFooter;
 import static org.patternfly.component.card.CardHeader.cardHeader;
 import static org.patternfly.component.card.CardTitle.cardTitle;
 import static org.patternfly.component.divider.Divider.divider;
@@ -68,19 +70,26 @@ import static org.patternfly.token.Token.chartGlobalDangerColor100;
 import static org.patternfly.token.Token.chartGlobalWarningColor100;
 import static org.patternfly.token.Token.globalColorStatusSuccess100;
 
+// TODO Include boot errors
 class LogCard implements DashboardCard {
 
     private enum Status {
-        ERROR("errors", () -> timesCircle().attr("color", chartGlobalDangerColor100.var)),
-        WARN("warnings", () -> exclamationTriangle().attr("color", chartGlobalWarningColor100.var)),
-        SKIP(null, null);
+        ERROR("error", "errors", () -> timesCircle().attr("color", chartGlobalDangerColor100.var)),
+        WARN("warning", "warnings", () -> exclamationTriangle().attr("color", chartGlobalWarningColor100.var)),
+        SKIP(null, null, null);
 
-        final String text;
+        final String singular;
+        final String plural;
         final Supplier<PredefinedIcon> icon;
 
-        Status(String text, Supplier<PredefinedIcon> icon) {
-            this.text = text;
+        Status(String singular, String plural, Supplier<PredefinedIcon> icon) {
+            this.singular = singular;
+            this.plural = plural;
             this.icon = icon;
+        }
+
+        String text(long count) {
+            return count == 1 ? singular : plural;
         }
 
         static Status parse(final String line) {
@@ -99,7 +108,7 @@ class LogCard implements DashboardCard {
     private final CardBody cardBody;
     private final HTMLElement root;
 
-    LogCard(Dispatcher dispatcher) {
+    LogCard(Dispatcher dispatcher, Notifications notifications) {
         this.dispatcher = dispatcher;
         this.title = title(2, xl, "");
         this.root = card()
@@ -108,7 +117,11 @@ class LogCard implements DashboardCard {
                                 .run(ct -> ct.textDelegate().appendChild(title.element())))
                         .addActions(refreshActions()))
                 .addBody(cardBody = cardBody().style("text-align", "center"))
+                .add(divider(hr))
+                .addFooter(cardFooter()
+                        .add(button("Show log file").link().inline().onClick((e, c) -> notifications.send(nyi()))))
                 .element();
+
     }
 
     @Override
@@ -145,7 +158,7 @@ class LogCard implements DashboardCard {
                         cardBody.add(flex().justifyContent(center).spaceItems(md)
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem().add(entry.getKey().icon.get()))
-                                        .add(div().text(entry.getValue() + " " + entry.getKey().text))));
+                                        .add(div().text(entry.getValue() + " " + entry.getKey().text(entry.getValue())))));
                     } else {
                         Flex flex = flex();
                         cardBody.add(flex.justifyContent(center).spaceItems(md));
@@ -154,7 +167,7 @@ class LogCard implements DashboardCard {
                             Map.Entry<Status, Long> entry = iterator.next();
                             flex.add(flex().spaceItems(sm)
                                     .add(flexItem().add(entry.getKey().icon.get())));
-                            flex.add(div().text(entry.getValue() + " " + entry.getKey().text));
+                            flex.add(div().text(entry.getValue() + " " + entry.getKey().text(entry.getValue())));
                             if (iterator.hasNext()) {
                                 flex.add(divider(hr).orientation(vertical));
                             }

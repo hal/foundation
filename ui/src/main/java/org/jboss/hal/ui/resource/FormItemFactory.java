@@ -52,6 +52,7 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.nestedElementSeparator;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
@@ -190,7 +191,7 @@ class FormItemFactory {
                 String nestedLabel = labelBuilder.label(ra.name);
                 formGroupLabel = formGroupLabel(nestedLabel)
                         .css(halComponent(resource, HalClasses.nestedLabel))
-                        .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, nestedDescription));
+                        .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, nestedDescription, all));
                 HTMLElement parentLabelElement = Elements.label().css(component(form, label))
                         .apply(l -> l.htmlFor = identifier)
                         .add(span().css(component(form, label, text))
@@ -210,14 +211,14 @@ class FormItemFactory {
                 insertFirst(formGroupLabel.element(), nestedElementSeparator());
                 insertFirst(formGroupLabel.element(), parentHelpButton);
                 insertFirst(formGroupLabel.element(), parentLabelElement);
-                attributeDescriptionPopover(parentLabel, parentDescription)
+                attributeDescriptionPopover(parentLabel, parentDescription, all)
                         .trigger(parentHelpButton)
                         .appendToBody();
                 // </unstable>
             } else {
                 String label = labelBuilder.label(ra.name);
                 formGroupLabel = formGroupLabel(label)
-                        .help(label + " description", attributeDescriptionPopover(label, ra.description));
+                        .help(label + " description", attributeDescriptionPopover(label, ra.description, all));
 
                 // only the top level attribute is stability-labeled
                 if (uic().environment()

@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
-import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
+import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;

@@ -79,15 +79,6 @@
                 <version>${version.gwt.safehtml}</version>
             </dependency>
 
-            <!-- Jakarta EE -->
-            <!-- Not a real dependency, just here for CDI support in the IDE -->
-            <dependency>
-                <groupId>jakarta.platform</groupId>
-                <artifactId>jakarta.jakartaee-api</artifactId>
-                <version>${version.jakarta.ee}</version>
-                <scope>runtime</scope>
-            </dependency>
-
             <!-- Test -->
             <dependency>
                 <groupId>org.junit</groupId>
@@ -112,10 +103,6 @@
         <dependency>
             <groupId>org.jboss.elemento</groupId>
             <artifactId>elemento-logger</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.j2cl.tools.di</groupId>

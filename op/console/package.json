@@ -16,7 +16,8 @@
     "prod": "parcel build src/web/index.html --dist-dir target/console"
   },
   "dependencies": {
-    "@patternfly/patternfly": "^6.4.0"
+    "@patternfly/patternfly": "^6.4.0",
+    "@patternfly-java/charts": "^0.0.8"
   },
   "devDependencies": {
     "@parcel/core": "^2.16.1",

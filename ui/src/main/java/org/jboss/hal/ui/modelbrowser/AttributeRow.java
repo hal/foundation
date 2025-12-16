@@ -37,6 +37,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_WRITE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORAGE;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.allButReadOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescription;
 import static org.jboss.hal.ui.BuildingBlocks.attributeName;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -71,7 +72,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                         tr.addTitleCell(titleCell
                                 .add(attributeName(attribute, () -> uic().environment().highlightStability(resource.stability(),
                                         attribute.stability())))
-                                .add(attributeDescription(attribute, false)
+                                .add(attributeDescription(attribute, allButReadOnly)
                                         .style("cursor", "initial")
                                         .css(util("mt-sm"))));
                         if (attribute.listOrObjectValueType()) {
@@ -85,7 +86,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                         tr.addItem(td("Name")
                                 .add(attributeName(attribute, () -> uic().environment().highlightStability(resource.stability(),
                                         attribute.stability())))
-                                .add(attributeDescription(attribute, false).css(util("mt-sm"))));
+                                .add(attributeDescription(attribute, allButReadOnly).css(util("mt-sm"))));
                     }
                 })
                 .addItem(td("Type").text(attribute.formatType()))

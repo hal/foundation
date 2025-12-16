@@ -57,7 +57,7 @@ import static org.jboss.hal.dmr.ValueEncoder.ENCODED_SLASH;
  * <p>
  * <strong>Resolving</strong><br/>
  * To get a fully qualified {@link ResourceAddress} from an address template use one of the <code>resolve()</code> methods and a
- * {@link TemplateResolver}. In general, you prefer address templates over {@linkplain ResourceAddress resource addresses}.
+ * {@link TemplateResolver}. In general, you should prefer address templates over {@linkplain ResourceAddress resource addresses}.
  * <p>
  * <strong>Encoding</strong><br/>
  * Some characters in values must be encoded using the backslash character:

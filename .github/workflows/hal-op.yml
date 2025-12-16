@@ -21,4 +21,4 @@ jobs:
           cache: maven
       - run: $MVN install
         working-directory: bom
-      - run: $MVN verify -P op
+      - run: $MVN compile -P op

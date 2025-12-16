@@ -53,6 +53,7 @@ import static org.jboss.hal.resources.HalClasses.restricted;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
 import static org.jboss.hal.resources.HalClasses.undefined;
 import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.modelNodeCode;
 import static org.jboss.hal.ui.BuildingBlocks.nestedElementSeparator;
@@ -118,7 +119,7 @@ class ViewItemFactory {
             String nestedLabel = labelBuilder.label(ra.name);
             term = descriptionListTerm(parentLabel)
                     .css(halComponent(resource, HalClasses.nestedLabel))
-                    .help(attributeDescriptionPopover(parentLabel, parentDescription));
+                    .help(attributeDescriptionPopover(parentLabel, parentDescription, all));
             HTMLElement nestedTextElement = span()
                     .css(component(descriptionList, text), modifier(helpText))
                     .attr(role, Roles.button)
@@ -126,7 +127,7 @@ class ViewItemFactory {
                     .apply(element -> element.tabIndex = 0)
                     .text(nestedLabel)
                     .element();
-            attributeDescriptionPopover(nestedLabel, nestedDescription)
+            attributeDescriptionPopover(nestedLabel, nestedDescription, all)
                     .trigger(nestedTextElement)
                     .appendToBody();
             wrapHtmlContainer(term.element())
@@ -136,7 +137,7 @@ class ViewItemFactory {
         } else {
             String label = labelBuilder.label(ra.name);
             term = descriptionListTerm(label)
-                    .help(attributeDescriptionPopover(label, ra.description));
+                    .help(attributeDescriptionPopover(label, ra.description, all));
 
             // only the top level attribute is stability-labeled
             if (uic().environment()

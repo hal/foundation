@@ -68,16 +68,16 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.elemento</groupId>
-            <artifactId>elemento-intl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.elemento</groupId>
             <artifactId>elemento-router</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.elemento</groupId>
             <artifactId>elemento-router-processor-cdi</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.patternfly</groupId>
+            <artifactId>patternfly-java-charts</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.j2cl.tools.processors</groupId>

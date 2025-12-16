@@ -29,6 +29,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.flow.Flow;
+import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.db.LRUCache;
@@ -42,6 +43,7 @@ import static elemental2.core.Global.JSON;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Repository for metadata. Contains a first and second-level cache for metadata.
@@ -180,6 +182,13 @@ public class MetadataRepository {
                 return Promise.resolve(Metadata.undefined());
             }
         }
+    }
+
+    public Promise<Void> lookup(List<AddressTemplate> templates) {
+        List<Task<FlowContext>> tasks = templates.stream()
+                .map(template -> (Task<FlowContext>) context -> lookup(template).then(__ -> context.resolve()))
+                .collect(toList());
+        return Flow.parallel(new FlowContext(), tasks).then(context -> Promise.resolve((Void) null));
     }
 
     // ------------------------------------------------------ js api

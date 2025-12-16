@@ -879,6 +879,7 @@ public interface ModelDescriptionConstants {
     String RUNNING_MODE = "running-mode";
     String RUNNING_TIME = "running-time";
     String RUNTIME = "runtime";
+    String RUNTIME_CONFIGURATION_STATE = "runtime-configuration-state";
     String RUNTIME_NAME = "runtime-name";
     String SALT = "salt";
     String SAME_RM_OVERRIDE = "same-rm-override";

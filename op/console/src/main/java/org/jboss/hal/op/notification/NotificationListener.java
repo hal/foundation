@@ -27,7 +27,7 @@ import org.jboss.hal.core.Notifications;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.ComponentType;
 import org.patternfly.component.Severity;
-import org.patternfly.component.alert.Alert;
+import org.patternfly.component.alert.AlertDescription;
 import org.patternfly.component.menu.Dropdown;
 import org.patternfly.component.notification.NotificationBadge;
 import org.patternfly.component.notification.NotificationDrawerBody;
@@ -40,13 +40,14 @@ import elemental2.dom.Element;
 
 import static java.lang.Double.parseDouble;
 import static org.patternfly.component.ComponentRegistry.componentRegistry;
-import static org.patternfly.component.alert.AlertDescription.alertDescription;
+import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.alert.AlertGroup.toastAlertGroup;
 import static org.patternfly.component.menu.Dropdown.dropdown;
 import static org.patternfly.component.menu.DropdownMenu.dropdownMenu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
+import static org.patternfly.component.notification.NotificationDrawerItem.notificationDrawerItem;
 import static org.patternfly.component.notification.NotificationDrawerItemBody.notificationDrawerItemBody;
 import static org.patternfly.icon.IconSets.fas.ellipsisV;
 
@@ -56,7 +57,8 @@ public class NotificationListener {
     @Inject Notifications notifications;
 
     public void onNotificationAdded(@Observes NotificationAddEvent event) {
-        toastAlertGroup().addItem(alert(event.notification));
+        toastAlertGroup().addItem(alert(event.notification.severity(), event.notification.id, event.notification.title)
+                .addDescription(AlertDescription.alertDescription(event.notification.description)));
 
         NotificationBadge notificationBadge = notificationBadge();
         if (notificationBadge != null) {
@@ -70,7 +72,7 @@ public class NotificationListener {
 
         NotificationDrawerList drawerList = notificationDrawerList();
         if (drawerList != null) {
-            drawerList.addItem(notificationDrawerItem(event.notification).read(false));
+            drawerList.addItem(ndi(event.notification).read(false));
         }
 
         // execute last after notifications have been added/removed!
@@ -97,7 +99,7 @@ public class NotificationListener {
                 for (String id : event.ids) {
                     Notification unclear = notifications.get(id);
                     NotificationDrawerItem previousItem = findPreviousItem(drawerList, unclear.timestamp);
-                    drawerList.insertAfter(notificationDrawerItem(unclear).read(), previousItem);
+                    drawerList.insertAfter(ndi(unclear).read(), previousItem);
                 }
             }
         }
@@ -182,12 +184,7 @@ public class NotificationListener {
 
     // ------------------------------------------------------ internal factory methods
 
-    private Alert alert(Notification notification) {
-        return Alert.alert(notification.severity(), notification.id, notification.title)
-                .addDescription(alertDescription(notification.description));
-    }
-
-    private NotificationDrawerItem notificationDrawerItem(Notification notification) {
+    private NotificationDrawerItem ndi(Notification notification) {
         Dropdown actions = dropdown(ellipsisV(), "notification item action for " + notification.title)
                 .addMenu(dropdownMenu()
                         .addContent(menuContent()
@@ -196,8 +193,7 @@ public class NotificationListener {
                                                 .onClick((e, c) -> notifications.markAsRead(notification.id)))
                                         .addItem(menuItem("clear-all", "Clear")
                                                 .onClick((e, c) -> notifications.clear(notification.id))))));
-        return NotificationDrawerItem.notificationDrawerItem(notification.severity(), notification.id,
-                        notification.id.substring(0, 8) + ": " + notification.title)
+        return notificationDrawerItem(notification.severity(), notification.id, notification.title)
                 .hoverable()
                 .timestamp(notifications.timestamp(notification.id))
                 .store(Keys.NOTIFICATION, notification)

@@ -16,6 +16,7 @@
 package org.jboss.hal.op.dashboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.enterprise.context.Dependent;
@@ -26,8 +27,11 @@ import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
+import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Environment;
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.model.deployment.Deployments;
 import org.patternfly.layout.flex.FlexItem;
@@ -35,7 +39,6 @@ import org.patternfly.layout.flex.FlexItem;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
-import static org.jboss.elemento.Elements.p;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
@@ -56,19 +59,24 @@ public class DashboardPage implements Page {
     private final Environment environment;
     private final StatementContext statementContext;
     private final Dispatcher dispatcher;
+    private final MetadataRepository metadataRepository;
     private final Deployments deployments;
+    private final Notifications notifications;
     private final List<DashboardCard> cards;
-    private double refreshHandle;
 
     @Inject
     public DashboardPage(Environment environment,
             StatementContext statementContext,
             Dispatcher dispatcher,
-            Deployments deployments) {
+            MetadataRepository metadataRepository,
+            Deployments deployments,
+            Notifications notifications) {
         this.environment = environment;
         this.statementContext = statementContext;
         this.dispatcher = dispatcher;
+        this.metadataRepository = metadataRepository;
         this.deployments = deployments;
+        this.notifications = notifications;
         this.cards = new ArrayList<>();
     }
 
@@ -77,9 +85,10 @@ public class DashboardPage implements Page {
         DashboardCard deploymentCard = new DeploymentCard(environment, deployments);
         DashboardCard documentationCard = new DocumentationCard(environment);
         DashboardCard healthCard = new HealthCard(dispatcher);
-        DashboardCard logCard = new LogCard(dispatcher);
-        DashboardCard productInfoCard = new ProductInfoCard(environment);
-        DashboardCard runtimeCard = new RuntimeCard(statementContext, dispatcher);
+        DashboardCard logCard = new LogCard(dispatcher, notifications);
+        DashboardCard overviewCard = new OverviewCard(environment, statementContext, dispatcher, metadataRepository);
+        DashboardCard runtimeCard = new RuntimeCard(statementContext, dispatcher, metadataRepository);
+        DashboardCard statusCard = new StatusCard(environment, statementContext, dispatcher, metadataRepository);
 
         if (environment.standalone()) {
             cards.addAll(asList(
@@ -87,41 +96,42 @@ public class DashboardPage implements Page {
                     documentationCard,
                     healthCard,
                     logCard,
-                    productInfoCard,
-                    runtimeCard));
+                    overviewCard,
+                    runtimeCard,
+                    statusCard));
         } else {
             cards.addAll(asList(
                     deploymentCard,
                     documentationCard,
-                    productInfoCard,
+                    overviewCard,
                     runtimeCard));
         }
 
         HTMLElement header = pageSection().limitWidth()
-                .add(content()
-                        .add(title(1, _3xl).text("WildFly Application Server"))
-                        .add(p().text("Dashboard")))
+                .add(content().add(title(1, _3xl).text("WildFly Application Server")))
                 .element();
         HTMLElement dashboard = pageSection().limitWidth()
                 .add(grid().gutter().run(grid -> {
                             if (environment.standalone()) {
                                 grid
                                         .addItem(gridItem().span(12)
-                                                .add(productInfoCard))
-                                        .addItem(gridItem().span(8)
+                                                .add(overviewCard))
+                                        .addItem(gridItem().span(12)
+                                                .add(statusCard))
+                                        .addItem(gridItem().span(9)
                                                 .add(runtimeCard))
-                                        .addItem(gridItem().span(4).rowSpan(3)
+                                        .addItem(gridItem().span(3).rowSpan(3)
                                                 .add(flex().direction(column).gap(md)
                                                         .addItem(FlexItem.flexItem().flex(_1).add(logCard))
                                                         .addItem(FlexItem.flexItem().flex(_1).add(healthCard))))
-                                        .addItem(gridItem().span(8)
+                                        .addItem(gridItem().span(9)
                                                 .add(deploymentCard))
-                                        .addItem(gridItem().span(8)
+                                        .addItem(gridItem().span(9)
                                                 .add(documentationCard));
                             } else {
                                 grid
                                         .addItem(gridItem().span(12)
-                                                .add(productInfoCard))
+                                                .add(overviewCard))
                                         .addItem(gridItem().span(6)
                                                 .add(runtimeCard))
                                         .addItem(gridItem().span(6)
@@ -138,17 +148,22 @@ public class DashboardPage implements Page {
     @Override
     public void attach() {
         refresh();
-        // refreshHandle = setInterval(__ -> refresh(), REFRESH_INTERVAL);
-    }
-
-    @Override
-    public void detach() {
-        // clearInterval(refreshHandle);
     }
 
     private void refresh() {
-        for (DashboardCard card : cards) {
-            card.refresh();
-        }
+        // Look up all necessary metadata for all cards here.
+        // The lookup in the cards will be from the cache then.
+        metadataRepository.lookup(Arrays.asList(
+                AddressTemplate.of("{domain.controller}"),
+                environment.standalone()
+                        ? AddressTemplate.of("core-service=server-environment")
+                        : AddressTemplate.of("{domain.controller}/core-service=host-environment"),
+                AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=runtime")
+        )).then(__ -> {
+            for (DashboardCard card : cards) {
+                card.refresh();
+            }
+            return null;
+        });
     }
 }

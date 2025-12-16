@@ -47,6 +47,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.filtered;
 import static org.jboss.hal.resources.HalClasses.halModifier;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.allButReadOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescription;
 import static org.jboss.hal.ui.BuildingBlocks.attributeName;
 import static org.jboss.hal.ui.BuildingBlocks.emptyRow;
@@ -186,7 +187,7 @@ class OperationsTable implements IsElement<HTMLElement> {
                                 .alignItems(center).spaceItems(xs)
                                 .add(span().text(":"))
                                 .add(span().text(parameter.formatType())))
-                        .add(attributeDescription(parameter, false).css(util("mt-sm"))));
+                        .add(attributeDescription(parameter, allButReadOnly).css(util("mt-sm"))));
     }
 
     private HTMLContainerBuilder<HTMLDivElement> returnValue(AttributeDescription returnValue) {

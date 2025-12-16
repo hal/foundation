@@ -85,13 +85,12 @@
         <version.elemento>2.4.1</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
-        <version.jakarta.ee>11.0.0</version.jakarta.ee>
         <version.junit>6.0.1</version.junit>
         <version.kie.j2cl.bom>0.5</version.kie.j2cl.bom>
         <version.mockito>5.21.0</version.mockito>
         <version.node>v24.10.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
-        <version.patternfly.java>0.3.2-SNAPSHOT</version.patternfly.java>
+        <version.patternfly.java>0.4.1</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.9.0</version.central.publishing.plugin>

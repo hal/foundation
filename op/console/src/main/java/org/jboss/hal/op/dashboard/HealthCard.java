@@ -38,7 +38,7 @@ import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHECKS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATUS;
-import static org.jboss.hal.op.dashboard.DashboardCard.dashboardEmptyState;
+import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;

@@ -21,12 +21,17 @@ import org.jboss.hal.dmr.NamedNode;
 import org.jboss.hal.dmr.Property;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.env.Version;
+import org.jboss.hal.model.RunningMode;
+import org.jboss.hal.model.RunningState;
+import org.jboss.hal.model.RuntimeConfigurationState;
+import org.jboss.hal.model.SuspendState;
 import org.jboss.hal.resources.Ids;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.HOST;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RUNNING_MODE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.RUNTIME_CONFIGURATION_STATE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER_CONFIG;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER_GROUP;
@@ -114,6 +119,12 @@ public class Server extends NamedNode {
 
     public String getHost() {
         return hasDefined(HOST) ? get(HOST).asString() : null;
+    }
+
+    /** @return the status as defined by {@code runtime-configuration-state} */
+    public RuntimeConfigurationState getRuntimeConfigurationState() {
+        return asEnumValue(this, RUNTIME_CONFIGURATION_STATE, RuntimeConfigurationState::valueOf,
+                RuntimeConfigurationState.UNDEFINED);
     }
 
     /** @return the status as defined by {@code server-config.status} */
@@ -205,8 +216,9 @@ public class Server extends NamedNode {
     }
 
     /** Adds the {@code server} related attributes to this instance. Existing attributes will be overwritten. */
-    public void addServerAttributes(ModelNode modelNode) {
+    public Server addServerAttributes(ModelNode modelNode) {
         modelNode.asPropertyList().forEach(property -> get(property.getName()).set(property.getValue()));
         managementVersion = ModelNodeHelper.parseVersion(modelNode);
+        return this;
     }
 }
