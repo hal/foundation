@@ -60,7 +60,7 @@ public class NotificationListener {
         toastAlertGroup().addItem(alert(event.notification.severity(), event.notification.id, event.notification.title)
                 .addDescription(AlertDescription.alertDescription(event.notification.description)));
 
-        NotificationBadge notificationBadge = notificationBadge();
+        NotificationBadge notificationBadge = lookupNotificationBadge();
         if (notificationBadge != null) {
             notificationBadge.triggerNotification();
             if (event.notification.severity() == Severity.danger) {
@@ -70,7 +70,7 @@ public class NotificationListener {
             }
         }
 
-        NotificationDrawerList drawerList = notificationDrawerList();
+        NotificationDrawerList drawerList = lookupNotificationDrawerList();
         if (drawerList != null) {
             drawerList.addItem(ndi(event.notification).read(false));
         }
@@ -80,7 +80,7 @@ public class NotificationListener {
     }
 
     public void onNotificationModification(@Observes NotificationModificationEvent event) {
-        NotificationDrawerList drawerList = notificationDrawerList();
+        NotificationDrawerList drawerList = lookupNotificationDrawerList();
         if (drawerList != null) {
             if (event.modification == NotificationModification.READ) {
                 for (String id : event.ids) {
@@ -113,7 +113,7 @@ public class NotificationListener {
     private void updateState() {
         int unread = notifications.countUnread();
         int unreadDanger = notifications.countUnreadDanger();
-        NotificationBadge notificationBadge = notificationBadge();
+        NotificationBadge notificationBadge = lookupNotificationBadge();
         if (notificationBadge != null) {
             notificationBadge.count(unread);
             if (unreadDanger > 0) {
@@ -125,7 +125,7 @@ public class NotificationListener {
             }
         }
 
-        NotificationDrawerHeader drawerHeader = notificationDrawerHeader();
+        NotificationDrawerHeader drawerHeader = lookupNotificationDrawerHeader();
         if (drawerHeader != null) {
             if (unread > 0) {
                 drawerHeader.status(unread + " unread");
@@ -134,8 +134,8 @@ public class NotificationListener {
             }
         }
 
-        NotificationDrawerBody drawerBody = notificationDrawerBody();
-        NotificationDrawerList drawerList = notificationDrawerList();
+        NotificationDrawerBody drawerBody = lookupNotificationDrawerBody();
+        NotificationDrawerList drawerList = lookupNotificationDrawerList();
         if (drawerBody != null && drawerList != null) {
             drawerBody.markEmpty(drawerList.isEmpty());
             if (!drawerList.isEmpty()) {
@@ -163,21 +163,21 @@ public class NotificationListener {
 
     // ------------------------------------------------------ internal lookup
 
-    private NotificationBadge notificationBadge() {
+    private NotificationBadge lookupNotificationBadge() {
         return componentRegistry().lookupComponent(ComponentType.NotificationBadge);
     }
 
-    private NotificationDrawerHeader notificationDrawerHeader() {
+    private NotificationDrawerHeader lookupNotificationDrawerHeader() {
         return componentRegistry().lookupSubComponent(ComponentType.NotificationDrawer,
                 NotificationDrawerHeader.SUB_COMPONENT_NAME);
     }
 
-    private NotificationDrawerBody notificationDrawerBody() {
+    private NotificationDrawerBody lookupNotificationDrawerBody() {
         return componentRegistry().lookupSubComponent(ComponentType.NotificationDrawer,
                 NotificationDrawerBody.SUB_COMPONENT_NAME);
     }
 
-    private NotificationDrawerList notificationDrawerList() {
+    private NotificationDrawerList lookupNotificationDrawerList() {
         return componentRegistry().lookupSubComponent(ComponentType.NotificationDrawer,
                 NotificationDrawerList.SUB_COMPONENT_NAME);
     }

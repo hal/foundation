@@ -17,7 +17,6 @@ package org.jboss.hal.op.bootstrap;
 
 import java.util.List;
 
-import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
@@ -32,6 +31,7 @@ import org.jboss.hal.resources.Keys;
 import elemental2.promise.Promise;
 
 import static java.util.stream.Collectors.toList;
+import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.HOST;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
@@ -82,7 +82,7 @@ class FindDomainController implements Task<FlowContext> {
                             });
                         })
                         .collect(toList());
-                return Flow.sequential(context, hostTasks).promise();
+                return sequential(context, hostTasks).promise();
             }
         } else {
             return Promise.resolve(context);

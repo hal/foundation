@@ -20,10 +20,13 @@ import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
 import org.kie.j2cl.tools.processors.common.resources.TextResource;
 
 @GWT3Resource
-public interface Assets extends ClientBundle {
+public interface Resources extends ClientBundle {
 
-    Assets INSTANCE = AssetsImpl.INSTANCE;
+    Resources INSTANCE = ResourcesImpl.INSTANCE;
 
     @Source("hal-logo.svg")
     TextResource logo();
+
+    @Source("tasks.json")
+    TextResource tasks();
 }

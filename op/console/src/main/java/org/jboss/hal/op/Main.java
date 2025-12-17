@@ -41,8 +41,8 @@ public class Main {
     @Inject EndpointStorage endpointStorage;
     @Inject Environment environment;
     @Inject PlaceManager placeManager;
-    @Inject Navigation navigation;
     @Inject Notifications notifications;
+    @Inject Navigation navigation;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -53,7 +53,7 @@ public class Main {
     void init() {
         bootstrap.run().subscribe(context -> {
             if (context.isSuccessful()) {
-                insertFirst(document.body, skeleton(environment, endpointStorage, notifications).add(navigation));
+                insertFirst(document.body, skeleton(environment, endpointStorage, notifications, navigation));
                 placeManager.start();
             } else {
                 BootstrapError error = context.pop(BootstrapError.UNKNOWN);

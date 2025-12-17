@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.skeleton;
+package org.jboss.hal.op.navigation;
 
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;

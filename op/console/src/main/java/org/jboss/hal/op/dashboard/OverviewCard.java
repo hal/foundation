@@ -108,6 +108,8 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
         return card.element();
     }
 
+    // ------------------------------------------------------ refresh
+
     @Override
     public void refresh() {
         //noinspection DuplicatedCode

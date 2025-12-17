@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@patternfly/patternfly": "^6.4.0",
-    "@patternfly-java/charts": "^0.0.8"
+    "@patternfly-java/charts": "^0.0.10",
+    "dompurify": "^3.3.1"
   },
   "devDependencies": {
     "@parcel/core": "^2.16.1",

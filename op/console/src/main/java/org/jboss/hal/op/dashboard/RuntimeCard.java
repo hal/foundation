@@ -29,6 +29,8 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.patternfly.chart.bullet.Bullet;
+import org.patternfly.chart.utilization.DonutThreshold;
 import org.patternfly.chart.utilization.DonutUtilization;
 import org.patternfly.component.card.Card;
 import org.patternfly.layout.flex.Flex;
@@ -36,7 +38,7 @@ import org.patternfly.layout.flex.Flex;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
-import static elemental2.dom.DomGlobal.setInterval;
+import static java.lang.Math.round;
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.flow.Flow.parallel;
@@ -55,6 +57,8 @@ import static org.jboss.hal.ui.Format.percent;
 import static org.patternfly.chart.Data.data;
 import static org.patternfly.chart.LegendOrientation.vertical;
 import static org.patternfly.chart.Padding.padding;
+import static org.patternfly.chart.bullet.Bullet.bullet;
+import static org.patternfly.chart.bullet.BulletData.bulletData;
 import static org.patternfly.chart.utilization.DonutThreshold.donutThreshold;
 import static org.patternfly.chart.utilization.DonutUtilization.donutUtilization;
 import static org.patternfly.component.Severity.danger;
@@ -72,6 +76,8 @@ import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.FlexShorthand._1;
 import static org.patternfly.layout.flex.Gap.md;
+import static org.patternfly.layout.flex.Gap.sm;
+import static org.patternfly.layout.flex.JustifyContent.center;
 import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Size.xl;
 
@@ -84,15 +90,45 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
     private final Dispatcher dispatcher;
     private final MetadataRepository metadataRepository;
     private final Flex gallery;
-    private DonutUtilization memoryUtilization;
+    private final DonutThreshold memoryThreshold;
+    private final DonutUtilization memoryUtilization;
+    private final Bullet threadsBullet;
     private double intervalHandle;
 
     RuntimeCard(StatementContext statementContext, Dispatcher dispatcher, MetadataRepository metadataRepository) {
         this.statementContext = statementContext;
         this.dispatcher = dispatcher;
         this.metadataRepository = metadataRepository;
-        this.gallery = flex().gap(md)
-                .alignItems(stretch);
+        this.gallery = flex().gap(md).alignItems(stretch);
+
+        this.memoryThreshold = donutThreshold()
+                .style("width", "300px")
+                .ariaTitle("Heap memory utilization")
+                .ariaDesc("Utilization chart showing the heap memory usage in megabytes (MB).")
+                .data(data("Warning at 75%", 75), data("Danger at 90%", 90))
+                .labels(data -> data.x != null ? data.x : null)
+                .padding(padding(0, 160, 0, 0))
+                .height(150)
+                .width(300);
+        this.memoryUtilization = donutUtilization()
+                .title("")
+                .subTitle("")
+                .labels(data -> data.x != null ? data.x + ": " + percent(data.y) : null)
+                .legendData("Heap memory: 0", "Warning at 75%", "Danger at 90%")
+                .legendOrientation(vertical)
+                .thresholds(75, 90);
+        this.threadsBullet = bullet()
+                .ariaTitle("Threads")
+                .ariaDesc("Bullet chart showing the number of daemon and non-daemon threads and the peak number of threads.")
+                .comparativeErrorMeasureData(bulletData("Thread Peak", 0))
+                .primarySegmentedMeasureData(bulletData("Daemon threads", 0), bulletData("Threads", 0))
+                .qualitativeRangeData(bulletData("Low", 0), bulletData("Medium", 0), bulletData("High", 0))
+                .labels(data -> data.name + ": " + data.y)
+                .padding(padding(-150, 20, -75, 5))
+                .height(75)
+                .width(300)
+
+        ;
         Attachable.register(this, this);
     }
 
@@ -111,7 +147,10 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
         return gallery.element();
     }
 
+    // ------------------------------------------------------ refresh
+
     @Override
+    @SuppressWarnings("DuplicatedCode")
     public void refresh() {
         removeChildrenFrom(gallery);
 
@@ -126,7 +165,13 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                 .param(INCLUDE_RUNTIME, true)
                 .build();
 
-        Task<FlowContext> payloadTask = context -> dispatcher.execute(new Composite(productInfoOp, memoryOp))
+        AddressTemplate threadsTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=threading");
+        Operation threadsOp = new Operation.Builder(threadsTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
+                .param(ATTRIBUTES_ONLY, true)
+                .param(INCLUDE_RUNTIME, true)
+                .build();
+
+        Task<FlowContext> payloadTask = context -> dispatcher.execute(new Composite(productInfoOp, memoryOp, threadsOp))
                 .then(result -> context.resolve(PAYLOAD_KEY, result));
 
         parallel(new FlowContext(), asList(productInfoTask, payloadTask)).subscribe(context -> {
@@ -141,16 +186,19 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                 CompositeResult payload = context.get(PAYLOAD_KEY);
                 ModelNode summary = payload.step(0).get(RESULT).asList().get(0).get("summary");
                 ModelNode memory = payload.step(1).get(RESULT).get("heap-memory-usage");
+                ModelNode threads = payload.step(2).get(RESULT);
                 gallery.addItem(flexItem().flex(_1).add(hostInfoCard(summary, attributeDescriptions)));
                 gallery.addItem(flexItem().flex(_1).add(jvmInfoCard(summary, attributeDescriptions)));
                 gallery.addItem(flexItem().flex(_1).add(memoryCard()));
-                updateMemory(memory);
+                updateMemoryThreads(memory, threads);
                 intervalHandle = startAutoRefresh();
             } else {
                 error(context.failureReason());
             }
         });
     }
+
+    // ------------------------------------------------------ cards
 
     private Card hostInfoCard(ModelNode modelNode, AttributeDescriptions ad) {
         AttributeDescriptions cpuAd = ad.get("host-cpu").valueTypeAttributeDescriptions();
@@ -209,26 +257,56 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
     private Card memoryCard() {
         return card().fullHeight()
                 .addTitle(cardTitle()
-                        .run(ct -> ct.textDelegate().appendChild(title(2, xl, "Memory").element())))
+                        .run(ct -> ct.textDelegate().appendChild(title(2, xl, "Memory & Threads").element())))
                 .addBody(cardBody()
-                        .add(donutThreshold()
-                                .style("width", "300px")
-                                .ariaTitle("Heap memory utilization")
-                                .ariaDesc("Utilization chart showing the heap memory usage in megabytes (MB).")
-                                .data(data("Warning at 75%", 75), data("Danger at 90%", 90))
-                                .labels(data -> data.x != null ? data.x : null)
-                                .padding(padding(0, 160, 0, 0))
-                                .width(300)
-                                .addUtilization(memoryUtilization = donutUtilization()
-                                        .title("")
-                                        .subTitle("")
-                                        .labels(data -> data.x != null ? data.x + ": " + percent(data.y) : null)
-                                        .legendData("Heap memory: 0", "Warning at 75%", "Danger at 90%")
-                                        .legendOrientation(vertical)
-                                        .thresholds(75, 90))));
+                        .add(flex().rowGap(sm).justifyContent(center)
+                                .addItem(flexItem()
+                                        .add(memoryThreshold.addUtilization(memoryUtilization)))
+                                .add(flexItem()
+                                        .add(threadsBullet))));
     }
 
-    private void updateMemory(ModelNode heapMemoryNode) {
+    // ------------------------------------------------------ auto refresh
+
+    @Override
+    public double interval() {
+        return 1_500;
+    }
+
+    @Override
+    public double handle() {
+        return intervalHandle;
+    }
+
+    @Override
+    @SuppressWarnings("DuplicatedCode")
+    public void autoRefresh() {
+        if (memoryUtilization != null && threadsBullet != null) {
+            AddressTemplate memoryTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=memory");
+            Operation memoryOp = new Operation.Builder(memoryTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
+                    .param(ATTRIBUTES_ONLY, true)
+                    .param(INCLUDE_RUNTIME, true)
+                    .build();
+            AddressTemplate threadsTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=threading");
+            Operation threadsOp = new Operation.Builder(threadsTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
+                    .param(ATTRIBUTES_ONLY, true)
+                    .param(INCLUDE_RUNTIME, true)
+                    .build();
+            dispatcher.execute(new Composite(memoryOp, threadsOp))
+                    .then(result -> {
+                        ModelNode memory = result.step(0).get(RESULT).get("heap-memory-usage");
+                        ModelNode threads = result.step(1).get(RESULT);
+                        updateMemoryThreads(memory, threads);
+                        return null;
+                    })
+                    .catch_(error -> {
+                        error(String.valueOf(error));
+                        return null;
+                    });
+        }
+    }
+
+    private void updateMemoryThreads(ModelNode heapMemoryNode, ModelNode threadsNode) {
         long used = heapMemoryNode.get("used").asLong();
         long max = heapMemoryNode.get("max").asLong();
         double usedPercent = (double) used / max * 100.0;
@@ -239,7 +317,27 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                 .subTitle("of " + maxFormat)
                 .data(data("Memory usage", usedPercent))
                 .legendData("Memory: " + usedFormat, "Warning at 75%", "Danger at 90%");
+
+        double daemonThreadCount = threadsNode.get("daemon-thread-count").asInt();
+        double threadCount = threadsNode.get("thread-count").asInt();
+        double peakThreadCount = threadsNode.get("peak-thread-count").asInt();
+        double peakPlus20Percent = round(peakThreadCount + (peakThreadCount * 0.2));
+        double lowSegment = round(peakPlus20Percent * 0.5);
+        double mediumSegment = round(peakPlus20Percent * 0.75);
+        threadsBullet
+                .comparativeErrorMeasureData(
+                        bulletData("Thread peak count", peakThreadCount))
+                .primarySegmentedMeasureData(
+                        bulletData("Daemon threads", daemonThreadCount),
+                        bulletData("Threads", threadCount))
+                .qualitativeRangeData(
+                        bulletData("Low", lowSegment),
+                        bulletData("Medium", mediumSegment),
+                        bulletData("High", peakPlus20Percent))
+                .maxDomain(peakPlus20Percent);
     }
+
+    // ------------------------------------------------------ internals
 
     private void error(String error) {
         removeChildrenFrom(gallery);
@@ -247,37 +345,5 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                 .status(danger)
                 .text("Runtime error")
                 .addBody(emptyStateBody().add(errorCode(error)))));
-    }
-
-    // ------------------------------------------------------ auto refresh
-
-    @Override
-    public double interval() {
-        return 2_000;
-    }
-
-    @Override
-    public double handle() {
-        return intervalHandle;
-    }
-
-    @Override
-    public void autoRefresh() {
-        if (memoryUtilization != null) {
-            AddressTemplate template = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=memory");
-            Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
-                    .param(ATTRIBUTES_ONLY, true)
-                    .param(INCLUDE_RUNTIME, true)
-                    .build();
-            dispatcher.execute(operation)
-                    .then(result -> {
-                        updateMemory(result.get("heap-memory-usage"));
-                        return null;
-                    })
-                    .catch_(error -> {
-                        error(String.valueOf(error));
-                        return null;
-                    });
-        }
     }
 }

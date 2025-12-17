@@ -28,7 +28,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
@@ -44,6 +43,8 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static org.jboss.elemento.flow.Flow.parallel;
+import static org.jboss.elemento.flow.Flow.sequential;
 
 /**
  * Repository for metadata. Contains a first and second-level cache for metadata.
@@ -118,7 +119,7 @@ public class MetadataRepository {
         List<Task<FlowContext>> tasks = templates.stream()
                 .map(template -> (Task<FlowContext>) context -> lookup(template).then(__ -> context.resolve()))
                 .collect(toList());
-        return Flow.parallel(new FlowContext(), tasks).then(context -> Promise.resolve((Void) null));
+        return parallel(new FlowContext(), tasks).then(context -> Promise.resolve((Void) null));
     }
 
     /**
@@ -299,7 +300,7 @@ public class MetadataRepository {
         List<Task<ProcessingContext>> tasks = new ArrayList<>();
         tasks.add(new RrdTask(settings, dispatcher));
         tasks.add(new UpdateTask(this));
-        return Flow.sequential(new ProcessingContext(template, addresses), tasks)
+        return sequential(new ProcessingContext(template, addresses), tasks)
                 .then(context -> Promise.resolve(get(template)))
                 .finally_(() -> logger.timeEnd(timer));
     }

@@ -18,13 +18,9 @@ package org.jboss.hal.op.dashboard;
 import java.util.List;
 
 import org.jboss.elemento.Id;
-import org.jboss.elemento.flow.Flow;
-import org.jboss.elemento.flow.FlowContext;
-import org.jboss.elemento.flow.Task;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
-import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.component.Severity;
@@ -81,38 +77,21 @@ class HealthCard implements DashboardCard {
         removeChildrenFrom(cardBody);
 
         ResourceAddress address = AddressTemplate.of("/subsystem=microprofile-health-smallrye").resolve();
-        Task<FlowContext> resourceCheck = new ResourceCheck(dispatcher, address);
-        Task<FlowContext> healthCheck = context -> {
-            int status = context.pop(404);
-            if (status == 200) {
-                return dispatcher.execute(new Operation.Builder(address, "check").build())
-                        .then(context::resolve)
-                        .catch_(context::reject);
-            } else {
-                return context.resolve(new ModelNode());
-            }
-        };
-        Flow.sequential(new FlowContext(), List.of(resourceCheck, healthCheck))
-                .then(context -> {
-                    ModelNode result = context.pop(new ModelNode());
-                    if (result.isDefined()) {
-                        if (result.hasDefined(CHECKS)) {
-                            List<ModelNode> checks = result.get(CHECKS).asList();
-                            if (!checks.isEmpty()) {
-                                cardBody.add(dataList().css(modifier("grid-none"))
-                                        .addItems(checks, check -> {
-                                            String name = check.get(NAME).asString();
-                                            String nameId = Id.build(name);
-                                            return dataListItem(nameId)
-                                                    .addCell(dataListCell().add(span().id(nameId).text(name)))
-                                                    .addCell(dataListCell().alignRight().noFill()
-                                                            .add(statusIcon(check)));
-                                        }));
-                            } else {
-                                cardBody.add(dashboardEmptyState()
-                                        .status(Severity.warning)
-                                        .text("No checks found"));
-                            }
+        Operation operation = new Operation.Builder(address, "check").build();
+        dispatcher.execute(operation)
+                .then(result -> {
+                    if (result.hasDefined(CHECKS)) {
+                        List<ModelNode> checks = result.get(CHECKS).asList();
+                        if (!checks.isEmpty()) {
+                            cardBody.add(dataList().css(modifier("grid-none"))
+                                    .addItems(checks, check -> {
+                                        String name = check.get(NAME).asString();
+                                        String nameId = Id.build(name);
+                                        return dataListItem(nameId)
+                                                .addCell(dataListCell().add(span().id(nameId).text(name)))
+                                                .addCell(dataListCell().alignRight().noFill()
+                                                        .add(statusIcon(check)));
+                                    }));
                         } else {
                             cardBody.add(dashboardEmptyState()
                                     .status(Severity.warning)
@@ -121,10 +100,11 @@ class HealthCard implements DashboardCard {
                     } else {
                         cardBody.add(dashboardEmptyState()
                                 .status(Severity.warning)
-                                .text("MicroProfile Health not present"));
+                                .text("No checks found"));
                     }
                     return null;
-                }).catch_(error -> {
+                })
+                .catch_(error -> {
                     cardBody.add(dashboardEmptyState()
                             .status(Severity.warning)
                             .text("MicroProfile Health error")

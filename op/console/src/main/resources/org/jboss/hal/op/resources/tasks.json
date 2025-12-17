@@ -1,0 +1,32 @@
+{
+  "ssl": {
+    "title": "SSL",
+    "icon": "fas.shieldAlt",
+    "summary": "Enable / disable HTTPS for an Undertow HTTP server. By default the `default-server` is used, but other server names can be specified as well."
+  },
+  "management-ssl": {
+    "title": "Management SSL",
+    "icon": "fas.shieldAlt",
+    "summary": "Enable / disable SSL for a given management interface. By default the `http-interface` is used, but other management interface can be targeted as well."
+  },
+  "statistics": {
+    "title": "Statistics",
+    "icon": "fas.chartLine",
+    "summary": "Enable / disable statistics for all or a selection of subsystems."
+  },
+  "logging": {
+    "title": "Logging",
+    "icon": "far.clipboard",
+    "summary": "Configure the logging subsystem, change the log level of the `ROOT` and other categories and apply the changes to the `CONSOLE` and other handlers."
+  },
+  "reverse-proxy": {
+    "title": "Reverse proxy",
+    "icon": "fas.server",
+    "summary": "Create a reverse proxy in the Undertow subsystem."
+  },
+  "data-source": {
+    "title": "Data source",
+    "icon": "fas.database",
+    "summary": "Create and configure XA and non-XA data sources."
+  }
+}

@@ -18,7 +18,7 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.bootstrap.BootstrapErrorElement;
-import org.jboss.hal.op.resources.Assets;
+import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
 import org.patternfly.component.page.MastheadLogo;
 import org.patternfly.component.page.Page;
@@ -60,7 +60,7 @@ public class ErrorSkeleton implements IsElement<HTMLElement> {
                                         .addLogo(MastheadLogo.mastheadLogo("/")
                                                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                                                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
-                                                        Assets.INSTANCE.logo().getText()).asString())))))
+                                                        Resources.INSTANCE.logo().getText()).asString())))))
                 .addMain(pageMain = pageMain(Ids.MAIN_ID));
     }
 

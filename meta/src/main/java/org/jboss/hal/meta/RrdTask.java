@@ -18,7 +18,6 @@ package org.jboss.hal.meta;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.Composite;
@@ -31,6 +30,7 @@ import elemental2.promise.Promise;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.elemento.logger.Level.DEBUG;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_CONTROL;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.COMBINED_DESCRIPTIONS;
@@ -92,7 +92,7 @@ class RrdTask implements Task<ProcessingContext> {
         }
 
         if (!tasks.isEmpty()) {
-            return Flow.sequential(context, tasks).promise();
+            return sequential(context, tasks).promise();
         } else {
             logger.debug("No rrd operations necessary");
             return Promise.resolve(context);

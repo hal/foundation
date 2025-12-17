@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.IsElement;
-import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
@@ -36,6 +35,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.tree;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -171,7 +171,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
             if (item != null) {
                 treeView.select(item);
             } else {
-                Flow.sequential(new FlowContext(), selectTasks(template)).subscribe(context -> {
+                sequential(new FlowContext(), selectTasks(template)).subscribe(context -> {
                     if (context.isSuccessful()) {
                         // The template might contain invalid segments or no longer exist.
                         // Build a template up to the last valid segment.

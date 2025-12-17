@@ -18,23 +18,16 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.By;
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.core.Notification;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.op.endpoint.EndpointStorage;
-import org.jboss.hal.op.resources.Assets;
+import org.jboss.hal.op.notification.NotificationElements;
+import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
-import org.jboss.hal.resources.Keys;
 import org.patternfly.component.navigation.Navigation;
-import org.patternfly.component.notification.NotificationBadge;
-import org.patternfly.component.notification.NotificationDrawer;
-import org.patternfly.component.notification.NotificationDrawerBody;
-import org.patternfly.component.notification.NotificationDrawerItem;
-import org.patternfly.component.notification.NotificationDrawerList;
 import org.patternfly.component.page.MastheadLogo;
 import org.patternfly.component.page.Page;
 import org.patternfly.component.toolbar.Toolbar;
-import org.patternfly.component.toolbar.ToolbarItem;
 import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
@@ -42,20 +35,9 @@ import elemental2.dom.HTMLElement;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
+import static org.jboss.hal.op.notification.NotificationElements.notificationElements;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.patternfly.component.backtotop.BackToTop.backToTop;
-import static org.patternfly.component.emptystate.EmptyState.emptyState;
-import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.menu.Dropdown.dropdown;
-import static org.patternfly.component.menu.DropdownMenu.dropdownMenu;
-import static org.patternfly.component.menu.MenuContent.menuContent;
-import static org.patternfly.component.menu.MenuItem.menuItem;
-import static org.patternfly.component.menu.MenuList.menuList;
-import static org.patternfly.component.notification.NotificationBadge.notificationBadge;
-import static org.patternfly.component.notification.NotificationDrawer.notificationDrawer;
-import static org.patternfly.component.notification.NotificationDrawerBody.notificationDrawerBody;
-import static org.patternfly.component.notification.NotificationDrawerHeader.notificationDrawerHeader;
-import static org.patternfly.component.notification.NotificationDrawerList.notificationDrawerList;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -69,8 +51,6 @@ import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.componentgroup.theme.ThemeSelector.themeSelector;
-import static org.patternfly.icon.IconSets.fas.ellipsisV;
-import static org.patternfly.icon.IconSets.fas.search;
 import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
@@ -88,59 +68,34 @@ public class Skeleton implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    public static Skeleton skeleton(Environment environment, EndpointStorage endpointStorage, Notifications notifications) {
-        return new Skeleton(environment, endpointStorage, notifications);
+    public static Skeleton skeleton(Environment environment, EndpointStorage endpointStorage,
+            Notifications notifications, Navigation navigation) {
+        return new Skeleton(environment, endpointStorage, notifications, navigation);
     }
 
     // ------------------------------------------------------ instance
 
     private static final String STABILITY_MARKER = "hal-stability-marker";
     private final HTMLElement root;
-    private final ToolbarItem navigationToolbarItem;
     private StabilityBanner stabilityBanner;
 
-    Skeleton(Environment environment, EndpointStorage endpointStorage, Notifications notifications) {
+    Skeleton(Environment environment, EndpointStorage endpointStorage, Notifications notifications, Navigation navigation) {
         MastheadLogo logo = mastheadLogo("/")
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
-                        Assets.INSTANCE.logo().getText()).asString());
+                        Resources.INSTANCE.logo().getText()).asString());
 
-        NotificationBadge notificationBadge = notificationBadge()
-                .registerComponent();
+        NotificationElements notificationElements = notificationElements(notifications);
 
         Toolbar toolbar = toolbar().css(modifier(fullHeight), modifier(static_))
                 .addContent(toolbarContent()
-                        .add(navigationToolbarItem = toolbarItem().css(modifier("overflow-container")))
+                        .add(toolbarItem().css(modifier("overflow-container"))
+                                .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
-                                .addItem(toolbarItem().add(notificationBadge))
+                                .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal")
                                         .withContrast()))
                                 .addItem(toolbarItem().add(endpointSelector(endpointStorage)))));
-
-        NotificationDrawerList notificationDrawerList = notificationDrawerList()
-                .registerSubComponent();
-        NotificationDrawerBody notificationDrawerBody = notificationDrawerBody()
-                .registerSubComponent()
-                .addList(notificationDrawerList)
-                .addEmptyState(emptyState()
-                        .icon(search())
-                        .text("No notifications found")
-                        .addBody(emptyStateBody()
-                                .text("There are currently no notifications.")));
-        NotificationDrawer notificationDrawer = notificationDrawer()
-                .addHeader(notificationDrawerHeader()
-                        .registerSubComponent()
-                        .addAction(dropdown(ellipsisV(), "notification drawer actions")
-                                .addMenu(dropdownMenu()
-                                        .addContent(menuContent()
-                                                .addList(menuList()
-                                                        .addItem(menuItem("mark-all-read", "Mark all read")
-                                                                .onClick((e, c) -> notifications.markAllAsRead()))
-                                                        .addItem(menuItem("clear-all", "Clear all")
-                                                                .onClick((e, c) -> notifications.clearAll()))
-                                                        .addItem(menuItem("unclear-last", "Unclear last")
-                                                                .onClick((e, c) -> notifications.unclearLast())))))))
-                .addBody(notificationDrawerBody);
 
         Page page = page()
                 .addSkipToContent(skipToContent(Ids.MAIN_ID))
@@ -150,26 +105,11 @@ public class Skeleton implements IsElement<HTMLElement> {
                                         .addLogo(logo)))
                         .addContent(mastheadContent()
                                 .addToolbar(toolbar)))
-                .addNotificationDrawer(notificationDrawer)
+                .addNotificationDrawer(notificationElements.drawer())
                 .addMain(pageMain(Ids.MAIN_ID))
                 .add(backToTop()
                         .scrollableSelector(By.id(Ids.MAIN_ID)));
-        page.wire(notificationBadge, notificationDrawer);
-
-        // each time the notification drawer is expanded, update the relative timestamp of all notifications
-        notificationBadge.onToggle((event, component, expanded) -> {
-            if (expanded) {
-                for (NotificationDrawerItem item : notificationDrawerList.items()) {
-                    Notification notification = item.get(Keys.NOTIFICATION);
-                    if (notification != null) {
-                        if (notification.age() < Notifications.RELATIVE_TIME_THRESHOLD) {
-                            item.timestamp(notifications.timestamp(notification.id));
-                        }
-                    }
-                }
-            }
-        });
-        notificationDrawerBody.markEmpty(true);
+        page.wire(notificationElements.badge(), notificationElements.drawer());
 
         if (environment.highlightStability()) {
             document.documentElement.classList.add(STABILITY_MARKER);
@@ -190,13 +130,6 @@ public class Skeleton implements IsElement<HTMLElement> {
     @Override
     public HTMLElement element() {
         return root;
-    }
-
-    // ------------------------------------------------------ add
-
-    public Skeleton add(Navigation navigation) {
-        navigationToolbarItem.add(navigation.element());
-        return this;
     }
 
     // ------------------------------------------------------ internal

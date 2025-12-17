@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.cdi;
+package org.jboss.hal.op.navigation;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -23,8 +23,6 @@ import org.jboss.elemento.By;
 import org.jboss.elemento.router.AnnotatedPlaces;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.env.Environment;
-import org.jboss.hal.op.skeleton.NoData;
-import org.jboss.hal.op.skeleton.NotFound;
 import org.jboss.hal.resources.Ids;
 import org.kie.j2cl.tools.di.core.BeanManager;
 import org.patternfly.component.navigation.Navigation;

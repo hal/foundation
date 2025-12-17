@@ -21,7 +21,6 @@ import org.jboss.elemento.Id;
 import org.jboss.hal.env.Environment;
 import org.patternfly.layout.flex.AlignItems;
 import org.patternfly.layout.flex.AlignSelf;
-import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 

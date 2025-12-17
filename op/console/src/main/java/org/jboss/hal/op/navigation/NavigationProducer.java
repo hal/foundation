@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.cdi;
+package org.jboss.hal.op.navigation;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -37,6 +37,7 @@ public class NavigationProducer {
                 .addItem(navigationItem("/", "Dashboard", placeManager.href("/")))
                 .addItem(navigationItem("/deployments", "Deployments", placeManager.href("/deployments")))
                 .addItem(navigationItem("/configuration", "Configuration", placeManager.href("/configuration")))
+                .addItem(navigationItem("/tasks", "Tasks", placeManager.href("/tasks")))
                 .addItem(navigationItem("/runtime", "Runtime", placeManager.href("/runtime")))
                 .addItem(navigationItem("/management-model", "Management model", placeManager.href("/management-model")));
     }

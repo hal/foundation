@@ -21,7 +21,6 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.ParallelTasks;
 import org.jboss.elemento.flow.Task;
@@ -37,6 +36,7 @@ import elemental2.promise.Promise;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEPENDENT_ADDRESS;
@@ -108,7 +108,7 @@ public class CapabilityRegistry {
         List<AddressTemplate> templates = new ArrayList<>();
         FlowContext flowContext = new FlowContext();
         flowContext.set(Keys.ADDRESS_TEMPLATES, templates);
-        return Flow.sequential(flowContext, tasks)
+        return sequential(flowContext, tasks)
                 .failFast(false)
                 .then(context -> Promise.resolve(context.get(Keys.ADDRESS_TEMPLATES, emptyList())))
                 .catch_(error -> {
