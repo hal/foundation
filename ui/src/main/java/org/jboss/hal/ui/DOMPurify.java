@@ -15,7 +15,6 @@
  */
 package org.jboss.hal.ui;
 
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
@@ -34,7 +33,6 @@ public class DOMPurify {
      * @param dirty the HTML string to sanitize
      * @return the sanitized HTML string
      */
-    @JsMethod
     public static native String sanitize(String dirty);
 
     /**
@@ -44,6 +42,5 @@ public class DOMPurify {
      * @param config the configuration options for sanitization
      * @return the sanitized HTML string
      */
-    @JsMethod
     public static native String sanitize(String dirty, DOMPurifyConfig config);
 }

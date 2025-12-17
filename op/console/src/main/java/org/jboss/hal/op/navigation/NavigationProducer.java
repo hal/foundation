@@ -36,8 +36,8 @@ public class NavigationProducer {
                 // IDs must match the routes!
                 .addItem(navigationItem("/", "Dashboard", placeManager.href("/")))
                 .addItem(navigationItem("/deployments", "Deployments", placeManager.href("/deployments")))
-                .addItem(navigationItem("/configuration", "Configuration", placeManager.href("/configuration")))
                 .addItem(navigationItem("/tasks", "Tasks", placeManager.href("/tasks")))
+                .addItem(navigationItem("/configuration", "Configuration", placeManager.href("/configuration")))
                 .addItem(navigationItem("/runtime", "Runtime", placeManager.href("/runtime")))
                 .addItem(navigationItem("/management-model", "Management model", placeManager.href("/management-model")));
     }

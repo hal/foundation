@@ -15,13 +15,17 @@
  */
 package org.jboss.hal.ui;
 
-import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsType;
+
+import static jsinterop.annotations.JsPackage.GLOBAL;
 
 /**
  * J2CL mapping for the marked Markdown parser library.
  *
  * @see <a href="https://marked.js.org/">https://marked.js.org/</a>
  */
+@JsType(isNative = true, namespace = GLOBAL, name = "marked")
 public class Marked {
 
     /**
@@ -30,6 +34,7 @@ public class Marked {
      * @param markdown the Markdown string to be parsed and sanitized
      * @return the sanitized HTML string
      */
+    @JsOverlay
     public static String parseAndPurify(String markdown) {
         return DOMPurify.sanitize(parse(markdown));
     }
@@ -41,6 +46,7 @@ public class Marked {
      * @param options  the options for parsing
      * @return the sanitized HTML string
      */
+    @JsOverlay
     public static String parseAndPurify(String markdown, MarkedOptions options) {
         return DOMPurify.sanitize(parse(markdown, options));
     }
@@ -51,6 +57,7 @@ public class Marked {
      * @param markdown the Markdown string to be parsed and sanitized
      * @return the sanitized HTML string
      */
+    @JsOverlay
     public static String parseInlineAndPurify(String markdown) {
         return DOMPurify.sanitize(parseInline(markdown));
     }
@@ -62,6 +69,7 @@ public class Marked {
      * @param options  the options for parsing
      * @return the sanitized HTML string
      */
+    @JsOverlay
     public static String parseInlineAndPurify(String markdown, MarkedOptions options) {
         return DOMPurify.sanitize(parseInline(markdown, options));
     }
@@ -72,7 +80,6 @@ public class Marked {
      * @param markdown the Markdown string to parse
      * @return the parsed HTML string
      */
-    @JsMethod(namespace = "marked", name = "parse")
     public static native String parse(String markdown);
 
     /**
@@ -82,7 +89,6 @@ public class Marked {
      * @param options  the options for parsing
      * @return the parsed HTML string
      */
-    @JsMethod(namespace = "marked", name = "parse")
     public static native String parse(String markdown, MarkedOptions options);
 
     /**
@@ -91,7 +97,6 @@ public class Marked {
      * @param markdown the Markdown string to parse
      * @return the parsed HTML string
      */
-    @JsMethod(namespace = "marked", name = "parseInline")
     public static native String parseInline(String markdown);
 
     /**
@@ -101,6 +106,5 @@ public class Marked {
      * @param options  the options for parsing
      * @return the parsed HTML string
      */
-    @JsMethod(namespace = "marked", name = "parseInline")
     public static native String parseInline(String markdown, MarkedOptions options);
 }
