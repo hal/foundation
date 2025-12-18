@@ -22,7 +22,7 @@
   "reverse-proxy": {
     "title": "Reverse proxy",
     "icon": "fas.server",
-    "summary": "Create a reverse proxy in the Undertow subsystem."
+    "summary": "Create and configure a reverse proxy in the Undertow subsystem."
   },
   "data-source": {
     "title": "Data source",
