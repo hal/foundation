@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix stability bootstrap check
+- Fix config file value on dashboard
+
 ## [0.0.8] - 2025-12-18
 
 ### Added
