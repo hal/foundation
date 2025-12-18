@@ -76,7 +76,7 @@ class ReadStability implements Task<FlowContext> {
     }
 
     private Stability[] readPermissibleStabilityLevels(ModelNode modelNode) {
-        if (!modelNode.hasDefined(PERMISSIBLE_STABILITY_LEVELS)) {
+        if (modelNode.hasDefined(PERMISSIBLE_STABILITY_LEVELS)) {
             return modelNode.get(PERMISSIBLE_STABILITY_LEVELS).asList().stream()
                     .map(node -> asEnumValue(node, Stability::valueOf, null))
                     .filter(Objects::nonNull)

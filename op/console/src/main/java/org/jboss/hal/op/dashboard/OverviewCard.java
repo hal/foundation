@@ -34,12 +34,14 @@ import org.jboss.hal.ui.Format;
 import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;
+import org.patternfly.component.list.DescriptionListGroup;
 import org.patternfly.style.Size;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
 import static java.util.Arrays.asList;
+import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.flow.Flow.parallel;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
@@ -48,6 +50,8 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
+import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
 import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
@@ -62,7 +66,8 @@ import static org.patternfly.component.list.DescriptionListGroup.descriptionList
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
-import static org.patternfly.icon.IconSets.fas.home;
+import static org.patternfly.icon.IconSets.fas.cog;
+import static org.patternfly.popper.Placement.auto;
 
 class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
 
@@ -123,18 +128,18 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 .param(INCLUDE_RUNTIME, true)
                 .build();
 
-        AddressTemplate environmentTmpl = environment.standalone()
+        AddressTemplate envTmpl = environment.standalone()
                 ? AddressTemplate.of("core-service=server-environment")
                 : AddressTemplate.of("{domain.controller}/core-service=host-environment");
-        Task<FlowContext> envTask = context -> metadataRepository.lookup(rootTmpl)
+        Task<FlowContext> envTask = context -> metadataRepository.lookup(envTmpl)
                 .then(value -> context.resolve(ENV_KEY, value));
-        Operation envOp = new Operation.Builder(environmentTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
+        Operation envOp = new Operation.Builder(envTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
 
         AddressTemplate runtimeTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=runtime");
-        Task<FlowContext> runtimeTask = context -> metadataRepository.lookup(rootTmpl)
+        Task<FlowContext> runtimeTask = context -> metadataRepository.lookup(runtimeTmpl)
                 .then(value -> context.resolve(RUNTIME_KEY, value));
         Operation runtimeOp = new Operation.Builder(runtimeTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
@@ -171,7 +176,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(descriptionListGroup("operation-mode")
                                 .addTerm(descriptionListTerm(new LabelBuilder().label("operation-mode")))
                                 .addDescription(descriptionListDescription(environment.operationMode().name())))
-                        .addItem(dlg(envAttributes, envNode, "home-dir", home()))
+                        .addItem(configFileDlg(envAttributes, envNode))
                         .addItem(dlg(runtimeAttributes, "uptime", arrowUp(), dld -> {
                             uptimeDld = dld;
                             dld.text(Format.duration(runtimeNode.get("uptime").asLong()));
@@ -213,5 +218,34 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 return null;
             });
         }
+    }
+
+    // ------------------------------------------------------ internals
+
+    private DescriptionListGroup configFileDlg(AttributeDescriptions envAttributes, ModelNode envNode) {
+        if (environment.standalone()) {
+            return dlg(envAttributes, "config-file", cog(), dld -> {
+                dld.text(filename(envNode.get("config-file").asString()));
+            });
+        } else {
+            String domainConfig = filename(envNode.get("domain-config-file").asString());
+            String hostConfig = filename(envNode.get("host-config-file").asString());
+            String label = new LabelBuilder().label("config-file");
+            return descriptionListGroup("config-file")
+                    .addTerm(descriptionListTerm(label).icon(cog())
+                            .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)
+                                    .placement(auto)))
+                    .addDescription(descriptionListDescription()
+                            .add(domainConfig)
+                            .add(br())
+                            .add(hostConfig));
+        }
+    }
+
+    private String filename(String value) {
+        int lastSlash = value.lastIndexOf('/');
+        int lastBackslash = value.lastIndexOf('\\');
+        int index = Math.max(lastSlash, lastBackslash);
+        return index != -1 ? value.substring(index + 1) : value;
     }
 }
