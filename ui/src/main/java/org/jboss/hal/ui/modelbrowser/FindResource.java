@@ -23,6 +23,7 @@ import org.jboss.elemento.Key;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.tree.TraverseContext;
 import org.jboss.hal.meta.tree.TraverseContinuation;
+import org.jboss.hal.meta.tree.TraverseOperation;
 import org.jboss.hal.meta.tree.TraverseType;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.patternfly.component.button.Button;
@@ -341,7 +342,8 @@ class FindResource {
                 AddressTemplate rootTemplate = AddressTemplate.of(rootInput.value());
                 timeout = setTimeout(__ -> searchButton.text("Stop").startProgress(), Timeouts.LOADING_TIMEOUT);
                 uic().modelTree().traverse(continuation, rootTemplate, exclude, EnumSet.noneOf(TraverseType.class),
-                                (template, traverseContext) -> {
+                                TraverseOperation.NOOP,
+                                (template, undefined, traverseContext) -> {
                                     status.text("Process " + template.toString());
                                     String argument = "";
                                     if (scopeAddressRadio.value()) {

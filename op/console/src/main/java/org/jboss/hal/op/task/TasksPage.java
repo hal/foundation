@@ -15,40 +15,49 @@
  */
 package org.jboss.hal.op.task;
 
-import jakarta.enterprise.context.Dependent;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import org.gwtproject.safehtml.shared.SafeHtml;
-import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
-import org.jboss.hal.core.Notification;
-import org.jboss.hal.ui.Marked;
-import org.patternfly.component.content.ContentType;
+import org.jboss.hal.task.Task;
+import org.patternfly.component.content.Content;
+import org.patternfly.component.drawer.Drawer;
+import org.patternfly.component.drawer.DrawerBody;
+import org.patternfly.layout.gallery.Gallery;
 import org.patternfly.layout.gallery.GalleryItem;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
-import static org.jboss.hal.core.Notification.nyi;
-import static org.jboss.hal.op.task.TaskDefinition.taskDefinitions;
-import static org.jboss.hal.ui.MarkedOptions.markedOptions;
-import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
 import static org.patternfly.component.card.CardFooter.cardFooter;
 import static org.patternfly.component.card.CardHeader.cardHeader;
 import static org.patternfly.component.content.Content.content;
+import static org.patternfly.component.content.ContentType.h2;
 import static org.patternfly.component.content.ContentType.p;
+import static org.patternfly.component.drawer.Drawer.drawer;
+import static org.patternfly.component.drawer.DrawerBody.drawerBody;
+import static org.patternfly.component.drawer.DrawerCloseButton.drawerCloseButton;
+import static org.patternfly.component.drawer.DrawerContent.drawerContent;
+import static org.patternfly.component.drawer.DrawerPanel.drawerPanel;
+import static org.patternfly.component.drawer.DrawerPanelHead.drawerPanelHead;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.icon.IconSize.xl;
 import static org.patternfly.component.page.PageGroup.pageGroup;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
-import static org.patternfly.icon.PredefinedIcon.predefinedIcon;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Direction.row;
 import static org.patternfly.layout.flex.Flex.flex;
@@ -62,6 +71,21 @@ import static org.patternfly.style.Size._3xl;
 @Route("/tasks")
 public class TasksPage implements Page {
 
+    private final Instance<Task> tasks;
+    private final Drawer moreInfo;
+    private final Gallery gallery;
+    private final Content moreInfoHeader;
+    private final DrawerBody moreInfoBody;
+
+    @Inject
+    public TasksPage(Instance<Task> tasks) {
+        this.tasks = tasks;
+        this.moreInfo = drawer();
+        this.gallery = gallery();
+        this.moreInfoHeader = content(h2);
+        this.moreInfoBody = drawerBody();
+    }
+
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         return singletonList(pageGroup()
@@ -72,25 +96,48 @@ public class TasksPage implements Page {
                                 .editorial()
                                 .text("Tasks enable you to complete complex tasks quickly and easily. They combine multiple steps  that involve configuring different subsystems and resources.")))
                 .add(pageSection().fill()
-                        .add(gallery().gutter().addItems(taskDefinitions(), this::tdGalleryItem)))
+                        .add(moreInfo.inline()
+                                .onToggle((event, component, expanded) ->
+                                        gallery.classList().toggle(Classes.util("pr-md"), expanded))
+                                .addContent(drawerContent()
+                                        .addBody(drawerBody()
+                                                .add(gallery.gutter().addItems(tasksSortedByTitle(), this::taskItem))))
+                                .addPanel(drawerPanel()
+                                        .addHead(drawerPanelHead()
+                                                .add(moreInfoHeader)
+                                                .addCloseButton(drawerCloseButton()))
+                                        .addBody(moreInfoBody))))
                 .element());
     }
 
-    private GalleryItem tdGalleryItem(TaskDefinition td) {
-        String parsedAndPurified = Marked.parseInlineAndPurify(td.summary, markedOptions().gfm(true));
-        SafeHtml safeSummary = SafeHtmlUtils.fromSafeConstant(parsedAndPurified);
+    private Iterable<Task> tasksSortedByTitle() {
+        SortedMap<String, Task> sortedTasks = new TreeMap<>();
+        for (Task task : this.tasks) {
+            sortedTasks.put(task.title(), task);
+        }
+        return sortedTasks.values();
+    }
+
+    private GalleryItem taskItem(Task task) {
         return galleryItem()
                 .add(card().fullHeight()
                         .addHeader(cardHeader()
                                 .add(flex().direction(row).alignItems(center)
-                                        .addItem(flexItem().add(icon(predefinedIcon(td.icon)).size(xl)))
-                                        .addItem(flexItem().add(content(ContentType.h2).text(td.title)))))
+                                        .addItem(flexItem().add(icon(task.icon()).size(xl)))
+                                        .addItem(flexItem().add(content(h2).text(task.title())))))
                         .addBody(cardBody()
-                                .add(content(p).html(safeSummary)))
+                                .add(task.summary()))
                         .addFooter(cardFooter()
                                 .add(button().css(util("mr-md")).secondary().text("Launch")
-                                        .onClick((e, c) -> uic().notifications().send(nyi())))
+                                        .onClick((e, c) -> task.run()))
                                 .add(button().link().text("Learn more")
-                                        .onClick((e, c) -> uic().notifications().send(Notification.nyi())))));
+                                        .onClick((e, c) -> {
+                                            moreInfoHeader.text(task.title());
+                                            removeChildrenFrom(moreInfoBody);
+                                            moreInfoBody.add(task.moreInfo());
+                                            if (!moreInfo.expanded()) {
+                                                moreInfo.expand();
+                                            }
+                                        }))));
     }
 }

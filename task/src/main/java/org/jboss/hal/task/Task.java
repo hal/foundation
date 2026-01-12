@@ -13,17 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.resources;
+package org.jboss.hal.task;
 
-import org.kie.j2cl.tools.processors.annotations.GWT3Resource;
-import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
-import org.kie.j2cl.tools.processors.common.resources.TextResource;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
 
-@GWT3Resource
-public interface Resources extends ClientBundle {
+public interface Task {
 
-    Resources INSTANCE = ResourcesImpl.INSTANCE;
+    String id();
 
-    @Source("hal-logo.svg")
-    TextResource logo();
+    String title();
+
+    Element icon();
+
+    HTMLElement summary();
+
+    HTMLElement moreInfo();
+
+    void run();
 }

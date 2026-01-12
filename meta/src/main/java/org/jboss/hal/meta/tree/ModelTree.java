@@ -17,7 +17,6 @@ package org.jboss.hal.meta.tree;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -63,60 +62,66 @@ public class ModelTree {
     // ------------------------------------------------------ traverse
 
     /**
-     * Traverses through the management model tree based on the specified parameters and invokes a consumer for each resource
-     * address.
+     * Traverses the management model tree starting from the specified address and performs the provided operation for each
+     * traversed resource, while supporting exclusion and filtering by resource type.
      * <p>
-     * The method returns a promise that resolves to a {@link TraverseContext} when the model tree has been fully traversed. The
-     * traversal can be controlled with an instance of {@link TraverseContinuation} that has to be passed as parameter. Call
-     * {@link TraverseContinuation#stop()} to abort the traversal. In that case the promise is resolved with the current
-     * context. DMR errors are caught by this method and won't cause the promise to be rejected. Other errors will reject the
-     * promise, though.
+     * The traversal process is controlled by a {@code TraverseContinuation} instance, allowing the operation to be aborted.
+     * This method returns a promise resolving to a {@code TraverseContext} object that captures the state of the traversal.
      * <p>
-     * The {@linkplain TraverseContinuation#running() running state} of the continuation is controlled by this method: It is
-     * set to {@code true} when the traversal starts and to {@code false} if the traversal ends, fails, or has been aborted by
-     * calling {@link TraverseContinuation#stop()}.
+     * This method manages the continuation's running state: it is set to {@code true} when traversal begins and reset to
+     * {@code false} when the operation completes or is aborted.
      *
-     * @param continuation The continuation controlling the traversal process.
-     * @param template     The address template used as the starting point for traversal. Can be a fully qualified resource
-     *                     address or a wildcard address like {@code /subsystems=*}
-     * @param exclude      A set of strings representing the resources to be excluded during the traversal. Can also be just the
-     *                     beginning of a resource address such as {@code /core-service}
-     * @param traverseType A set of TraverseType enums indicating the types of resources to be included in the traversal.
-     * @param consumer     A function to be invoked for each traversed resource, receiving the resource's address template and
-     *                     the {@linkplain TraverseContext traversal context}.
-     * @return A Promise that resolves to a TraverseContext object after the traversal is completed.
+     * @param <T>          The type of result returned by the operation.
+     * @param continuation The {@code TraverseContinuation} instance to control the traversal process. The traversal can be
+     *                     aborted using this object.
+     * @param start        The starting point for traversal, specified as an {@code AddressTemplate}. This can be a full address
+     *                     or a wildcard address.
+     * @param exclude      A set of strings representing resource addresses to exclude from traversal. Partial addresses (e.g.,
+     *                     prefixes) can also be included to filter certain paths.
+     * @param types        A set of {@code TraverseType} values specifying the resource types to include in the traversal.
+     * @param operation    The {@code TraverseOperation} implementation to be performed on each resource during traversal. This
+     *                     operation handles logic specific to the traversed resource.
+     * @param consumer     A {@code TraverseConsumer} function that consumes the results of the operation and the traversal
+     *                     context for each resource.
+     * @return A {@code Promise} resolving to an instance of {@code TraverseContext} that encapsulates information about the
+     * traversal, including its progress and outcomes.
      */
-    public Promise<TraverseContext> traverse(TraverseContinuation continuation, AddressTemplate template,
-            Set<String> exclude, Set<TraverseType> traverseType, BiConsumer<AddressTemplate, TraverseContext> consumer) {
+    public <T> Promise<TraverseContext> traverse(
+            TraverseContinuation continuation,
+            AddressTemplate start,
+            Set<String> exclude,
+            Set<TraverseType> types,
+            TraverseOperation<T> operation,
+            TraverseConsumer<T> consumer) {
         if (logger.isEnabled(DEBUG)) {
-            logger.debug("Traverse %s, exclude: %s, type: %s", template, exclude,
-                    traverseType.stream().map(TraverseType::name).collect(toList()));
+            logger.debug("Traverse %s, exclude: %s, type: %s", start, exclude,
+                    types.stream().map(TraverseType::name).collect(toList()));
         }
         continuation.running = true;
         TraverseContext context = new TraverseContext();
-        return read(continuation, context, template, exclude, traverseType, consumer)
+        return read(continuation, context, start, exclude, types, operation, consumer)
                 .finally_(() -> continuation.running = false);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Promise<TraverseContext> read(TraverseContinuation continuation, TraverseContext context,
-            AddressTemplate template, Set<String> excludes, Set<TraverseType> traverseType,
-            BiConsumer<AddressTemplate, TraverseContext> addressConsumer) {
+    private <T> Promise<TraverseContext> read(TraverseContinuation continuation, TraverseContext context,
+            AddressTemplate template, Set<String> excludes,
+            Set<TraverseType> types, TraverseOperation<T> operation, TraverseConsumer<T> consumer) {
         if (continuation.running) {
-            return readChildren(context, template, traverseType)
+            return operation.execute(template, statementContext)
+                    .then(result -> {
+                        if (types.contains(WILDCARD_RESOURCES) || template.fullyQualified()) {
+                            logger.debug("✓ %s", template);
+                            context.recordAccepted();
+                            consumer.accept(template, result, context);
+                        }
+                        return readChildren(context, template, types);
+                    })
                     .then(children -> {
                         context.recordProgress(children.size());
                         Promise[] promises = children.stream()
                                 .filter(child -> !excluded(child, excludes))
-                                .peek(child -> {
-                                    logger.debug("… %s", child);
-                                    if (traverseType.contains(WILDCARD_RESOURCES) || child.fullyQualified()) {
-                                        logger.debug("✓ %s", child);
-                                        context.recordAccepted();
-                                        addressConsumer.accept(child, context);
-                                    }
-                                })
-                                .map(child -> read(continuation, context, child, excludes, traverseType, addressConsumer))
+                                .map(child -> read(continuation, context, child, excludes, types, operation, consumer))
                                 .toArray(Promise[]::new);
                         return Promise.all(promises).then(__ -> Promise.resolve(context));
                     });
@@ -124,15 +129,6 @@ public class ModelTree {
             logger.debug("Traversal aborted");
             return Promise.resolve(context);
         }
-    }
-
-    private boolean excluded(AddressTemplate template, Set<String> excludes) {
-        for (String exclude : excludes) {
-            if (template.template.startsWith(exclude)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private Promise<List<AddressTemplate>> readChildren(TraverseContext context, AddressTemplate template,
@@ -174,5 +170,14 @@ public class ModelTree {
                         return Promise.resolve(emptyList());
                     });
         }
+    }
+
+    private boolean excluded(AddressTemplate template, Set<String> excludes) {
+        for (String exclude : excludes) {
+            if (template.template.startsWith(exclude)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
