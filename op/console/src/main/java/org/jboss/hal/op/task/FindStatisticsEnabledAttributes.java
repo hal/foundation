@@ -16,9 +16,9 @@
 package org.jboss.hal.op.task;
 
 import java.util.EnumSet;
-import java.util.Set;
 
 import org.jboss.elemento.logger.Logger;
+import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.Property;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
@@ -30,9 +30,7 @@ import org.jboss.hal.meta.tree.TraverseType;
 
 import elemental2.promise.Promise;
 
-import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.toSet;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
@@ -52,31 +50,30 @@ class FindStatisticsEnabledAttributes {
 
     void find(AddressTemplate root) {
         TraverseContinuation continuation = new TraverseContinuation();
-        TraverseOperation<Set<String>> readAttributes = (template, context) -> {
+        TraverseOperation<ModelNode> readAttributes = (template, context) -> {
             if (template.fullyQualified()) {
                 return dispatcher.execute(new Operation.Builder(template.resolve(context), READ_RESOURCE_OPERATION)
                                 .param(ATTRIBUTES_ONLY, true)
                                 .param(INCLUDE_RUNTIME, true)
                                 .build())
-                        .then(result -> {
-                            Set<String> collect = result.asPropertyList().stream()
-                                    .map(Property::getName)
-                                    .collect(toSet());
-                            return Promise.resolve(collect);
-                        })
+                        .then(result -> Promise.resolve(result.asPropertyList().stream()
+                                .filter(property -> STATISTICS_ENABLED.equals(property.getName()))
+                                .map(Property::getValue)
+                                .findFirst()
+                                .orElse(new ModelNode())))
                         .catch_(error -> {
                             logger.error("Failed to read attributes of %s: %s", template, error);
-                            return Promise.resolve(emptySet());
+                            return Promise.resolve(new ModelNode());
                         });
             } else {
-                return Promise.resolve(emptySet());
+                return Promise.resolve(new ModelNode());
             }
         };
         modelTree.traverse(continuation, root, singleton("/core-service"),
                         EnumSet.noneOf(TraverseType.class), readAttributes,
-                        (template, attributes, context) -> {
-                            if (template.fullyQualified() && attributes.contains(STATISTICS_ENABLED)) {
-                                logger.info("Found statistics enabled attribute for %s", template);
+                        (template, statisticsEnabled, context) -> {
+                            if (template.fullyQualified() && statisticsEnabled.isDefined()) {
+                                logger.info("Found statistics enabled attribute for %s: %s", template, statisticsEnabled.asString());
                             }
                         })
                 .then(context -> {
