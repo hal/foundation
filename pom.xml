@@ -133,6 +133,7 @@
         <module>meta</module>
         <module>model</module>
         <module>resources</module>
+        <module>task</module>
         <module>ui</module>
     </modules>
 
