@@ -7,12 +7,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add statistics enabled task
+
+### Upgrades
+
+- Bump PatternFly Java to 0.4.6
+
 ## [0.0.9] - 2025-12-18
 
 ### Fixed
 
 - Fix stability bootstrap check
-- Fix config file value on dashboard
+- Fix config file value on the dashboard
 
 ## [0.0.8] - 2025-12-18
 
