@@ -15,11 +15,23 @@
  */
 package org.jboss.hal.ui;
 
+import org.jboss.elemento.intl.Duration;
 import org.jboss.elemento.intl.NumberFormat;
-import org.jboss.elemento.intl.NumberFormatOptions;
+import org.jboss.elemento.intl.Unit;
 
+import static org.jboss.elemento.intl.DurationFormat.durationFormat;
+import static org.jboss.elemento.intl.DurationFormatOptions.durationFormatOptions;
+import static org.jboss.elemento.intl.Format.long_;
 import static org.jboss.elemento.intl.Format.percent;
 import static org.jboss.elemento.intl.Format.unit;
+import static org.jboss.elemento.intl.NumberFormat.numberFormat;
+import static org.jboss.elemento.intl.NumberFormatOptions.numberFormatOptions;
+import static org.jboss.elemento.intl.Unit.byte_;
+import static org.jboss.elemento.intl.Unit.gigabyte;
+import static org.jboss.elemento.intl.Unit.kilobyte;
+import static org.jboss.elemento.intl.Unit.megabyte;
+import static org.jboss.elemento.intl.Unit.terabyte;
+import static org.jboss.hal.ui.UIContext.uic;
 
 public class Format {
 
@@ -34,9 +46,9 @@ public class Format {
         if (size <= 0) {
             return "0";
         }
-        String[] units = new String[]{"byte", "kilobyte", "megabyte", "gigabyte", "terabyte"}; // NON-NLS
+        Unit[] units = new Unit[]{byte_, kilobyte, megabyte, gigabyte, terabyte};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        NumberFormat numberFormat = new NumberFormat("en-US", NumberFormatOptions.create()
+        NumberFormat numberFormat = numberFormat(uic().settings().locale(), numberFormatOptions()
                 .style(unit)
                 .unit(units[digitGroups])
                 .maximumFractionDigits(0));
@@ -49,60 +61,27 @@ public class Format {
      * @param duration in milliseconds
      * @return The string representation of the human-readable format.
      */
-    @SuppressWarnings("SizeReplaceableByIsEmpty")
     public static String duration(long duration) {
         if (duration < 1000) {
-            return duration + " ms"; // NON-NLS
+            Duration d = Duration.duration().milliSeconds((int) duration);
+            return durationFormat(uic().settings().locale(), durationFormatOptions().style(long_)).format(d);
         }
 
         duration /= 1000;
-
         int sec = (int) duration % 60;
         duration /= 60;
-
         int min = (int) duration % 60;
         duration /= 60;
-
         int hour = (int) duration % 24;
         duration /= 24;
-
         int day = (int) duration;
-
-        StringBuilder sb = new StringBuilder();
-        if (day > 0) {
-            sb.append(day)
-                    .append(" ")
-                    .append(day > 1 ? "days" : "day");
-        }
-        if (hour > 0 || (day > 0)) {
-            if (sb.length() > 0) {
-                sb.append(", ");
-            }
-            sb.append(hour)
-                    .append(" ")
-                    .append(hour > 1 ? "hours" : "hour");
-        }
-        if (min > 0) {
-            if (sb.length() > 0) {
-                sb.append(", ");
-            }
-            sb.append(min)
-                    .append(" ")
-                    .append(min > 1 ? "minutes" : "minute");
-        }
-        if (sec > 0) {
-            if (sb.length() > 0) {
-                sb.append(", ");
-            }
-            sb.append(sec)
-                    .append(" ")
-                    .append(sec > 1 ? "seconds" : "second");
-        }
-        return sb.toString();
+        Duration d = Duration.duration().days(day).hours(hour).minutes(min).seconds(sec);
+        return durationFormat(uic().settings().locale(), durationFormatOptions().style(long_))
+                .format(d);
     }
 
     public static String percent(double value) {
-        NumberFormat numberFormat = new NumberFormat("en-US", NumberFormatOptions.create()
+        NumberFormat numberFormat = numberFormat(uic().settings().locale(), numberFormatOptions()
                 .style(percent));
         double failSafeValue = (value > 1) ? value / 100 : value;
         return numberFormat.format(failSafeValue);

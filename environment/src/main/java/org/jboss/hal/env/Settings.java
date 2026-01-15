@@ -24,8 +24,10 @@ import java.util.Set;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import org.jboss.elemento.Id;
+import org.jboss.elemento.intl.Locale;
 import org.jboss.hal.resources.Ids;
 
+import static elemental2.dom.DomGlobal.navigator;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
@@ -67,6 +69,16 @@ public class Settings {
             } else {
                 Cookies.set(cookieName(key), String.valueOf(value));
             }
+        }
+    }
+
+    /** Shortcut to get the locale from the cookie or the browser language. */
+    public Locale locale() {
+        Value value = get(Key.LOCALE);
+        if (value.defined()) {
+            return new Locale(value.value);
+        } else {
+            return new Locale(navigator.language);
         }
     }
 
@@ -151,6 +163,10 @@ public class Settings {
 
         public String value() {
             return value;
+        }
+
+        public boolean defined() {
+            return !"undefined".equals(value);
         }
 
         @Override

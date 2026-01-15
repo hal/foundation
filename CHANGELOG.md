@@ -13,6 +13,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Upgrades
 
+- Bump Elemento to 2.4.4
 - Bump PatternFly Java to 0.4.6
 
 ## [0.0.9] - 2025-12-18
