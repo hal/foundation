@@ -353,6 +353,7 @@ class FindResource {
                                     } else if (scopeNameRadio.value()) {
                                         argument = template.last().value;
                                     }
+                                    argument = argument == null ? "" : argument;
                                     boolean match = contains
                                             ? argument.toLowerCase().contains(name.toLowerCase())
                                             : argument.equalsIgnoreCase(name);

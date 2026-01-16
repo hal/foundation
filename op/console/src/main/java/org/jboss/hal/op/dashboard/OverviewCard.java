@@ -179,7 +179,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(configFileDlg(envAttributes, envNode))
                         .addItem(dlg(runtimeAttributes, "uptime", arrowUp(), dld -> {
                             uptimeDld = dld;
-                            dld.text(Format.duration(runtimeNode.get("uptime").asLong()));
+                            dld.text(duration(runtimeNode.get("uptime").asLong()));
                         })));
                 intervalHandle = startAutoRefresh();
 

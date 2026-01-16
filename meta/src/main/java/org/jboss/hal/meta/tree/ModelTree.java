@@ -124,6 +124,11 @@ public class ModelTree {
                                 .map(child -> read(continuation, context, child, excludes, types, operation, consumer))
                                 .toArray(Promise[]::new);
                         return Promise.all(promises).then(__ -> Promise.resolve(context));
+                    })
+                    .catch_((error) -> {
+                        ResourceAddress address = template.resolve(statementContext);
+                        context.recordFailed(address.toString(), new Operation.Builder(address, "unknown").build());
+                        return Promise.resolve(context);
                     });
         } else {
             logger.debug("Traversal aborted");
