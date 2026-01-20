@@ -46,8 +46,8 @@ import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuToggle.menuToggle;
+import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
 import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
-import static org.patternfly.component.menu.SingleTypeaheadMenu.singleTypeaheadMenu;
 
 class SingleTypeaheadFormItem extends FormItem {
 
@@ -97,7 +97,7 @@ class SingleTypeaheadFormItem extends FormItem {
                 .onReload((e, c) -> singleTypeahead.menu().reload());
         MenuToggle menuToggle = menuToggle(searchReloadInput).fullWidth();
         singleTypeahead = singleTypeahead(menuToggle)
-                .addMenu(singleTypeaheadMenu()
+                .addMenu(singleSelectMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
                                         .addItems(asyncItems))));
