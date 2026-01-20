@@ -69,7 +69,19 @@ public class LoggingTask implements Task {
     }
 
     @Override
+    public boolean enabled() {
+        return false;
+    }
+
+    @Override
     public void run() {
+        // 1. Read the current handlers of the ROOT logger:
+        //    /subsystem=logging/root-logger=ROOT:read-attribute(name=handlers)
+        // 2. Find the referenced handlers in the list of resources returned by
+        //    /core-service=capability-registry:get-provider-points(name=org.wildfly.logging.handler)
+        // 3. Adjust the level attribute in
+        //    /subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=<LEVEL>)
+        //    /subsystem=logging/<abc>-handler=<handler-name>:write-attribute(name=level,value=<LEVEL>)
         uic().notifications().send(nyi());
     }
 }

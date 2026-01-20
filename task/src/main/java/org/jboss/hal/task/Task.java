@@ -30,5 +30,9 @@ public interface Task {
 
     HTMLElement moreInfo();
 
+    default boolean enabled() {
+        return true;
+    }
+
     void run();
 }

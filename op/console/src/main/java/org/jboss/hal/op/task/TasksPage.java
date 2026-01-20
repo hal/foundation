@@ -129,6 +129,7 @@ public class TasksPage implements Page {
                                 .add(task.summary()))
                         .addFooter(cardFooter()
                                 .add(button().css(util("mr-md")).secondary().text("Launch")
+                                        .disabled(!task.enabled())
                                         .onClick((e, c) -> task.run()))
                                 .add(button().link().text("Learn more")
                                         .onClick((e, c) -> {

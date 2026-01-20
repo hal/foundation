@@ -67,6 +67,11 @@ public class SSLTask implements Task {
     }
 
     @Override
+    public boolean enabled() {
+        return false;
+    }
+
+    @Override
     public void run() {
         uic().notifications().send(nyi());
     }

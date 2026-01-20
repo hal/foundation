@@ -64,6 +64,11 @@ public class ReverseProxyTask implements Task {
     }
 
     @Override
+    public boolean enabled() {
+        return false;
+    }
+
+    @Override
     public void run() {
         uic().notifications().send(nyi());
     }

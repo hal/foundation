@@ -10,11 +10,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add statistics enabled task
+- Add support for multi typeahead selects
 
 ### Upgrades
 
-- Bump Elemento to 2.4.4
-- Bump PatternFly Java to 0.4.6
+- Bump Elemento to 2.4.6
+- Bump PatternFly Java to 0.4.10
 
 ## [0.0.9] - 2025-12-18
 

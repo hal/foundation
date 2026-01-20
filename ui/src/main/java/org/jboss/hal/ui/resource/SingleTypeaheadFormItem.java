@@ -53,7 +53,8 @@ class SingleTypeaheadFormItem extends FormItem {
 
     private final AddressTemplate template;
     private final String capability;
-    // The single typeahead control is created in the constructor by defaultSetup() -> nativeContainer() -> singleTypeaheadControl().
+    // The single typeahead control is created in the constructor by
+    // defaultSetup() -> nativeContainer() -> singleTypeaheadControl().
     // It's, so to speak, final and never null!
     private /*final*/ SingleTypeahead singleTypeahead;
 
