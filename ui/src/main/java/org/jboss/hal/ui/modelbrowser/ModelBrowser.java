@@ -55,8 +55,8 @@ import static org.jboss.hal.resources.LocalStorage.MODEL_BROWSER_TREE_WIDTH;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserEngine.parseChildren;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.RESOURCE;
-import static org.jboss.hal.ui.resource.ResourceDialogs.addResource;
-import static org.jboss.hal.ui.resource.ResourceDialogs.deleteResource;
+import static org.jboss.hal.ui.resource.ResourceDialogs.addResourceModal;
+import static org.jboss.hal.ui.resource.ResourceDialogs.deleteResourceModal;
 import static org.patternfly.core.Aria.hidden;
 import static org.patternfly.core.Aria.label;
 import static org.patternfly.core.Aria.orientation;
@@ -204,7 +204,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     }
 
     private void add(AddResource.Details details) {
-        addResource(details.parent, details.child, details.singleton).then(__ -> {
+        addResourceModal(details.parent, details.child, details.singleton).then(__ -> {
             tree.select(details.parent.identifier());
             tree.reload();
             return null;
@@ -212,7 +212,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     }
 
     private void delete(DeleteResource.Details details) {
-        deleteResource(details.template)
+        deleteResourceModal(details.template)
                 .then(__ -> {
                     tree.select(details.template.anonymiseLast().identifier());
                     tree.reload();

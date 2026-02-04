@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.patternfly.component.ComponentType;
 import org.patternfly.component.button.Button;
-import org.patternfly.component.textinputgroup.BaseSearchInput;
+import org.patternfly.component.textinputgroup.BaseFilterInput;
 import org.patternfly.handler.ComponentHandler;
 
 import static org.jboss.elemento.Elements.setVisible;
@@ -29,21 +29,21 @@ import static org.patternfly.component.textinputgroup.TextInputGroupUtilities.te
 import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.icon.IconSets.fas.times;
 
-class SearchReloadInput extends BaseSearchInput<SearchReloadInput> {
+class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
 
     // ------------------------------------------------------ factory
 
-    static SearchReloadInput searchReloadInput(String id) {
-        return new SearchReloadInput(id);
+    static FilterReloadInput filterReloadInput(String id) {
+        return new FilterReloadInput(id);
     }
 
     // ------------------------------------------------------ instance
 
     private final Button clearButton;
-    private final List<ComponentHandler<SearchReloadInput>> onReload;
+    private final List<ComponentHandler<FilterReloadInput>> onReload;
 
-    SearchReloadInput(String id) {
-        super(ComponentType.SearchInput, id);
+    FilterReloadInput(String id) {
+        super(ComponentType.FilterInput, id);
         this.onReload = new ArrayList<>();
 
         addUtilities(textInputGroupUtilities()
@@ -62,13 +62,16 @@ class SearchReloadInput extends BaseSearchInput<SearchReloadInput> {
     // ------------------------------------------------------ builder
 
     @Override
-    public SearchReloadInput that() {
+    public FilterReloadInput that() {
         return this;
     }
 
     // ------------------------------------------------------ events
 
-    public SearchReloadInput onReload(ComponentHandler<SearchReloadInput> handler) {
+
+    // ------------------------------------------------------ events
+
+    public FilterReloadInput onReload(ComponentHandler<FilterReloadInput> handler) {
         onReload.add(handler);
         return this;
     }

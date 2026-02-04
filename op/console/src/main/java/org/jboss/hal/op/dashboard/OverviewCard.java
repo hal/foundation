@@ -30,7 +30,6 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.description.AttributeDescriptions;
-import org.jboss.hal.ui.Format;
 import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;

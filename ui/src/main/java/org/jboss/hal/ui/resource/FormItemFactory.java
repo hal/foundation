@@ -47,6 +47,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_WRITE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
@@ -82,7 +83,7 @@ class FormItemFactory {
 
     private static final Logger logger = Logger.getLogger(FormItemFactory.class.getName());
 
-    static FormItem nameFormItem(Metadata metadata) {
+    static FormItem nameFormItem(Metadata metadata, String value) {
         AttributeDescription nameDescription = metadata.resourceDescription().attributes().get(NAME);
         if (!nameDescription.isDefined()) {
             ModelNode modelNode = new ModelNode();
@@ -98,8 +99,12 @@ class FormItemFactory {
         ResourceAttribute ra = new ResourceAttribute(new ModelNode(), nameDescription, SecurityContext.RWX);
         String identifier = identifier(ra, EDIT);
         FormGroupLabel formGroupLabel = label(identifier, metadata, ra);
-        return new StringFormItem(identifier, ra, formGroupLabel,
+        StringFormItem stringFormItem = new StringFormItem(identifier, ra, formGroupLabel,
                 new FormItemFlags(FormItemFlags.Scope.NEW_RESOURCE, Placeholder.NONE));
+        if (value != null) {
+            stringFormItem.textControl.value(value);
+        }
+        return stringFormItem;
     }
 
     static FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
@@ -136,7 +141,7 @@ class FormItemFactory {
                             } else if (ra.description.hasDefined(CAPABILITY_REFERENCE)) {
                                 String capability = ra.description.get(ModelDescriptionConstants.CAPABILITY_REFERENCE)
                                         .asString();
-                                formItem = new SingleTypeaheadFormItem(identifier, ra, formGroupLabel, flags, template,
+                                formItem = new CapabilityReferenceFormItem(identifier, ra, formGroupLabel, flags, template,
                                         capability);
                             } else {
                                 formItem = new StringFormItem(identifier, ra, formGroupLabel, flags);
@@ -145,7 +150,18 @@ class FormItemFactory {
 
                         case LIST:
                             // TODO Support simple list types depending on the VALUE_TYPE
-                            formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                            if (valueType(ra) == ModelType.STRING) {
+                                if (ra.description.hasDefined(CAPABILITY_REFERENCE)) {
+                                    String capability = ra.description.get(ModelDescriptionConstants.CAPABILITY_REFERENCE)
+                                            .asString();
+                                    formItem = new CapabilityReferencesFormItem(identifier, ra, formGroupLabel, flags, template,
+                                            capability);
+                                } else {
+                                    formItem = new StringListFormItem(identifier, ra, formGroupLabel, flags);
+                                }
+                            } else {
+                                formItem = new UnsupportedFormItem(identifier, ra, formGroupLabel, flags);
+                            }
                             break;
 
                         case OBJECT:
@@ -237,5 +253,11 @@ class FormItemFactory {
             formGroupLabel = formGroupLabel(labelBuilder.label(ra.name));
         }
         return formGroupLabel;
+    }
+
+    private static ModelType valueType(ResourceAttribute ra) {
+        return (ra.description.has(VALUE_TYPE) && ra.description.get(VALUE_TYPE).getType() != ModelType.OBJECT)
+                ? ModelType.valueOf(ra.description.get(VALUE_TYPE).asString())
+                : null;
     }
 }

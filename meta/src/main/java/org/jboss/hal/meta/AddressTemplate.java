@@ -57,7 +57,8 @@ import static org.jboss.hal.dmr.ValueEncoder.ENCODED_SLASH;
  * <p>
  * <strong>Resolving</strong><br/>
  * To get a fully qualified {@link ResourceAddress} from an address template use one of the <code>resolve()</code> methods and a
- * {@link TemplateResolver}. In general, you should prefer address templates over {@linkplain ResourceAddress resource addresses}.
+ * {@link TemplateResolver}. In general, you should prefer address templates over
+ * {@linkplain ResourceAddress resource addresses}.
  * <p>
  * <strong>Encoding</strong><br/>
  * Some characters in values must be encoded using the backslash character:
@@ -143,7 +144,6 @@ public final class AddressTemplate implements Iterable<Segment> {
         if (!(o instanceof AddressTemplate)) {
             return false;
         }
-
         AddressTemplate that = (AddressTemplate) o;
         return template.equals(that.template);
     }
@@ -166,15 +166,27 @@ public final class AddressTemplate implements Iterable<Segment> {
     // ------------------------------------------------------ append / sub and parent
 
     /**
-     * Appends the specified <strong>encoded</strong> template to this template and returns a new template. Special characters
-     * in the value must not be encoded.
+     * Appends a key-value pair to this address template by encoding the value and formatting it as "key=value". The resulting
+     * template is then appended to the current template, and a new address template is returned.
      *
-     * @param key   the key to append to the template
-     * @param value the value to append to the template
-     * @return a new template
+     * @param key   the key to include in the appended pair
+     * @param value the value to include in the appended pair, which will be encoded using {@link ValueEncoder#encode(String)}
+     * @return a new address template with the appended key-value pair
      */
     public AddressTemplate append(String key, String value) {
         return append(key + "=" + ValueEncoder.encode(value));
+    }
+
+    /**
+     * Appends a key-value pair, constructed from the specified {@link Segment}, to this address template. The segment's value
+     * is encoded using {@link ValueEncoder#encode(String)}, and then formatted as "key=value". The resulting template is
+     * appended to the current template, and a new address template is returned.
+     *
+     * @param segment the segment containing the key and value to append. The value will be encoded before appending.
+     * @return a new address template with the appended key-value pair.
+     */
+    public AddressTemplate append(Segment segment) {
+        return append(segment.key + "=" + ValueEncoder.encode(segment.value));
     }
 
     /**

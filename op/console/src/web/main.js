@@ -17,6 +17,7 @@
 // External first
 import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/patternfly/patternfly-addons.css";
+import "@patternfly/patternfly/patternfly-charts.css";
 import "@patternfly-java/charts/dist/charts";
 import "dompurify/dist/purify"
 

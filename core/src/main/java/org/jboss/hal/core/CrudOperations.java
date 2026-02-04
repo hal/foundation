@@ -28,21 +28,14 @@ import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
-import org.patternfly.component.alert.AlertDescription;
-import org.patternfly.core.Tuple;
 
-import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 
-import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
-import static org.jboss.hal.resources.Dataset.crudMessageName;
-import static org.jboss.hal.resources.Dataset.crudMessageType;
-import static org.patternfly.component.alert.AlertDescription.alertDescription;
-import static org.patternfly.core.Tuple.tuple;
 
 /**
  * The CrudOperations class provides methods for performing create, update, and delete operations on resources represented by
@@ -66,31 +59,38 @@ public class CrudOperations {
 
     // ------------------------------------------------------ create
 
+    /**
+     * Creates a new resource at the specified address template with the given resource data.
+     *
+     * @param template the address template that specifies where the resource should be created
+     * @param resource the configuration data of the resource to be created
+     * @return a promise that resolves with the created resource model node upon successful addition
+     */
     public Promise<ModelNode> create(AddressTemplate template, ModelNode resource) {
-        Tuple<String, String> typeName = typeName(template);
         Operation operation = new Operation.Builder(template.resolve(statementContext), ADD)
                 .payload(resource)
                 .build();
         return dispatcher.execute(operation)
-                .then(result -> {
-                    notifications.send(success("Resource added", typeName + " has been successfully added."));
-                    return Promise.resolve(result);
+                .then(__ -> {
+                    resource.get(NAME).set(template.last().value);
+                    notifications.send(success("Resource added", typeName(template) + " has been successfully added."));
+                    return Promise.resolve(resource);
                 });
     }
 
     // ------------------------------------------------------ update
 
     public Promise<CompositeResult> update(AddressTemplate template, List<Operation> operations) {
-        Tuple<String, String> typeName = typeName(template);
         if (!operations.isEmpty()) {
             Composite composite = new Composite(operations);
             return dispatcher.execute(composite)
                     .then(result -> {
-                        notifications.send(success("Update successful", typeName + " has been successfully updated."));
+                        notifications.send(
+                                success("Update successful", typeName(template) + " has been successfully updated."));
                         return Promise.resolve(result);
                     });
         } else {
-            notifications.send(warning("Not modified", typeName + " has not been modified."));
+            notifications.send(warning("Not modified", typeName(template) + " has not been modified."));
             return Promise.resolve(new CompositeResult(new ModelNode()));
         }
     }
@@ -98,38 +98,21 @@ public class CrudOperations {
     // ------------------------------------------------------ delete
 
     public Promise<ModelNode> delete(AddressTemplate template) {
-        Tuple<String, String> typeName = typeName(template);
         Operation operation = new Operation.Builder(template.resolve(statementContext), REMOVE).build();
         return dispatcher.execute(operation)
                 .then(result -> {
-                    notifications.send(success("Resource deleted", typeName + " has been successfully deleted."));
+                    notifications.send(success("Resource deleted", typeName(template) + " has been successfully deleted."));
                     return Promise.resolve(result);
                 });
     }
 
     // ------------------------------------------------------ internal
 
-    private Tuple<String, String> typeName(AddressTemplate template) {
+    private String typeName(AddressTemplate template) {
         AddressTemplate resolvedTemplate = new StatementContextResolver(statementContext).resolve(template);
         String type = resolvedTemplate.last().key;
-        String name = resolvedTemplate.last().value;
-        return tuple(type, name);
-    }
-
-    private AlertDescription description(Tuple<String, String> typeName) {
-        return alertDescription()
-                .add(typeElement(typeName.key))
-                .add(" ")
-                .add(nameElement(typeName.value));
-    }
-
-    private HTMLElement typeElement(String type) {
         String failSafeType = type == null ? "Management model" : new LabelBuilder().label(type);
-        return span().data(crudMessageType, type).text(failSafeType).element();
-    }
-
-    private HTMLElement nameElement(String name) {
-        String failSafeName = name == null ? "n/a" : name;
-        return span().data(crudMessageName, name).text(failSafeName).element();
+        String name = resolvedTemplate.last().value;
+        return name != null ? failSafeType + " " + name : failSafeType;
     }
 }

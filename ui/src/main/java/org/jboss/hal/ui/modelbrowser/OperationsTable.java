@@ -55,7 +55,7 @@ import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.allBut
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.modelbrowser.OperationsToolbar.operationsToolbar;
-import static org.jboss.hal.ui.resource.ResourceDialogs.executeOperation;
+import static org.jboss.hal.ui.resource.ResourceDialogs.executeOperationModal;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;
@@ -148,7 +148,7 @@ class OperationsTable implements IsElement<HTMLElement> {
     }
 
     private void execute(OperationDescription operation) {
-        executeOperation(template, operation.name());
+        executeOperationModal(template, operation.name());
     }
 
     @Override

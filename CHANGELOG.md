@@ -10,12 +10,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add statistics enabled task
-- Add support for multi typeahead selects
+- Add logging task
+- Add support for multi-typeahead components
+- Add support to create dependent resources in typeahead components on the fly
 
 ### Upgrades
 
-- Bump Elemento to 2.4.6
-- Bump PatternFly Java to 0.4.10
+- Bump Elemento to 2.4.7
+- Bump PatternFly Java to 0.4.13
 
 ## [0.0.9] - 2025-12-18
 

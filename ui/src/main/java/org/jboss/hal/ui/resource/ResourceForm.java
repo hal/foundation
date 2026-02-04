@@ -41,6 +41,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
+import static org.jboss.hal.dmr.ModelNodeHelper.nested;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.patternfly.component.Severity.danger;
@@ -177,7 +178,7 @@ class ResourceForm implements
         items.values().stream()
                 .filter(FormItem::isModified)
                 .filter(formItem -> formItem.modelNode().isDefined())
-                .forEach(formItem -> modelNode.get(formItem.ra.name).set(formItem.modelNode()));
+                .forEach(formItem -> nested(modelNode, formItem.ra.fqn, true).set(formItem.modelNode()));
         return modelNode;
     }
 

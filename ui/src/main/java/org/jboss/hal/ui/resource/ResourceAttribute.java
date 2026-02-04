@@ -113,6 +113,8 @@ class ResourceAttribute {
         return resourceAttributes;
     }
 
+    // TODO Make use of attribute groups and turn them into form field groups
+    //  https://www.patternfly.org/components/forms/form/design-guidelines#field-groups
     static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
         List<ResourceAttribute> ungrouped = new ArrayList<>();
         TreeMap<String, List<ResourceAttribute>> groups = new TreeMap<>();

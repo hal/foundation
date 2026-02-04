@@ -35,13 +35,26 @@ import elemental2.dom.MutationRecord;
 
 import static org.jboss.elemento.Elements.body;
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.resources.HalClasses.goto_;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
+import static org.jboss.hal.resources.HalClasses.results;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.content.Content.content;
+import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.component.form.TextInput.textInput;
+import static org.patternfly.component.list.List.list;
+import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.icon.IconSets.far.compass;
+import static org.patternfly.layout.flex.Direction.column;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.layout.flex.FlexShorthand._1;
 import static org.patternfly.popper.Placement.bottomStart;
+import static org.patternfly.style.Classes.search;
+import static org.patternfly.style.Classes.util;
 
 class GotoResource implements IsElement<HTMLElement>, Attachable {
 
@@ -51,6 +64,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
     private final HTMLElement button;
     private final HTMLElement menu;
     private final TextInput input;
+    private HTMLElement multiple;
     private Popper popper;
 
     GotoResource() {
@@ -75,7 +89,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
                         Modifiers.hide(),
                         Modifiers.placement(),
                         Modifiers.eventListeners(false))
-                .registerHandler(EnumSet.of(TriggerAction.stayOpen), this::show, null)
+                .registerHandler(EnumSet.of(TriggerAction.stayOpen), this::show, this::close)
                 .removePopperOnTriggerDetach()
                 .build();
     }
@@ -102,11 +116,38 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
         if (Key.Enter.match(event)) {
             HTMLInputElement inputElement = (HTMLInputElement) event.target;
             AddressTemplate template = AddressTemplate.of(inputElement.value);
-            SelectInTree.dispatch(button, template);
-            inputElement.value = "";
-            event.stopPropagation();
-            event.preventDefault();
-            popper.hide(null);
+            if (!template.fullyQualified()) {
+                failSafeRemoveFromParent(multiple);
+                uic().modelTree().resolveWildcards(template).then(templates -> {
+                    multiple = flex().css(util("mt-md")).direction(column)
+                            .addItem(flexItem()
+                                    .add(content(p)
+                                            .add("The address you entered contains wildcards. Please select a resource from the list below.")))
+                            .addItem(flexItem()
+                                    .flex(_1)
+                                    .add(list().css(halComponent(modelBrowser, search, results))
+                                            .plain()
+                                            .addItems(templates, fullyQualified -> listItem()
+                                                    .add(button().link().inline().text(fullyQualified.toString())
+                                                            .onClick((e, b) -> {
+                                                                SelectInTree.dispatch(button, fullyQualified);
+                                                                close(event);
+                                                            })))))
+                            .element();
+                    menu.appendChild(multiple);
+                    return null;
+                });
+            } else {
+                SelectInTree.dispatch(button, template);
+                close(event);
+            }
         }
+    }
+
+    private void close(Event event) {
+        event.stopPropagation();
+        event.preventDefault();
+        failSafeRemoveFromParent(multiple);
+        popper.hide(null);
     }
 }

@@ -348,31 +348,7 @@ public class BuildingBlocks {
         return description(operation);
     }
 
-    // ------------------------------------------------------ stability
-
-    public static Color stabilityColor(Stability stability) {
-        if (stability == EXPERIMENTAL) {
-            return red;
-        } else if (stability == PREVIEW) {
-            return orange;
-        }
-        return blue;
-    }
-
-    public static PredefinedIcon stabilityIcon(Stability stability) {
-        if (stability == EXPERIMENTAL) {
-            return flask();
-        } else if (stability == PREVIEW) {
-            return exclamationTriangle();
-        }
-        return infoCircle();
-    }
-
-    public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
-        return () -> stabilityIcon(stability);
-    }
-
-    // ------------------------------------------------------ host and server state
+    // ------------------------------------------------------ server and host state
 
     public static Label runtimeConfigurationStateLabel(RuntimeConfigurationState value) {
         return switch (value) {
@@ -408,5 +384,29 @@ public class BuildingBlocks {
             case PRE_SUSPEND, SUSPENDED, SUSPENDING -> label(value.name(), blue);
             case UNDEFINED -> label(SuspendState.UNDEFINED.name()).status(danger);
         };
+    }
+
+    // ------------------------------------------------------ stability
+
+    public static Color stabilityColor(Stability stability) {
+        if (stability == EXPERIMENTAL) {
+            return red;
+        } else if (stability == PREVIEW) {
+            return orange;
+        }
+        return blue;
+    }
+
+    public static PredefinedIcon stabilityIcon(Stability stability) {
+        if (stability == EXPERIMENTAL) {
+            return flask();
+        } else if (stability == PREVIEW) {
+            return exclamationTriangle();
+        }
+        return infoCircle();
+    }
+
+    public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
+        return () -> stabilityIcon(stability);
     }
 }

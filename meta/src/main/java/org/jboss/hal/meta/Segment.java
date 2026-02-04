@@ -20,8 +20,8 @@ import java.util.Objects;
 import org.jboss.hal.dmr.ValueEncoder;
 
 /**
- * Represents a segment in an address template, which can have a key and a value. The key is optional. If the value contains
- * special characters, it is encoded when calling {@link #toString()}.
+ * Represents a segment in an address template, which can have a key and a value. The key is optional. The value itself is not
+ * encoded! If the value contains special characters, it is only encoded when calling {@link #toString()}.
  * <p>
  * Examples for valid segments in an address template are
  * <pre>

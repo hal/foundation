@@ -15,18 +15,26 @@
  */
 package org.jboss.hal.meta.tree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.flow.Flow;
+import org.jboss.elemento.flow.FlowContext;
+import org.jboss.elemento.logger.Level;
 import org.jboss.elemento.logger.Logger;
+import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Segment;
 import org.jboss.hal.meta.StatementContext;
+import org.jboss.hal.meta.StatementContextResolver;
+import org.jboss.hal.meta.WildcardResolver;
 
 import elemental2.promise.Promise;
 
@@ -37,6 +45,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OPERATION;
+import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
 import static org.jboss.hal.meta.tree.TraverseType.WILDCARD_RESOURCES;
 
 /**
@@ -121,7 +130,8 @@ public class ModelTree {
                         context.recordProgress(children.size());
                         Promise[] promises = children.stream()
                                 .filter(child -> !excluded(child, excludes))
-                                .map(child -> read(continuation, context, child, excludes, types, operation, consumer))
+                                .map(child ->
+                                        read(continuation, context, child, excludes, types, operation, consumer))
                                 .toArray(Promise[]::new);
                         return Promise.all(promises).then(__ -> Promise.resolve(context));
                     })
@@ -184,5 +194,105 @@ public class ModelTree {
             }
         }
         return false;
+    }
+
+    // ------------------------------------------------------ resolve wildcards
+
+    /**
+     * Resolves all wildcards in the provided {@code AddressTemplate} to concrete resource addresses. The wildcards are resolved
+     * by executing a {@code read-children-names()} operation on the address templates containing the wildcard. The resolution
+     * is performed until all wildcards are replaced with specific resource paths.
+     * <p>
+     * A template like <code>/a=&#42;/b=&#42;/c=&#42;</code> might be resolved to:
+     * <pre>
+     * /a=a0/b=b0/c=c0
+     * /a=a0/b=b0/c=c1
+     * /a=a0/b=b0/c=c2
+     * /a=a0/b=b1/c=c0
+     * /a=a0/b=b1/c=c1
+     * /a=a1/b=b0/c=c0
+     * /a=a1/b=b1/c=c0
+     * </pre>
+     *
+     * @param template A {@code AddressTemplate} containing wildcard addresses to be resolved.
+     * @return A {@code Promise} resolving to a list of {@code AddressTemplate} objects with resolved wildcards.
+     */
+    public Promise<List<AddressTemplate>> resolveWildcards(AddressTemplate template) {
+        if (template.isEmpty() || template.fullyQualified()) {
+            return Promise.resolve(emptyList());
+        }
+
+        logger.debug("Resolve wildcards in %s", template);
+        AddressTemplate resolved = new StatementContextResolver(statementContext).resolve(template);
+        AddressTemplate start = startAtFirstWildcard(resolved);
+        FlowContext initialContext = new FlowContext();
+        initialContext.push(AddressTemplate.of(start));
+        initialContext.set("templates", new ArrayList<AddressTemplate>());
+
+        return Flow.repeat(initialContext, context -> {
+                    AddressTemplate current = context.pop();
+                    ResourceAddress address = current.parent().resolve();
+                    Operation operation = new Operation.Builder(address, READ_CHILDREN_NAMES_OPERATION)
+                            .param(CHILD_TYPE, current.last().key)
+                            .param(INCLUDE_SINGLETONS, true)
+                            .build();
+                    if (logger.isEnabled(Level.DEBUG)) {
+                        logger.debug("Execute operation %s", operation.asCli());
+                    }
+                    return dispatcher.execute(operation).then(result -> {
+                        for (ModelNode modelNode : result.asList()) {
+                            AddressTemplate nextWildcard = nextWildcard(resolved, current);
+                            if (nextWildcard == null) {
+                                AddressTemplate resolvedChild = new WildcardResolver(LTR, modelNode.asString())
+                                        .resolve(current);
+                                logger.debug("Add %s", resolvedChild);
+                                List<AddressTemplate> templates = context.get("templates");
+                                templates.add(resolvedChild);
+                            } else {
+                                AddressTemplate nextTemplate = new WildcardResolver(LTR, modelNode.asString())
+                                        .resolve(nextWildcard);
+                                logger.debug("Push %s", nextTemplate);
+                                context.push(nextTemplate);
+                            }
+                        }
+                        return context.resolve();
+                    });
+                })
+                .failFast(false)
+                .while_(context -> !context.isStackEmpty())
+                .then(context -> {
+                    List<AddressTemplate> templates = context.get("templates");
+                    return Promise.resolve(templates);
+                });
+    }
+
+    // static and package local to make this testable
+    static AddressTemplate startAtFirstWildcard(AddressTemplate template) {
+        AddressTemplate result = AddressTemplate.root();
+        for (Segment segment : template.segments()) {
+            result = result.append(segment);
+            if ("*".equals(segment.value)) {
+                break;
+            }
+        }
+        return result;
+    }
+
+    // static and package local to make this testable
+    static AddressTemplate nextWildcard(AddressTemplate template, AddressTemplate current) {
+        int currentSize = current.size();
+        if (currentSize >= template.size()) {
+            return null;
+        }
+
+        List<Segment> resultSegments = new ArrayList<>(current.segments());
+        for (int i = currentSize; i < template.size(); i++) {
+            Segment segment = template.segments().get(i);
+            resultSegments.add(segment);
+            if ("*".equals(segment.value)) {
+                break;
+            }
+        }
+        return AddressTemplate.of(resultSegments);
     }
 }

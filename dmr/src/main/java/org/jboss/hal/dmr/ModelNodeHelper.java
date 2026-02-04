@@ -35,6 +35,22 @@ public final class ModelNodeHelper {
      * @return The nested node or an undefined model node
      */
     public static ModelNode nested(ModelNode modelNode, String path) {
+        return nested(modelNode, path, false);
+    }
+
+    /**
+     * Retrieves a nested {@link ModelNode} from the specified {@code modelNode} using the given {@code path}. Nested paths are
+     * separated by ".". If the path does not exist and {@code createUndefined} is set to true, undefined nodes are created
+     * along the path. If the path does not exist and {@code createUndefined} is false, an undefined {@code ModelNode} is
+     * returned.
+     *
+     * @param modelNode       the root {@link ModelNode} to navigate
+     * @param path            the path to the nested node, separated by "."
+     * @param createUndefined a flag indicating whether undefined nodes should be created along the path
+     * @return the nested {@link ModelNode} corresponding to the path, or an undefined {@link ModelNode} if the path is invalid
+     * or does not exist
+     */
+    public static ModelNode nested(ModelNode modelNode, String path, boolean createUndefined) {
         ModelNode undefined = new ModelNode();
 
         if (path != null && !path.isEmpty()) {
@@ -43,6 +59,9 @@ public final class ModelNodeHelper {
             for (String key : keys) {
                 String safeKey = ValueEncoder.decode(key);
                 if (current.hasDefined(safeKey)) {
+                    current = current.get(safeKey);
+                } else if (createUndefined) {
+                    current.get(safeKey).set(new ModelNode());
                     current = current.get(safeKey);
                 } else {
                     current = undefined;
