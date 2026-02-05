@@ -26,5 +26,14 @@ public class Main {
 
     public void init(@Observes Router router) {
         router.get().order(0).handler(StaticHandler.create());
+        // Make SPA deep linking work.
+        router.get().order(1).handler(ctx -> {
+            String path = ctx.request().path();
+            if (!path.equals("/") && !path.contains(".")) {
+                ctx.reroute("/");
+            } else {
+                ctx.next();
+            }
+        });
     }
 }

@@ -28,6 +28,7 @@ Pending...
 
 The model browser has been greatly improved:
 
+- Resizable tree view
 - History of selected resources and buttons to go backwards and forwards
 - Search the management model for resource addresses, types and names
 - Go to arbitrary resources by specifying the resource address
@@ -35,7 +36,7 @@ The model browser has been greatly improved:
 - Copy the current address to the clipboard
 - Descriptions in resources list views
 - Follow capability references
-- Resizable tree view
+- Create dependent resources on the fly
 
 ### Data
 

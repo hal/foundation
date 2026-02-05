@@ -77,7 +77,9 @@ class StringListFormItem extends FormItem {
     }
 
     private FilterInput stringListControl() {
-        filterInput = filterInput(identifier).allowDuplicates(false);
+        filterInput = filterInput(identifier)
+                .applyTo(inputElement -> inputElement.autocomplete("off"))
+                .allowDuplicates(false);
         if (ra.value.isDefined()) {
             values(modelValues(ra));
         } else if (ra.description.hasDefault()) {

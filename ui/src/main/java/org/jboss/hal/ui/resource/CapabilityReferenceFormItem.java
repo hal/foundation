@@ -15,7 +15,6 @@
  */
 package org.jboss.hal.ui.resource;
 
-import org.jboss.hal.core.LabelBuilder;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.component.form.FormGroupControl;
@@ -81,7 +80,6 @@ class CapabilityReferenceFormItem extends FormItem {
     }
 
     private SingleTypeahead typeaheadControl() {
-        LabelBuilder labelBuilder = new LabelBuilder();
         SearchReloadInput searchReloadInput = searchReloadInput(identifier)
                 .plain()
                 .placeholder("")

@@ -46,6 +46,7 @@ class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
         super(ComponentType.FilterInput, id);
         this.onReload = new ArrayList<>();
 
+        inputElement.autocomplete = "off";
         addUtilities(textInputGroupUtilities()
                 .add(clearButton = button().icon(times()).plain().onClick((e, b) -> {
                     if (defaultOnClear != null) {

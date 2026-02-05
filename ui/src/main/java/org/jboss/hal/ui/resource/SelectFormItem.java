@@ -81,6 +81,7 @@ class SelectFormItem extends FormItem {
                 .collect(toList());
         selectControl = formSelect(identifier)
                 .run(fs -> {
+                    fs.selectElement().attr("autocomplete", "off");
                     if (ra.description.nillable() && !ra.description.hasDefault()) {
                         fs.addOption(formSelectOption(UNDEFINED));
                     }

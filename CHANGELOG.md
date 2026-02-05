@@ -9,15 +9,23 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add statistics enabled task
-- Add logging task
+- Start the statistics enabled task (not fully functional yet)
+- Start the logging task (not fully functional yet)
 - Add support for multi-typeahead components
 - Add support to create dependent resources in typeahead components on the fly
 
+### Changed
+
+- Add `autocomplete=off` to all form inputs
+
+### Fixed
+
+- Enable deep SPA links to work in halOP standalone.
+
 ### Upgrades
 
-- Bump Elemento to 2.4.7
-- Bump PatternFly Java to 0.4.13
+- Bump Elemento to 2.4.8
+- Bump PatternFly Java to 0.4.16
 
 ## [0.0.9] - 2025-12-18
 

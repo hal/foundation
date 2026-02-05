@@ -200,6 +200,7 @@ class NumberFormItem extends FormItem {
         List<Long> allowedValues = ra.description.get(ALLOWED).asList().stream().map(ModelNode::asLong).collect(toList());
         allowedValuesControl = formSelect(identifier)
                 .run(fs -> {
+                    fs.selectElement().attr("autocomplete", "off");
                     if (ra.description.nillable()) {
                         fs.addOption(formSelectOption(UNDEFINED));
                     }
@@ -220,6 +221,7 @@ class NumberFormItem extends FormItem {
     private TextInput minMaxControl() {
         minMaxControl = textInput(number, identifier)
                 .run(ti -> {
+                    ti.input().autocomplete("off");
                     if (ra.value.isDefined()) {
                         ti.value(ra.value.asString());
                     }
