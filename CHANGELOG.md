@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix native binary and image build (#190)
+
 ## [0.0.10] - 2026-02-05
 
 ### Added
