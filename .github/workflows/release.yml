@@ -124,7 +124,7 @@ jobs:
             org.opencontainers.image.title=HAL On Premise
             org.opencontainers.image.url=https://hal.github.io
             org.opencontainers.image.vendor=Red Hat
-          containerfiles: op/standalone/src/main/docker/Dockerfile.native-distroless
+          containerfiles: op/standalone/src/main/docker/Dockerfile.native-micro
           context: op/standalone
       - uses: redhat-actions/push-to-registry@v2
         with:
