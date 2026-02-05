@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.jboss.hal</groupId>
         <artifactId>hal-fnd-parent</artifactId>
-        <version>0.0.11-SNAPSHOT</version>
+        <version>0.0.11</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
