@@ -29,7 +29,7 @@
 
     <groupId>org.jboss.hal</groupId>
     <artifactId>hal-fnd-parent</artifactId>
-    <version>0.0.11</version>
+    <version>0.0.12-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>HAL Foundation Parent</name>
     <description>HAL foundation for HAL on premise and OpenShift</description>
