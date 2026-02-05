@@ -71,6 +71,7 @@ import static org.patternfly.component.modal.ModalFooter.modalFooter;
 import static org.patternfly.component.modal.ModalHeader.modalHeader;
 import static org.patternfly.component.modal.ModalHeaderTitle.modalHeaderTitle;
 import static org.patternfly.component.wizard.Wizard.wizard;
+import static org.patternfly.component.wizard.WizardFooterButtons.next;
 import static org.patternfly.component.wizard.WizardHeader.wizardHeader;
 import static org.patternfly.component.wizard.WizardHeaderDescription.wizardHeaderDescription;
 import static org.patternfly.component.wizard.WizardHeaderTitle.wizardHeaderTitle;
@@ -139,6 +140,7 @@ public class ResourceDialogs {
                 .addWizard(wizard
                         .addItem(selectLocation)
                         .addItem(wizardStep("add-resource", "Add resource")
+                                .customButtonName(next, "Add")
                                 .onEnter((wzd, step) -> {
                                     AddressTemplate template = wizard.context().get("template");
                                     Metadata metadata = wizard.context().get("metadata");

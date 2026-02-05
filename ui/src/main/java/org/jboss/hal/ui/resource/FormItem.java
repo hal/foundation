@@ -439,6 +439,7 @@ abstract class FormItem implements
         if (textControl == null) {
             textControl = textInput(identifier)
                     .run(ti -> {
+                        ti.input().autocomplete("off");
                         if (ra.value.isDefined()) {
                             ti.value(ra.value.asString());
                         }
