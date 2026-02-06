@@ -43,7 +43,8 @@ The model browser has been greatly improved:
 - Copy the current address to the clipboard
 - Descriptions in resources list views
 - Follow capability references
-- Create dependent resources on the fly
+
+### Create dependent resources on the fly
 
 https://github.com/user-attachments/assets/ebfa910b-b52f-4e9d-9e71-689341a16dc2
 
