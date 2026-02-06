@@ -113,7 +113,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           tags: quay.io/halconsole/hal-op:latest quay.io/halconsole/hal-op:${{ steps.get-version.outputs.version-without-v }}
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           labels: |
             maintainer=hpehl@redhat.com
             org.opencontainers.image.authors=hpehl@redhat.com

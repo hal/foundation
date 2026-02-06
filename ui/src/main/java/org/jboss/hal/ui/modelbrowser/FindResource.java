@@ -221,6 +221,7 @@ class FindResource {
                 .addLabel(formGroupLabel("Name"))
                 .addControl(nameControl = formGroupControl()
                         .addControl(nameInput = textInput(nameId)
+                                .applyTo(input -> input.autocomplete("off"))
                                 .on(keydown, e -> {
                                     if (Key.Enter.match(e)) {
                                         search();
