@@ -45,7 +45,7 @@ The model browser has been greatly improved:
 - Follow capability references
 - Create dependent resources on the fly
 
-<video controls src="add-resources-on-the-fly.mp4"></video>
+https://github.com/user-attachments/assets/ebfa910b-b52f-4e9d-9e71-689341a16dc2
 
 ### Data
 
