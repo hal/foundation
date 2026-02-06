@@ -45,7 +45,7 @@ The model browser has been greatly improved:
 - Follow capability references
 - Create dependent resources on the fly
 
-    <video controls src="add-resources-on-the-fly.mp4"></video>
+<video controls src="add-resources-on-the-fly.mp4"></video>
 
 ### Data
 
@@ -88,5 +88,6 @@ See https://hal-console.gitbook.io/elemento/logger#controlling-log-levels-from-j
 
 ## Additional resources
 
-- Demo of the next-gen management console at the WildFly Community Call in 12/2025: https://youtu.be/X43dkm1Zdm4?si=05iSFy7PiekrVK1Z
+
+- Demo of the next-gen management console at the WildFly Community Call on 12/2025: https://youtu.be/X43dkm1Zdm4?si=05iSFy7PiekrVK1Z
 - Slides of the WildFly Community Call: [wildfly-community-call.pdf](wildfly-community-call.pdf)
