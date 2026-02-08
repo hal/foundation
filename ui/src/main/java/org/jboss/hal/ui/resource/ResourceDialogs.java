@@ -76,11 +76,17 @@ import static org.patternfly.component.wizard.WizardHeader.wizardHeader;
 import static org.patternfly.component.wizard.WizardHeaderDescription.wizardHeaderDescription;
 import static org.patternfly.component.wizard.WizardHeaderTitle.wizardHeaderTitle;
 import static org.patternfly.component.wizard.WizardStep.wizardStep;
+import static org.patternfly.layout.flex.Direction.column;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.layout.flex.Gap.none;
 import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Size.lg;
 import static org.patternfly.style.Size.sm;
+import static org.patternfly.token.Token.globalFontSizeXs;
+import static org.patternfly.token.Token.globalTextColorSubtle;
 
 public class ResourceDialogs {
 
@@ -120,7 +126,17 @@ public class ResourceDialogs {
                                 .add(simpleList()
                                         .addItems(templates, template -> {
                                             String resolved = new WildcardResolver(LTR, resource).resolve(template).toString();
-                                            return simpleListItem(resolved, resolved).store("template", template);
+                                            return simpleListItem(resolved)
+                                                    .store("template", template)
+                                                    .add(flex().direction(column).gap(none)
+                                                            .addItem(flexItem().add(resolved))
+                                                            .addItem(flexItem()
+                                                                    .style("color", globalTextColorSubtle.var)
+                                                                    .style("font-size", globalFontSizeXs.var)
+                                                                    .run(flexItem -> uic().metadataRepository()
+                                                                            .lookup(template, metadata ->
+                                                                                    flexItem.text(metadata.resourceDescription()
+                                                                                            .description())))));
                                         })
                                         .onSelect((e, item, selected) -> {
                                             wizard.footer().nextButton().disabled(!selected);

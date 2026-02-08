@@ -23,6 +23,7 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.elemento.Elements.span;
 import static org.patternfly.token.Token.globalFontSizeSm;
 import static org.patternfly.token.Token.globalTextColorDisabled;
+import static org.patternfly.token.Token.globalTextColorSubtle;
 
 public class ItemCount implements IsElement<HTMLElement> {
 
@@ -43,7 +44,7 @@ public class ItemCount implements IsElement<HTMLElement> {
         this.singular = singular;
         this.plural = plural;
         this.root = span()
-                .style("color", globalTextColorDisabled.var)
+                .style("color", globalTextColorSubtle.var)
                 .style("font-size", globalFontSizeSm.var)
                 .element();
         visible.subscribe((v, __) -> root.textContent = text(v, total.get()));
