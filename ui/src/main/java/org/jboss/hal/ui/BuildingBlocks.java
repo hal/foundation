@@ -54,6 +54,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.i;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.strong;
+import static org.jboss.hal.dmr.Expression.startExpressionEnd;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
@@ -304,7 +305,7 @@ public class BuildingBlocks {
 
     @SuppressWarnings("DataFlowIssue")
     private static void internalRenderExpression(HTMLContainerBuilder<HTMLElement> builder, String value) {
-        String[] startExprEnd = Expression.extractExpression(value);
+        String[] startExprEnd = startExpressionEnd(value);
         if (!startExprEnd[0].isEmpty()) {
             builder.add(span().css(halComponent(expression, start)).text(startExprEnd[0]));
         }

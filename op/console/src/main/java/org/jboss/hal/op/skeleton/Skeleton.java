@@ -107,8 +107,7 @@ public class Skeleton implements IsElement<HTMLElement> {
                                 .addToolbar(toolbar)))
                 .addNotificationDrawer(notificationElements.drawer())
                 .addMain(pageMain(Ids.MAIN_ID).fill())
-                .add(backToTop()
-                        .scrollableSelector(By.id(Ids.MAIN_ID)));
+                .add(backToTop().scrollableSelector(By.id(Ids.MAIN_ID)));
         page.wire(notificationElements.badge(), notificationElements.drawer());
 
         if (environment.highlightStability()) {

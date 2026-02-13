@@ -129,10 +129,10 @@ public class LabelBuilder {
     }
 
     /**
-     * Turns a list of names from the management model into a human readable enumeration wrapped in quotes and separated with
+     * Turns a list of names from the management model into a human-readable enumeration wrapped in quotes and separated with
      * commas. The last name is separated with the specified conjunction.
      *
-     * @return The list of names as human-readable string or an empty string if the names are null or empty.
+     * @return The list of names as a human-readable string or an empty string if the names are null or empty.
      */
     public String enumeration(List<String> names, String conjunction) {
         String enumeration = "";

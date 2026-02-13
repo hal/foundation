@@ -31,6 +31,7 @@ import org.jboss.hal.meta.StatementContextResolver;
 
 import elemental2.promise.Promise;
 
+import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
@@ -75,6 +76,12 @@ public class CrudOperations {
                     resource.get(NAME).set(template.last().value);
                     notifications.send(success("Resource added", typeName(template) + " has been successfully added."));
                     return Promise.resolve(resource);
+                })
+                .catch_(error -> {
+                    notifications.send(error("Failed to add resource",
+                            "An error occurred while adding " + typeName(template) + ".")
+                            .details(String.valueOf(error), true));
+                    return null;
                 });
     }
 
@@ -88,6 +95,12 @@ public class CrudOperations {
                         notifications.send(
                                 success("Update successful", typeName(template) + " has been successfully updated."));
                         return Promise.resolve(result);
+                    })
+                    .catch_(error -> {
+                        notifications.send(error("Failed to update resource",
+                                "An error occurred while updating " + typeName(template) + ".")
+                                .details(String.valueOf(error), true));
+                        return null;
                     });
         } else {
             notifications.send(warning("Not modified", typeName(template) + " has not been modified."));
@@ -103,6 +116,12 @@ public class CrudOperations {
                 .then(result -> {
                     notifications.send(success("Resource deleted", typeName(template) + " has been successfully deleted."));
                     return Promise.resolve(result);
+                })
+                .catch_(error -> {
+                    notifications.send(error("Failed to delete resource",
+                            "An error occurred while deleting " + typeName(template) + ".")
+                            .details(String.valueOf(error), true));
+                    return null;
                 });
     }
 

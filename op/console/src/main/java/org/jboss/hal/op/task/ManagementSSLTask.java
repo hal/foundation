@@ -18,6 +18,7 @@ package org.jboss.hal.op.task;
 import jakarta.enterprise.context.Dependent;
 
 import org.jboss.hal.task.Task;
+import org.patternfly.component.page.PageGroup;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
@@ -60,19 +61,17 @@ public class ManagementSSLTask implements Task {
     }
 
     @Override
-    public HTMLElement moreInfo() {
-        return content()
-                .add(p().text("This task lets you manage SSL for a management interface."))
-                .element();
-    }
-
-    @Override
-    public boolean enabled() {
-        return false;
+    public Iterable<HTMLElement> elements() {
+        return null;
     }
 
     @Override
     public void run() {
         uic().notifications().send(nyi());
+    }
+
+    @Override
+    public boolean enabled() {
+        return false;
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.dmr;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import elemental2.core.JsRegExp;
@@ -25,11 +27,23 @@ public class Expression {
     static final JsRegExp JS_REG_EXP = new JsRegExp(REG_EXP);
     static Predicate<String> PREDICATE = JS_REG_EXP::test; // replaced in JVM unit tests
 
-    public static boolean containsExpression(String value) {
-        return extractExpression(value) != null;
+    public static boolean isExpression(String value) {
+        if (value != null && value.length() > 3) {
+            if (value.startsWith("${") && value.endsWith("}")) {
+                String expression = value.substring(2, value.length() - 1);
+                int index = expression.indexOf(':');
+                String name = index > 0 ? expression.substring(0, index) : expression;
+                return PREDICATE.test(name);
+            }
+        }
+        return false;
     }
 
-    public static String[] extractExpression(String value) {
+    public static boolean containsExpression(String value) {
+        return startExpressionEnd(value) != null;
+    }
+
+    public static String[] startExpressionEnd(String value) {
         if (value != null && value.length() > 3) { // ${x}
             int startIndex = value.indexOf("${");
             if (startIndex >= 0) {
@@ -47,20 +61,8 @@ public class Expression {
         return null;
     }
 
-    public static boolean isExpression(String value) {
-        if (value != null && value.length() > 3) {
-            if (value.startsWith("${") && value.endsWith("}")) {
-                String expression = value.substring(2, value.length() - 1);
-                int index = expression.indexOf(':');
-                String name = index > 0 ? expression.substring(0, index) : expression;
-                return PREDICATE.test(name);
-            }
-        }
-        return false;
-    }
-
     public static String[] splitExpression(String expression) {
-        if (Expression.isExpression(expression)) {
+        if (isExpression(expression)) {
             int colon = expression.indexOf(':');
             if (colon > 0) {
                 String name = expression.substring(0, colon).substring(2); // ${
@@ -74,5 +76,20 @@ public class Expression {
         } else {
             return null;
         }
+    }
+
+    public static String[] extractExpressions(String expression) {
+        List<String> expressions = new ArrayList<>();
+        String current = expression;
+        String[] parts = splitExpression(current);
+        while (parts != null && parts.length == 2) {
+            expressions.add(parts[0]);
+            if (!isExpression(parts[1])) {
+                break;
+            }
+            current = parts[1];
+            parts = splitExpression(current);
+        }
+        return expressions.isEmpty() ? null : expressions.toArray(new String[0]);
     }
 }

@@ -32,4 +32,11 @@
     <packaging>jar</packaging>
     <name>HAL Foundation Task</name>
     <description>Contains the task interface and repository</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.patternfly</groupId>
+            <artifactId>patternfly-java-components</artifactId>
+        </dependency>
+    </dependencies>
 </project>

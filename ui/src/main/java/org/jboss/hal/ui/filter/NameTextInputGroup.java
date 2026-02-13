@@ -30,15 +30,19 @@ public class NameTextInputGroup<T> implements IsElement<HTMLElement> {
     // ------------------------------------------------------ factory
 
     public static <T> NameTextInputGroup<T> nameFilterTextInputGroup(Filter<T> filter) {
-        return new NameTextInputGroup<>(filter);
+        return new NameTextInputGroup<>(filter, "Filter by name");
+    }
+
+    public static <T> NameTextInputGroup<T> nameFilterTextInputGroup(Filter<T> filter, String placeholder) {
+        return new NameTextInputGroup<>(filter, placeholder);
     }
 
     // ------------------------------------------------------ instance
 
     private final SearchInput searchInput;
 
-    NameTextInputGroup(Filter<T> filter) {
-        searchInput = searchInput(Id.unique()).placeholder("Filter by name")
+    NameTextInputGroup(Filter<T> filter, String placeholder) {
+        searchInput = searchInput(Id.unique()).placeholder(placeholder)
                 .onKeyup((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value))
                 .onClear((event, textInputGroup) -> filter.reset(NameAttribute.NAME));
         searchInput.input().apply(input -> input.autocomplete = "off");

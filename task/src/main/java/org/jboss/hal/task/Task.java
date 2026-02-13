@@ -15,9 +15,22 @@
  */
 package org.jboss.hal.task;
 
+import org.patternfly.component.icon.Icon;
+import org.patternfly.component.page.PageSection;
+import org.patternfly.component.title.Title;
+
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 
+import static org.patternfly.component.content.Content.content;
+import static org.patternfly.component.content.ContentType.p;
+import static org.patternfly.component.page.PageSection.pageSection;
+import static org.patternfly.style.Size._3xl;
+
+/**
+ * Represents a task that can be executed within the console. Each task provides details such as an identifier, title, icon, and
+ * summary, and defines the operation it performs.
+ */
 public interface Task {
 
     String id();
@@ -28,11 +41,20 @@ public interface Task {
 
     HTMLElement summary();
 
-    HTMLElement moreInfo();
+    Iterable<HTMLElement> elements();
+
+    void run();
 
     default boolean enabled() {
         return true;
     }
 
-    void run();
+    default PageSection header() {
+        return pageSection()
+                .add(content()
+                        .add(Title.title(1, _3xl)
+                                .add(Icon.icon(icon()).inline())
+                                .add(" " + title())))
+                .add(content(p).editorial().add(summary()));
+    }
 }

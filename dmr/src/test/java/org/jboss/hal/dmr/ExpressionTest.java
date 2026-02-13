@@ -22,9 +22,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.jboss.hal.dmr.Expression.REG_EXP;
 import static org.jboss.hal.dmr.Expression.containsExpression;
-import static org.jboss.hal.dmr.Expression.extractExpression;
+import static org.jboss.hal.dmr.Expression.extractExpressions;
 import static org.jboss.hal.dmr.Expression.isExpression;
 import static org.jboss.hal.dmr.Expression.splitExpression;
+import static org.jboss.hal.dmr.Expression.startExpressionEnd;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -91,17 +92,17 @@ public class ExpressionTest {
     }
 
     @Test
-    public void extract() {
-        assertArrayEquals(new String[]{"", "${a}", ""}, extractExpression("${a}"));
-        assertArrayEquals(new String[]{"start ", "${a}", ""}, extractExpression("start ${a}"));
-        assertArrayEquals(new String[]{"start ", "${a:b}", ""}, extractExpression("start ${a:b}"));
-        assertArrayEquals(new String[]{"", "${a}", " end"}, extractExpression("${a} end"));
-        assertArrayEquals(new String[]{"", "${a:b}", " end"}, extractExpression("${a:b} end"));
-        assertArrayEquals(new String[]{"start ", "${a}", " end"}, extractExpression("start ${a} end"));
-        assertArrayEquals(new String[]{"start ", "${a:b}", " end"}, extractExpression("start ${a:b} end"));
+    public void see() {
+        assertArrayEquals(new String[]{"", "${a}", ""}, startExpressionEnd("${a}"));
+        assertArrayEquals(new String[]{"start ", "${a}", ""}, startExpressionEnd("start ${a}"));
+        assertArrayEquals(new String[]{"start ", "${a:b}", ""}, startExpressionEnd("start ${a:b}"));
+        assertArrayEquals(new String[]{"", "${a}", " end"}, startExpressionEnd("${a} end"));
+        assertArrayEquals(new String[]{"", "${a:b}", " end"}, startExpressionEnd("${a:b} end"));
+        assertArrayEquals(new String[]{"start ", "${a}", " end"}, startExpressionEnd("start ${a} end"));
+        assertArrayEquals(new String[]{"start ", "${a:b}", " end"}, startExpressionEnd("start ${a:b} end"));
 
-        assertArrayEquals(new String[]{"", "${a:${b:${c:d}}}", ""}, extractExpression("${a:${b:${c:d}}}"));
-        assertArrayEquals(new String[]{"start ", "${a:${b:${c:d}}}", " end"}, extractExpression("start ${a:${b:${c:d}}} end"));
+        assertArrayEquals(new String[]{"", "${a:${b:${c:d}}}", ""}, startExpressionEnd("${a:${b:${c:d}}}"));
+        assertArrayEquals(new String[]{"start ", "${a:${b:${c:d}}}", " end"}, startExpressionEnd("start ${a:${b:${c:d}}} end"));
     }
 
     @Test
@@ -114,5 +115,17 @@ public class ExpressionTest {
         assertArrayEquals(new String[]{"a", "${b:c}"}, splitExpression("${a:${b:c}}"));
         assertArrayEquals(new String[]{"a", "${b:${c}}"}, splitExpression("${a:${b:${c}}}"));
         assertArrayEquals(new String[]{"a", "${b:${c:d}}"}, splitExpression("${a:${b:${c:d}}}"));
+    }
+
+    @Test
+    public void extract() {
+        assertArrayEquals(null, extractExpressions("${:}"));
+        assertArrayEquals(null, extractExpressions("notAnExpression"));
+        assertArrayEquals(new String[]{"a"}, extractExpressions("${a}"));
+        assertArrayEquals(new String[]{"a"}, extractExpressions("${a:b}"));
+        assertArrayEquals(new String[]{"a", "b"}, extractExpressions("${a:${b}}"));
+        assertArrayEquals(new String[]{"a", "b"}, extractExpressions("${a:${b:c}}"));
+        assertArrayEquals(new String[]{"a", "b", "c"}, extractExpressions("${a:${b:${c}}}"));
+        assertArrayEquals(new String[]{"a", "b", "c"}, extractExpressions("${a:${b:${c:d}}}"));
     }
 }

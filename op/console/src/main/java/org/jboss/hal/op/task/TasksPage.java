@@ -28,17 +28,15 @@ import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.task.Task;
-import org.patternfly.component.content.Content;
-import org.patternfly.component.drawer.Drawer;
-import org.patternfly.component.drawer.DrawerBody;
-import org.patternfly.layout.gallery.Gallery;
 import org.patternfly.layout.gallery.GalleryItem;
-import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
+import static org.patternfly.component.breadcrumb.Breadcrumb.breadcrumb;
+import static org.patternfly.component.breadcrumb.BreadcrumbItem.breadcrumbItem;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;
@@ -47,15 +45,10 @@ import static org.patternfly.component.card.CardHeader.cardHeader;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.h2;
 import static org.patternfly.component.content.ContentType.p;
-import static org.patternfly.component.drawer.Drawer.drawer;
-import static org.patternfly.component.drawer.DrawerBody.drawerBody;
-import static org.patternfly.component.drawer.DrawerCloseButton.drawerCloseButton;
-import static org.patternfly.component.drawer.DrawerContent.drawerContent;
-import static org.patternfly.component.drawer.DrawerPanel.drawerPanel;
-import static org.patternfly.component.drawer.DrawerPanelHead.drawerPanelHead;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.icon.IconSize.xl;
-import static org.patternfly.component.page.PageGroup.pageGroup;
+import static org.patternfly.component.page.Page.page;
+import static org.patternfly.component.page.PageBreadcrumb.pageBreadcrumb;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.AlignItems.center;
@@ -72,42 +65,29 @@ import static org.patternfly.style.Size._3xl;
 public class TasksPage implements Page {
 
     private final Instance<Task> tasks;
-    private final Drawer moreInfo;
-    private final Gallery gallery;
-    private final Content moreInfoHeader;
-    private final DrawerBody moreInfoBody;
 
     @Inject
     public TasksPage(Instance<Task> tasks) {
         this.tasks = tasks;
-        this.moreInfo = drawer();
-        this.gallery = gallery();
-        this.moreInfoHeader = content(h2);
-        this.moreInfoBody = drawerBody();
     }
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(pageGroup()
-                .add(pageSection().limitWidth()
+        return allTasks();
+    }
+
+    private Iterable<HTMLElement> allTasks() {
+        return asList(
+                pageSection().limitWidth()
                         .add(content()
                                 .add(title(1, _3xl, "Tasks")))
                         .add(content(p)
                                 .editorial()
-                                .text("Tasks enable you to complete complex tasks quickly and easily. They combine multiple steps  that involve configuring different subsystems and resources.")))
-                .add(pageSection().fill()
-                        .add(moreInfo.inline()
-                                .onToggle((event, component, expanded) ->
-                                        gallery.classList().toggle(Classes.util("pr-md"), expanded))
-                                .addContent(drawerContent()
-                                        .addBody(drawerBody()
-                                                .add(gallery.gutter().addItems(tasksSortedByTitle(), this::taskItem))))
-                                .addPanel(drawerPanel()
-                                        .addHead(drawerPanelHead()
-                                                .add(moreInfoHeader)
-                                                .addCloseButton(drawerCloseButton()))
-                                        .addBody(moreInfoBody))))
-                .element());
+                                .text("Tasks enable you to complete complex tasks quickly and easily. " +
+                                        "They combine multiple steps that involve configuring different subsystems and resources."))
+                        .element(),
+                pageSection().fill()
+                        .add(gallery().gutter().addItems(tasksSortedByTitle(), this::taskItem)).element());
     }
 
     private Iterable<Task> tasksSortedByTitle() {
@@ -130,15 +110,33 @@ public class TasksPage implements Page {
                         .addFooter(cardFooter()
                                 .add(button().css(util("mr-md")).secondary().text("Launch")
                                         .disabled(!task.enabled())
-                                        .onClick((e, c) -> task.run()))
-                                .add(button().link().text("Learn more")
-                                        .onClick((e, c) -> {
-                                            moreInfoHeader.text(task.title());
-                                            removeChildrenFrom(moreInfoBody);
-                                            moreInfoBody.add(task.moreInfo());
-                                            if (!moreInfo.expanded()) {
-                                                moreInfo.expand();
-                                            }
-                                        }))));
+                                        .onClick((e, c) -> startTask(task)))));
+    }
+
+    private void startTask(Task task) {
+        if (task.enabled()) {
+            Iterable<HTMLElement> elements = task.elements();
+            if (elements != null) {
+                clear();
+                page().main()
+                        .add(pageBreadcrumb()
+                                .add(breadcrumb()
+                                        .addItem(breadcrumbItem("all-tasks", "All tasks")
+                                                .onClick((e, c) -> {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    clear();
+                                                    page().main().addAll(allTasks());
+                                                }))
+                                        .addItem(breadcrumbItem(task.id(), task.title())
+                                                .active())))
+                        .addAll(elements);
+            }
+            task.run();
+        }
+    }
+
+    private void clear() {
+        removeChildrenFrom(page().main().containerDelegate());
     }
 }
