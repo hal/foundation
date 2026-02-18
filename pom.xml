@@ -85,7 +85,7 @@
         <version.elemento>2.4.8</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
-        <version.junit>6.0.2</version.junit>
+        <version.junit>6.0.3</version.junit>
         <version.kie.j2cl.bom>0.5</version.kie.j2cl.bom>
         <version.mockito>5.21.0</version.mockito>
         <version.node>v24.10.0</version.node>
