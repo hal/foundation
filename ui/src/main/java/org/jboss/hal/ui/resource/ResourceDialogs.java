@@ -17,7 +17,6 @@ package org.jboss.hal.ui.resource;
 
 import java.util.List;
 
-import org.jboss.hal.core.LabelBuilder;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
@@ -43,6 +42,7 @@ import static org.jboss.elemento.Elements.h;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
@@ -217,7 +217,7 @@ public class ResourceDialogs {
             resolved = new WildcardResolver(LTR, resource).resolve(template);
         } else {
             title = modalHeaderTitle().run(mht -> span(mht.textDelegate())
-                    .add("Add " + new LabelBuilder().label(template.last().key) + " ")
+                    .add("Add " + labelBuilder(template.last().key) + " ")
                     .run(span -> {
                         if (resource != null) {
                             span.add(code(resource));

@@ -28,6 +28,7 @@ import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
 import org.jboss.hal.ui.filter.FilterLabels;
+import org.jboss.hal.ui.filter.NameSearchInput;
 import org.jboss.hal.ui.resource.ResourceManager.State;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarContent;
@@ -41,7 +42,6 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.ui.filter.DeReDeExMultiSelect.deReDeExMultiSelect;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
-import static org.jboss.hal.ui.filter.NameTextInputGroup.nameFilterTextInputGroup;
 import static org.jboss.hal.ui.filter.StorageAccessTypeMultiSelect.storageAccessTypeMultiSelect;
 import static org.jboss.hal.ui.filter.TypesMultiSelect.typesFilterMultiSelect;
 import static org.jboss.hal.ui.resource.ResourceManager.State.EDIT;
@@ -114,7 +114,7 @@ class ResourceToolbar implements IsElement<HTMLElement> {
 
         toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent = toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(nameFilterTextInputGroup(filter)))
+                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(typesFilterMultiSelect(filter)))
                                 .addItem(toolbarItem().add(deReDeExMultiSelect(filter)))

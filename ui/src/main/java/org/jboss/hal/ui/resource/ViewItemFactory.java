@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.jboss.elemento.Id;
 import org.jboss.elemento.logger.Logger;
-import org.jboss.hal.core.LabelBuilder;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.AddressTemplate;
@@ -37,6 +36,7 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.wrapHtmlContainer;
+import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
@@ -106,7 +106,6 @@ class ViewItemFactory {
 
     private static DescriptionListTerm label(Metadata metadata, ResourceAttribute ra) {
         DescriptionListTerm term;
-        LabelBuilder labelBuilder = new LabelBuilder();
         if (ra.description.nested()) {
             // <unstable>
             // If the internal DOM of DescriptionListTerm changes, this will no longer work
@@ -115,8 +114,8 @@ class ViewItemFactory {
             // So we set up the internals of DescriptionListTerm manually.
             AttributeDescription parentDescription = ra.description.parent();
             AttributeDescription nestedDescription = ra.description;
-            String parentLabel = labelBuilder.label(parentDescription.name());
-            String nestedLabel = labelBuilder.label(ra.name);
+            String parentLabel = labelBuilder(parentDescription.name());
+            String nestedLabel = labelBuilder(ra.name);
             term = descriptionListTerm(parentLabel)
                     .css(halComponent(resource, HalClasses.nestedLabel))
                     .help(attributeDescriptionPopover(parentLabel, parentDescription, all));
@@ -135,7 +134,7 @@ class ViewItemFactory {
                     .add(nestedTextElement);
             // </unstable>
         } else {
-            String label = labelBuilder.label(ra.name);
+            String label = labelBuilder(ra.name);
             term = descriptionListTerm(label)
                     .help(attributeDescriptionPopover(label, ra.description, all));
 

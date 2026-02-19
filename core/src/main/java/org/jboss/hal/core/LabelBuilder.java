@@ -30,11 +30,19 @@ public class LabelBuilder {
     // ------------------------------------------------------ factory
 
     public static String labelBuilder(String name) {
-        return new LabelBuilder().label(name);
+        return new LabelBuilder(false).label(name);
     }
 
     public static String labelBuilder(List<String> names, String conjunction) {
-        return new LabelBuilder().enumeration(names, conjunction);
+        return new LabelBuilder(false).enumeration(names, conjunction);
+    }
+
+    public static String labelBuilderAllWords(String name) {
+        return new LabelBuilder(true).label(name);
+    }
+
+    public static String labelBuilderAllWords(List<String> names, String conjunction) {
+        return new LabelBuilder(true).enumeration(names, conjunction);
     }
 
     // ------------------------------------------------------ instance
@@ -115,6 +123,12 @@ public class LabelBuilder {
         SPECIALS.put("wsdl", "WSDL");
     }
 
+    private final boolean capitalizeAllWords;
+
+    LabelBuilder(boolean capitalizeAllWords) {
+        this.capitalizeAllWords = capitalizeAllWords;
+    }
+
     public String label(String name) {
         if (name.contains(".")) {
             String[] parts = name.split("\\.");
@@ -178,7 +192,7 @@ public class LabelBuilder {
         for (int i = 0; i < buffer.length; i++) {
             char ch = buffer[i];
             if (Character.isWhitespace(ch)) {
-                capitalizeNext = true;
+                capitalizeNext = capitalizeAllWords;
             } else if (capitalizeNext) {
                 buffer[i] = Character.toUpperCase(ch);
                 capitalizeNext = false;

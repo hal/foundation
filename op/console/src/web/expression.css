@@ -14,6 +14,14 @@
  *  limitations under the License.
  */
 
+:root {
+    --hal-t-expression--meta-color: var(--pf-t--global--color--status--info--200);
+}
+
+:root:where(.pf-v6-theme-dark) {
+    --hal-t-expression--meta-color: var(--pf-t--global--color--status--warning--200);
+}
+
 .hal-c-expression {
 
     .hal-c-expression__start {
@@ -24,7 +32,7 @@
     .hal-c-expression__curly-braces-start,
     .hal-c-expression__curly-braces-end,
     .hal-c-expression__colon {
-        color: var(--pf-t--global--color--status--info--200);
+        color: var(--hal-t-expression--meta-color);
     }
 
     .hal-c-expression__dollar::after {

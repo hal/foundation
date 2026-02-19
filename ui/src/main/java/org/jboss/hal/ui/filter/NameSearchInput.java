@@ -24,25 +24,26 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
+import static org.patternfly.icon.IconSets.fas.search;
 
-public class NameTextInputGroup<T> implements IsElement<HTMLElement> {
+public class NameSearchInput<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    public static <T> NameTextInputGroup<T> nameFilterTextInputGroup(Filter<T> filter) {
-        return new NameTextInputGroup<>(filter, "Filter by name");
+    public static <T> NameSearchInput<T> nameSearchInput(Filter<T> filter) {
+        return new NameSearchInput<>(filter, "Filter by name");
     }
 
-    public static <T> NameTextInputGroup<T> nameFilterTextInputGroup(Filter<T> filter, String placeholder) {
-        return new NameTextInputGroup<>(filter, placeholder);
+    public static <T> NameSearchInput<T> nameSearchInput(Filter<T> filter, String placeholder) {
+        return new NameSearchInput<>(filter, placeholder);
     }
 
     // ------------------------------------------------------ instance
 
     private final SearchInput searchInput;
 
-    NameTextInputGroup(Filter<T> filter, String placeholder) {
-        searchInput = searchInput(Id.unique()).placeholder(placeholder)
+    NameSearchInput(Filter<T> filter, String placeholder) {
+        searchInput = searchInput(Id.unique()).placeholder(placeholder).icon(search())
                 .onKeyup((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value))
                 .onClear((event, textInputGroup) -> filter.reset(NameAttribute.NAME));
         searchInput.input().apply(input -> input.autocomplete = "off");

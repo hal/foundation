@@ -33,7 +33,6 @@ import org.patternfly.layout.gallery.GalleryItem;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.patternfly.component.breadcrumb.Breadcrumb.breadcrumb;
 import static org.patternfly.component.breadcrumb.BreadcrumbItem.breadcrumbItem;

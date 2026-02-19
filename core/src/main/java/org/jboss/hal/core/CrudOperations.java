@@ -31,6 +31,7 @@ import org.jboss.hal.meta.StatementContextResolver;
 
 import elemental2.promise.Promise;
 
+import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
@@ -130,7 +131,7 @@ public class CrudOperations {
     private String typeName(AddressTemplate template) {
         AddressTemplate resolvedTemplate = new StatementContextResolver(statementContext).resolve(template);
         String type = resolvedTemplate.last().key;
-        String failSafeType = type == null ? "Management model" : new LabelBuilder().label(type);
+        String failSafeType = type == null ? "Management model" : labelBuilder(type);
         String name = resolvedTemplate.last().value;
         return name != null ? failSafeType + " " + name : failSafeType;
     }

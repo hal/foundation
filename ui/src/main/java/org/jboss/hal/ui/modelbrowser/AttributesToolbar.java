@@ -24,6 +24,7 @@ import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
 import org.jboss.hal.ui.filter.FilterLabels;
+import org.jboss.hal.ui.filter.NameSearchInput;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
@@ -31,7 +32,6 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
-import static org.jboss.hal.ui.filter.NameTextInputGroup.nameFilterTextInputGroup;
 import static org.jboss.hal.ui.filter.ReDeExMultiSelect.reDeExMultiSelect;
 import static org.jboss.hal.ui.filter.StorageAccessTypeMultiSelect.storageAccessTypeMultiSelect;
 import static org.jboss.hal.ui.filter.TypesMultiSelect.typesFilterMultiSelect;
@@ -63,7 +63,7 @@ class AttributesToolbar implements IsElement<HTMLElement> {
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(nameFilterTextInputGroup(filter)))
+                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(typesFilterMultiSelect(filter)))
                                 .addItem(toolbarItem().add(reDeExMultiSelect(filter)))

@@ -15,17 +15,18 @@
  */
 package org.jboss.hal.ui.resource;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.jboss.elemento.ElementClassListMethods;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
+import org.patternfly.component.AddItemHandler;
+import org.patternfly.component.AurHandler;
 import org.patternfly.component.HasItems;
+import org.patternfly.component.RemoveItemHandler;
+import org.patternfly.component.UpdateItemHandler;
 import org.patternfly.component.list.DescriptionList;
 
 import elemental2.dom.HTMLElement;
@@ -52,14 +53,12 @@ class ResourceView implements
         ElementClassListMethods<HTMLElement, ResourceView> {
 
     private final DescriptionList dl;
-    private final List<BiConsumer<ResourceView, ViewItem>> onAdd;
-    private final List<BiConsumer<ResourceView, ViewItem>> onRemove;
+    private final AurHandler<ResourceView, ViewItem> aur;
     private final Map<String, ViewItem> items;
 
     ResourceView() {
         this.items = new LinkedHashMap<>();
-        this.onAdd = new ArrayList<>();
-        this.onRemove = new ArrayList<>();
+        this.aur = new AurHandler<>(this);
         this.dl = descriptionList().css(halComponent(resource, view))
                 .orientation(breakpoints(
                         sm, vertical,
@@ -79,13 +78,16 @@ class ResourceView implements
         return this;
     }
 
+    // ------------------------------------------------------ add
+
     @Override
     public ResourceView add(ViewItem item) {
         items.put(item.identifier(), item);
         dl.addItem(item.descriptionListGroup);
-        onAdd.forEach(bc -> bc.accept(this, item));
-        return this;
+        return aur.added(item);
     }
+
+    // ------------------------------------------------------ api
 
     @Override
     public Iterator<ViewItem> iterator() {
@@ -113,32 +115,45 @@ class ResourceView implements
     }
 
     @Override
+    public void updateItem(ViewItem item) {
+        replaceItemElement(item, (oldItem, newItem) -> {
+            items.put(newItem.identifier(), newItem);
+            aur.updated(oldItem, newItem);
+        });
+    }
+
+    @Override
     public void removeItem(String identifier) {
         ViewItem item = items.remove(identifier);
         failSafeRemoveFromParent(item);
-        if (item != null) {
-            onRemove.forEach(bc -> bc.accept(this, item));
-        }
+        aur.removed(item);
     }
 
     @Override
     public void clear() {
         dl.clear();
-        items.values().forEach(item -> onRemove.forEach(bc -> bc.accept(this, item)));
-        items.clear();
+        Iterator<ViewItem> iterator = items.values().iterator();
+        while (iterator.hasNext()) {
+            ViewItem item = iterator.next();
+            iterator.remove();
+            aur.removed(item);
+        }
     }
 
     // ------------------------------------------------------ events
 
     @Override
-    public ResourceView onAdd(BiConsumer<ResourceView, ViewItem> onAdd) {
-        this.onAdd.add(onAdd);
-        return this;
+    public ResourceView onAdd(AddItemHandler<ResourceView, ViewItem> onAdd) {
+        return aur.onAdd(onAdd);
     }
 
     @Override
-    public ResourceView onRemove(BiConsumer<ResourceView, ViewItem> onRemove) {
-        this.onRemove.add(onRemove);
-        return this;
+    public ResourceView onUpdate(UpdateItemHandler<ResourceView, ViewItem> onUpdate) {
+        return aur.onUpdate(onUpdate);
+    }
+
+    @Override
+    public ResourceView onRemove(RemoveItemHandler<ResourceView, ViewItem> onRemove) {
+        return aur.onRemove(onRemove);
     }
 }

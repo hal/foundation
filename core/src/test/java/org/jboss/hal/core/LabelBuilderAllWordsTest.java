@@ -22,13 +22,13 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LabelBuilderTest {
+class LabelBuilderAllWordsTest {
 
     private LabelBuilder labelBuilder;
 
     @BeforeEach
     void beforeAll() {
-        labelBuilder = new LabelBuilder();
+        labelBuilder = new LabelBuilder(true);
     }
 
     @Test

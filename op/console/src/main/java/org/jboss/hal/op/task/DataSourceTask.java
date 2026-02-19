@@ -18,12 +18,10 @@ package org.jboss.hal.op.task;
 import jakarta.enterprise.context.Dependent;
 
 import org.jboss.hal.task.Task;
-import org.patternfly.component.page.PageGroup;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.p;
 import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.content.Content.content;

@@ -27,6 +27,7 @@ import org.patternfly.icon.IconSets;
 
 import elemental2.dom.HTMLElement;
 
+import static org.patternfly.component.SelectionMode.single;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
@@ -63,6 +64,7 @@ class EndpointTable implements IsElement<HTMLElement> {
         this.update = update;
         this.delete = delete;
         table = table()
+                .selectionMode(single)
                 .addHead(thead()
                         .addRow(tr("endpoint-head")
                                 .addItem(th().text("Name"))
@@ -78,7 +80,7 @@ class EndpointTable implements IsElement<HTMLElement> {
     }
 
     EndpointTable onSelect(SelectHandler<Tr> handler) {
-        table.onSelect(handler);
+        table.onSingleSelect(handler);
         return this;
     }
 

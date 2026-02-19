@@ -17,7 +17,6 @@ package org.jboss.hal.ui.resource;
 
 import org.jboss.elemento.Elements;
 import org.jboss.elemento.logger.Logger;
-import org.jboss.hal.core.LabelBuilder;
 import org.jboss.hal.dmr.ModelDescriptionConstants;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
@@ -38,6 +37,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
@@ -196,15 +196,14 @@ class FormItemFactory {
 
     private static FormGroupLabel label(String identifier, Metadata metadata, ResourceAttribute ra) {
         FormGroupLabel formGroupLabel;
-        LabelBuilder labelBuilder = new LabelBuilder();
         if (ra.description != null) {
             if (ra.description.nested()) {
                 // <unstable>
                 // If the internal DOM of FormGroupLabel changes, this will no longer work
                 AttributeDescription parentDescription = ra.description.parent();
                 AttributeDescription nestedDescription = ra.description;
-                String parentLabel = labelBuilder.label(parentDescription.name());
-                String nestedLabel = labelBuilder.label(ra.name);
+                String parentLabel = labelBuilder(parentDescription.name());
+                String nestedLabel = labelBuilder(ra.name);
                 formGroupLabel = formGroupLabel(nestedLabel)
                         .css(halComponent(resource, HalClasses.nestedLabel))
                         .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, nestedDescription, all));
@@ -232,7 +231,7 @@ class FormItemFactory {
                         .appendToBody();
                 // </unstable>
             } else {
-                String label = labelBuilder.label(ra.name);
+                String label = labelBuilder(ra.name);
                 formGroupLabel = formGroupLabel(label)
                         .help(label + " description", attributeDescriptionPopover(label, ra.description, all));
 
@@ -250,7 +249,7 @@ class FormItemFactory {
                 formGroupLabel.classList().add(halModifier(deprecated));
             }
         } else {
-            formGroupLabel = formGroupLabel(labelBuilder.label(ra.name));
+            formGroupLabel = formGroupLabel(labelBuilder(ra.name));
         }
         return formGroupLabel;
     }

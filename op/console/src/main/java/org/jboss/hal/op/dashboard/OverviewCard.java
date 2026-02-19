@@ -18,7 +18,6 @@ package org.jboss.hal.op.dashboard;
 import org.jboss.elemento.Attachable;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
-import org.jboss.hal.core.LabelBuilder;
 import org.jboss.hal.dmr.Composite;
 import org.jboss.hal.dmr.CompositeResult;
 import org.jboss.hal.dmr.ModelNode;
@@ -43,6 +42,7 @@ import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.flow.Flow.parallel;
+import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
@@ -168,12 +168,12 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(dlg(rootAttributes, rootNode, "product-version"))
                         .addItem(dlg(rootAttributes, rootNode, "name"))
                         .addItem(descriptionListGroup("console-version")
-                                .addTerm(descriptionListTerm(new LabelBuilder().label("console-version")))
+                                .addTerm(descriptionListTerm(labelBuilder("console-version")))
                                 .addDescription(descriptionListDescription(environment.applicationVersion().toString())))
                         .addItem(dlg(envAttributes, "stability", dld ->
                                 dld.add(stabilityLabel(environment.serverStability()))))
                         .addItem(descriptionListGroup("operation-mode")
-                                .addTerm(descriptionListTerm(new LabelBuilder().label("operation-mode")))
+                                .addTerm(descriptionListTerm(labelBuilder("operation-mode")))
                                 .addDescription(descriptionListDescription(environment.operationMode().name())))
                         .addItem(configFileDlg(envAttributes, envNode))
                         .addItem(dlg(runtimeAttributes, "uptime", arrowUp(), dld -> {
@@ -229,7 +229,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
         } else {
             String domainConfig = filename(envNode.get("domain-config-file").asString());
             String hostConfig = filename(envNode.get("host-config-file").asString());
-            String label = new LabelBuilder().label("config-file");
+            String label = labelBuilder("config-file");
             return descriptionListGroup("config-file")
                     .addTerm(descriptionListTerm(label).icon(cog())
                             .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)

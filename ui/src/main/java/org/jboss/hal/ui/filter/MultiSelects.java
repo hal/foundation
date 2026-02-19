@@ -24,9 +24,9 @@ import org.patternfly.filter.FilterAttribute;
 
 import static java.util.stream.Collectors.toList;
 
-class MultiSelects {
+public class MultiSelects {
 
-    static <T> void setBooleanFilter(Filter<T> filter, String filterAttribute, List<MenuItem> menuItems, String origin) {
+    public static <T> void setBooleanFilter(Filter<T> filter, String filterAttribute, List<MenuItem> menuItems, String origin) {
         String prefix = filterAttribute + "-";
         List<MenuItem> selected = menuItems.stream()
                 .filter(menuItem -> menuItem.identifier().startsWith(prefix))
@@ -41,7 +41,7 @@ class MultiSelects {
         }
     }
 
-    static <T, V> void collectIdentifiers(List<String> identifiers, Filter<T> filter, String filterAttribute,
+    public static <T, V> void collectIdentifiers(List<String> identifiers, Filter<T> filter, String filterAttribute,
             Function<V, String> valueToIdentifier) {
         if (filter.defined(filterAttribute)) {
             FilterAttribute<T, V> value = filter.get(filterAttribute);

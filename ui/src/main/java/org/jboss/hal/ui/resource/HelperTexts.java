@@ -15,11 +15,11 @@
  */
 package org.jboss.hal.ui.resource;
 
-import org.jboss.hal.core.LabelBuilder;
 import org.jboss.hal.dmr.ModelType;
 import org.patternfly.component.help.HelperText;
 
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.resources.HalClasses.curlyBraces;
 import static org.jboss.hal.resources.HalClasses.defaultValue;
 import static org.jboss.hal.resources.HalClasses.dollar;
@@ -44,7 +44,7 @@ class HelperTexts {
     }
 
     static HelperText required(ResourceAttribute ra) {
-        String label = new LabelBuilder().label(ra.name);
+        String label = labelBuilder(ra.name);
         return helperText(label + " is a required attribute.", error);
     }
 

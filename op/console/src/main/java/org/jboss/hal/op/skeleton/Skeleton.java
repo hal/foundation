@@ -16,7 +16,6 @@
 package org.jboss.hal.op.skeleton;
 
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
-import org.jboss.elemento.By;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.env.Environment;
@@ -37,7 +36,6 @@ import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
 import static org.jboss.hal.op.notification.NotificationElements.notificationElements;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
-import static org.patternfly.component.backtotop.BackToTop.backToTop;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -106,8 +104,7 @@ public class Skeleton implements IsElement<HTMLElement> {
                         .addContent(mastheadContent()
                                 .addToolbar(toolbar)))
                 .addNotificationDrawer(notificationElements.drawer())
-                .addMain(pageMain(Ids.MAIN_ID).fill())
-                .add(backToTop().scrollableSelector(By.id(Ids.MAIN_ID)));
+                .addMain(pageMain(Ids.MAIN_ID).fill());
         page.wire(notificationElements.badge(), notificationElements.drawer());
 
         if (environment.highlightStability()) {

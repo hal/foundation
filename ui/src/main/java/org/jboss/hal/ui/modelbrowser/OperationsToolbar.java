@@ -24,6 +24,7 @@ import org.jboss.hal.model.filter.GlobalOperationsAttribute;
 import org.jboss.hal.model.filter.ParametersAttribute;
 import org.jboss.hal.model.filter.ReturnValueAttribute;
 import org.jboss.hal.ui.filter.FilterLabels;
+import org.jboss.hal.ui.filter.NameSearchInput;
 import org.patternfly.component.switch_.Switch;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.core.ObservableValue;
@@ -34,7 +35,6 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.filter.DeprecatedMultiSelect.deprecatedMultiSelect;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
-import static org.jboss.hal.ui.filter.NameTextInputGroup.nameFilterTextInputGroup;
 import static org.jboss.hal.ui.filter.ParametersReturnValueMultiSelect.parametersReturnValueMultiSelect;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.switch_.Switch.switch_;
@@ -68,7 +68,7 @@ class OperationsToolbar implements IsElement<HTMLElement> {
         boolean showGlobalOperations = uic().settings().get(Settings.Key.SHOW_GLOBAL_OPERATIONS).asBoolean();
         toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(nameFilterTextInputGroup(filter)))
+                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(parametersReturnValueMultiSelect(filter)))
                                 .addItem(toolbarItem().add(deprecatedMultiSelect(filter, "Status"))))

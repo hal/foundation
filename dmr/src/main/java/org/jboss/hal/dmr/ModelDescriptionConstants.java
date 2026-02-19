@@ -1092,6 +1092,7 @@ public interface ModelDescriptionConstants {
     String WELD = "weld";
     String WHERE = "where";
     String WHOAMI_OPERATION = "whoami";
+    String WILDFLY_STATISTICS_ENABLED = "wildfly.statistics-enabled";
     String WM_SECURITY_MAPPING_GROUPS = "wm-security-mapping-groups";
     String WM_SECURITY_MAPPING_USERS = "wm-security-mapping-users";
     String WORK_DIR = "work-dir";

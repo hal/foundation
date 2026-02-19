@@ -27,6 +27,7 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.model.filter.NameAttribute;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
+import org.jboss.hal.ui.filter.NameSearchInput;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -63,7 +64,6 @@ import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
-import static org.jboss.hal.ui.filter.NameTextInputGroup.nameFilterTextInputGroup;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserEngine.parseChildren;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.FOLDER;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.SINGLETON_FOLDER;
@@ -148,7 +148,7 @@ class ResourceList implements IsElement<HTMLElement> {
                 .addContent(toolbarContent()
                         .addItem(toolbarItem(searchFilter)
                                 .style(spacer.name, filterGroupSpacer.asVar()) // override spacing
-                                .add(nameFilterTextInputGroup(filter)))
+                                .add(NameSearchInput.nameSearchInput(filter)))
                         .addItem(toolbarItem()
                                 .style("align-self", "center")
                                 .add(itemCount(visible, total, "resource", "resources")))
