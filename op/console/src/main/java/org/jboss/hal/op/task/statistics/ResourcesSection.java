@@ -573,6 +573,14 @@ class ResourcesSection implements IsElement<HTMLElement> {
         String identifier = template == null
                 ? Id.build("new-expression")
                 : Id.build(template.toString(), "new-expression");
-        return menuItem(identifier, "New expression");
+        return menuItem(identifier, "New expression")
+                .onClick((e, c) -> {
+                    String newExpression = ""; // TODO Open modal dialog to enter new expression
+                    if (template == null) {
+                        // bulkUpdate(null, newExpression);
+                    } else {
+                        // singleUpdate(template, null, newExpression);
+                    }
+                });
     }
 }

@@ -7,6 +7,16 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Statistics enabled task
+
+### Upgrades
+
+- Bump JBoss Parent to 52
+- Bump to Elemento 2.4.9
+- Bump to PatternFly Java 0.5.0
+
 ## [0.0.13] - 2026-02-05
 
 ### Changed
