@@ -145,7 +145,12 @@ public class StatisticsTask implements Task {
                             if (template.fullyQualified() && statisticsEnabled.isDefined()) {
                                 // Already add expressions and resources to the tables.
                                 // Update the dropdowns later if we know whether the attributes support expressions.
-                                addResource(new ResourceData(template, statisticsEnabled));
+                                ResourceData rd = new ResourceData(template, statisticsEnabled);
+                                for (String expression : rd.expressions()) {
+                                    addExpression(expression, false);
+                                }
+                                resources.put(rd.template, rd);
+                                resourcesSection.addResource(rd);
                             }
                         })
                 .then(context -> {
@@ -181,20 +186,13 @@ public class StatisticsTask implements Task {
                 });
     }
 
-    void addExpression(String expression) {
+    void addExpression(String expression, boolean updateDropdowns) {
         if (!expressions.contains(expression)) {
             expressions.add(expression);
             expressionsSection.addExpression(expression);
+            if (updateDropdowns) {
+                resourcesSection.updateExpressionDropdowns(expression);
+            }
         }
-    }
-
-    void addResource(ResourceData rd) {
-        resources.put(rd.template, rd);
-        rd.expressions().forEach(this::addExpression);
-        resourcesSection.addResource(rd);
-    }
-
-    void updateExpressionDropdowns(String expression) {
-        resourcesSection.updateExpressionDropdowns(expression);
     }
 }

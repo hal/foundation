@@ -56,6 +56,7 @@ import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
+import static org.jboss.hal.dmr.Expression.extractExpressions;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
@@ -575,6 +576,12 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 : Id.build(rd.template.toString(), "new-expression");
         return menuItem(identifier, "New expression").onClick((e, c) ->
                 newExpressionModal(newExpression -> {
+                    String[] expressions = extractExpressions(newExpression);
+                    if (expressions != null) {
+                        for (String expression : expressions) {
+                            task.addExpression(expression, true);
+                        }
+                    }
                     if (rd == null) {
                         bulkUpdate(null, newExpression);
                     } else {

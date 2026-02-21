@@ -145,8 +145,7 @@ class ExpressionsSection implements IsElement<HTMLElement> {
     private void newExpression() {
         addResourceModal(AddressTemplate.of("system-property=*"), null, false).then(modelNode -> {
             String expression = modelNode.get(NAME).asString();
-            task.addExpression(expression);
-            task.updateExpressionDropdowns(expression);
+            task.addExpression(expression, true);
             return null;
         });
     }

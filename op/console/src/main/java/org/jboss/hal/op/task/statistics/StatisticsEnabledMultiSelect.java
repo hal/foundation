@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.filter.MultiSelects;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MultiSelect;
