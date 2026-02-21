@@ -33,6 +33,8 @@ As an example many resources have defined a `statistics-enabled` task. There's a
 in one place. The task lists all resources that have defined a `statistics-enabled` attribute. You can select, filter and 
 modify the `statistics-enabled` attributes and also assign existing or new expressions (if supported by the resource). 
 
+https://github.com/user-attachments/assets/abe6a010-89db-403b-a2fa-25a57a9d74c1
+
 ## Model browser
 
 ![model-browser.png](model-browser.png)
