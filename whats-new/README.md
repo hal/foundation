@@ -29,6 +29,12 @@ They typically combine multiple steps and operations that involves configuring d
 
 ![tasks.png](tasks.png)
 
+As an example many resources have defined a `statistics-enabled` task. There's a task that let you manage all these attributes 
+in one place. The task lists all resources that have defined a `statistics-enabled` attribute. You can select, filter and 
+modify the `statistics-enabled` attributes and also assign existing or new expressions (if supported by the resource). 
+
+https://github.com/user-attachments/assets/abe6a010-89db-403b-a2fa-25a57a9d74c1
+
 ## Model browser
 
 ![model-browser.png](model-browser.png)
@@ -88,7 +94,6 @@ Some classes expose a JavaScript API. You have to call the methods using the ful
 See https://hal-console.gitbook.io/elemento/logger#controlling-log-levels-from-javascript
 
 ## Additional resources
-
 
 - Demo of the next-gen management console at the WildFly Community Call on 12/2025: https://youtu.be/X43dkm1Zdm4?si=05iSFy7PiekrVK1Z
 - Slides of the WildFly Community Call: [wildfly-community-call.pdf](wildfly-community-call.pdf)
