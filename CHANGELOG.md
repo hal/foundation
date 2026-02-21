@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-02-21
+
 ### Added
 
 - Statistics enabled task
@@ -167,7 +169,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.0.13...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/hal/foundation/compare/v0.0.13...v0.1.0
 [0.0.13]: https://github.com/hal/foundation/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/hal/foundation/compare/v0.0.11...v0.0.12
 [0.0.11]: https://github.com/hal/foundation/compare/v0.0.10...v0.0.11
