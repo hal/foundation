@@ -395,7 +395,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                     } else {
                         String title = allowed.size() + " / " + selected.size() + " resources updated";
                         String description = allowed.size() + " resources have been updated. " +
-                                selected.size() + " resources have not been updated because they do not support expressions.";
+                                (selected.size() - allowed.size()) + " resources have not been updated because they do not support expressions.";
                         notifications.send(warning(title, description));
                     }
                     for (ResourceData rd : allowed) {
