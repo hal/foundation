@@ -126,34 +126,27 @@ class ExpressionsSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ api
 
-    void clear() {
-        expressionsTbody.clear();
-    }
-
     void addExpression(String expression) {
-        if (!task.distinctExpressions.contains(expression)) {
-            task.distinctExpressions.add(expression);
-            String expressionId = Id.build(expression);
-            Td spTd = td(SYSTEM_PROPERTY_COLUMN);
-            Td faTd = td(FIRST_ACTION_COLUMN).action().wrap(fitContent);
-            Td saTd = td(SECOND_ACTION_COLUMN).action().wrap(fitContent);
-            expressionsTbody.addItem(tr(expressionId)
-                    .data(DATA_ORDER, expression)
-                    .addItem(td(EXPRESSION_COLUMN).text(expression))
-                    .addItem(spTd)
-                    .addItem(faTd)
-                    .addItem(saTd)
-                    .run(tr -> updateExpressionRow(expression, spTd, faTd, saTd)));
-        }
+        String expressionId = Id.build(expression);
+        Td spTd = td(SYSTEM_PROPERTY_COLUMN);
+        Td faTd = td(FIRST_ACTION_COLUMN).action().wrap(fitContent);
+        Td saTd = td(SECOND_ACTION_COLUMN).action().wrap(fitContent);
+        expressionsTbody.addItem(tr(expressionId)
+                .data(DATA_ORDER, expression)
+                .addItem(td(EXPRESSION_COLUMN).text(expression))
+                .addItem(spTd)
+                .addItem(faTd)
+                .addItem(saTd)
+                .run(tr -> updateExpressionRow(expression, spTd, faTd, saTd)));
     }
 
     // ------------------------------------------------------ internal
 
     private void newExpression() {
         addResourceModal(AddressTemplate.of("system-property=*"), null, false).then(modelNode -> {
-            String name = modelNode.get(NAME).asString();
-            addExpression(name);
-            task.updateExpressionMenus(name);
+            String expression = modelNode.get(NAME).asString();
+            task.addExpression(expression);
+            task.updateExpressionDropdowns(expression);
             return null;
         });
     }

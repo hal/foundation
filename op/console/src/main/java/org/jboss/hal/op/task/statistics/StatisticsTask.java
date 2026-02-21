@@ -16,12 +16,17 @@
 package org.jboss.hal.op.task.statistics;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.flow.Flow;
+import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.core.Notifications;
@@ -30,6 +35,9 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.Property;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.meta.MetadataRepository;
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.tree.ModelTree;
 import org.jboss.hal.meta.tree.TraverseContinuation;
 import org.jboss.hal.meta.tree.TraverseOperation;
@@ -42,12 +50,11 @@ import elemental2.promise.Promise;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
-import static org.jboss.hal.dmr.Expression.extractExpressions;
+import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
-import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 import static org.jboss.hal.op.task.statistics.ExpressionsSection.expressionsSection;
 import static org.jboss.hal.op.task.statistics.ResourcesSection.resourcesSection;
 import static org.patternfly.component.content.Content.content;
@@ -61,19 +68,25 @@ public class StatisticsTask implements Task {
     private static final Logger logger = Logger.getLogger(StatisticsTask.class.getName());
     public static final String TASK_ID = StatisticsTask.class.getName();
 
-    final Set<String> distinctExpressions;
-    final Set<String> distinctResources;
+    final Set<String> expressions;
+    final Map<AddressTemplate, ResourceData> resources;
     private final Dispatcher dispatcher;
+    private final MetadataRepository metadataRepository;
     private final ModelTree modelTree;
     private final ExpressionsSection expressionsSection;
     private final ResourcesSection resourcesSection;
 
     @Inject
-    public StatisticsTask(Dispatcher dispatcher, CrudOperations crud, ModelTree modelTree, Notifications notifications) {
+    public StatisticsTask(Dispatcher dispatcher,
+            CrudOperations crud,
+            MetadataRepository metadataRepository,
+            ModelTree modelTree,
+            Notifications notifications) {
         this.dispatcher = dispatcher;
+        this.metadataRepository = metadataRepository;
         this.modelTree = modelTree;
-        this.distinctExpressions = new HashSet<>();
-        this.distinctResources = new HashSet<>();
+        this.resources = new HashMap<>();
+        this.expressions = new HashSet<>();
         this.expressionsSection = expressionsSection(this, dispatcher, crud);
         this.resourcesSection = resourcesSection(this, dispatcher, notifications);
     }
@@ -107,7 +120,6 @@ public class StatisticsTask implements Task {
 
     @Override
     public void run() {
-        clear();
         TraverseOperation<ModelNode> operation = (template, context) -> {
             if (template.fullyQualified()) {
                 return dispatcher.execute(new Operation.Builder(template.resolve(context), READ_RESOURCE_OPERATION)
@@ -131,35 +143,58 @@ public class StatisticsTask implements Task {
                         EnumSet.noneOf(TraverseType.class), operation,
                         (template, statisticsEnabled, context) -> {
                             if (template.fullyQualified() && statisticsEnabled.isDefined()) {
-                                if (statisticsEnabled.getType() == EXPRESSION) {
-                                    String[] expressions = extractExpressions(statisticsEnabled.asString());
-                                    if (expressions != null) {
-                                        for (String expression : expressions) {
-                                            expressionsSection.addExpression(expression);
-                                        }
-                                    }
-                                }
-                                resourcesSection.addResource(template, statisticsEnabled);
+                                // Already add expressions and resources to the tables.
+                                // Update the dropdowns later if we know whether the attributes support expressions.
+                                addResource(new ResourceData(template, statisticsEnabled));
                             }
                         })
                 .then(context -> {
-                    resourcesSection.count();
-                    // Now that we know all expressions, it's time to update the expression dropdowns
-                    for (String expression : distinctExpressions) {
-                        resourcesSection.updateExpressionMenus(expression);
-                    }
-                    return null;
+                    // We have collected all expressions and resources with a statistics-enabled attribute.
+                    // We can update the count and the bulk expression dropdown now.
+                    resourcesSection.count(resources.size());
+                    resourcesSection.updateBulkExpressionDropdown(expressions);
+
+                    // We don't know whether the attributes support expressions.
+                    // So let's find out by looking at the metadata.
+                    List<org.jboss.elemento.flow.Task<FlowContext>> tasks = resources.values().stream()
+                            .map(rd -> (org.jboss.elemento.flow.Task<FlowContext>) fc ->
+                                    metadataRepository.lookup(rd.template).then(md -> fc.resolve()))
+                            .collect(toList());
+                    return Flow.parallel(new FlowContext(), tasks)
+                            .then(__ -> {
+                                resources.values().forEach(rd -> {
+                                    Metadata metadata = metadataRepository.get(rd.template); // get is safe now
+                                    AttributeDescription description = metadata.resourceDescription().attributes()
+                                            .get(STATISTICS_ENABLED);
+                                    rd.expressionsAllowed = description.expressionAllowed();
+                                    if (rd.expressionsAllowed) {
+                                        // Now we can add dropdowns for those resources that support expressions.
+                                        resourcesSection.addExpressionDropdown(rd, expressions);
+                                    }
+                                });
+                                return null;
+                            })
+                            .catch_(error -> {
+                                // TODO Error handling
+                                return null;
+                            });
                 });
     }
 
-    void updateExpressionMenus(String expression) {
-        resourcesSection.updateExpressionMenus(expression);
+    void addExpression(String expression) {
+        if (!expressions.contains(expression)) {
+            expressions.add(expression);
+            expressionsSection.addExpression(expression);
+        }
     }
 
-    private void clear() {
-        distinctResources.clear();
-        distinctExpressions.clear();
-        expressionsSection.clear();
-        resourcesSection.clear();
+    void addResource(ResourceData rd) {
+        resources.put(rd.template, rd);
+        rd.expressions().forEach(this::addExpression);
+        resourcesSection.addResource(rd);
+    }
+
+    void updateExpressionDropdowns(String expression) {
+        resourcesSection.updateExpressionDropdowns(expression);
     }
 }

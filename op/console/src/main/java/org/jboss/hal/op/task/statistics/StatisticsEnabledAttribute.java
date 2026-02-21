@@ -15,25 +15,21 @@
  */
 package org.jboss.hal.op.task.statistics;
 
-import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 
-class StatisticsEnabledAttribute extends FilterAttribute<ModelNode, StatisticsEnabledValue> {
+class StatisticsEnabledAttribute extends FilterAttribute<ResourceData, StatisticsEnabledValue> {
 
     static final String NAME = STATISTICS_ENABLED + "-attribute";
 
     StatisticsEnabledAttribute() {
-        super(NAME, (modelNode, sea) -> {
-            ModelNode sen = modelNode.get(STATISTICS_ENABLED);
-            return switch (sea) {
-                case true_ -> sen.getType() == ModelType.BOOLEAN && sen.asBoolean();
-                case false_ -> sen.getType() == ModelType.BOOLEAN && !sen.asBoolean();
-                case expression -> sen.getType() == ModelType.EXPRESSION;
-                case noExpression -> sen.getType() != ModelType.EXPRESSION;
-            };
+        super(NAME, (rd, sev) -> switch (sev) {
+            case true_ -> rd.value.getType() == ModelType.BOOLEAN && rd.value.asBoolean();
+            case false_ -> rd.value.getType() == ModelType.BOOLEAN && !rd.value.asBoolean();
+            case expression -> rd.value.getType() == ModelType.EXPRESSION;
+            case noExpression -> rd.value.getType() != ModelType.EXPRESSION;
         });
     }
 }

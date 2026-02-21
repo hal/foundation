@@ -18,13 +18,13 @@ package org.jboss.hal.op.task.statistics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.core.Notification;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Composite;
-import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
@@ -52,15 +52,17 @@ import elemental2.dom.HTMLElement;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.isAttached;
-import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.core.Notification.error;
+import static org.jboss.hal.core.Notification.success;
+import static org.jboss.hal.core.Notification.warning;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WILDFLY_STATISTICS_ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
+import static org.jboss.hal.op.task.statistics.NewExpressionModal.newExpressionModal;
 import static org.jboss.hal.op.task.statistics.StatisticsEnabledMultiSelect.statisticsEnabledMultiSelect;
 import static org.jboss.hal.resources.HalClasses.filtered;
 import static org.jboss.hal.resources.HalClasses.halModifier;
@@ -120,21 +122,18 @@ class ResourcesSection implements IsElement<HTMLElement> {
 
     private static final String RESOURCE_COLUMN = "Resource";
     private static final String STATISTICS_ENABLED_COLUMN = "Statistics enabled";
-    private static final String EXPRESSION_ACTION_COLUMN = "Expression action";
     private static final String TRUE_ACTION_COLUMN = "True action";
     private static final String FALSE_ACTION_COLUMN = "False action";
-
-    private static final String RESOURCE = "resource";
-    private static final String TEMPLATE = "template";
+    private static final String EXPRESSION_DROPDOWN_COLUMN = "Expression dropdown";
+    private static final String EXPRESSION_DROPDOWN_DATA = "expressionDropdown";
+    private static final String RESOURCE_DATA = "resource-data";
 
     private final StatisticsTask task;
     private final Dispatcher dispatcher;
     private final Notifications notifications;
-    private final Filter<ModelNode> filter;
+    private final Filter<ResourceData> filter;
     private final ObservableValue<Integer> visible;
     private final ObservableValue<Integer> total;
-    private final Map<AddressTemplate, MenuList> expressionMenuLists;
-    private final Map<AddressTemplate, MenuList> nestedExpressionMenuLists;
     private final PageGroup pageGroup;
     private final Checkbox bulkSelectCheckbox;
     private final MenuToggle bulkSelectToggle;
@@ -147,6 +146,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     private final MenuList bulkNestedExpressionMenuList;
     private final Table resourcesTable;
     private final Tbody resourcesTBody;
+    private final Map<ResourceData, MenuList[]> expressionMenuLists;
     private EmptyState noResources;
 
     ResourcesSection(StatisticsTask task, Dispatcher dispatcher, Notifications notifications) {
@@ -154,14 +154,12 @@ class ResourcesSection implements IsElement<HTMLElement> {
         this.dispatcher = dispatcher;
         this.notifications = notifications;
 
-        this.filter = new Filter<ModelNode>(AND).onChange(this::onFilterChanged);
-        this.filter.add(new NameAttribute<>(modelNode -> modelNode.get(TEMPLATE).asString()));
+        this.filter = new Filter<ResourceData>(AND).onChange(this::onFilterChanged);
+        this.filter.add(new NameAttribute<>(rd -> rd.template.toString()));
         this.filter.add(new StatisticsEnabledAttribute());
 
         this.expressionMenuLists = new HashMap<>();
-        this.nestedExpressionMenuLists = new HashMap<>();
-        this.selectFilteredMenuItem = menuItem("select-filtered", "Select filtered")
-                .disabled()
+        this.selectFilteredMenuItem = menuItem("select-filtered", "Select filtered").disabled()
                 .onClick((e, c) -> selectFiltered());
         this.selectAllMenuItem = menuItem("select-all", "Select all")
                 .onClick((e, c) -> selectAll());
@@ -197,11 +195,12 @@ class ResourcesSection implements IsElement<HTMLElement> {
                         .add(content(p).editorial()
                                 .add("Resources with a ")
                                 .add(code(STATISTICS_ENABLED))
-                                .add(" attribute and its current value. Use the toolbar to filter the resources and " +
-                                        "change the value of the ")
+                                .add(" attribute and its current value. Use the toolbar to select and filter the resources. " +
+                                        "You can change the values of all selected resources using the buttons in the toolbar. " +
+                                        "Alternatively, you can also modify the attribute for each resource individually. " +
+                                        "If the ")
                                 .add(code(STATISTICS_ENABLED))
-                                .add(" attributes for the selected resources. Alternatively, you can also modify the " +
-                                        "attribute for each resource individually.")))
+                                .add(" attribute does not support expressions, the expression dropdown is omitted.")))
                 .addSection(pageSection().limitWidth()
                         .add(toolbar()
                                 .addContent(toolbarContent()
@@ -211,8 +210,10 @@ class ResourcesSection implements IsElement<HTMLElement> {
                                                         .addMenu(dropdownMenu()
                                                                 .addContent(menuContent()
                                                                         .addList(menuList()
-                                                                                .addItem(menuItem("select-none", "Select none")
-                                                                                        .onClick((e, c) -> selectNone()))
+                                                                                .addItem(menuItem("select-none",
+                                                                                        "Select none")
+                                                                                        .onClick(
+                                                                                                (e, c) -> selectNone()))
                                                                                 .addItem(selectFilteredMenuItem)
                                                                                 .addItem(selectAllMenuItem))))))
                                         .addGroup(toolbarGroup(filterGroup)
@@ -232,13 +233,15 @@ class ResourcesSection implements IsElement<HTMLElement> {
                                         .addRow(tr("resources-head")
                                                 .addItem(th().screenReader("Row select"))
                                                 .addItem(th("resource").width(width60).text(RESOURCE_COLUMN))
-                                                .addItem(th(STATISTICS_ENABLED).width(width40).text(STATISTICS_ENABLED_COLUMN))
+                                                .addItem(th(STATISTICS_ENABLED).width(width40)
+                                                        .text(STATISTICS_ENABLED_COLUMN))
                                                 .addItem(th("true-action")
                                                         .add(span().css(screenReader).text(TRUE_ACTION_COLUMN)))
                                                 .addItem(th("false-action")
                                                         .add(span().css(screenReader).text(FALSE_ACTION_COLUMN)))
-                                                .addItem(th("expression-action")
-                                                        .add(span().css(screenReader).text(EXPRESSION_ACTION_COLUMN)))))
+                                                .addItem(th("expression-dropdown")
+                                                        .add(span().css(screenReader)
+                                                                .text(EXPRESSION_DROPDOWN_COLUMN)))))
                                 .addBody(resourcesTBody)));
     }
 
@@ -249,52 +252,65 @@ class ResourcesSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ api
 
-    void clear() {
-        visible.set(0);
-        total.set(0);
-        bulkExpressionMenuList.clear();
-        bulkNestedExpressionMenuList.clear();
-        expressionMenuLists.clear();
-        nestedExpressionMenuLists.clear();
-        resourcesTBody.clear();
+    void addResource(ResourceData sed) {
+        resourcesTBody.addItem(resourceRow(sed));
     }
 
-    void count() {
-        visible.set(task.distinctResources.size());
-        total.set(task.distinctResources.size());
+    void count(int resources) {
+        visible.set(resources);
+        total.set(resources);
     }
 
-    void addResource(AddressTemplate template, ModelNode statisticsEnabled) {
-        if (!task.distinctResources.contains(template.toString())) {
-            task.distinctResources.add(template.toString());
-            resourcesTBody.addItem(resourceRow(template, statisticsEnabled));
+    void updateBulkExpressionDropdown(Set<String> expressions) {
+        for (String expression : expressions) {
+            if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
+                bulkExpressionMenuList.addItem(expressionItem(null, expression));
+                bulkNestedExpressionMenuList.addItem(nestedExpressionItem(null, expression));
+            }
         }
     }
 
-    void updateExpressionMenus(String expression) {
+    void addExpressionDropdown(ResourceData rd, Set<String> expressions) {
+        HTMLElement td = resourcesTBody.querySelector(By.data(EXPRESSION_DROPDOWN_DATA, rd.template.toString()));
+        if (td != null) {
+            MenuList expressionMenuList = menuList().ordered();
+            MenuList nestedExpressionMenuList = menuList().ordered();
+            for (String expression : expressions) {
+                if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
+                    expressionMenuList.addItem(expressionItem(rd, expression));
+                    nestedExpressionMenuList.addItem(nestedExpressionItem(rd, expression));
+                }
+            }
+            td.appendChild(expressionDropdown(rd, expressionMenuList,
+                    nestedExpressionMenuList).element());
+            expressionMenuLists.put(rd, new MenuList[]{expressionMenuList, nestedExpressionMenuList});
+        }
+    }
+
+    void updateExpressionDropdowns(String expression) {
         if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
             bulkExpressionMenuList.addItem(expressionItem(null, expression));
             bulkNestedExpressionMenuList.addItem(nestedExpressionItem(null, expression));
-            for (Map.Entry<AddressTemplate, MenuList> entry : expressionMenuLists.entrySet()) {
-                entry.getValue().addItem(expressionItem(entry.getKey(), expression));
-            }
-            for (Map.Entry<AddressTemplate, MenuList> entry : nestedExpressionMenuLists.entrySet()) {
-                entry.getValue().addItem(nestedExpressionItem(entry.getKey(), expression));
-            }
         }
+        expressionMenuLists.forEach((rd, menuLists) -> {
+            if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
+                menuLists[0].addItem(expressionItem(rd, expression));
+                menuLists[1].addItem(nestedExpressionItem(rd, expression));
+            }
+        });
     }
 
     // ------------------------------------------------------ filter
 
-    private void onFilterChanged(Filter<ModelNode> filter, String origin) {
+    private void onFilterChanged(Filter<ResourceData> filter, String origin) {
         int matchingItems;
         selectFilteredMenuItem.disabled(!filter.defined());
         if (filter.defined()) {
             matchingItems = 0;
             for (Tr row : resourcesTBody.items()) {
-                ModelNode modelNode = row.get(RESOURCE);
-                if (modelNode != null) {
-                    boolean match = filter.match(modelNode);
+                ResourceData rd = row.get(RESOURCE_DATA);
+                if (rd != null) {
+                    boolean match = filter.match(rd);
                     row.classList().toggle(halModifier(filtered), !match);
                     if (match) {
                         matchingItems++;
@@ -345,7 +361,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
             bulkSelectToggle.text("");
         } else {
             bulkSelectToggle.text(rows.size() + " selected");
-            if (rows.size() == task.distinctResources.size()) {
+            if (rows.size() == task.resources.size()) {
                 bulkSelectCheckbox.inputElement().checked(true);
                 bulkSelectCheckbox.inputElement().indeterminate(false);
             } else {
@@ -360,62 +376,63 @@ class ResourcesSection implements IsElement<HTMLElement> {
     // ------------------------------------------------------ (bulk) update
 
     private void bulkUpdate(Boolean value, String expression) {
-        List<Tr> selectedItems = resourcesTable.selectedItems();
-        List<AddressTemplate> templates = selectedItems.stream()
-                .map(item -> item.<AddressTemplate>get(TEMPLATE))
+        List<ResourceData> selected = resourcesTable.selectedItems().stream()
+                .map(tr -> tr.<ResourceData>get(RESOURCE_DATA))
                 .collect(toList());
-        List<Operation> updateOperations = templates.stream()
-                .map(template -> writeAttributeOperation(template, value, expression))
+        List<ResourceData> allowed = expression != null
+                ? selected.stream().filter(rd -> rd.expressionsAllowed).collect(toList())
+                : selected;
+        List<Operation> operations = allowed.stream()
+                .map(rd -> writeAttributeOperation(rd.template, value, expression))
                 .collect(toList());
-        dispatcher.execute(new Composite(updateOperations))
+        dispatcher.execute(new Composite(operations))
                 .then(__ -> {
                     resourcesTable.selectNone();
-                    notifications.send(Notification.success("Resources updated",
-                            updateOperations.size() + " resources have been successfully updated."));
-                    for (AddressTemplate template : templates) {
-                        readAndUpdateRow(template);
+                    if (selected.size() == allowed.size()) {
+                        String title = allowed.size() + " resources updated";
+                        String description = allowed.size() + " resources have been successfully updated.";
+                        notifications.send(success(title, description));
+                    } else {
+                        String title = allowed.size() + " / " + selected.size() + " resources updated";
+                        String description = allowed.size() + " resources have been updated. " +
+                                selected.size() + " resources have not been updated because they do not support expressions.";
+                        notifications.send(warning(title, description));
+                    }
+                    for (ResourceData rd : allowed) {
+                        readAndUpdateRow(rd);
                     }
                     return null;
                 })
                 .catch_(error -> {
                     notifications.send(error("Failed to update resources",
-                            "An error occurred while updating " + updateOperations.size() + " resources.")
+                            "An error occurred while updating " + operations.size() + " resources.")
                             .details(String.valueOf(error), true));
                     return null;
                 });
     }
 
-    private void singleUpdate(AddressTemplate template, Boolean value, String expression) {
-        dispatcher.execute(writeAttributeOperation(template, value, expression))
+    private void singleUpdate(ResourceData rd, Boolean value, String expression) {
+        dispatcher.execute(writeAttributeOperation(rd.template, value, expression))
                 .then(__ -> {
-                    notifications.send(Notification.success("Resources updated",
-                            template + " has been successfully updated."));
-                    readAndUpdateRow(template);
+                    notifications.send(success("Resources updated",
+                            rd.template + " has been successfully updated."));
+                    readAndUpdateRow(rd);
                     return null;
                 })
                 .catch_(error -> {
                     notifications.send(error("Failed to update resources",
-                            "An error occurred while updating " + template + ".")
+                            "An error occurred while updating " + rd.template + ".")
                             .details(String.valueOf(error), true));
                     return null;
                 });
     }
 
-    private void readAndUpdateRow(AddressTemplate template) {
-        dispatcher.execute(readAttributeOperation(template)).then(modelNode -> {
-            resourcesTBody.updateItem(resourceRow(template, modelNode));
-            for (String expression : task.distinctExpressions) {
-                if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
-                    MenuList expressionMenuList = expressionMenuLists.get(template);
-                    if (expressionMenuList != null) {
-                        expressionMenuList.addItem(expressionItem(template, expression));
-
-                    }
-                    MenuList nestedExpressionMenuList = nestedExpressionMenuLists.get(template);
-                    if (nestedExpressionMenuList != null) {
-                        nestedExpressionMenuList.addItem(nestedExpressionItem(template, expression));
-                    }
-                }
+    private void readAndUpdateRow(ResourceData rd) {
+        dispatcher.execute(readAttributeOperation(rd.template)).then(modelNode -> {
+            ResourceData copy = rd.copy(modelNode);
+            resourcesTBody.updateItem(resourceRow(copy));
+            if (copy.expressionsAllowed) {
+                addExpressionDropdown(copy, task.expressions);
             }
             return null;
         });
@@ -449,138 +466,120 @@ class ResourcesSection implements IsElement<HTMLElement> {
         }
     }
 
-    private Tr resourceRow(AddressTemplate template, ModelNode statisticsEnabled) {
-        ModelNode modelNode = new ModelNode();
-        modelNode.get(TEMPLATE).set(template.toString());
-        modelNode.get(STATISTICS_ENABLED).set(statisticsEnabled);
-
-        String templateId = Id.build(template.toString());
+    private Tr resourceRow(ResourceData rd) {
+        String templateId = Id.build(rd.template.toString());
         Td seTd = td(STATISTICS_ENABLED_COLUMN);
         Td taTd = td(TRUE_ACTION_COLUMN).action().wrap(fitContent);
         Td faTd = td(FALSE_ACTION_COLUMN).action().wrap(fitContent);
-        MenuList expressionList = menuList().ordered();
-        MenuList nestedExpressionList = menuList().ordered();
-        expressionMenuLists.put(template, expressionList);
-        nestedExpressionMenuLists.put(template, nestedExpressionList);
-
-        return tr(templateId)
-                .store(RESOURCE, modelNode)
-                .store(TEMPLATE, template)
-                .data(DATA_ORDER, template.toString())
+        Td edTd = td(EXPRESSION_DROPDOWN_COLUMN).actions().data(EXPRESSION_DROPDOWN_DATA, rd.template.toString());
+        Tr tr = tr(templateId)
+                .store(RESOURCE_DATA, rd)
+                .data(DATA_ORDER, rd.template.toString())
                 .addItem(checkboxTd())
-                .addItem(td(RESOURCE_COLUMN).text(template.toString()))
+                .addItem(td(RESOURCE_COLUMN).text(rd.template.toString()))
                 .addItem(seTd)
                 .addItem(taTd)
                 .addItem(faTd)
-                .addItem(td(EXPRESSION_ACTION_COLUMN).actions()
-                        .add(expressionDropdown(template, expressionList, nestedExpressionList)))
-                .run(tr -> updateResourceRow(template, statisticsEnabled, seTd, taTd, faTd));
-    }
+                .addItem(edTd);
 
-    private void updateResourceRow(AddressTemplate template, ModelNode statisticsEnabled, Td seTd, Td taTd, Td faTd) {
-        removeChildrenFrom(seTd);
-        removeChildrenFrom(taTd);
-        removeChildrenFrom(faTd);
-        if (statisticsEnabled.getType() == ModelType.EXPRESSION) {
-            seTd.add(renderExpression(statisticsEnabled.asString()));
-            taTd.addText(tableText().add(button("True").secondary()
-                    .onClick((e, c) -> singleUpdate(template, true, null))));
-            faTd.addText(tableText().add(button("False").secondary()
-                    .onClick((e, c) -> singleUpdate(template, false, null))));
+        if (rd.value.getType() == ModelType.EXPRESSION) {
+            seTd.add(renderExpression(rd.value.asString()));
+            taTd.addText(tableText().add(button("True").secondary().onClick((e, c) ->
+                    singleUpdate(rd, true, null))));
+            faTd.addText(tableText().add(button("False").secondary().onClick((e, c) ->
+                    singleUpdate(rd, false, null))));
         } else {
-            seTd.add(span().text(statisticsEnabled.asString()));
-            if (statisticsEnabled.asBoolean()) {
-                taTd.addText(tableText().add(" "));
-                faTd.addText(tableText().add(button("False").secondary()
-                        .onClick((e, c) -> singleUpdate(template, false, null))));
+            seTd.text(rd.value.asString());
+            if (rd.value.asBoolean()) {
+                faTd.addText(tableText().add(button("False").secondary().onClick((e, c) ->
+                        singleUpdate(rd, false, null))));
             } else {
-                taTd.addText(tableText().add(button("True").secondary()
-                        .onClick((e, c) -> singleUpdate(template, true, null))));
-                faTd.addText(tableText().add(" "));
+                taTd.addText(tableText().add(button("True").secondary().onClick((e, c) ->
+                        singleUpdate(rd, true, null))));
             }
         }
+        return tr;
     }
 
-    private Dropdown expressionDropdown(AddressTemplate template, MenuList expressionList, MenuList nestedExpressionList) {
-        Dropdown dropdown = template == null
+    private Dropdown expressionDropdown(ResourceData rd, MenuList expressionList, MenuList nestedExpressionList) {
+        Dropdown dropdown = rd == null
                 ? dropdown(menuToggle("Expression").secondary())
-                : dropdown(ellipsisV(), "Expressions for " + template);
+                : dropdown(ellipsisV(), "Expressions for " + rd.template);
         dropdown.addMenu(dropdownMenu()
                 .addContent(menuContent()
-                        .addGroup(menuGroup().addList(menuList().addItem(statisticsEnabledItem(template))))
+                        .addGroup(menuGroup().addList(menuList().addItem(statisticsEnabledItem(rd))))
                         .addDivider()
-                        // the menu list will be filled later in updateExpressionMenus() and readAndUpdateRow()
+                        // this menu list will be filled in updateBulkExpressionDropdown() and addExpressionDropdown()
                         .addGroup(menuGroup().addList(expressionList))
                         .addDivider()
-                        // the menu list will be filled later in updateExpressionMenus() and readAndUpdateRow()
+                        // this menu list will be filled in updateBulkExpressionDropdown() and addExpressionDropdown()
                         .addGroup(menuGroup().addList(nestedExpressionList))
                         .addDivider()
-                        .addGroup(menuGroup().addList(menuList().addItem(newExpressionItem(template))))));
+                        .addGroup(menuGroup().addList(menuList().addItem(newExpressionItem(rd))))));
         return dropdown;
     }
 
-    private MenuItem statisticsEnabledItem(AddressTemplate template) {
-        String identifier = template == null
+    private MenuItem statisticsEnabledItem(ResourceData rd) {
+        String identifier = rd == null
                 ? Id.build(WILDFLY_STATISTICS_ENABLED)
-                : Id.build(template.toString(), WILDFLY_STATISTICS_ENABLED);
+                : Id.build(rd.template.toString(), WILDFLY_STATISTICS_ENABLED);
         String $expression = "${" + WILDFLY_STATISTICS_ENABLED + ":false}";
         return menuItem(identifier)
                 .text(renderExpression($expression))
                 .onClick((e, c) -> {
-                    if (template == null) {
+                    if (rd == null) {
                         bulkUpdate(null, $expression);
                     } else {
-                        singleUpdate(template, null, $expression);
+                        singleUpdate(rd, null, $expression);
                     }
                 });
     }
 
-    private MenuItem expressionItem(AddressTemplate template, String expression) {
-        String identifier = template == null
+    private MenuItem expressionItem(ResourceData rd, String expression) {
+        String identifier = rd == null
                 ? Id.build(expression)
-                : Id.build(template.toString(), expression);
+                : Id.build(rd.template.toString(), expression);
         String $expression = "${" + expression + ":false}";
         return menuItem(identifier)
                 .text(renderExpression($expression))
                 .data(DATA_ORDER, expression)
                 .onClick((e, c) -> {
-                    if (template == null) {
+                    if (rd == null) {
                         bulkUpdate(null, $expression);
                     } else {
-                        singleUpdate(template, null, $expression);
+                        singleUpdate(rd, null, $expression);
                     }
                 });
     }
 
-    private MenuItem nestedExpressionItem(AddressTemplate template, String expression) {
-        String identifier = template == null
+    private MenuItem nestedExpressionItem(ResourceData rd, String expression) {
+        String identifier = rd == null
                 ? Id.build(WILDFLY_STATISTICS_ENABLED, expression)
-                : Id.build(template.toString(), WILDFLY_STATISTICS_ENABLED, expression);
+                : Id.build(rd.template.toString(), WILDFLY_STATISTICS_ENABLED, expression);
         String $expression = "${" + expression + ":${" + WILDFLY_STATISTICS_ENABLED + ":false}}";
         return menuItem(identifier)
                 .text(renderExpression($expression))
                 .data(DATA_ORDER, expression)
                 .onClick((e, c) -> {
-                    if (template == null) {
+                    if (rd == null) {
                         bulkUpdate(null, $expression);
                     } else {
-                        singleUpdate(template, null, $expression);
+                        singleUpdate(rd, null, $expression);
                     }
                 });
     }
 
-    private MenuItem newExpressionItem(AddressTemplate template) {
-        String identifier = template == null
+    private MenuItem newExpressionItem(ResourceData rd) {
+        String identifier = rd == null
                 ? Id.build("new-expression")
-                : Id.build(template.toString(), "new-expression");
-        return menuItem(identifier, "New expression")
-                .onClick((e, c) -> {
-                    String newExpression = ""; // TODO Open modal dialog to enter new expression
-                    if (template == null) {
-                        // bulkUpdate(null, newExpression);
+                : Id.build(rd.template.toString(), "new-expression");
+        return menuItem(identifier, "New expression").onClick((e, c) ->
+                newExpressionModal(newExpression -> {
+                    if (rd == null) {
+                        bulkUpdate(null, newExpression);
                     } else {
-                        // singleUpdate(template, null, newExpression);
+                        singleUpdate(rd, null, newExpression);
                     }
-                });
+                }).open());
     }
 }
