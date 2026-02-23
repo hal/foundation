@@ -341,6 +341,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     private void selectFiltered() {
         // Instead of selecting each filtered item and firing the selection event,
         // which in turn calls onSelection(...), we do it manually.
+        resourcesTable.selectNone(false);
         List<Tr> filtered = resourcesTBody.items().stream()
                 .filter(item -> !item.element().classList.contains(halModifier(HalClasses.filtered)))
                 .collect(toList());
