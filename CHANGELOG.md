@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix multi-arch container build
+
 ## [0.1.1] - 2026-02-23
 
 ### Fixed
