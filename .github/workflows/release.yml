@@ -201,11 +201,11 @@ jobs:
           APP_NAME="hal-op"
           VERSION="${{ steps.get-version.outputs.version-without-v }}"
           if [ "${{ runner.os }}" = "Windows" ]; then
-            mv op/standalone/target/*-runner.exe "${APP_NAME}-${VERSION}-windows.exe"
+            find op/standalone/target -name '*-runner.exe' -exec mv {} "${APP_NAME}-${VERSION}-windows.exe" \;
           elif [ "${{ runner.os }}" = "macOS" ]; then
-            mv op/standalone/target/*-runner "${APP_NAME}-${VERSION}-macos"
+            find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-macos" \;
           else
-            mv op/standalone/target/*-runner "${APP_NAME}-${VERSION}-linux"
+            find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-linux" \;
           fi
         shell: bash
       - uses: softprops/action-gh-release@v2

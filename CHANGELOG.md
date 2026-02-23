@@ -10,6 +10,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fix multi-arch container build
+- Fix native image build
 
 ## [0.1.1] - 2026-02-23
 
