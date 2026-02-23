@@ -86,7 +86,7 @@ jobs:
           draft: false
           prerelease: false
 
-  build-native:
+  build-native-image:
     needs: release
     runs-on: ubuntu-latest
     strategy:
@@ -113,7 +113,7 @@ jobs:
           retention-days: 1
 
   build-image:
-    needs: build-native
+    needs: build-native-image
     runs-on: ubuntu-latest
     steps:
       - id: get-version
@@ -176,7 +176,7 @@ jobs:
           podman manifest push quay.io/halconsole/hal-op:latest
           podman manifest push quay.io/halconsole/hal-op:${VERSION}
 
-  hal-op-natives:
+  build-native-binaries:
     needs: release
     runs-on: ${{ matrix.os }}
     strategy:
@@ -200,16 +200,24 @@ jobs:
         run: ./mvnw --show-version --batch-mode --no-transfer-progress install -P op,prod,native -Dquarkus.native.container-build=false
       - if: matrix.os == 'windows-latest'
         run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -P op,prod,native "-Dquarkus.native.container-build=false"
-      - run: |
+      - if: matrix.os == 'windows-latest'
+        run: |
+          $APP_NAME = "hal-op"
+          $VERSION = "${{ steps.get-version.outputs.version-without-v }}"
+          $runner = Get-ChildItem -Path op\standalone\target -Filter "*-runner.exe" -Recurse | Select-Object -First 1
+          Move-Item $runner.FullName "${APP_NAME}-${VERSION}-windows.exe"
+        shell: pwsh
+      - if: matrix.os == 'macos-latest'
+        run: |
           APP_NAME="hal-op"
           VERSION="${{ steps.get-version.outputs.version-without-v }}"
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            find op/standalone/target -name '*-runner.exe' -exec mv {} "${APP_NAME}-${VERSION}-windows.exe" \;
-          elif [ "${{ runner.os }}" = "macOS" ]; then
-            find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-macos" \;
-          else
-            find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-linux" \;
-          fi
+          find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-macos" \;
+        shell: bash
+      - if: matrix.os == 'ubuntu-latest'
+        run: |
+          APP_NAME="hal-op"
+          VERSION="${{ steps.get-version.outputs.version-without-v }}"
+          find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-linux" \;
         shell: bash
       - uses: softprops/action-gh-release@v2
         with:
