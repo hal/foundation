@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix filtered resource selection in the statistics task
+
 ## [0.1.0] - 2026-02-21
 
 ### Added
