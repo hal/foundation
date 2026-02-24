@@ -105,7 +105,7 @@ Supporting modules: `bom` (dependency versions), `build-config` (checkstyle/lice
 - Crysknife CDI, Elemento, PatternFly Java
 - Parcel, Node.js, pnpm (frontend tooling)
 - Quarkus (standalone server)
-- JUnit 5 + Mockito (testing)
+- JUnit 6 + Mockito (testing)
 
 ## Issue Tracker
 
