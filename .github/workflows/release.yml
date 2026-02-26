@@ -106,7 +106,7 @@ jobs:
           sudo apt-get install -y qemu-user-static
       - name: Build native binary for ${{ matrix.arch }}
         run: $MVN install -P op,prod,native -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime-options=--platform=linux/${{ matrix.arch }}
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: native-binary-${{ matrix.arch }}
           path: op/standalone/target/*-runner
