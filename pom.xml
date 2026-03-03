@@ -87,7 +87,7 @@
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
         <version.junit>6.0.3</version.junit>
         <version.kie.j2cl.bom>0.5</version.kie.j2cl.bom>
-        <version.mockito>5.21.0</version.mockito>
+        <version.mockito>5.22.0</version.mockito>
         <version.node>v24.10.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
         <version.patternfly.java>0.5.0</version.patternfly.java>
