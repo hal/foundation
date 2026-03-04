@@ -119,23 +119,43 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>install-node-and-npm</id>
+                        <id>install-node-and-corepack</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-corepack</goal>
                         </goals>
-                        <configuration>
-                            <nodeVersion>${version.node}</nodeVersion>
-                        </configuration>
+                        <configuration/>
                     </execution>
                     <execution>
-                        <id>npm-install</id>
+                        <id>pnpm-install</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>pnpm install</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <!-- This is the phase j2cl:build uses -->
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo level="info" message="Environment"/>
+                                <echo level="info" message="environment.base: ${environment.base}"/>
+                                <echo level="info" message="environment.build: ${environment.build}"/>
+                                <echo level="info" message="environment.stability: ${environment.stability}"/>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -188,13 +208,13 @@
                         <artifactId>frontend-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>npm-parcel</id>
+                                <id>pnpm-run-prod</id>
                                 <phase>prepare-package</phase>
                                 <goals>
-                                    <goal>npm</goal>
+                                    <goal>corepack</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>run prod</arguments>
+                                    <arguments>pnpm run prod</arguments>
                                 </configuration>
                             </execution>
                         </executions>

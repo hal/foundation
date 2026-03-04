@@ -29,9 +29,9 @@ They typically combine multiple steps and operations that involves configuring d
 
 ![tasks.png](tasks.png)
 
-As an example many resources have defined a `statistics-enabled` task. There's a task that let you manage all these attributes 
-in one place. The task lists all resources that have defined a `statistics-enabled` attribute. You can select, filter and 
-modify the `statistics-enabled` attributes and also assign existing or new expressions (if supported by the resource). 
+As an example many resources have defined a `statistics-enabled` task. There's a task that let you manage all these attributes
+in one place. The task lists all resources that have defined a `statistics-enabled` attribute. You can select, filter and
+modify the `statistics-enabled` attributes and also assign existing or new expressions (if supported by the resource).
 
 https://github.com/user-attachments/assets/3d7ba545-25fe-4b1d-8f96-b1ae4319ec00
 

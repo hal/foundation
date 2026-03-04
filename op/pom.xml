@@ -51,12 +51,34 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hal-op-subsystem</artifactId>
+                <version>${project.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <profiles>
         <profile>
-            <id>prod</id>
+            <id>feature-pack</id>
+            <modules>
+                <module>feature-pack</module>
+                <module>subsystem</module>
+            </modules>
+            <properties>
+                <!-- Must match org.jboss.hal.op.HalOpSubsystemRegistrar#CONTEXT_NAME -->
+                <environment.base>/halop</environment.base>
+            </properties>
+        </profile>
+        <profile>
+            <id>standalone</id>
             <modules>
                 <module>standalone</module>
             </modules>
