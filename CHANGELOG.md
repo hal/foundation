@@ -7,11 +7,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-03-05
-
 ### Added
 
 - Add Galleon feature pack
+- Add JBang integration
+
+## [0.2.0] - 2026-03-05
+
+> [!WARNING]
+> Not an official release. Please don't use!
 
 ## [0.1.2] - 2026-02-23
 

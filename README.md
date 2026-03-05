@@ -94,6 +94,14 @@ xattr -d com.apple.quarantine hal-op-*
 
 If you want to customize the port of halOP (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
 
+## JBang
+
+halOP can also be run as a standalone Java application using [JBang](https://jbang.dev/).
+
+```shell
+jbang hal-op@hal
+```
+
 ## Container
 
 halOP is also available as a container image at https://quay.io/repository/halconsole/hal-op. Use
