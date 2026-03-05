@@ -123,11 +123,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
       - run: podman --version
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: native-binary-amd64
           path: op/standalone/target/native-amd64
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: native-binary-arm64
           path: op/standalone/target/native-arm64
