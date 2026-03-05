@@ -66,7 +66,7 @@ mvn install -P prod,op,standalone
 This will package the transpiled HTML, CSS, and JavaScript resources into a Quarkus-based HTTP server. To start it, run
 
 ```shell
-java -jar op/standalone/target/quarkus-app/quarkus-run.jar
+java -jar op/standalone/target/hal-op-standalone-0.2.1.jar
 ```
 
 and open a browser at http://localhost:9090.
