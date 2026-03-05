@@ -29,11 +29,15 @@ public class Main {
         // Make SPA deep linking work.
         router.get().order(1).handler(ctx -> {
             String path = ctx.request().path();
-            if (!path.equals("/") && !path.contains(".")) {
+            if (clientRoute(path)) {
                 ctx.reroute("/");
             } else {
                 ctx.next();
             }
         });
+    }
+
+    private boolean clientRoute(String path) {
+        return !path.equals("/") && !path.contains(".");
     }
 }

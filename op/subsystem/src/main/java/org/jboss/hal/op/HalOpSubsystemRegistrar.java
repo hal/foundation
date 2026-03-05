@@ -16,7 +16,6 @@
 package org.jboss.hal.op;
 
 import org.jboss.as.controller.OperationContext;
-import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.ResourceDefinition;
 import org.jboss.as.controller.SubsystemRegistration;
 import org.jboss.as.controller.SubsystemResourceRegistration;
@@ -39,15 +38,20 @@ import org.wildfly.subsystem.service.ResourceServiceInstaller;
 import org.wildfly.subsystem.service.ServiceDependency;
 import org.wildfly.subsystem.service.ServiceInstaller;
 
+import io.undertow.io.IoCallback;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ClassPathResourceManager;
+import io.undertow.server.handlers.resource.Resource;
+import io.undertow.server.handlers.resource.ResourceHandler;
+import io.undertow.server.handlers.resource.ResourceManager;
+import io.undertow.util.Headers;
+import io.undertow.util.StatusCodes;
 
 /**
  * Registrar for the HAL on premise subsystem. Installs a service that serves the console resources on the management HTTP
  * interface at {@code /halop}.
  */
 class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
-
-    private static final Logger log = Logger.getLogger(HalOpSubsystemRegistrar.class);
 
     static final String NAME = "halop";
     static final SubsystemResourceRegistration REGISTRATION = SubsystemResourceRegistration.of(NAME);
@@ -58,11 +62,11 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
     static final String CONTEXT_NAME = "halop";
     static final String RESOURCE_PREFIX = "console";
 
+    private static final Logger log = Logger.getLogger(HalOpSubsystemRegistrar.class);
     private static final String EXTENSIBLE_HTTP_CAPABILITY = "org.wildfly.management.http.extensible";
-    private static final RuntimeCapability<Void> HALOP_CAPABILITY =
-            RuntimeCapability.Builder.of("org.jboss.hal.op")
-                    .addRequirements(EXTENSIBLE_HTTP_CAPABILITY)
-                    .build();
+    private static final RuntimeCapability<Void> HALOP_CAPABILITY = RuntimeCapability.Builder.of("org.jboss.hal.op")
+            .addRequirements(EXTENSIBLE_HTTP_CAPABILITY)
+            .build();
 
     @Override
     public ManagementResourceRegistration register(SubsystemRegistration parent,
@@ -87,8 +91,7 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
     private static class HalOpServiceConfigurator implements ResourceServiceConfigurator {
 
         @Override
-        public ResourceServiceInstaller configure(OperationContext context, ModelNode model)
-                throws OperationFailedException {
+        public ResourceServiceInstaller configure(OperationContext context, ModelNode model) {
             ServiceDependency<ExtensibleHttpManagement> httpManagement =
                     ServiceDependency.on(EXTENSIBLE_HTTP_CAPABILITY, ExtensibleHttpManagement.class);
 
@@ -96,13 +99,12 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
                     .onStart(mgmt -> {
                         try {
                             Module consoleModule = Module.getCallerModuleLoader().loadModule(CONSOLE_MODULE);
-                            ClassPathResourceManager resourceManager = new ClassPathResourceManager(
+                            ResourceManager resourceManager = new ClassPathResourceManager(
                                     consoleModule.getClassLoader(), RESOURCE_PREFIX);
-                            mgmt.addStaticContext(CONTEXT_NAME, resourceManager);
+                            mgmt.addManagementHandler(CONTEXT_NAME, true, spaHandler(resourceManager));
                             log.infof("HAL on premise console available at /%s", CONTEXT_NAME);
                         } catch (ModuleLoadException e) {
-                            throw new RuntimeException(
-                                    "Failed to load HAL console module: " + CONSOLE_MODULE, e);
+                            throw new RuntimeException("Failed to load HAL console module: " + CONSOLE_MODULE, e);
                         }
                     })
                     .onStop(mgmt -> {
@@ -111,5 +113,29 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
                     })
                     .build();
         }
+
+        private static HttpHandler spaHandler(ResourceManager resourceManager) {
+            ResourceHandler resourceHandler = new ResourceHandler(resourceManager);
+            return exchange -> {
+                String path = exchange.getRelativePath();
+                if (path.isEmpty() || path.startsWith("/index.html")) {
+                    exchange.setStatusCode(StatusCodes.FOUND);
+                    exchange.getResponseHeaders().put(Headers.LOCATION, "/" + CONTEXT_NAME + "/");
+                    exchange.endExchange();
+                } else {
+                    if (clientRoute(path)) {
+                        Resource index = resourceManager.getResource("/index.html");
+                        index.serve(exchange.getResponseSender(), exchange, IoCallback.END_EXCHANGE);
+                    } else {
+                        resourceHandler.handleRequest(exchange);
+                    }
+                }
+            };
+        }
+
+        private static boolean clientRoute(String path) {
+            return !path.equals("/") && !path.contains(".");
+        }
+
     }
 }

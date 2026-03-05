@@ -41,7 +41,7 @@ import org.patternfly.filter.Filter;
 import org.patternfly.icon.IconSets;
 import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.layout.flex.Flex;
-import org.patternfly.style.Color;
+import org.patternfly.style.Status;
 import org.patternfly.style.Variable;
 import org.patternfly.token.Token;
 
@@ -108,8 +108,6 @@ import static org.patternfly.style.Classes.start;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Color.blue;
 import static org.patternfly.style.Color.grey;
-import static org.patternfly.style.Color.orange;
-import static org.patternfly.style.Color.red;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variable.utilVar;
 
@@ -389,13 +387,13 @@ public class BuildingBlocks {
 
     // ------------------------------------------------------ stability
 
-    public static Color stabilityColor(Stability stability) {
+    public static Status stabilityStatus(Stability stability) {
         if (stability == EXPERIMENTAL) {
-            return red;
+            return Status.danger;
         } else if (stability == PREVIEW) {
-            return orange;
+            return Status.warning;
         }
-        return blue;
+        return Status.info;
     }
 
     public static PredefinedIcon stabilityIcon(Stability stability) {

@@ -17,8 +17,6 @@ package org.jboss.hal.op.skeleton;
 
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.core.Notifications;
-import org.jboss.hal.env.Environment;
 import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
@@ -36,6 +34,7 @@ import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
 import static org.jboss.hal.op.notification.NotificationElements.notificationElements;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -66,9 +65,8 @@ public class Skeleton implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    public static Skeleton skeleton(Environment environment, EndpointStorage endpointStorage,
-            Notifications notifications, Navigation navigation) {
-        return new Skeleton(environment, endpointStorage, notifications, navigation);
+    public static Skeleton skeleton(EndpointStorage endpointStorage, Navigation navigation) {
+        return new Skeleton(endpointStorage, navigation);
     }
 
     // ------------------------------------------------------ instance
@@ -77,13 +75,13 @@ public class Skeleton implements IsElement<HTMLElement> {
     private final HTMLElement root;
     private StabilityBanner stabilityBanner;
 
-    Skeleton(Environment environment, EndpointStorage endpointStorage, Notifications notifications, Navigation navigation) {
+    Skeleton(EndpointStorage endpointStorage, Navigation navigation) {
         MastheadLogo logo = mastheadLogo("/")
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                         Resources.INSTANCE.logo().getText()).asString());
 
-        NotificationElements notificationElements = notificationElements(notifications);
+        NotificationElements notificationElements = notificationElements();
 
         Toolbar toolbar = toolbar().css(modifier(fullHeight), modifier(static_))
                 .addContent(toolbarContent()
@@ -93,7 +91,11 @@ public class Skeleton implements IsElement<HTMLElement> {
                                 .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal")
                                         .withContrast()))
-                                .addItem(toolbarItem().add(endpointSelector(endpointStorage)))));
+                                .run(group -> {
+                                    if (!uic().endpoints().sameOrigin()) {
+                                        group.addItem(toolbarItem().add(endpointSelector(endpointStorage)));
+                                    }
+                                })));
 
         Page page = page()
                 .addSkipToContent(skipToContent(Ids.MAIN_ID))
@@ -107,14 +109,14 @@ public class Skeleton implements IsElement<HTMLElement> {
                 .addMain(pageMain(Ids.MAIN_ID).fill());
         page.wire(notificationElements.badge(), notificationElements.drawer());
 
-        if (environment.highlightStability()) {
+        if (uic().environment().highlightStability()) {
             document.documentElement.classList.add(STABILITY_MARKER);
             root = flex()
                     .direction(column)
                     .flexWrap(noWrap)
                     .spaceItems(none)
                     .style("height", "100%")
-                    .add(stabilityBanner = stabilityBanner(environment, this::dismiss))
+                    .add(stabilityBanner = stabilityBanner(this::dismiss))
                     .addItem(flexItem().grow(default_).style("min-height", 0)
                             .add(page))
                     .element();

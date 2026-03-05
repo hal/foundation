@@ -60,7 +60,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>hal-op</artifactId>
-            <classifier>resources</classifier>
+            <classifier>standalone-resources</classifier>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -101,7 +101,7 @@
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>hal-op</artifactId>
                                     <version>${project.version}</version>
-                                    <classifier>resources</classifier>
+                                    <classifier>standalone-resources</classifier>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>src/main/resources/META-INF/resources</outputDirectory>
                                     <includes>console/**</includes>

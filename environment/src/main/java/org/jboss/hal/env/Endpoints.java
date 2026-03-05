@@ -39,7 +39,7 @@ public class Endpoints {
         dmr = url + MANAGEMENT;
         logout = url + LOGOUT;
         upload = url + UPLOAD;
-        sameOrigin = url.isEmpty();
+        sameOrigin = location.origin.equals(url);
     }
 
     /** @return the endpoint used to execute management operations. */

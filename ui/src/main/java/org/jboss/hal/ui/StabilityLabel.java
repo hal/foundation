@@ -27,8 +27,8 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
-import static org.jboss.hal.ui.BuildingBlocks.stabilityColor;
 import static org.jboss.hal.ui.BuildingBlocks.stabilityIcon;
+import static org.jboss.hal.ui.BuildingBlocks.stabilityStatus;
 import static org.patternfly.component.label.Label.label;
 
 public class StabilityLabel implements
@@ -47,8 +47,8 @@ public class StabilityLabel implements
     private final Label label;
 
     StabilityLabel(Stability stability) {
-        label = label(stability.label, stabilityColor(stability))
-                .css(halComponent(stabilityLevel))
+        label = label(stability.label)
+                .css(halComponent(stabilityLevel), stabilityStatus(stability).modifier())
                 .aria(Aria.label, stability.label)
                 .icon(stabilityIcon(stability));
     }

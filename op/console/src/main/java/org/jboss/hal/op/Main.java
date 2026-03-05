@@ -19,8 +19,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.PlaceManager;
-import org.jboss.hal.core.Notifications;
-import org.jboss.hal.env.Environment;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.endpoint.EndpointStorage;
@@ -39,10 +37,8 @@ public class Main {
 
     @Inject Bootstrap bootstrap;
     @Inject EndpointStorage endpointStorage;
-    @Inject Environment environment;
-    @Inject PlaceManager placeManager;
-    @Inject Notifications notifications;
     @Inject Navigation navigation;
+    @Inject PlaceManager placeManager;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -53,7 +49,7 @@ public class Main {
     void init() {
         bootstrap.run().subscribe(context -> {
             if (context.isSuccessful()) {
-                insertFirst(document.body, skeleton(environment, endpointStorage, notifications, navigation));
+                insertFirst(document.body, skeleton(endpointStorage, navigation));
                 placeManager.start();
             } else {
                 BootstrapError error = context.pop(BootstrapError.UNKNOWN);

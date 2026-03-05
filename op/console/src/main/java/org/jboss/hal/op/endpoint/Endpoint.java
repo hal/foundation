@@ -29,6 +29,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 import static elemental2.dom.DomGlobal.fetch;
+import static elemental2.dom.DomGlobal.location;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Endpoint {
@@ -38,6 +39,24 @@ public class Endpoint {
 
     @JsOverlay
     private static final Logger logger = Logger.getLogger(Endpoint.class.getName());
+
+    @JsOverlay
+    public static Endpoint origin() {
+        Endpoint endpoint = new Endpoint();
+        endpoint.id = Id.uuid();
+        endpoint.name = "origin";
+        endpoint.url = location.origin;
+        return endpoint;
+    }
+
+    @JsOverlay
+    public static Endpoint endpoint(String name, String url) {
+        Endpoint endpoint = new Endpoint();
+        endpoint.id = Id.uuid();
+        endpoint.name = name;
+        endpoint.url = url;
+        return endpoint;
+    }
 
     @JsOverlay
     public static Promise<Boolean> ping(String url) {
@@ -82,15 +101,6 @@ public class Endpoint {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    @JsOverlay
-    public static Endpoint endpoint(String name, String url) {
-        Endpoint endpoint = new Endpoint();
-        endpoint.id = Id.uuid();
-        endpoint.name = name;
-        endpoint.url = url;
-        return endpoint;
     }
 
     public String id;

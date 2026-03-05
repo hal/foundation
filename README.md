@@ -52,7 +52,7 @@ This will open a browser at http://localhost:1234.
 ## Standalone
 
 halOP can run on its own. In this mode halOP starts a local web server and serves the console on its own without being part of a
-WildFly installation. halOP is “just” a single-page application (SPA) without any server side dependencies. The only requirement
+WildFly installation. halOP is "just" a single-page application (SPA) without any server side dependencies. The only requirement
 is a management interface of a running WIldFly instance.
 
 ### Java
@@ -63,7 +63,7 @@ To build halOP as a standalone Java application, run
 mvn install -P prod,op,standalone
 ```
 
-This will package the transpiled HTML, CSS and JavaScript resources into a Quarkus-based HTTP server. To start it, run
+This will package the transpiled HTML, CSS, and JavaScript resources into a Quarkus-based HTTP server. To start it, run
 
 ```shell
 java -jar op/standalone/target/quarkus-app/quarkus-run.jar
@@ -82,8 +82,8 @@ mvn install -P prod,op,standalone,native -Dquarkus.native.container-build=false
 Please make sure that you have a recent version of GraalVM installed.
 See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
 
-Native binaries for Linux, macOS and Windows are also attached to every [release](https://github.com/hal/foundation/releases).
-Download the binary for your platform, make it executable and run it. Then open a browser at http://localhost:9090.
+Native binaries for Linux, macOS, and Windows are also attached to every [release](https://github.com/hal/foundation/releases).
+Download the binary for your platform, make it executable, and run it. Then open a browser at http://localhost:9090.
 
 To make the binary executable, you might need to run something like this:
 
@@ -113,6 +113,7 @@ halOP is also available as a feature pack that can be provisioned with [Galleon]
 3. `cd $TMPDIR/wildfly`
 4. Add a WildFly admin user with `bin/add-user.sh -u admin -p admin --silent`
 5. Start the server with `bin/standalone.sh --stability=experimental`
+6. Open http://localhost:9990/halop in your browser
 
 # halOS (HAL on OpenShift)
 

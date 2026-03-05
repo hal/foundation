@@ -21,6 +21,6 @@
         <property name="jboss.api" value="private"/>
     </properties>
     <resources>
-        <artifact name="${org.jboss.hal:hal-op::resources}"/>
+        <artifact name="${org.jboss.hal:hal-op::feature-pack-resources}"/>
     </resources>
 </module>

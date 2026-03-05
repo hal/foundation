@@ -37,17 +37,25 @@
         <module>console</module>
     </modules>
 
-    <properties>
-        <npm.script/>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>hal-op</artifactId>
                 <version>${project.version}</version>
-                <classifier>resources</classifier>
+                <classifier>feature-pack-resources</classifier>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hal-op</artifactId>
+                <version>${project.version}</version>
+                <classifier>standalone-resources</classifier>
                 <exclusions>
                     <exclusion>
                         <groupId>*</groupId>
@@ -79,7 +87,6 @@
             <properties>
                 <!-- Must match org.jboss.hal.op.HalOpSubsystemRegistrar#CONTEXT_NAME -->
                 <environment.base>/halop</environment.base>
-                <npm.script>prod:feature-pack</npm.script>
             </properties>
         </profile>
         <profile>
@@ -87,9 +94,6 @@
             <modules>
                 <module>standalone</module>
             </modules>
-            <properties>
-                <npm.script>prod:standalone</npm.script>
-            </properties>
         </profile>
     </profiles>
 </project>

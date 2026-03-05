@@ -79,12 +79,24 @@ class SelectEndpoint implements Task<FlowContext> {
                     return fail(context, NO_ENDPOINT_SPECIFIED, CONNECT_PARAMETER);
                 }
             } else {
-                return endpointModal(endpointStorage, false).open()
+                return endpointModal(endpointStorage, false)
+                        .open()
                         .then(endpoint -> connect(context, endpoint));
             }
         } else {
-            return endpointModal(endpointStorage, false).open()
-                    .then(endpoint -> connect(context, endpoint));
+            return Endpoint.ping(location.origin)
+                    .then(valid -> {
+                        if (valid) {
+                            return connect(context, Endpoint.origin());
+                        } else {
+                            return endpointModal(endpointStorage, false)
+                                    .open()
+                                    .then(endpoint -> connect(context, endpoint));
+                        }
+                    })
+                    .catch_(__ -> endpointModal(endpointStorage, false)
+                            .open()
+                            .then(endpoint -> connect(context, endpoint)));
         }
     }
 

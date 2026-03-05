@@ -19,10 +19,8 @@ import java.util.function.Supplier;
 
 import org.jboss.elemento.Callback;
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Stability;
 import org.patternfly.icon.PredefinedIcon;
-import org.patternfly.style.Color;
 
 import elemental2.dom.HTMLElement;
 
@@ -30,8 +28,9 @@ import static org.jboss.elemento.Elements.a;
 import static org.jboss.elemento.Elements.strong;
 import static org.jboss.hal.resources.Urls.STABILITY_LEVELS;
 import static org.jboss.hal.resources.Urls.replaceVersion;
-import static org.jboss.hal.ui.BuildingBlocks.stabilityColor;
 import static org.jboss.hal.ui.BuildingBlocks.stabilityIconSupplier;
+import static org.jboss.hal.ui.BuildingBlocks.stabilityStatus;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.banner.Banner.banner;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.divider.Divider.divider;
@@ -48,20 +47,20 @@ public class StabilityBanner implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    public static StabilityBanner stabilityBanner(Environment environment, Callback gotIt) {
-        return new StabilityBanner(environment, gotIt);
+    public static StabilityBanner stabilityBanner(Callback gotIt) {
+        return new StabilityBanner(gotIt);
     }
 
     // ------------------------------------------------------ instance
 
     private final HTMLElement root;
 
-    StabilityBanner(Environment environment, Callback gotIt) {
-        Stability serverStability = environment.serverStability();
-        Color color = stabilityColor(serverStability);
+    StabilityBanner(Callback gotIt) {
+        Stability serverStability = uic().environment().serverStability();
         Supplier<PredefinedIcon> icon = stabilityIconSupplier(serverStability);
 
-        root = banner(color)
+        root = banner()
+                .status(stabilityStatus(serverStability))
                 .screenReader("The server has been started with stability level " + serverStability.label)
                 .add(flex().spaceItems(none)
                         .justifyContent(center)
@@ -75,8 +74,8 @@ public class StabilityBanner implements IsElement<HTMLElement> {
                         .add(flex().spaceItems(sm).style("position:fixed;right:var(--pf-t--global--spacer--lg)")
                                 .add(button("Got it").link().inline().onClick((event, component) -> gotIt.call()))
                                 .add(divider(hr).orientation(vertical))
-                                .add(a(replaceVersion(STABILITY_LEVELS, environment.productVersionLink()), "_blank").text(
-                                        "More info"))))
+                                .add(a(replaceVersion(STABILITY_LEVELS, uic().environment().productVersionLink()), "_blank")
+                                        .text("More info"))))
                 .element();
     }
 

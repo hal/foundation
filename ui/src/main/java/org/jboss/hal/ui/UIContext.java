@@ -24,6 +24,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
+import org.jboss.hal.env.Endpoints;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Settings;
 import org.jboss.hal.meta.CapabilityRegistry;
@@ -59,6 +60,7 @@ public class UIContext {
     private final CapabilityRegistry capabilityRegistry;
     private final CrudOperations crud;
     private final Dispatcher dispatcher;
+    private final Endpoints endpoints;
     private final Environment environment;
     private final MetadataRepository metadataRepository;
     private final ModelTree modelTree;
@@ -71,6 +73,7 @@ public class UIContext {
             CapabilityRegistry capabilityRegistry,
             CrudOperations crud,
             Dispatcher dispatcher,
+            Endpoints endpoints,
             Environment environment,
             MetadataRepository metadataRepository,
             ModelTree modelTree,
@@ -81,6 +84,7 @@ public class UIContext {
         this.capabilityRegistry = capabilityRegistry;
         this.crud = crud;
         this.dispatcher = dispatcher;
+        this.endpoints = endpoints;
         this.environment = environment;
         this.metadataRepository = metadataRepository;
         this.modelTree = modelTree;
@@ -104,6 +108,10 @@ public class UIContext {
 
     public Dispatcher dispatcher() {
         return dispatcher;
+    }
+
+    public Endpoints endpoints() {
+        return endpoints;
     }
 
     public Environment environment() {

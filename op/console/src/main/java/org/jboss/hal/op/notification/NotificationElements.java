@@ -23,6 +23,7 @@ import org.patternfly.component.notification.NotificationDrawerBody;
 import org.patternfly.component.notification.NotificationDrawerItem;
 import org.patternfly.component.notification.NotificationDrawerList;
 
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.menu.Dropdown.dropdown;
@@ -40,17 +41,18 @@ import static org.patternfly.icon.IconSets.fas.search;
 
 public class NotificationElements {
 
-    public static NotificationElements notificationElements(Notifications notifications) {
-        return new NotificationElements(notifications);
+    public static NotificationElements notificationElements() {
+        return new NotificationElements();
     }
 
     private final NotificationBadge badge;
     private final NotificationDrawer drawer;
 
-    NotificationElements(Notifications notifications) {
+    NotificationElements() {
         this.badge = notificationBadge().registerComponent();
         this.drawer = notificationDrawer();
 
+        Notifications notifications = uic().notifications();
         NotificationDrawerList notificationDrawerList = notificationDrawerList().registerSubComponent();
         NotificationDrawerBody notificationDrawerBody = notificationDrawerBody().registerSubComponent()
                 .addList(notificationDrawerList)
