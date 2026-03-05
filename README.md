@@ -108,12 +108,31 @@ to start it and open a browser at http://localhost:9090.
 
 halOP is also available as a feature pack that can be provisioned with [Galleon](https://github.com/wildfly/galleon).
 
-1. Build the feature pack with `mvn install -P prod,op,feature-pack`
-2. Provision a WildFly server with `galleon.sh provision op/feature-pack/target/provision.xml --dir=$TMPDIR/wildfly --stability-level=experimental` (the provided `provision.xml` file is just an example that contains a default configuration plus the halOP feature pack)
-3. `cd $TMPDIR/wildfly`
-4. Add a WildFly admin user with `bin/add-user.sh -u admin -p admin --silent`
-5. Start the server with `bin/standalone.sh --stability=experimental`
-6. Open http://localhost:9990/halop in your browser
+1. Build the feature pack with
+
+    ```shell
+    mvn install -P prod,op,feature-pack
+    ```
+
+2. Provision a WildFly server. You can use the provided [
+   `provision.xml`](https://github.com/hal/foundation/blob/main/op/feature-pack/provision.xml) as an example. It provisions a
+   default standalone server plus the halOP feature pack.
+
+    ```shell
+    galleon.sh provision op/feature-pack/target/provision.xml \
+        --dir=$TMPDIR/wildfly
+        --stability-level=experimental
+    ```
+
+3. Prepare and start the server
+
+    ```shell
+    cd $TMPDIR/wildfly
+    bin/add-user.sh -u admin -p admin --silent
+    bin/standalone.sh --stability=experimental
+    ```
+
+4. Open http://localhost:9990/halop
 
 # halOS (HAL on OpenShift)
 
