@@ -214,7 +214,7 @@
                                     <goal>corepack</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>pnpm run prod</arguments>
+                                    <arguments>pnpm run ${npm.script}</arguments>
                                 </configuration>
                             </execution>
                         </executions>

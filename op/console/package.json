@@ -13,7 +13,8 @@
     "start:server": "node server.js 1234 1235",
     "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
     "watch": "concurrently \"npm run start:parcel\" \"npm run start:server\" \"npm run open:browser\"",
-    "prod": "parcel build src/web/index.html --dist-dir target/console"
+    "prod:standalone": "parcel build src/web/index.html --dist-dir target/console",
+    "prod:feature-pack": "parcel build src/web/index.html --dist-dir target/console --public-url /halop"
   },
   "dependencies": {
     "@patternfly-java/charts": "^0.0.13",

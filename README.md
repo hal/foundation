@@ -60,7 +60,7 @@ is a management interface of a running WIldFly instance.
 To build halOP as a standalone Java application, run
 
 ```shell
-mvn install -P op,prod
+mvn install -P prod,op,standalone
 ```
 
 This will package the transpiled HTML, CSS and JavaScript resources into a Quarkus-based HTTP server. To start it, run
@@ -76,7 +76,7 @@ and open a browser at http://localhost:9090.
 To build the native binary of halOP, run
 
 ```shell
-mvn install -P op,prod,native -Dquarkus.native.container-build=false
+mvn install -P prod,op,standalone,native -Dquarkus.native.container-build=false
 ```
 
 Please make sure that you have a recent version of GraalVM installed.
@@ -92,6 +92,8 @@ chmod +x hal-op-*
 xattr -d com.apple.quarantine hal-op-*
 ```
 
+If you want to customize the port of halOP (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
+
 ## Container
 
 halOP is also available as a container image at https://quay.io/repository/halconsole/hal-op. Use
@@ -102,9 +104,15 @@ podman run -it -p 9090:9090 quay.io/halconsole/hal-op
 
 to start it and open a browser at http://localhost:9090.
 
-## Customization
+## Galleon Provisioning
 
-If you want to customize the port of halOP (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
+halOP is also available as a feature pack that can be provisioned with [Galleon](https://github.com/wildfly/galleon).
+
+1. Build the feature pack with `mvn install -P prod,op,feature-pack`
+2. Provision a WildFly server with `galleon.sh provision op/feature-pack/target/provision.xml --dir=$TMPDIR/wildfly --stability-level=experimental`
+3. `cd $TMPDIR/wildfly`
+4. Add a WildFly admin user with `bin/add-user.sh -u admin -p admin --silent`
+5. Start the server with `bin/standalone.sh --stability=experimental`
 
 # halOS (HAL on OpenShift)
 
@@ -114,7 +122,7 @@ halOS is not yet implemented!
 
 # Contributing
 
-This is an open source project. That means that everybody can contribute. It's not hard to get started. So
+This is an open-source project. That means that everybody can contribute. It's not hard to get started. So
 start [contributing](CONTRIBUTING.md) today!
 
 # Licenses

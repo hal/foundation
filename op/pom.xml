@@ -37,6 +37,10 @@
         <module>console</module>
     </modules>
 
+    <properties>
+        <npm.script/>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -75,6 +79,7 @@
             <properties>
                 <!-- Must match org.jboss.hal.op.HalOpSubsystemRegistrar#CONTEXT_NAME -->
                 <environment.base>/halop</environment.base>
+                <npm.script>prod:feature-pack</npm.script>
             </properties>
         </profile>
         <profile>
@@ -82,6 +87,9 @@
             <modules>
                 <module>standalone</module>
             </modules>
+            <properties>
+                <npm.script>prod:standalone</npm.script>
+            </properties>
         </profile>
     </profiles>
 </project>

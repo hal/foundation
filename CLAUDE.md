@@ -29,12 +29,27 @@ mvn install -P quick-build
 # Native binary (requires GraalVM)
 mvn install -P op,prod,native -Dquarkus.native.container-build=false
 
+# Build Galleon feature pack
+mvn install -P prod,op,feature-pack
+
 # Run a single test class
 mvn test -pl <module> -Dtest=<TestClassName>
 
 # Run a single test method
 mvn test -pl <module> -Dtest=<TestClassName>#<methodName>
 ```
+
+## Galleon Provisioning
+
+After building the feature pack, provision a WildFly server with the HAL console using the Galleon CLI:
+
+```bash
+galleon.sh provision op/feature-pack/target/provision.xml --dir=/path/to/wildfly
+```
+
+The `provision.xml` in `op/feature-pack/` uses `${project.version}` for the feature pack version. During the build, Maven resource filtering produces `target/provision.xml` with the resolved version. It provisions a full default WildFly standalone server and adds the `halop` layer on top.
+
+Start the provisioned server with `--stability=experimental`.
 
 ## Development Mode
 
@@ -78,6 +93,8 @@ All code modules live under `code-parent` for shared dependency management:
 Application modules:
 - `op/console` — J2CL-compiled SPA (Parcel bundler, PatternFly 6)
 - `op/standalone` — Quarkus HTTP server wrapping the SPA
+- `op/subsystem` — WildFly subsystem extension for the HAL console
+- `op/feature-pack` — Galleon feature pack to provision HAL into WildFly
 
 Supporting modules: `bom` (dependency versions), `build-config` (checkstyle/license rules).
 

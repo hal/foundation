@@ -34,11 +34,11 @@
     <description>WildFly feature pack for HAL console on premise</description>
 
     <properties>
+        <halop.stability>experimental</halop.stability>
         <version.org.wildfly>39.0.1.Final</version.org.wildfly>
         <version.org.wildfly.core>31.0.3.Final</version.org.wildfly.core>
         <version.org.wildfly.common>2.0.1</version.org.wildfly.common>
         <version.org.wildfly.galleon-plugins>8.1.0.Final</version.org.wildfly.galleon-plugins>
-        <wildfly.halop.stability>experimental</wildfly.halop.stability>
     </properties>
 
     <dependencies>
@@ -69,14 +69,26 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
+                <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>auto-clean</id>
-                        <phase>initialize</phase>
+                        <id>filter-provision-xml</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>clean</goal>
+                            <goal>copy-resources</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>provision.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -96,9 +108,9 @@
                             <fork-embedded>true</fork-embedded>
                             <generate-channel-manifest>true</generate-channel-manifest>
                             <deploy-channel-manifest>false</deploy-channel-manifest>
-                            <minimum-stability-level>${wildfly.halop.stability}</minimum-stability-level>
+                            <minimum-stability-level>${halop.stability}</minimum-stability-level>
                             <config-stability-level>community</config-stability-level>
-                            <package-stability-level>${wildfly.halop.stability}</package-stability-level>
+                            <package-stability-level>${halop.stability}</package-stability-level>
                         </configuration>
                     </execution>
                 </executions>
