@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-03-05
+
 ### Added
 
 - Add Galleon feature pack
@@ -192,7 +194,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/hal/foundation/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/hal/foundation/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/hal/foundation/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/hal/foundation/compare/v0.1.0...v0.1.1
