@@ -120,7 +120,7 @@ halOP is also available as a feature pack that can be provisioned with [Galleon]
 
     ```shell
     galleon.sh provision op/feature-pack/target/provision.xml \
-        --dir=$TMPDIR/wildfly
+        --dir=$TMPDIR/wildfly \
         --stability-level=experimental
     ```
 
