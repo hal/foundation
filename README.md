@@ -35,7 +35,7 @@ that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The 
 on the management interface at http://localhost:9990/halop
 
 1. Build or use the latest feature pack from Maven Central [
-   `org.jboss.hal:hal-op-feature-pack:<VERSION>`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack)
+   `org.jboss.hal:hal-op-feature-pack:0.2.1`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack)
 
     ```shell
     mvn install -P prod,op,feature-pack
@@ -85,7 +85,7 @@ java -jar op/standalone/target/quarkus-app/quarkus-run.jar
 
 ```shell
 mvn install -P prod,op,standalone,native
-op/standalone/target/hal-op-standalone-<VERSION>-runner
+op/standalone/target/hal-op-standalone-0.2.1-runner
 ```
 
 Please make sure that you have a recent version of GraalVM installed.
@@ -94,12 +94,12 @@ See https://quarkus.io/guides/building-native-image#configuring-graalvm for deta
 #### Latest release (JVM)
 
 The latest release is deployed as Uber-Jar using the `runner` classifier to Maven Central: [
-`org.jboss.hal:hal-op-standalone:<VERSION>`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-standalone). You can
+`org.jboss.hal:hal-op-standalone:0.2.1`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-standalone). You can
 download and run it with
 
 ```shell
-mvn dependency:copy -Dartifact=org.jboss.hal:hal-op-standalone:<VERSION>:jar:runner -DoutputDirectory=.
-java -jar hal-op-standalone-<VERSION>-runner.jar
+mvn dependency:copy -Dartifact=org.jboss.hal:hal-op-standalone:0.2.1:jar:runner -DoutputDirectory=.
+java -jar hal-op-standalone-0.2.1-runner.jar
 ```
 
 #### Latest release (native)
