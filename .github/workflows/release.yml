@@ -204,7 +204,13 @@ jobs:
         run: |
           $APP_NAME = "hal-op"
           $VERSION = "${{ steps.get-version.outputs.version-without-v }}"
-          $runner = Get-ChildItem -Path op\standalone\target -Filter "*-runner.exe" -Recurse | Select-Object -First 1
+          Write-Host "Contents of op\standalone\target:"
+          Get-ChildItem -Path op\standalone\target | ForEach-Object { Write-Host "  $($_.Name)" }
+          $runner = Get-ChildItem -Path op\standalone\target\*-runner.exe | Select-Object -First 1
+          if (-not $runner) {
+            Write-Error "Native binary *-runner.exe not found in op\standalone\target"
+            exit 1
+          }
           Move-Item $runner.FullName "${APP_NAME}-${VERSION}-windows.exe"
         shell: pwsh
       - if: matrix.os == 'macos-latest'
