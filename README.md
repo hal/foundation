@@ -119,7 +119,7 @@ xattr -d com.apple.quarantine hal-op-*
 halOP can also be started using [JBang](https://jbang.dev/).
 
 ```shell
-jbang org.jboss.hal:hal-op-standalone:0.2.2:runner
+jbang org.jboss.hal:hal-op-standalone:0.2.3:runner
 ```
 
 If you want it even simpler, you can make use of
