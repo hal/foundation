@@ -6,7 +6,7 @@ OpenShift version (halOS). To distinguish between the two editions, we introduce
 - halOP: HAL on premise
 - halOS: HAL on OpenShift
 
-The work is in a very early state and very much in progress.
+The work on the new consoles is in an early state and very much in progress.
 
 # Technical Stack
 
@@ -19,12 +19,121 @@ The work is in a very early state and very much in progress.
 
 # halOP (HAL On Premise)
 
-This edition is the successor of the current [HAL management console](https://github.com/hal/console). It is shipped with
-WildFly or can be run as a standalone application to connect to arbitrary WildFly instances.
+This edition is the successor of the current [HAL management console](https://github.com/hal/console).
+
+## Get Started
+
+There are many ways to get started with halOP, but essentially there are two ways to use the console:
+
+1. Bundled – as part of a WildFly installation
+2. Standalone – as a single-page application ([SPA](https://en.wikipedia.org/wiki/Single-page_application)) running on its own
+
+### Bundled
+
+In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as an experimental feature pack
+that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The feature pack mounts an additional HTTP endpoint
+on the management interface: http://localhost:9990/halop
+
+1. Build or use the latest feature pack from Maven Central [
+   `org.jboss.hal:hal-op-feature-pack:<VERSION>`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack)
+
+    ```shell
+    mvn install -P prod,op,feature-pack
+    ```
+
+2. Provision a WildFly server. You can use the provided [
+   `provision.xml`](https://github.com/hal/foundation/blob/main/op/feature-pack/provision.xml) as an example. It provisions a
+   default standalone server plus the halOP feature pack. If you haven't built the feature pack in step 1 and used the latest
+   version from Maven Central, you have to run `mvn process-resources` in `op/feature-pack` in order to resolve the version
+   numbers.
+
+    ```shell
+    galleon.sh provision op/feature-pack/target/provision.xml \
+        --dir=$TMPDIR/wildfly \
+        --stability-level=experimental
+    ```
+
+3. Prepare and start the server
+
+    ```shell
+    cd $TMPDIR/wildfly
+    bin/add-user.sh -u admin -p admin --silent
+    bin/standalone.sh --stability=experimental
+    ```
+
+4. Open http://localhost:9990/halop
+
+### Standalone
+
+halOP can run on its own. In this mode halOP starts a local web server and serves the console on its own without being part of a
+WildFly installation. halOP is "just" a single-page application ([SPA](https://en.wikipedia.org/wiki/Single-page_application))
+without any server side dependencies. The only requirement is a management interface of a running WIldFly instance.
+
+By default, halOP is available at http://localhost:9090. If you want to customize the port, please use
+`-Dquarkus.http.port=<port>`.
+
+There are many ways to run halOP in standalone mode:
+
+#### Build and run on your own (JVM)
+
+```shell
+mvn install -P prod,op,standalone
+java -jar op/standalone/target/quarkus-app/quarkus-run.jar
+```
+
+#### Build and run on your own (native)
+
+```shell
+mvn install -P prod,op,standalone,native
+op/standalone/target/hal-op-standalone-<VERSION>-runner
+```
+
+Please make sure that you have a recent version of GraalVM installed.
+See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
+
+#### Latest release (JVM)
+
+The latest release is deployed as Uber-Jar using the `runner` classifier to Maven Central: [
+`org.jboss.hal:hal-op-standalone:<VERSION>`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-standalone). You can
+download and run it with
+
+```shell
+mvn dependency:copy -Dartifact=org.jboss.hal:hal-op-standalone:<VERSION>:jar:runner -DoutputDirectory=.
+java -jar hal-op-standalone-<VERSION>-runner.jar
+```
+
+#### Latest release (native)
+
+Native binaries for Linux, macOS, and Windows are attached to every [release](https://github.com/hal/foundation/releases).
+Download the binary for your platform, make it executable, and run it. To make the binary executable, you might need to run
+something like this (depending on your OS):
+
+```shell
+chmod +x hal-op-*
+xattr -d com.apple.quarantine hal-op-*
+```
+
+#### JBang
+
+halOP is also available as
+a [JBang](https://jbang.dev/) [catalog](https://www.jbang.dev/documentation/jbang/latest/alias_catalogs.html#catalogs):
+
+```shell
+jbang hal-op@hal
+```
+
+#### Container
+
+halOP is also available as a container image at https://quay.io/repository/halconsole/hal-op.
+
+```shell
+podman run -it -p 9090:9090 quay.io/halconsole/hal-op
+```
 
 ## Development
 
-In the development mode, the Java code is transpiled to JavaScript using J2CL. The HTML and CSS are transpiled to JavaScript
+If you want to contribute to halOP, follow these steps to start halOP in development mode. In the development mode, the Java
+code is transpiled to JavaScript using J2CL. The HTML and CSS are transpiled to JavaScript
 using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser reloads the page automatically.
 Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser manually.
 
@@ -48,99 +157,6 @@ npm run watch
 ```
 
 This will open a browser at http://localhost:1234.
-
-## Standalone
-
-halOP can run on its own. In this mode halOP starts a local web server and serves the console on its own without being part of a
-WildFly installation. halOP is "just" a single-page application (SPA) without any server side dependencies. The only requirement
-is a management interface of a running WIldFly instance.
-
-### Java
-
-To build halOP as a standalone Java application, run
-
-```shell
-mvn install -P prod,op,standalone
-```
-
-This will package the transpiled HTML, CSS, and JavaScript resources into a Quarkus-based HTTP server. To start it, run
-
-```shell
-java -jar op/standalone/target/hal-op-standalone-0.2.1.jar
-```
-
-and open a browser at http://localhost:9090.
-
-### Native
-
-To build the native binary of halOP, run
-
-```shell
-mvn install -P prod,op,standalone,native -Dquarkus.native.container-build=false
-```
-
-Please make sure that you have a recent version of GraalVM installed.
-See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
-
-Native binaries for Linux, macOS, and Windows are also attached to every [release](https://github.com/hal/foundation/releases).
-Download the binary for your platform, make it executable, and run it. Then open a browser at http://localhost:9090.
-
-To make the binary executable, you might need to run something like this:
-
-```shell
-chmod +x hal-op-*
-xattr -d com.apple.quarantine hal-op-*
-```
-
-If you want to customize the port of halOP (Java-based and native), please use `-Dquarkus.http.port=<port>` to change the port.
-
-## JBang
-
-halOP can also be run as a standalone Java application using [JBang](https://jbang.dev/).
-
-```shell
-jbang hal-op@hal
-```
-
-## Container
-
-halOP is also available as a container image at https://quay.io/repository/halconsole/hal-op. Use
-
-```shell
-podman run -it -p 9090:9090 quay.io/halconsole/hal-op
-```
-
-to start it and open a browser at http://localhost:9090.
-
-## Galleon Provisioning
-
-halOP is also available as a feature pack that can be provisioned with [Galleon](https://github.com/wildfly/galleon).
-
-1. Build the feature pack with
-
-    ```shell
-    mvn install -P prod,op,feature-pack
-    ```
-
-2. Provision a WildFly server. You can use the provided [
-   `provision.xml`](https://github.com/hal/foundation/blob/main/op/feature-pack/provision.xml) as an example. It provisions a
-   default standalone server plus the halOP feature pack.
-
-    ```shell
-    galleon.sh provision op/feature-pack/target/provision.xml \
-        --dir=$TMPDIR/wildfly \
-        --stability-level=experimental
-    ```
-
-3. Prepare and start the server
-
-    ```shell
-    cd $TMPDIR/wildfly
-    bin/add-user.sh -u admin -p admin --silent
-    bin/standalone.sh --stability=experimental
-    ```
-
-4. Open http://localhost:9990/halop
 
 # halOS (HAL on OpenShift)
 
