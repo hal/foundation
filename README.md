@@ -30,7 +30,8 @@ There are many ways to get started with halOP, but essentially there are two way
 
 ### Bundled
 
-In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as an experimental feature pack
+In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as an
+experimental [feature pack](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack)
 that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The feature pack mounts an additional HTTP endpoint
 on the management interface at http://localhost:9990/halop.
 
@@ -91,7 +92,7 @@ op/standalone/target/hal-op-standalone-0.2.3-runner
 Please make sure that you have a recent version of GraalVM installed.
 See https://quarkus.io/guides/building-native-image#configuring-graalvm for details.
 
-#### Latest release (JVM)
+#### Use the latest release (JVM)
 
 The latest release is deployed as Uber-Jar using the `runner` classifier to Maven Central: [
 `org.jboss.hal:hal-op-standalone:0.2.3`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-standalone). You can
@@ -102,7 +103,7 @@ mvn dependency:copy -Dartifact=org.jboss.hal:hal-op-standalone:0.2.3:jar:runner 
 java -jar hal-op-standalone-0.2.3-runner.jar
 ```
 
-#### Latest release (native)
+#### Use the latest release (native)
 
 Native binaries for Linux, macOS, and Windows are attached to every [release](https://github.com/hal/foundation/releases).
 Download the binary for your platform, make it executable, and run it. To make the binary executable, you might need to run
@@ -115,12 +116,26 @@ xattr -d com.apple.quarantine hal-op-*
 
 #### JBang
 
-halOP is also available as
-a [JBang](https://jbang.dev/) [catalog](https://www.jbang.dev/documentation/jbang/latest/alias_catalogs.html#catalogs):
+halOP can also be started using [JBang](https://jbang.dev/).
+
+```shell
+jbang org.jboss.hal:hal-op-standalone:0.2.2:runner
+```
+
+If you want it even simpler, you can make use of
+the [JBang catalog](https://www.jbang.dev/documentation/jbang/latest/alias_catalogs.html#catalogs) for halOP:
 
 ```shell
 jbang hal-op@hal
 ```
+
+Finally, you can also install it as a command using `jbang app install hal-op@hal`. Then all you have to do is to run
+
+```shell
+hal-op
+```
+
+and you'll always be up to date.
 
 #### Container
 
