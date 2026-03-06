@@ -102,8 +102,8 @@ jobs:
           mv tmp.json jbang-catalog.json
       - run: |
           VERSION="${{ steps.get-version.outputs.version-without-v }}"
-          git config user.name "hal-bot"
-          git config user.email "hal-bot@users.noreply.github.com"
+          git config user.name "Harald Pehl"
+          git config user.email "harald.pehl@gmail.com"
           git add jbang-catalog.json
           git commit -m "Update halOP version to ${VERSION}"
           git push
@@ -221,18 +221,13 @@ jobs:
       - if: matrix.os == 'macos-latest'
         run: ./mvnw --show-version --batch-mode --no-transfer-progress install -P prod,op,standalone,native -Dquarkus.native.container-build=false
       - if: matrix.os == 'windows-latest'
-        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -P prod,op,standalone,native "-Dquarkus.native.container-build=false"
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install -P "prod,op,standalone,native" "-Dquarkus.native.container-build=false"
+        shell: cmd
       - if: matrix.os == 'windows-latest'
         run: |
           $APP_NAME = "hal-op"
           $VERSION = "${{ steps.get-version.outputs.version-without-v }}"
-          Write-Host "Contents of op\standalone\target:"
-          Get-ChildItem -Path op\standalone\target | ForEach-Object { Write-Host "  $($_.Name)" }
           $runner = Get-ChildItem -Path op\standalone\target\*-runner.exe | Select-Object -First 1
-          if (-not $runner) {
-            Write-Error "Native binary *-runner.exe not found in op\standalone\target"
-            exit 1
-          }
           Move-Item $runner.FullName "${APP_NAME}-${VERSION}-windows.exe"
         shell: pwsh
       - if: matrix.os == 'macos-latest'
