@@ -32,7 +32,7 @@ There are many ways to get started with halOP, but essentially there are two way
 
 In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as an experimental feature pack
 that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The feature pack mounts an additional HTTP endpoint
-on the management interface: http://localhost:9990/halop
+on the management interface at http://localhost:9990/halop
 
 1. Build or use the latest feature pack from Maven Central [
    `org.jboss.hal:hal-op-feature-pack:<VERSION>`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack)
@@ -45,7 +45,7 @@ on the management interface: http://localhost:9990/halop
    `provision.xml`](https://github.com/hal/foundation/blob/main/op/feature-pack/provision.xml) as an example. It provisions a
    default standalone server plus the halOP feature pack. If you haven't built the feature pack in step 1 and used the latest
    version from Maven Central, you have to run `mvn process-resources` in `op/feature-pack` in order to resolve the version
-   numbers.
+   numbers in [`provision.xml`](https://github.com/hal/foundation/blob/main/op/feature-pack/provision.xml).
 
     ```shell
     galleon.sh provision op/feature-pack/target/provision.xml \
@@ -69,7 +69,7 @@ halOP can run on its own. In this mode halOP starts a local web server and serve
 WildFly installation. halOP is "just" a single-page application ([SPA](https://en.wikipedia.org/wiki/Single-page_application))
 without any server side dependencies. The only requirement is a management interface of a running WIldFly instance.
 
-By default, halOP is available at http://localhost:9090. If you want to customize the port, please use
+By default, the standalone mode is available at http://localhost:9090. If you want to customize the port, please use
 `-Dquarkus.http.port=<port>`.
 
 There are many ways to run halOP in standalone mode:
