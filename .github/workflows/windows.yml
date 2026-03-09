@@ -12,9 +12,9 @@ jobs:
     steps:
       - id: get-version
         uses: battila7/get-version-action@v2.3.0
-
       - uses: actions/checkout@v6
-
+      - run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install
+        working-directory: bom
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: 25
@@ -22,17 +22,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           components: native-image
           cache: maven
-
       - name: Diagnostic - Java and GraalVM info
         run: |
           java -version
           native-image --version
           echo "JAVA_HOME=$env:JAVA_HOME"
           echo "GRAALVM_HOME=$env:GRAALVM_HOME"
-
       - name: Build native binary
-        run: .\\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "prod,op,standalone,native" "-Dquarkus.native.container-build=false"
-
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "prod,op,standalone,native" "-Dquarkus.native.container-build=false"
       - name: Diagnostic - List op directory structure
         if: always()
         run: |
@@ -42,7 +39,6 @@ jobs:
           } else {
             echo "op\standalone does not exist!"
           }
-
       - name: Diagnostic - List op/standalone/target contents
         if: always()
         run: |
@@ -62,7 +58,6 @@ jobs:
           if (Test-Path "op\standalone\target") {
             Get-ChildItem -Path op\standalone\target -Filter "*.exe" -Recurse | Format-Table FullName, Length
           }
-
       - name: Diagnostic - List all target directories in project
         if: always()
         run: |
@@ -71,7 +66,6 @@ jobs:
           echo ""
           echo "=== Looking for runner files anywhere ==="
           Get-ChildItem -Path . -Filter "*runner*" -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*target*" } | Format-Table FullName, Length
-
       - name: Diagnostic - Check Maven build output
         if: always()
         run: |
@@ -81,7 +75,6 @@ jobs:
           } else {
             echo "quarkus-artifact.properties not found"
           }
-
       - name: Rename native binary
         if: success()
         run: |
