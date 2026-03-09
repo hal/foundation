@@ -15,7 +15,7 @@ The work on the new consoles is in an early state and very much in progress.
 - [Crysknife CDI](https://github.com/crysknife-io/crysknife)
 - [Elemento](https://github.com/hal/elemento)
 - [PatternFly Java](https://github.com/patternfly-java)
-- [Maven](https://maven.apache.org/), [Parcel](https://parceljs.org/), and [NPM](https://www.npmjs.com/)
+- [Maven](https://maven.apache.org/), [Parcel](https://parceljs.org/), and [PNPM](https://pnpm.io/)
 
 # halOP (HAL On Premise)
 
