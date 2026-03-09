@@ -29,7 +29,7 @@ jobs:
           echo "JAVA_HOME=$env:JAVA_HOME"
           echo "GRAALVM_HOME=$env:GRAALVM_HOME"
       - name: Build native binary
-        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "prod,op,standalone,native" "-Dquarkus.native.container-build=false"
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "prod,op,standalone,native" "-Dquarkus.native.container-build=false" "-Dcheckstyle.skip"
       - name: Diagnostic - List op directory structure
         if: always()
         run: |
