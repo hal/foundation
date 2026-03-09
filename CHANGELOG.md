@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-03-09
+
 ### Fixed
 
 - Fix native binary build for Windows
@@ -225,7 +227,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/hal/foundation/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/hal/foundation/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/hal/foundation/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/hal/foundation/compare/v0.2.2...v0.2.3
