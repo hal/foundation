@@ -1,0 +1,99 @@
+name: Windows Native Build Debug
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-native-binary-windows:
+    runs-on: windows-latest
+    steps:
+      - id: get-version
+        uses: battila7/get-version-action@v2.3.0
+
+      - uses: actions/checkout@v6
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: 25
+          distribution: graalvm
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          components: native-image
+          cache: maven
+
+      - name: Diagnostic - Java and GraalVM info
+        run: |
+          java -version
+          native-image --version
+          echo "JAVA_HOME=$env:JAVA_HOME"
+          echo "GRAALVM_HOME=$env:GRAALVM_HOME"
+
+      - name: Build native binary
+        run: .\\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "prod,op,standalone,native" "-Dquarkus.native.container-build=false"
+
+      - name: Diagnostic - List op directory structure
+        if: always()
+        run: |
+          echo "=== op/standalone directory ==="
+          if (Test-Path "op\standalone") {
+            Get-ChildItem -Path op\standalone -Recurse -Depth 2 | Format-Table FullName, Length
+          } else {
+            echo "op\standalone does not exist!"
+          }
+
+      - name: Diagnostic - List op/standalone/target contents
+        if: always()
+        run: |
+          echo "=== op/standalone/target ==="
+          if (Test-Path "op\standalone\target") {
+            Get-ChildItem -Path op\standalone\target | Format-Table Name, Length, LastWriteTime
+          } else {
+            echo "op\standalone\target does not exist!"
+          }
+          echo ""
+          echo "=== Looking for any runner files ==="
+          if (Test-Path "op\standalone\target") {
+            Get-ChildItem -Path op\standalone\target -Filter "*runner*" -Recurse | Format-Table FullName, Length
+          }
+          echo ""
+          echo "=== Looking for any .exe files ==="
+          if (Test-Path "op\standalone\target") {
+            Get-ChildItem -Path op\standalone\target -Filter "*.exe" -Recurse | Format-Table FullName, Length
+          }
+
+      - name: Diagnostic - List all target directories in project
+        if: always()
+        run: |
+          echo "=== All target directories ==="
+          Get-ChildItem -Path . -Directory -Filter "target" -Recurse -Depth 4 | Format-Table FullName
+          echo ""
+          echo "=== Looking for runner files anywhere ==="
+          Get-ChildItem -Path . -Filter "*runner*" -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*target*" } | Format-Table FullName, Length
+
+      - name: Diagnostic - Check Maven build output
+        if: always()
+        run: |
+          echo "=== Quarkus build output ==="
+          if (Test-Path "op\standalone\target\quarkus-artifact.properties") {
+            Get-Content "op\standalone\target\quarkus-artifact.properties"
+          } else {
+            echo "quarkus-artifact.properties not found"
+          }
+
+      - name: Rename native binary
+        if: success()
+        run: |
+          $APP_NAME = "hal-op"
+          $VERSION = "${{ steps.get-version.outputs.version-without-v }}"
+          echo "Looking for runner exe..."
+          $runner = Get-ChildItem -Path op\standalone\target\*-runner.exe | Select-Object -First 1
+          if ($runner) {
+            echo "Found: $($runner.FullName)"
+            Move-Item $runner.FullName "${APP_NAME}-${VERSION}-windows.exe"
+          } else {
+            echo "No *-runner.exe found in op\standalone\target\"
+            exit 1
+          }
+        shell: pwsh
