@@ -24,7 +24,6 @@ import java.util.function.Predicate;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelNodeHelper;
-import org.jboss.hal.dmr.Property;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
@@ -64,7 +63,7 @@ class ResourceAttribute {
             Predicate<AttributeDescription> predicate) {
         List<ResourceAttribute> resourceAttributes = new ArrayList<>();
         for (AttributeDescription description : operationDescription.parameters()) {
-            if (description.simpleValueType()) {
+            if (description.simpleRecord()) {
                 AttributeDescriptions nestedDescriptions = description.valueTypeAttributeDescriptions();
                 for (AttributeDescription nestedDescription : nestedDescriptions) {
                     if (predicate.test(nestedDescription)) {
@@ -81,7 +80,7 @@ class ResourceAttribute {
     }
 
     /**
-     * Collects and returns a list of resource attributes based on an existing resource.
+     * Collects and returns a list of resource attributes based on an existing resource and its metadata.
      *
      * @param resource  The model node representing the resource.
      * @param metadata  The metadata containing resource descriptions and attribute descriptions.
@@ -91,22 +90,19 @@ class ResourceAttribute {
     static List<ResourceAttribute> resourceAttributes(ModelNode resource, Metadata metadata,
             Predicate<AttributeDescription> predicate) {
         List<ResourceAttribute> resourceAttributes = new ArrayList<>();
-        for (Property property : resource.asPropertyList()) {
-            String name = property.getName();
-            AttributeDescription description = metadata.resourceDescription().attributes().get(name);
-            if (description.simpleValueType()) {
-                AttributeDescriptions nestedDescriptions = description.valueTypeAttributeDescriptions();
-                for (AttributeDescription nestedDescription : nestedDescriptions) {
-                    if (predicate.test(nestedDescription)) {
-                        ModelNode nestedValue = ModelNodeHelper.nested(resource, nestedDescription.fullyQualifiedName());
-                        resourceAttributes.add(
-                                new ResourceAttribute(nestedValue, nestedDescription, metadata.securityContext()));
+        for (AttributeDescription ad : metadata.resourceDescription().attributes()) {
+            if (ad.simpleRecord()) {
+                AttributeDescriptions nads = ad.valueTypeAttributeDescriptions();
+                for (AttributeDescription nad : nads) {
+                    if (predicate.test(nad)) {
+                        ModelNode nestedValue = ModelNodeHelper.nested(resource, nad.fullyQualifiedName());
+                        resourceAttributes.add(new ResourceAttribute(nestedValue, nad, metadata.securityContext()));
                     }
                 }
             } else {
-                if (predicate.test(description)) {
-                    ModelNode value = property.getValue();
-                    resourceAttributes.add(new ResourceAttribute(value, description, metadata.securityContext()));
+                if (predicate.test(ad)) {
+                    ModelNode value = resource.get(ad.name());
+                    resourceAttributes.add(new ResourceAttribute(value, ad, metadata.securityContext()));
                 }
             }
         }

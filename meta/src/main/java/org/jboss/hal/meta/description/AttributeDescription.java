@@ -194,7 +194,7 @@ public class AttributeDescription extends NamedNode implements Description {
      * Checks if the attribute description is of type {@link ModelType#OBJECT} with an object value-type that only contains
      * {@linkplain ModelType#simple() simple attributes} or lists of simple attributes.
      */
-    public boolean simpleValueType() {
+    public boolean simpleRecord() {
         try {
             ModelType type = get(TYPE).asType();
             if (type == OBJECT) {

@@ -29,6 +29,6 @@ class AttributeDescriptionTest {
         assertEquals("undefined", attributeDescription.description());
         assertFalse(attributeDescription.deprecation().isDefined());
         assertEquals("", attributeDescription.formatType());
-        assertFalse(attributeDescription.simpleValueType());
+        assertFalse(attributeDescription.simpleRecord());
     }
 }
