@@ -30,7 +30,6 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.model.filter.NameAttribute;
-import org.jboss.hal.resources.HalClasses;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.form.Checkbox;
@@ -46,6 +45,7 @@ import org.patternfly.component.table.Tr;
 import org.patternfly.component.title.Title;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
@@ -65,8 +65,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WILDFLY_STATISTICS_ENA
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.op.task.statistics.NewExpressionModal.newExpressionModal;
 import static org.jboss.hal.op.task.statistics.StatisticsEnabledMultiSelect.statisticsEnabledMultiSelect;
-import static org.jboss.hal.resources.HalClasses.filtered;
-import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.BuildingBlocks.emptyRow;
 import static org.jboss.hal.ui.BuildingBlocks.renderExpression;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
@@ -106,6 +104,8 @@ import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.filter.FilterOperator.AND;
 import static org.patternfly.icon.IconSets.fas.ellipsisV;
+import static org.patternfly.style.Classes.filtered;
+import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.screenReader;
 import static org.patternfly.style.Size._2xl;
 import static org.patternfly.style.Width.width40;
@@ -312,7 +312,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 ResourceData rd = row.get(RESOURCE_DATA);
                 if (rd != null) {
                     boolean match = filter.match(rd);
-                    row.classList().toggle(halModifier(filtered), !match);
+                    row.classList().toggle(modifier(filtered), !match);
                     if (match) {
                         matchingItems++;
                     }
@@ -326,7 +326,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         } else {
             matchingItems = total.get();
             resourcesTBody.clearEmpty();
-            resourcesTBody.items().forEach(row -> row.element().classList.remove(halModifier(filtered)));
+            resourcesTBody.items().forEach(row -> row.element().classList.remove(modifier(filtered)));
         }
         visible.set(matchingItems);
     }
@@ -343,7 +343,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         // which in turn calls onSelection(...), we do it manually.
         resourcesTable.selectNone(false);
         List<Tr> filtered = resourcesTBody.items().stream()
-                .filter(item -> !item.element().classList.contains(halModifier(HalClasses.filtered)))
+                .filter(item -> !item.element().classList.contains(modifier(Classes.filtered)))
                 .collect(toList());
         for (Tr item : filtered) {
             resourcesTable.select(item, true, false);

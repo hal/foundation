@@ -48,9 +48,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.resources.HalClasses.body;
-import static org.jboss.hal.resources.HalClasses.filtered;
 import static org.jboss.hal.resources.HalClasses.halComponent;
-import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -72,6 +70,8 @@ import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.ban;
+import static org.patternfly.style.Classes.filtered;
+import static org.patternfly.style.Classes.modifier;
 
 /**
  * Combines a {@link ResourceFilter} and {@link ResourceToolbar} with a {@link ResourceView} and {@link ResourceForm}.
@@ -263,7 +263,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                     ResourceAttribute ra = item.resourceAttribute();
                     if (ra != null) {
                         boolean match = filter.match(ra);
-                        item.element().classList.toggle(halModifier(filtered), !match);
+                        item.element().classList.toggle(modifier(filtered), !match);
                         if (match) {
                             matchingItems++;
                         }
@@ -273,7 +273,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
             } else {
                 matchingItems = total.get();
                 noMatch.toggle(rootContainer.element(), false);
-                items.items().forEach(item -> item.element().classList.remove(halModifier(filtered)));
+                items.items().forEach(item -> item.element().classList.remove(modifier(filtered)));
             }
             visible.set(matchingItems);
         }

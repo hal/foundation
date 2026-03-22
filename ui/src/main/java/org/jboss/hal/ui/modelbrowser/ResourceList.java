@@ -25,9 +25,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.model.filter.NameAttribute;
-import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
-import org.jboss.hal.ui.filter.NameSearchInput;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -60,10 +58,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
-import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
+import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserEngine.parseChildren;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.FOLDER;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.SINGLETON_FOLDER;
@@ -101,6 +99,7 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.Gap.md;
 import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Classes.component;
+import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.componentVar;
@@ -148,7 +147,7 @@ class ResourceList implements IsElement<HTMLElement> {
                 .addContent(toolbarContent()
                         .addItem(toolbarItem(searchFilter)
                                 .style(spacer.name, filterGroupSpacer.asVar()) // override spacing
-                                .add(NameSearchInput.nameSearchInput(filter)))
+                                .add(nameSearchInput(filter)))
                         .addItem(toolbarItem()
                                 .style("align-self", "center")
                                 .add(itemCount(visible, total, "resource", "resources")))
@@ -336,7 +335,7 @@ class ResourceList implements IsElement<HTMLElement> {
                     ModelBrowserNode mbn = item.get(Keys.MODEL_BROWSER_NODE);
                     if (mbn != null) {
                         boolean match = filter.match(mbn);
-                        item.classList().toggle(halModifier(HalClasses.filtered), !match);
+                        item.classList().toggle(modifier(filtered), !match);
                         if (match) {
                             matchingItems++;
                         }
@@ -346,7 +345,7 @@ class ResourceList implements IsElement<HTMLElement> {
             } else {
                 matchingItems = total.get();
                 noMatch.toggle(listContainer, false);
-                dataList.items().forEach(dlg -> dlg.classList().remove(halModifier(HalClasses.filtered)));
+                dataList.items().forEach(dlg -> dlg.classList().remove(modifier(filtered)));
             }
             visible.set(matchingItems);
         }

@@ -19,7 +19,6 @@ import org.jboss.elemento.IsElement;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.table.TableType;
@@ -32,7 +31,6 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
-import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.BuildingBlocks.emptyRow;
 import static org.jboss.hal.ui.modelbrowser.AttributesToolbar.attributesToolbar;
 import static org.patternfly.component.table.Table.table;
@@ -41,6 +39,8 @@ import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
 import static org.patternfly.core.ObservableValue.ov;
+import static org.patternfly.style.Classes.filtered;
+import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width20;
@@ -104,7 +104,7 @@ class AttributesTable implements IsElement<HTMLElement> {
                 AttributeDescription ad = tr.get(Keys.ATTRIBUTE_DESCRIPTION);
                 if (ad != null) {
                     boolean match = filter.match(ad);
-                    tr.classList().toggle(halModifier(HalClasses.filtered), !match);
+                    tr.classList().toggle(modifier(filtered), !match);
                     if (match) {
                         matchingItems++;
                     }
@@ -118,7 +118,7 @@ class AttributesTable implements IsElement<HTMLElement> {
         } else {
             matchingItems = total.get();
             tbody.clearEmpty();
-            tbody.items().forEach(dlg -> dlg.classList().remove(halModifier(HalClasses.filtered)));
+            tbody.items().forEach(dlg -> dlg.classList().remove(modifier(filtered)));
         }
         visible.set(matchingItems);
     }

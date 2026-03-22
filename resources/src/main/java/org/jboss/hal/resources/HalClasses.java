@@ -31,7 +31,6 @@ public interface HalClasses {
     String form = "form";
     String dollar = "dollar";
     String expression = "expression";
-    String filtered = "filtered";
     String goto_ = "goto";
     String modelBrowser = "model-browser";
     String name = "name";

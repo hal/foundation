@@ -12,14 +12,16 @@
     "start:parcel": "parcel watch src/web/dev.html --dist-dir target/console --port 1235",
     "start:server": "node server.js 1234 1235",
     "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
-    "watch": "concurrently \"npm run start:parcel\" \"npm run start:server\" \"npm run open:browser\"",
+    "watch": "concurrently \"pnpm run start:parcel\" \"pnpm run start:server\" \"pnpm run open:browser\"",
     "prod:feature-pack": "parcel build src/web/index.html --dist-dir target/feature-pack-resources --public-url /halop",
     "prod:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources"
   },
   "dependencies": {
-    "@patternfly-java/charts": "^0.0.13",
+    "@patternfly-java/charts": "^0.6.6",
+    "@patternfly-java/core": "^0.6.6",
+    "@patternfly-java/finder": "^0.6.6",
     "@patternfly/patternfly": "^6.4.0",
-    "dompurify": "^3.3.1"
+    "dompurify": "^3.3.3"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.16.4",

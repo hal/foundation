@@ -84,6 +84,10 @@
             <artifactId>patternfly-java-charts</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.patternfly</groupId>
+            <artifactId>patternfly-java-finder</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kie.j2cl.tools.processors</groupId>
             <artifactId>annotations</artifactId>
         </dependency>

@@ -45,7 +45,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DESCRIPTION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 import static org.jboss.hal.resources.HalClasses.deprecated;
-import static org.jboss.hal.resources.HalClasses.filtered;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescription;
 import static org.jboss.hal.ui.BuildingBlocks.attributeName;
@@ -73,6 +72,7 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.layout.flex.SpaceItems.xs;
 import static org.patternfly.style.Classes.component;
+import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.fitContent;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.screenReader;
@@ -218,7 +218,7 @@ class OperationsTable implements IsElement<HTMLElement> {
                 OperationDescription od = tr.get(Keys.OPERATION_DESCRIPTION);
                 if (od != null) {
                     boolean match = filter.match(od);
-                    tr.classList().toggle(halModifier(filtered), !match);
+                    tr.classList().toggle(modifier(filtered), !match);
                     if (match) {
                         matchingItems++;
                     }
@@ -232,7 +232,7 @@ class OperationsTable implements IsElement<HTMLElement> {
         } else {
             matchingItems = total.get();
             tbody.clearEmpty();
-            tbody.items().forEach(dlg -> dlg.classList().remove(halModifier(filtered)));
+            tbody.items().forEach(dlg -> dlg.classList().remove(modifier(filtered)));
         }
         visible.set(matchingItems);
     }

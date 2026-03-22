@@ -22,37 +22,32 @@ import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
-import org.jboss.elemento.router.PlaceManager;
 import org.jboss.elemento.router.Route;
+import org.jboss.hal.op.finder.ColumnRegistry;
 
 import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
-import static org.jboss.elemento.Elements.p;
-import static org.jboss.elemento.router.Link.link;
-import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.page.PageSection.pageSection;
-import static org.patternfly.component.title.Title.title;
-import static org.patternfly.style.Size._3xl;
+import static org.patternfly.extension.finder.Finder.finder;
+import static org.patternfly.extension.finder.FinderPreview.finderPreview;
+import static org.patternfly.style.Classes.util;
 
 @Dependent
 @Route("/configuration")
 public class ConfigurationPage implements Page {
 
-    private final PlaceManager placeManager;
+    private final ColumnRegistry columnRegistry;
 
     @Inject
-    public ConfigurationPage(PlaceManager placeManager) {
-        this.placeManager = placeManager;
+    public ConfigurationPage(ColumnRegistry columnRegistry) {
+        this.columnRegistry = columnRegistry;
     }
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(pageSection()
-                .add(content()
-                        .add(title(1, _3xl, "Configuration"))
-                        .add(p().text("Not yet implemented!"))
-                        .add(p().add(link(placeManager, "/").text("Home"))))
+        return singletonList(finder().css(util("h-100"))
+                .addItem(columnRegistry.column(ConfigurationColumn.ID))
+                .addPreview(finderPreview().css(util("p-md")))
                 .element());
     }
 }
