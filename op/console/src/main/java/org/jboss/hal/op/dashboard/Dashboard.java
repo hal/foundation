@@ -25,8 +25,8 @@ import org.patternfly.component.list.DescriptionListGroup;
 import org.patternfly.icon.PredefinedIcon;
 
 import static org.jboss.hal.core.LabelBuilder.labelBuilder;
-import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
+import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;

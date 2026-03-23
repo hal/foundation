@@ -28,6 +28,9 @@ import org.jboss.hal.op.finder.ColumnRegistry;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
+import static org.patternfly.component.content.Content.content;
+import static org.patternfly.component.content.ContentType.h1;
+import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.extension.finder.Finder.finder;
 import static org.patternfly.extension.finder.FinderPreview.finderPreview;
 import static org.patternfly.style.Classes.util;
@@ -46,8 +49,13 @@ public class ConfigurationPage implements Page {
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         return singletonList(finder().css(util("h-100"))
-                .addItem(columnRegistry.column(ConfigurationColumn.ID))
-                .addPreview(finderPreview().css(util("p-md")))
+                .addItem(columnRegistry.column(ConfigurationColumn.ID).get())
+                .addPreview(finderPreview().css(util("p-md"))
+                        .add(content(h1).text("Configuration"))
+                        .add(content(p).editorial()
+                                .text("Configure subsystems and global resources such as interfaces, socket bindings, paths and system properties."))
+                        .add(content(p).editorial()
+                                .text("View and modify the configuration for each available subsystem. For example, add a data source, configure a messaging provider, or set up application security.")))
                 .element());
     }
 }

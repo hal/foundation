@@ -37,6 +37,7 @@ import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 
 /**
@@ -107,6 +108,20 @@ public class CrudOperations {
             notifications.send(warning("Not modified", typeName(template) + " has not been modified."));
             return Promise.resolve(new CompositeResult(new ModelNode()));
         }
+    }
+
+    // ------------------------------------------------------ read
+
+    public Promise<ModelNode> read(AddressTemplate template) {
+        Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION).build();
+        return dispatcher.execute(operation)
+                .then(Promise::resolve)
+                .catch_(error -> {
+                    notifications.send(error("Failed to read resource",
+                            "An error occurred while reading " + typeName(template) + ".")
+                            .details(String.valueOf(error), true));
+                    return null;
+                });
     }
 
     // ------------------------------------------------------ delete

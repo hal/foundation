@@ -17,18 +17,38 @@ package org.jboss.hal.op.finder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import jakarta.ejb.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.logger.Logger;
 import org.patternfly.extension.finder.FinderColumn;
 
+/**
+ * A registry for managing and accessing {@link ColumnProvider} instances by their identifiers. This class collects all
+ * available {@link ColumnProvider} implementations during application startup and makes them accessible via their unique
+ * identifiers.
+ * <p>
+ * <b>Key Responsibilities:</b>
+ * - Registers all {@link ColumnProvider} implementations available at runtime. - Provides a mechanism to retrieve a
+ * {@link FinderColumn} supplier based on a given identifier.
+ * <p>
+ * <b>Lifecycle and Scope:</b>
+ * - The class is annotated with {@link Startup} and {@link ApplicationScoped}, indicating it is initialized during application
+ * startup and shared across the application's lifecycle.
+ * <p>
+ * <b>CDI Injection:</b>
+ * - The {@link Instance} of {@link ColumnProvider} is injected into the constructor to dynamically gather all column provider
+ * implementations.
+ */
 @Startup
 @ApplicationScoped
 public class ColumnRegistry {
 
+    private static final Logger logger = Logger.getLogger(ColumnRegistry.class.getName());
     private final Map<String, ColumnProvider> columns;
 
     @Inject
@@ -40,8 +60,20 @@ public class ColumnRegistry {
         }
     }
 
-    public FinderColumn column(String identifier) {
-        // TODO Error handling
-        return columns.get(identifier).get();
+    /**
+     * Retrieves a {@link Supplier} of {@link FinderColumn} based on the provided identifier. If no {@link ColumnProvider} is
+     * found for the specified identifier, this method logs an error and returns {@code null}.
+     *
+     * @param identifier the unique identifier of the {@link ColumnProvider} to locate
+     * @return a {@link Supplier} of {@link FinderColumn} associated with the given identifier, or {@code null} if no matching
+     * {@link ColumnProvider} is found
+     */
+    public Supplier<FinderColumn> column(String identifier) {
+        ColumnProvider provider = columns.get(identifier);
+        if (provider == null) {
+            logger.error("No column provider found for identifier: " + identifier);
+            return null;
+        }
+        return provider;
     }
 }

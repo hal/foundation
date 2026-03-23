@@ -93,6 +93,7 @@ public class LabelBuilder {
         SPECIALS.put("jts", "JTS");
         SPECIALS.put("jvm", "JVM");
         SPECIALS.put("jwt", "JWT");
+        SPECIALS.put("lra", "LRA");
         SPECIALS.put("mcp", "MCP");
         SPECIALS.put("mdb", "MDB");
         SPECIALS.put("mbean", "MBean");
