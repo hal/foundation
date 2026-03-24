@@ -26,12 +26,13 @@ import org.jboss.hal.op.finder.ColumnProvider;
 import org.jboss.hal.op.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
 
+import static org.jboss.hal.ui.BuildingBlocks.stackPreview;
 import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.content.ContentType.h1;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;
+import static org.patternfly.layout.stack.StackItem.stackItem;
 
 @Dependent
 public class ConfigurationColumn implements ColumnProvider {
@@ -80,29 +81,31 @@ public class ConfigurationColumn implements ColumnProvider {
                 .addItem(finderItem("subsystems-item", "Subsystems")
                         .nextColumn(registry.get().column(SubsystemColumn.ID))
                         .onPreview((item, preview) ->
-                                preview.add(content(h1).text("Subsystems"))
-                                        .add(content(p).editorial().html(SUBSYSTEM_DESCRIPTION))))
+                                stackPreview(preview, "Subsystems", stack -> stack
+                                        .addItem(stackItem().add(content(p).editorial().html(SUBSYSTEM_DESCRIPTION))))))
                 .addItem(finderItem("interfaces-item", "Interfaces")
                         .nextColumn(registry.get().column(InterfaceColumn.ID))
                         .onPreview((item, preview) ->
-                                preview.add(content(h1).text("Interfaces"))
-                                        .add(content(p).editorial().html(INTERFACE_DESCRIPTION_1))
-                                        .add(content(p).editorial().html(INTERFACE_DESCRIPTION_2))))
+                                stackPreview(preview, "Interfaces", stack -> stack
+                                        .addItem(stackItem()
+                                                .add(content(p).editorial().html(INTERFACE_DESCRIPTION_1))
+                                                .add(content(p).editorial().html(INTERFACE_DESCRIPTION_2))))))
                 .addItem(finderItem("socket-bindings-item", "Socket Bindings")
                         .nextColumn(registry.get().column(SocketBindingGroupColumn.ID))
                         .onPreview((item, preview) ->
-                                preview.add(content(h1).text("Socket Bindings"))
-                                        .add(content(p).editorial().html(SOCKET_BINDING_DESCRIPTION))))
+                                stackPreview(preview, "Socket Bindings", stack -> stack
+                                        .addItem(stackItem().add(content(p).editorial().html(SOCKET_BINDING_DESCRIPTION))))))
                 .addItem(finderItem("paths-item", "Paths")
                         .nextColumn(registry.get().column(PathColumn.ID))
                         .onPreview((item, preview) ->
-                                preview.add(content(h1).text("Paths"))
-                                        .add(content(p).editorial().html(PATH_DESCRIPTION_1))
-                                        .add(content(p).editorial().html(PATH_DESCRIPTION_2))))
+                                stackPreview(preview, "Paths", stack -> stack
+                                        .addItem(stackItem()
+                                                .add(content(p).editorial().html(PATH_DESCRIPTION_1))
+                                                .add(content(p).editorial().html(PATH_DESCRIPTION_2))))))
                 .addItem(finderItem("system-properties-item", "System Properties")
                         .nextColumn(registry.get().column(SystemPropertyColumn.ID))
                         .onPreview((item, preview) ->
-                                preview.add(content(h1).text("System Properties"))
-                                        .add(content(p).editorial().html(SYSTEM_PROPERTY_DESCRIPTION))));
+                                stackPreview(preview, "System Properties", stack -> stack
+                                        .addItem(stackItem().add(content(p).editorial().html(SYSTEM_PROPERTY_DESCRIPTION))))));
     }
 }

@@ -43,6 +43,7 @@ import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.LabelBuilder.labelBuilderAllWords;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
@@ -413,7 +414,7 @@ public class ResourceDialogs {
      */
     public static Promise<ModelNode> deleteResourceModal(AddressTemplate template) {
         AddressTemplate resolvedTemplate = new StatementContextResolver(uic().statementContext()).resolve(template);
-        String name = resolvedTemplate.last().value;
+        String name = labelBuilderAllWords(resolvedTemplate.last().value);
         return new Promise<>((resolve, reject) -> modal().size(sm)
                 .addHeader("Delete resource")
                 .addBody(modalBody()

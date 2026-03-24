@@ -16,20 +16,24 @@
 package org.jboss.hal.op.configuration.socket;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
+import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketBindingColumn;
-import static org.jboss.hal.op.finder.Columns.metadataPreview;
-import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.content.ContentType.h1;
-import static org.patternfly.component.content.ContentType.p;
 
 @Dependent
 public class InboundColumn implements ColumnProvider {
 
     public static final String ID = "socket-binding-inbound";
+    private final CrudOperations crud;
+
+    @Inject
+    public InboundColumn(CrudOperations crud) {
+        this.crud = crud;
+    }
 
     @Override
     public String identifier() {
@@ -38,9 +42,6 @@ public class InboundColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return socketBindingColumn(ID, "Inbound")
-                .onPreview(metadataPreview((name, metadata, preview) ->
-                        preview.add(content(h1).text(name))
-                                .add(content(p).editorial().text(metadata.resourceDescription().description()))));
+        return socketBindingColumn(crud, ID, "Inbound");
     }
 }

@@ -83,11 +83,11 @@ import static org.patternfly.style.Classes.text;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Color.grey;
 
-class ViewItemFactory {
+public class ViewItemFactory {
 
     private static final Logger logger = Logger.getLogger(ViewItemFactory.class.getName());
 
-    static ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
+    public static ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
         ViewItem viewItem = null;
         for (ViewItemProvider vip : specialViewItems) {
             if (vip.test(template, metadata, ra)) {

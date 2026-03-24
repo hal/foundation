@@ -15,39 +15,35 @@
  */
 package org.jboss.hal.op.configuration.socket;
 
-import org.jboss.elemento.Id;
+import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderSegment;
 
+import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
-import static org.jboss.hal.op.finder.Columns.RESOURCE_NAME_KEY;
-import static org.jboss.hal.op.finder.Columns.childResources;
-import static org.jboss.hal.op.finder.Columns.resourceColumn;
-import static org.patternfly.extension.finder.FinderItem.finderItem;
+import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
+import static org.jboss.hal.ui.resource.FinderSupport.RESOURCE_NAME_KEY;
 
 class SocketBindingColumns {
 
-    static FinderColumn socketBindingColumn(String id, String header) {
-        return resourceColumn(id, header)
-                .defaultSearch()
-                .toggleSearch(column -> column.items().size() > 5)
-                .addItems(childResources(
-                        path -> {
-                            FinderSegment groupSegment = path.findColumn(SocketBindingGroupColumn.ID);
-                            FinderSegment typeSegment = path.findColumn(SocketBindingTypeColumn.ID);
-                            if (groupSegment != null && typeSegment != null) {
-                                String group = groupSegment.item.get(RESOURCE_NAME_KEY);
-                                String type = typeSegment.item.get(RESOURCE_NAME_KEY);
-                                if (group != null && type != null) {
-                                    return AddressTemplate.root()
-                                            .append(SOCKET_BINDING_GROUP, group)
-                                            .append(type, "*");
-                                }
-                            }
-                            return null;
-                        },
-                        node -> finderItem(Id.build(node.asString()))
-                                .text(node.asString())));
+    static FinderColumn socketBindingColumn(CrudOperations crud, String id, String header) {
+        return crudColumn(id, header,
+                asList("bound", "bound-address", "bound-port", "fixed-port", "interface",
+                        "multicast-address", "multicast-port", "port"),
+                path -> {
+                    FinderSegment groupSegment = path.findColumn(SocketBindingGroupColumn.ID);
+                    FinderSegment typeSegment = path.findColumn(SocketBindingTypeColumn.ID);
+                    if (groupSegment != null && typeSegment != null) {
+                        String group = groupSegment.item.get(RESOURCE_NAME_KEY);
+                        String type = typeSegment.item.get(RESOURCE_NAME_KEY);
+                        if (group != null && type != null) {
+                            return AddressTemplate.of("{selected.profile}")
+                                    .append(SOCKET_BINDING_GROUP, group)
+                                    .append(type, "*");
+                        }
+                    }
+                    return null;
+                }, null);
     }
 }

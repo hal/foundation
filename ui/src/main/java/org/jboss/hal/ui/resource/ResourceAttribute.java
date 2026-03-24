@@ -33,11 +33,11 @@ import org.jboss.hal.meta.security.SecurityContext;
 import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 
 /** Simple record for an attribute name/value/description triple. */
-class ResourceAttribute {
+public class ResourceAttribute {
 
     // ------------------------------------------------------ predicates
 
-    static Predicate<AttributeDescription> includes(List<String> attributes) {
+    public static Predicate<AttributeDescription> includes(List<String> attributes) {
         return ad -> {
             if (attributes.isEmpty()) {
                 return true;
@@ -46,7 +46,7 @@ class ResourceAttribute {
         };
     }
 
-    static Predicate<AttributeDescription> notDeprecated() {
+    public static Predicate<AttributeDescription> notDeprecated() {
         return ad -> !ad.deprecation().isDefined();
     }
 
@@ -59,7 +59,7 @@ class ResourceAttribute {
      * @param predicate            A predicate to filter which attributes should be collected.
      * @return A list of ResourceAttribute objects representing the collected attributes.
      */
-    static List<ResourceAttribute> resourceAttributes(OperationDescription operationDescription,
+    public static List<ResourceAttribute> resourceAttributes(OperationDescription operationDescription,
             Predicate<AttributeDescription> predicate) {
         List<ResourceAttribute> resourceAttributes = new ArrayList<>();
         for (AttributeDescription description : operationDescription.parameters()) {
@@ -87,7 +87,7 @@ class ResourceAttribute {
      * @param predicate A predicate to filter which attributes should be collected.
      * @return A list of ResourceAttribute objects representing the collected attributes.
      */
-    static List<ResourceAttribute> resourceAttributes(ModelNode resource, Metadata metadata,
+    public static List<ResourceAttribute> resourceAttributes(ModelNode resource, Metadata metadata,
             Predicate<AttributeDescription> predicate) {
         List<ResourceAttribute> resourceAttributes = new ArrayList<>();
         for (AttributeDescription ad : metadata.resourceDescription().attributes()) {
@@ -111,7 +111,7 @@ class ResourceAttribute {
 
     // TODO Make use of attribute groups and turn them into form field groups
     //  https://www.patternfly.org/components/forms/form/design-guidelines#field-groups
-    static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
+    public static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
         List<ResourceAttribute> ungrouped = new ArrayList<>();
         TreeMap<String, List<ResourceAttribute>> groups = new TreeMap<>();
         for (ResourceAttribute attribute : attributes) {
@@ -134,14 +134,14 @@ class ResourceAttribute {
 
     // ------------------------------------------------------ instance
 
-    final String fqn;
-    final String name;
-    final String group;
-    final ModelNode value;
-    final AttributeDescription description;
-    final boolean readable;
-    final boolean writable;
-    final boolean expression;
+    public final String fqn;
+    public final String name;
+    public final String group;
+    public final ModelNode value;
+    public final AttributeDescription description;
+    public final boolean readable;
+    public final boolean writable;
+    public final boolean expression;
 
     ResourceAttribute(ModelNode value, AttributeDescription description, SecurityContext securityContext) {
         this.fqn = description.fullyQualifiedName();

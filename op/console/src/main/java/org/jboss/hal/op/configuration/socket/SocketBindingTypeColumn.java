@@ -28,7 +28,7 @@ import org.patternfly.icon.IconSets.fas;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING;
-import static org.jboss.hal.op.finder.Columns.RESOURCE_NAME_KEY;
+import static org.jboss.hal.ui.resource.FinderSupport.RESOURCE_NAME_KEY;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;

@@ -17,11 +17,17 @@ package org.jboss.hal.ui.resource;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.jboss.elemento.ElementClassListMethods;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
+import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.patternfly.component.AddItemHandler;
 import org.patternfly.component.AurHandler;
 import org.patternfly.component.HasItems;
@@ -35,6 +41,9 @@ import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.ui.resource.ResourceAttribute.includes;
+import static org.jboss.hal.ui.resource.ResourceAttribute.resourceAttributes;
+import static org.jboss.hal.ui.resource.ViewItemFactory.viewItem;
 import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.style.Breakpoint._2xl;
 import static org.patternfly.style.Breakpoint.lg;
@@ -46,11 +55,38 @@ import static org.patternfly.style.Orientation.horizontal;
 import static org.patternfly.style.Orientation.vertical;
 
 /** Element to view an existing resource */
-class ResourceView implements
+public class ResourceView implements
         TypedBuilder<HTMLElement, ResourceView>,
         IsElement<HTMLElement>,
         HasItems<HTMLElement, ResourceView, ViewItem>,
         ElementClassListMethods<HTMLElement, ResourceView> {
+
+    // ------------------------------------------------------ factory
+
+    public static ResourceView resourceView() {
+        return new ResourceView();
+    }
+
+    public static ResourceView resourceView(AddressTemplate template, ModelNode resource, Metadata metadata) {
+        return resourceView(template, resource, metadata, __ -> true);
+    }
+
+    public static ResourceView resourceView(AddressTemplate template, ModelNode resource, Metadata metadata,
+            List<String> attributes) {
+        return resourceView(template, resource, metadata, includes(attributes));
+    }
+
+    public static ResourceView resourceView(AddressTemplate template, ModelNode resource, Metadata metadata,
+            Predicate<AttributeDescription> predicate) {
+        ResourceView resourceView = new ResourceView();
+        List<ResourceAttribute> resourceAttributes = resourceAttributes(resource, metadata, predicate);
+        for (ResourceAttribute ra : resourceAttributes) {
+            resourceView.addItem(viewItem(template, metadata, ra));
+        }
+        return resourceView;
+    }
+
+    // ------------------------------------------------------ instance
 
     private final DescriptionList dl;
     private final AurHandler<ResourceView, ViewItem> aur;

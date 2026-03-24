@@ -20,42 +20,55 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.flow.FlowContext;
+import org.jboss.elemento.flow.Task;
 import org.jboss.hal.dmr.Composite;
 import org.jboss.hal.dmr.CompositeResult;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
+import org.patternfly.core.Tuple;
 
 import elemental2.promise.Promise;
 
+import static java.util.Arrays.asList;
+import static org.jboss.elemento.flow.Flow.parallel;
 import static org.jboss.hal.core.LabelBuilder.labelBuilder;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
+import static org.patternfly.core.Tuple.tuple;
 
 /**
  * The CrudOperations class provides methods for performing create, update, and delete operations on resources represented by
  * AddressTemplate objects. It uses the {@link Dispatcher} to execute operations.
  * <p>
- * Each operation has built-in success messages. The caller must handle failures.
+ * Other than emitting {@linkplain Notification notifications} for success and error, no UI is provided by this class. If you're
+ * looking for modals for creating or deleting resources, refer to {@code org.jboss.hal.ui.resource.ResourceDialogs}.
  */
 @ApplicationScoped
 public class CrudOperations {
 
     private final Dispatcher dispatcher;
+    private final MetadataRepository metadataRepository;
     private final StatementContext statementContext;
     private final Notifications notifications;
 
     @Inject
-    public CrudOperations(Dispatcher dispatcher, StatementContext statementContext, Notifications notifications) {
+    public CrudOperations(Dispatcher dispatcher, MetadataRepository metadataRepository, StatementContext statementContext,
+            Notifications notifications) {
         this.dispatcher = dispatcher;
+        this.metadataRepository = metadataRepository;
         this.statementContext = statementContext;
         this.notifications = notifications;
     }
@@ -113,9 +126,34 @@ public class CrudOperations {
     // ------------------------------------------------------ read
 
     public Promise<ModelNode> read(AddressTemplate template) {
-        Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION).build();
+        Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
+                .param(INCLUDE_RUNTIME, true)
+                .build();
         return dispatcher.execute(operation)
                 .then(Promise::resolve)
+                .catch_(error -> {
+                    notifications.send(error("Failed to read resource",
+                            "An error occurred while reading " + typeName(template) + ".")
+                            .details(String.valueOf(error), true));
+                    return null;
+                });
+    }
+
+    public Promise<Tuple<ModelNode, Metadata>> readWithMetadata(AddressTemplate template) {
+        Task<FlowContext> resourceTask = context -> read(template).then(result -> {
+            context.set("resource", result);
+            return context.resolve();
+        });
+        Task<FlowContext> metadataTask = context -> metadataRepository.lookup(template).then(result -> {
+            context.set("metadata", result);
+            return context.resolve();
+        });
+        return parallel(new FlowContext(), asList(resourceTask, metadataTask))
+                .then(context -> {
+                    ModelNode resource = context.get("resource");
+                    Metadata metadata = context.get("metadata");
+                    return Promise.resolve(tuple(resource, metadata));
+                })
                 .catch_(error -> {
                     notifications.send(error("Failed to read resource",
                             "An error occurred while reading " + typeName(template) + ".")

@@ -213,9 +213,11 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     private void delete(DeleteResource.Details details) {
         deleteResourceModal(details.template)
-                .then(__ -> {
-                    tree.select(details.template.anonymiseLast().identifier());
-                    tree.reload();
+                .then(node -> {
+                    if (node.isDefined()) { // undefined means canceled
+                        tree.select(details.template.anonymiseLast().identifier());
+                        tree.reload();
+                    }
                     return null;
                 })
                 .catch_(error -> {

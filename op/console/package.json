@@ -17,9 +17,9 @@
     "prod:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources"
   },
   "dependencies": {
-    "@patternfly-java/charts": "^0.6.7",
-    "@patternfly-java/core": "^0.6.7",
-    "@patternfly-java/finder": "^0.6.7",
+    "@patternfly-java/charts": "catalog:pfj",
+    "@patternfly-java/core": "catalog:pfj",
+    "@patternfly-java/finder": "catalog:pfj",
     "@patternfly/patternfly": "^6.4.0",
     "dompurify": "^3.3.3"
   },

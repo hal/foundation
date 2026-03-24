@@ -16,12 +16,17 @@
 package org.jboss.hal.ui;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jboss.elemento.HTMLContainerBuilder;
+import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.Expression;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.env.Stability;
+import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.Deprecation;
 import org.jboss.hal.meta.description.Description;
@@ -31,16 +36,23 @@ import org.jboss.hal.model.RunningMode;
 import org.jboss.hal.model.RunningState;
 import org.jboss.hal.model.RuntimeConfigurationState;
 import org.jboss.hal.model.SuspendState;
+import org.jboss.hal.ui.resource.FinderSupport;
+import org.jboss.hal.ui.resource.ResourceDialogs;
 import org.patternfly.component.codeblock.CodeBlock;
+import org.patternfly.component.content.ContentType;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.label.Label;
-import org.patternfly.component.list.List;
 import org.patternfly.component.list.ListItem;
 import org.patternfly.component.popover.Popover;
+import org.patternfly.extension.finder.FinderColumn;
+import org.patternfly.extension.finder.FinderItem;
+import org.patternfly.extension.finder.FinderPath;
+import org.patternfly.extension.finder.FinderPreview;
 import org.patternfly.filter.Filter;
 import org.patternfly.icon.IconSets;
 import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.layout.flex.Flex;
+import org.patternfly.layout.stack.Stack;
 import org.patternfly.style.Status;
 import org.patternfly.style.Variable;
 import org.patternfly.token.Token;
@@ -54,6 +66,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.i;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.strong;
+import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.Expression.startExpressionEnd;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
@@ -79,11 +92,17 @@ import static org.jboss.hal.resources.HalClasses.name;
 import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.allButReadOnly;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.resource.FinderSupport.childResources;
+import static org.jboss.hal.ui.resource.ResourceDialogs.addResourceModal;
+import static org.jboss.hal.ui.resource.ResourceDialogs.deleteResourceModal;
+import static org.jboss.hal.ui.resource.ResourceView.resourceView;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.Severity.success;
 import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.codeblock.CodeBlock.codeBlock;
+import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
@@ -93,14 +112,25 @@ import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.component.popover.PopoverBody.popoverBody;
+import static org.patternfly.extension.finder.FinderColumn.finderColumn;
+import static org.patternfly.extension.finder.FinderColumnActions.finderColumnActions;
+import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
+import static org.patternfly.extension.finder.FinderItem.finderItem;
+import static org.patternfly.extension.finder.FinderItemActions.finderItemActions;
 import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
+import static org.patternfly.icon.IconSets.fas.externalLinkAlt;
 import static org.patternfly.icon.IconSets.fas.flask;
 import static org.patternfly.icon.IconSets.fas.infoCircle;
+import static org.patternfly.icon.IconSets.fas.plus;
+import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.icon.IconSets.fas.search;
+import static org.patternfly.icon.IconSets.fas.trash;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.sm;
+import static org.patternfly.layout.stack.Stack.stack;
+import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.end;
 import static org.patternfly.style.Classes.list;
@@ -146,7 +176,7 @@ public class BuildingBlocks {
         Variable marginTop = componentVar(component(list), "li", "MarginTop");
         Variable marginLeft = componentVar(component(list), "nested", "MarginLeft");
 
-        List infos = list().plain()
+        var infos = list().plain()
                 .css(util("mt-sm"))
                 .style("color", Token.globalTextColorSubtle.var)
                 .style(marginTop.name, 0)
@@ -407,5 +437,100 @@ public class BuildingBlocks {
 
     public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
         return () -> stabilityIcon(stability);
+    }
+
+    // ------------------------------------------------------ finder
+
+    /**
+     * Creates and configures a {@code FinderColumn} with basic settings.
+     * <p>
+     * The column header has an add and reload button in the header. The add button calls
+     * {@link ResourceDialogs#addResourceModal(AddressTemplate, String, boolean)}.
+     * <p>
+     * The column has a search input that filters on the item text and is visible when more than four items are present.
+     * <p>
+     * The items are loaded asynchronously using {@link FinderSupport#childResources(Function, Function)}. The items have a view
+     * and remove button using icons.
+     * <p>
+     * If {@code previewAttributes} is not empty, the column has a preview handler that shows the specified attributes.
+     *
+     * @param id                The unique identifier for the column.
+     * @param header            The header text for the column.
+     * @param previewAttributes A list of preview attributes to be displayed when an item in the column is selected.
+     * @param templateFn        A function that maps a {@code FinderPath} to an {@code AddressTemplate} for managing resources.
+     * @param nextColumn        A supplier for the next column in the navigation hierarchy, or {@code null} if no next column is
+     *                          present.
+     * @return A configured {@code FinderColumn} instance.
+     */
+    public static FinderColumn crudColumn(String id, String header, List<String> previewAttributes,
+            Function<FinderPath, AddressTemplate> templateFn, Supplier<FinderColumn> nextColumn) {
+        FinderColumn column = finderColumn(id);
+        column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
+                        .addButton(button(plus()).plain().small().onClick((e, b) ->
+                                addResourceModal(templateFn.apply(column.finder().path()), null, false)
+                                        .then(__ -> column.reload())))
+                        .addButton(button(redo()).plain().small().onClick((e, b) -> column.reload()))))
+                .defaultSearch()
+                .showSearchThreshold(5)
+                .addItems(childResources(templateFn, node -> {
+                    FinderItem item = finderItem(Id.build(node.asString()));
+                    item.text(node.asString()).addActions(finderItemActions()
+                            .addButton(button(externalLinkAlt()).plain().small().onClick((e, b) ->
+                                    uic().notifications().send(nyi())))
+                            .addButton(button(trash()).plain().small().onClick((e, b) -> {
+                                AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                                deleteResourceModal(template).then(n -> {
+                                    if (n.isDefined()) { // undefined means canceled
+                                        item.column().reload();
+                                    }
+                                    return null;
+                                });
+                            })));
+                    if (nextColumn != null) {
+                        item.nextColumn(nextColumn);
+                    }
+                    return item;
+                }));
+        if (!previewAttributes.isEmpty()) {
+            column.onPreview((item, preview) -> {
+                String name = item.text();
+                stackPreview(preview, name, stack -> {
+                    AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                    uic().crud().readWithMetadata(template).then(tuple -> {
+                        stack.addItem(stackItem().add(resourceView(template, tuple.key, tuple.value, previewAttributes)));
+                        return null;
+                    });
+                });
+            });
+        }
+        return column;
+    }
+
+    /**
+     * Configures the given {@code FinderPreview} to include a stack layout with additional content provided by a
+     * {@code Consumer} of {@code Stack}. This method uses the default configuration for headers.
+     *
+     * @param preview The {@code FinderPreview} instance to configure.
+     * @param stack   A {@code Consumer} that allows additional configuration of the {@code Stack}.
+     */
+    public static void stackPreview(FinderPreview preview, Consumer<Stack> stack) {
+        stackPreview(preview, null, stack);
+    }
+
+    /**
+     * Configures the given {@code FinderPreview} to include a stack layout with an optional header and additional content
+     * provided by a {@code Consumer} of {@code Stack}.
+     *
+     * @param preview The {@code FinderPreview} instance to configure.
+     * @param h1      Optional text to be displayed as the first header (H1). If {@code null}, no H1 is added.
+     * @param stack   A {@code Consumer} that allows additional configuration of the {@code Stack}.
+     */
+    public static void stackPreview(FinderPreview preview, String h1, Consumer<Stack> stack) {
+        preview.add(stack().gutter().run(s -> {
+            if (h1 != null) {
+                s.addItem(stackItem().add(content(ContentType.h1).text(h1)));
+            }
+            stack.accept(s);
+        }));
     }
 }

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.finder;
+package org.jboss.hal.ui.resource;
 
 import java.util.function.Function;
 
@@ -39,13 +39,8 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
 import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.patternfly.component.button.Button.button;
-import static org.patternfly.extension.finder.FinderColumn.finderColumn;
-import static org.patternfly.extension.finder.FinderColumnActions.finderColumnActions;
-import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
-import static org.patternfly.icon.IconSets.fas.redo;
 
-public class Columns {
+public class FinderSupport {
 
     public static final String RESOURCE_NAME_KEY = "resource-name";
     public static final String TEMPLATE_KEY = "template";
@@ -54,20 +49,6 @@ public class Columns {
     public interface MetadataPreviewBuilder {
 
         void onPreview(String name, Metadata metadata, FinderPreview preview);
-    }
-
-    /**
-     * Creates a finder column with the specified ID and header and configures it to include a button for reloading the column.
-     *
-     * @param id     The unique identifier for the finder column.
-     * @param header The header text to display for the column.
-     * @return A configured {@link FinderColumn} instance with the specified ID and header.
-     */
-    public static FinderColumn resourceColumn(String id, String header) {
-        return finderColumn(id).run(column ->
-                column.addHeader(finderColumnHeader(header)
-                        .addActions(finderColumnActions()
-                                .addButton(button(redo()).small().onClick((e, b) -> column.reload())))));
     }
 
     /**

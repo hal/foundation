@@ -28,12 +28,12 @@ import elemental2.dom.URLSearchParams;
 import elemental2.promise.Promise;
 
 import static elemental2.dom.DomGlobal.location;
+import static org.jboss.hal.op.bootstrap.BootstrapError.fail;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NETWORK_ERROR;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NOT_AN_ENDPOINT;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NO_ENDPOINT_FOUND;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.NO_ENDPOINT_SPECIFIED;
 import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.UNKNOWN;
-import static org.jboss.hal.op.bootstrap.BootstrapError.fail;
 import static org.jboss.hal.op.endpoint.Endpoint.CONNECT_PARAMETER;
 import static org.jboss.hal.op.endpoint.EndpointModal.endpointModal;
 

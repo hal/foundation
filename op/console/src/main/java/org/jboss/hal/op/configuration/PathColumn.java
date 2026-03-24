@@ -17,25 +17,18 @@ package org.jboss.hal.op.configuration;
 
 import jakarta.enterprise.context.Dependent;
 
-import org.jboss.elemento.Id;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
-import static org.jboss.hal.op.finder.Columns.childResources;
-import static org.jboss.hal.op.finder.Columns.metadataPreview;
-import static org.jboss.hal.op.finder.Columns.resourceColumn;
-import static org.patternfly.component.button.Button.button;
-import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.content.ContentType.h1;
-import static org.patternfly.component.content.ContentType.p;
-import static org.patternfly.extension.finder.FinderItem.finderItem;
-import static org.patternfly.extension.finder.FinderItemActions.finderItemActions;
+import static java.util.Arrays.asList;
+import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
 
 @Dependent
 public class PathColumn implements ColumnProvider {
 
     public static final String ID = "path-column";
+    private static final AddressTemplate TEMPLATE = AddressTemplate.of("path=*");
 
     @Override
     public String identifier() {
@@ -44,17 +37,6 @@ public class PathColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return resourceColumn(ID, "Path")
-                .defaultSearch()
-                .toggleSearch(column -> column.items().size() > 5)
-                .addItems(childResources(
-                        __ -> AddressTemplate.of("path=*"),
-                        node -> finderItem(Id.build(node.asString()))
-                                .text(node.asString())
-                                .addActions(finderItemActions()
-                                        .addButton(button("View").control().small()))))
-                .onPreview(metadataPreview((name, metadata, preview) ->
-                        preview.add(content(h1).text(name))
-                                .add(content(p).editorial().text(metadata.resourceDescription().description()))));
+        return crudColumn(ID, "Path", asList("path", "read-only", "relative-to"), __ -> TEMPLATE, null);
     }
 }
