@@ -18,18 +18,11 @@
     padding-top: var(--pf-t--global--spacer--md);
 }
 
-.hal-c-resource .hal-c-resource__view, .hal-c-resource .hal-c-resource__form {
+.hal-c-resource .hal-c-resource__view, .hal-c-resource .hal-c-resource__form, .hal-c-finder__preview .hal-c-resource__view {
     --hal-resource-label-width-on-md: 20ch;
     --hal-resource-label-width-on-lg: 23ch;
     --hal-resource-label-width-on-xl: 25ch;
     --hal-resource-label-width-on-2xl: 28ch;
-}
-
-.pf-v6-c-finder__preview .hal-c-resource__view {
-    --hal-resource-label-width-on-md: 15ch;
-    --hal-resource-label-width-on-lg: 18ch;
-    --hal-resource-label-width-on-xl: 20ch;
-    --hal-resource-label-width-on-2xl: 23ch;
 }
 
 .hal-c-resource__nested-label {
@@ -54,6 +47,7 @@
 }
 
 .hal-c-resource__form-expression-switch {
+    gap: var(--pf-t--global--spacer--gap--control-to-control--default);
     min-height: calc(var(--pf-t--global--font--size--md) * var(--pf-t--global--font--line-height--body) + 2 * var(--pf-t--global--spacer--xs));
 }
 

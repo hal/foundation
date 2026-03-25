@@ -1,0 +1,29 @@
+/*
+ * Finder component styles for halOP not contained in the PatternFly Java Finder extension.
+ *
+ * Overrides PatternFly description list media queries with container queries
+ * so the layout responds to the preview pane's actual width (which shrinks as
+ * finder columns are added) rather than the viewport width.
+ */
+
+/* Make the preview pane a container query context */
+.hal-c-finder__preview {
+    container-type: inline-size;
+    container-name: finder-preview;
+}
+
+/*
+ * Force vertical layout when the preview is narrow.
+ * This overrides the media-query-based pf-m-horizontal-on-* modifiers
+ * that PatternFly applies at viewport breakpoints.
+ */
+@container finder-preview (max-width: 32rem) {
+    .hal-c-finder__preview .pf-v6-c-description-list[class*="pf-m-horizontal"] {
+        --pf-v6-c-description-list__group--GridTemplateColumns: var(--pf-v6-c-description-list--m-vertical__group--GridTemplateColumns);
+        --pf-v6-c-description-list__group--GridTemplateRows: var(--pf-v6-c-description-list--m-vertical__group--GridTemplateRows);
+    }
+
+    .hal-c-finder__preview .pf-v6-c-description-list {
+        --pf-v6-c-description-list__term--Display: inline;
+    }
+}

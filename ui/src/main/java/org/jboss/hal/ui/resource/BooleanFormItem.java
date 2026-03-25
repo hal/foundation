@@ -89,7 +89,7 @@ public class BooleanFormItem extends FormItem {
 
     @Override
     Button switchToExpressionModeButton() {
-        return button().id(switchToExpressionModeId).plain().icon(expressionModeIcon().get())
+        return button().id(switchToExpressionModeId).control().icon(expressionModeIcon().get())
                 .onClick((e, b) -> switchToExpressionMode());
     }
 

@@ -27,10 +27,12 @@ import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.op.finder.ColumnRegistry;
 import org.patternfly.extension.finder.Finder;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
+import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.h1;
 import static org.patternfly.component.content.ContentType.p;
@@ -80,7 +82,7 @@ public class ConfigurationPage implements Page {
         // Finder finder = componentRegistry().lookupComponent(ComponentType.Finder);
         return singletonList(finder().registerComponent().css(util("h-100"))
                 .addItem(columnRegistry.column(ConfigurationColumn.ID).get())
-                .addPreview(finderPreview()
+                .addPreview(finderPreview().css(halComponent("finder", "preview"))
                         .add(stack().gutter()
                                 .addItem(stackItem().add(content(h1).text("Configuration")))
                                 .addItem(stackItem()
