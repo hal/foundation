@@ -7,6 +7,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add configuration finder (still wip!)
+
+### Upgrades
+
+- Bump to PatternFly Java 0.6.15
+
 ## [0.2.6] - 2026-03-09
 
 ### Fixed
