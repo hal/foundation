@@ -43,6 +43,8 @@ import org.patternfly.component.content.ContentType;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.label.Label;
 import org.patternfly.component.list.ListItem;
+import org.patternfly.component.popover.NativePopover;
+import org.patternfly.component.popover.NativePopoverBody;
 import org.patternfly.component.popover.Popover;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
@@ -110,6 +112,7 @@ import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFoo
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
+import static org.patternfly.component.popover.NativePopover.nativePopover;
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.component.popover.PopoverBody.popoverBody;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
@@ -251,6 +254,16 @@ public class BuildingBlocks {
                 .style(utilVar("min-width", "MinWidth").name, "40ch")
                 .addHeader(header)
                 .addBody(popoverBody()
+                        .add(attributeDescription(attribute, content)));
+    }
+
+    public static NativePopover attributeDescriptionNativePopover(String header, AttributeDescription attribute,
+            AttributeDescriptionContent content) {
+        return nativePopover()
+                .css(util("min-width"))
+                .style(utilVar("min-width", "MinWidth").name, "40ch")
+                .addHeader(header)
+                .addBody(NativePopoverBody.popoverBody()
                         .add(attributeDescription(attribute, content)));
     }
 

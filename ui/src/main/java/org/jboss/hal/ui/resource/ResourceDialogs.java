@@ -425,7 +425,11 @@ public class ResourceDialogs {
                         .addButton(button("Delete").primary(), (__, modal) -> uic().crud().delete(resolvedTemplate)
                                 .then(result -> {
                                     modal.close();
-                                    resolve.onInvoke(result);
+                                    // The result is undefined for :remove().
+                                    // Returning it as is would mean 'cancel' to the caller
+                                    ModelNode success = new ModelNode();
+                                    success.set(true);
+                                    resolve.onInvoke(success);
                                     return null;
                                 })
                                 .catch_(error -> {

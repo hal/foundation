@@ -49,9 +49,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.Severity.danger;
@@ -63,10 +63,16 @@ import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
+import static org.patternfly.component.popover.NativePopover.nativePopover;
+import static org.patternfly.component.popover.NativePopoverBody.popoverBody;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
 import static org.patternfly.icon.IconSets.fas.cog;
 import static org.patternfly.popper.Placement.auto;
+import static org.patternfly.style.Classes.helpText;
+import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Classes.util;
+import static org.patternfly.style.Variable.utilVar;
 
 class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
 
@@ -162,14 +168,26 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 AttributeDescriptions envAttributes = envMeta.resourceDescription().attributes();
                 AttributeDescriptions runtimeAttributes = runtimeMeta.resourceDescription().attributes();
 
+                // Test of the native popover
+                var consoleTerm = descriptionListTerm(labelBuilder("console-version"));
+                var consoleText = (HTMLElement) consoleTerm.textDelegate();
+                var consoleGroup = descriptionListGroup("console-version")
+                        .addTerm(consoleTerm)
+                        .addDescription(descriptionListDescription(environment.applicationVersion().toString()));
+                consoleText.classList.add(modifier(helpText));
+                consoleGroup.add(nativePopover(() -> consoleText)
+                        .css(util("min-width"))
+                        .style(utilVar("min-width", "MinWidth").name, "40ch")
+                        .addHeader(labelBuilder("console-version"))
+                        .addBody(popoverBody().add(
+                                "The version of the console you're currently using. If not available, the version defaults to '0.0.0'.")));
+
                 cardBody.add(descriptionList()
                         .autoFit()
                         .addItem(dlg(rootAttributes, rootNode, "product-name"))
                         .addItem(dlg(rootAttributes, rootNode, "product-version"))
                         .addItem(dlg(rootAttributes, rootNode, "name"))
-                        .addItem(descriptionListGroup("console-version")
-                                .addTerm(descriptionListTerm(labelBuilder("console-version")))
-                                .addDescription(descriptionListDescription(environment.applicationVersion().toString())))
+                        .addItem(consoleGroup)
                         .addItem(dlg(envAttributes, "stability", dld ->
                                 dld.add(stabilityLabel(environment.serverStability()))))
                         .addItem(descriptionListGroup("operation-mode")

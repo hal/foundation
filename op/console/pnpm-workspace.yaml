@@ -16,9 +16,9 @@
 
 catalogs:
   pfj:
-    '@patternfly-java/charts': '^0.6.15'
-    '@patternfly-java/core': '^0.6.15'
-    '@patternfly-java/finder': '^0.6.15'
+    '@patternfly-java/charts': ^0.6.16
+    '@patternfly-java/core': ^0.6.16
+    '@patternfly-java/finder': ^0.6.16
 
 ignoredBuiltDependencies:
   - '@swc/core'
