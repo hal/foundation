@@ -83,7 +83,7 @@
         <!-- Dependency versions -->
         <version.checkstyle.config>1.0.8.Final</version.checkstyle.config>
         <version.corepack>v0.34.6</version.corepack>
-        <version.elemento>2.4.10</version.elemento>
+        <version.elemento>2.4.11</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
         <version.junit>6.0.3</version.junit>
