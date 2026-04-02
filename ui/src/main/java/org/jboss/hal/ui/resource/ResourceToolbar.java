@@ -74,43 +74,25 @@ class ResourceToolbar implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ instance
 
+    private final String resetId;
+    private final String refreshId;
+    private final String editId;
     private final Toolbar toolbar;
     private final ToolbarContent toolbarContent;
-    private final ToolbarGroup viewActionGroup;
-    private final ToolbarGroup editActionGroup;
-    private final ToolbarItem resetItem;
-    private final ToolbarItem editItem;
+    private final ResourceManager resourceManager;
+    private ToolbarGroup viewActionGroup;
+    private ToolbarGroup editActionGroup;
+    private ToolbarItem resetItem;
+    private ToolbarItem editItem;
 
     private ResourceToolbar(ResourceManager resourceManager, Filter<ResourceAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
-        String resetId = Id.unique("reset");
-        String refreshId = Id.unique("refresh");
-        String editId = Id.unique("edit");
+        this.resourceManager = resourceManager;
 
-        resetItem = toolbarItem()
-                .add(button().id(resetId).plain().icon(powerOff()).onClick((e, b) -> resourceManager.reset()))
-                .add(tooltip(By.id(resetId),
-                        "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
-        ToolbarItem refreshItem = toolbarItem()
-                .add(button().id(refreshId).plain().icon(redo()).onClick((e, b) -> resourceManager.refresh()))
-                .add(tooltip(By.id(refreshId), "Refresh"));
-        editItem = toolbarItem()
-                .add(button().id(editId).plain().icon(edit()).onClick((e, b) -> resourceManager.load(EDIT)))
-                .add(tooltip(By.id(editId), "Edit resource"));
-        viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
-                .addItem(refreshItem)
-                .addItem(resetItem)
-                .addItem(editItem);
-
-        ToolbarItem saveItem = toolbarItem()
-                .add(button("Save").primary().onClick((e, b) -> resourceManager.save()));
-        ToolbarItem cancelItem = toolbarItem()
-                .add(button("Cancel").secondary().onClick((e, b) -> resourceManager.cancel()));
-        editActionGroup = toolbarGroup(buttonGroup).css(modifier("align-right"))
-                .addItem(saveItem)
-                .addItem(cancelItem);
-
-        toolbar = toolbar().css(modifier("inset-none"))
+        this.resetId = Id.unique("reset");
+        this.refreshId = Id.unique("refresh");
+        this.editId = Id.unique("edit");
+        this.toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent = toolbarContent()
                         .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter)))
                         .addGroup(toolbarGroup(filterGroup)
@@ -155,15 +137,46 @@ class ResourceToolbar implements IsElement<HTMLElement> {
     void adjust(State state, SecurityContext securityContext) {
         if (state == VIEW) {
             failSafeRemoveFromParent(editActionGroup);
-            ElementGuard.toggle(resetItem.element(), securityContext.writable());
-            ElementGuard.toggle(editItem.element(), securityContext.writable());
-            toolbarContent.addGroup(viewActionGroup);
+            ElementGuard.toggle(resetItem, securityContext.writable());
+            ElementGuard.toggle(editItem, securityContext.writable());
+            toolbarContent.addGroup(viewActionGroup()); // recreate!
         } else if (state == EDIT) {
             failSafeRemoveFromParent(viewActionGroup);
-            toolbarContent.addGroup(editActionGroup);
+            toolbarContent.addGroup(editActionGroup()); // recreate!
         } else {
             failSafeRemoveFromParent(editActionGroup);
             failSafeRemoveFromParent(viewActionGroup);
         }
+    }
+
+    // The toolbar groups, items and most important their tooltips are recreated each time so that the attach()
+    // method on the tooltips is called and the overlay setup is done correctly.
+    private ToolbarGroup viewActionGroup() {
+        resetItem = toolbarItem()
+                .add(button().id(resetId).plain().icon(powerOff()).onClick((e, b) -> resourceManager.reset()))
+                .add(tooltip(By.id(resetId),
+                        "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
+        ToolbarItem refreshItem = toolbarItem()
+                .add(button().id(refreshId).plain().icon(redo()).onClick((e, b) -> resourceManager.refresh()))
+                .add(tooltip(By.id(refreshId), "Refresh"));
+        editItem = toolbarItem()
+                .add(button().id(editId).plain().icon(edit()).onClick((e, b) -> resourceManager.load(EDIT)))
+                .add(tooltip(By.id(editId), "Edit resource"));
+        viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
+                .addItem(refreshItem)
+                .addItem(resetItem)
+                .addItem(editItem);
+        return viewActionGroup;
+    }
+
+    private ToolbarGroup editActionGroup() {
+        ToolbarItem saveItem = toolbarItem()
+                .add(button("Save").primary().onClick((e, b) -> resourceManager.save()));
+        ToolbarItem cancelItem = toolbarItem()
+                .add(button("Cancel").secondary().onClick((e, b) -> resourceManager.cancel()));
+        editActionGroup = toolbarGroup(buttonGroup).css(modifier("align-right"))
+                .addItem(saveItem)
+                .addItem(cancelItem);
+        return editActionGroup;
     }
 }

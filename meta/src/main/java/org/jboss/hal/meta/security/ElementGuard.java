@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import org.jboss.elemento.By;
 import org.jboss.elemento.Elements;
+import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.HalClasses;
 
 import elemental2.dom.HTMLElement;
@@ -41,9 +42,20 @@ public class ElementGuard {
     /**
      * Adds the {@link HalClasses#rbacHidden} CSS class if {@code condition == true}, removes it otherwise.
      */
+    public static void toggle(IsElement<? extends HTMLElement> element, boolean condition) {
+        if (element != null) {
+            toggle(element.element(), condition);
+        }
+    }
+
+    /**
+     * Adds the {@link HalClasses#rbacHidden} CSS class if {@code condition == true}, removes it otherwise.
+     */
     public static void toggle(HTMLElement element, boolean condition) {
-        if (new Visible().test(element)) {
-            Elements.toggle(element, rbacHidden, condition);
+        if (element != null) {
+            if (new Visible().test(element)) {
+                Elements.toggle(element, rbacHidden, condition);
+            }
         }
     }
 

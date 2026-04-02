@@ -107,6 +107,7 @@ import static org.patternfly.icon.IconSets.fas.ellipsisV;
 import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.screenReader;
+import static org.patternfly.style.Placement.bottomEnd;
 import static org.patternfly.style.Size._2xl;
 import static org.patternfly.style.Width.width40;
 import static org.patternfly.style.Width.width60;
@@ -505,7 +506,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     private Dropdown expressionDropdown(ResourceData rd, MenuList expressionList, MenuList nestedExpressionList) {
         Dropdown dropdown = rd == null
                 ? dropdown(menuToggle("Expression").secondary())
-                : dropdown(ellipsisV(), "Expressions for " + rd.template);
+                : dropdown(ellipsisV(), "Expressions for " + rd.template).placement(bottomEnd);
         dropdown.addMenu(dropdownMenu()
                 .addContent(menuContent()
                         .addGroup(menuGroup().addList(menuList().addItem(statisticsEnabledItem(rd))))
