@@ -94,7 +94,7 @@ class CapabilityReferencesFormItem extends FormItem {
                 .placeholder("")
                 .onReload((e, c) -> typeahead.menu().reload());
         typeahead = multiTypeahead(filterReloadInput)
-                .applyTo(FullWidth::fullWidth)
+                .applyToMenuToggle(FullWidth::fullWidth)
                 .allowNewItems(value -> "Add \"" + value + "\"...", value -> newItem(value, capability))
                 .addMenu(multiSelectMenu()
                         .addContent(menuContent()

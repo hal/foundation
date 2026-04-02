@@ -27,7 +27,7 @@ import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.button.Button;
-import org.patternfly.component.tooltip.Tooltip;
+import org.patternfly.component.tooltip.PopperTooltip;
 import org.patternfly.component.tree.TreeView;
 import org.patternfly.component.tree.TreeViewItem;
 
@@ -47,7 +47,6 @@ import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
-import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.component.tree.TreeView.treeView;
 import static org.patternfly.component.tree.TreeViewType.selectableItems;
 import static org.patternfly.core.AsyncStatus.pending;
@@ -57,8 +56,8 @@ import static org.patternfly.icon.IconSets.fas.arrowRight;
 import static org.patternfly.icon.IconSets.fas.home;
 import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.icon.IconSets.fas.search;
-import static org.patternfly.popper.Placement.bottom;
-import static org.patternfly.popper.Placement.bottomStart;
+import static org.patternfly.popper.PopperPlacement.bottom;
+import static org.patternfly.popper.PopperPlacement.bottomStart;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Padding.noPadding;
 import static org.patternfly.style.Size.sm;
@@ -75,8 +74,8 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
     private final Button forwardButton;
     private final TreeView treeView;
     private final HTMLElement root;
-    private Tooltip backTooltip;
-    private Tooltip forwardTooltip;
+    private PopperTooltip backTooltip;
+    private PopperTooltip forwardTooltip;
 
     ModelBrowserTree(ModelBrowser modelBrowser) {
         this.modelBrowser = modelBrowser;
@@ -94,11 +93,11 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
         GotoResource gotoResource = new GotoResource();
         Button collapseButton = button().plain().icon(minusSquare()).onClick((e, b) -> treeView.collapse());
 
-        tooltip(refreshButton.element(), "Refresh").placement(bottom).appendToBody();
-        tooltip(homeButton.element(), "Home").placement(bottom).appendToBody();
-        tooltip(findResource.element(), "Find a resource").placement(bottom).appendToBody();
-        tooltip(gotoResource.element(), "Go to resource").placement(bottom).appendToBody();
-        tooltip(collapseButton.element(), "Collapse all").placement(bottom).appendToBody();
+        PopperTooltip.tooltip(refreshButton.element(), "Refresh").placement(bottom).appendToBody();
+        PopperTooltip.tooltip(homeButton.element(), "Home").placement(bottom).appendToBody();
+        PopperTooltip.tooltip(findResource.element(), "Find a resource").placement(bottom).appendToBody();
+        PopperTooltip.tooltip(gotoResource.element(), "Go to resource").placement(bottom).appendToBody();
+        PopperTooltip.tooltip(collapseButton.element(), "Collapse all").placement(bottom).appendToBody();
 
         root = div().css(halComponent(HalClasses.modelBrowser, tree))
                 .add(pageSection().sticky(top).padding(noPadding)
@@ -286,7 +285,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                 node = treeViewItem.get(Keys.MODEL_BROWSER_NODE);
             }
             if (backTooltip == null) {
-                backTooltip = tooltip(backButton.element(), "")
+                backTooltip = PopperTooltip.tooltip(backButton.element(), "")
                         .placement(bottomStart)
                         .appendToBody();
             }
@@ -305,7 +304,7 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                 node = treeViewItem.get(Keys.MODEL_BROWSER_NODE);
             }
             if (forwardTooltip == null) {
-                forwardTooltip = tooltip(forwardButton.element(), "")
+                forwardTooltip = PopperTooltip.tooltip(forwardButton.element(), "")
                         .placement(bottomStart)
                         .appendToBody();
             }

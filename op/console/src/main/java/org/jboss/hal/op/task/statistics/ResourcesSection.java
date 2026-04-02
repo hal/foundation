@@ -207,7 +207,6 @@ class ResourcesSection implements IsElement<HTMLElement> {
                                 .addContent(toolbarContent()
                                         .addItem(toolbarItem()
                                                 .add(dropdown(bulkSelectToggle)
-                                                        .stayOpen()
                                                         .addMenu(dropdownMenu()
                                                                 .addContent(menuContent()
                                                                         .addList(menuList()

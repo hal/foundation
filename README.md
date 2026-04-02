@@ -155,7 +155,7 @@ Changes to the Java code will be detected by the J2CL Maven plugin, but you need
 To start halOP in development mode, run
 
 ```shell
-mvn j2cl:watch -P op
+mvn compile j2cl:watch -P op
 ```
 
 and wait until you see the message

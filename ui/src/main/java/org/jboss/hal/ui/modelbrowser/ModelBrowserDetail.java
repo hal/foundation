@@ -66,7 +66,6 @@ import static org.patternfly.icon.IconSets.fas.copy;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Size._3xl;
 import static org.patternfly.style.Sticky.top;
 
@@ -188,7 +187,6 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
         String copyToClipboardId = Id.unique("address", "copy");
         String copyToClipboardText = "Copy address to clipboard";
         Tooltip tooltip = tooltip(By.id(copyToClipboardId), copyToClipboardText)
-                .placement(auto)
                 .onClose((e, t) -> t.text(copyToClipboardText)); // restore text
         Icon icon = icon(copy()).size(IconSize.sm).id(copyToClipboardId).on(click, e -> {
             navigator.clipboard.writeText(template.toString());

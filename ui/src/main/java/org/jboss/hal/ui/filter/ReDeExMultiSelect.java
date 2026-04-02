@@ -55,7 +55,6 @@ public class ReDeExMultiSelect<T> implements IsElement<HTMLElement> {
     ReDeExMultiSelect(Filter<T> filter) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text("Status"))
-                .stayOpen()
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> {
                             setBooleanFilter(filter, RequiredAttribute.NAME, menuItems, ORIGIN);

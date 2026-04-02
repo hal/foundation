@@ -49,9 +49,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.Severity.danger;
@@ -63,12 +63,11 @@ import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
-import static org.patternfly.component.popover.NativePopover.nativePopover;
-import static org.patternfly.component.popover.NativePopoverBody.popoverBody;
+import static org.patternfly.component.popover.Popover.popover;
+import static org.patternfly.component.popover.PopoverBody.popoverBody;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
 import static org.patternfly.icon.IconSets.fas.cog;
-import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Classes.helpText;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
@@ -175,7 +174,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                         .addTerm(consoleTerm)
                         .addDescription(descriptionListDescription(environment.applicationVersion().toString()));
                 consoleText.classList.add(modifier(helpText));
-                consoleGroup.add(nativePopover(() -> consoleText)
+                consoleGroup.add(popover(() -> consoleText)
                         .css(util("min-width"))
                         .style(utilVar("min-width", "MinWidth").name, "40ch")
                         .addHeader(labelBuilder("console-version"))
@@ -250,8 +249,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
             String label = labelBuilder("config-file");
             return descriptionListGroup("config-file")
                     .addTerm(descriptionListTerm(label).icon(cog())
-                            .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)
-                                    .placement(auto)))
+                            .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)))
                     .addDescription(descriptionListDescription()
                             .add(domainConfig)
                             .add(br())

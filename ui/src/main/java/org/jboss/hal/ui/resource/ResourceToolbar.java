@@ -61,7 +61,6 @@ import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.icon.IconSets.fas.edit;
 import static org.patternfly.icon.IconSets.fas.powerOff;
 import static org.patternfly.icon.IconSets.fas.redo;
-import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Classes.modifier;
 
 class ResourceToolbar implements IsElement<HTMLElement> {
@@ -91,14 +90,13 @@ class ResourceToolbar implements IsElement<HTMLElement> {
         resetItem = toolbarItem()
                 .add(button().id(resetId).plain().icon(powerOff()).onClick((e, b) -> resourceManager.reset()))
                 .add(tooltip(By.id(resetId),
-                        "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes.")
-                        .placement(auto));
+                        "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
         ToolbarItem refreshItem = toolbarItem()
                 .add(button().id(refreshId).plain().icon(redo()).onClick((e, b) -> resourceManager.refresh()))
-                .add(tooltip(By.id(refreshId), "Refresh").placement(auto));
+                .add(tooltip(By.id(refreshId), "Refresh"));
         editItem = toolbarItem()
                 .add(button().id(editId).plain().icon(edit()).onClick((e, b) -> resourceManager.load(EDIT)))
-                .add(tooltip(By.id(editId), "Edit resource").placement(auto));
+                .add(tooltip(By.id(editId), "Edit resource"));
         viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
                 .addItem(refreshItem)
                 .addItem(resetItem)

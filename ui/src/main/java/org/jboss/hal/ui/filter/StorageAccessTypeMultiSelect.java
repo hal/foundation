@@ -57,7 +57,6 @@ public class StorageAccessTypeMultiSelect<T> implements IsElement<HTMLElement> {
     StorageAccessTypeMultiSelect(Filter<T> filter) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text("Mode"))
-                .stayOpen()
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> setFilter(filter, menuItems))
                         .addContent(menuContent()

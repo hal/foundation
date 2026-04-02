@@ -52,7 +52,7 @@ import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.FlexShorthand._1;
-import static org.patternfly.popper.Placement.bottomStart;
+import static org.patternfly.popper.PopperPlacement.bottomStart;
 import static org.patternfly.style.Classes.search;
 import static org.patternfly.style.Classes.util;
 

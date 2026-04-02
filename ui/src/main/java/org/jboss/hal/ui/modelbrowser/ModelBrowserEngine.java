@@ -175,7 +175,7 @@ class ModelBrowserEngine {
                             if (item.element().classList.contains(modifier(disabled))) {
                                 ModelBrowserNode m = item.get(Keys.MODEL_BROWSER_NODE);
                                 if (m != null) {
-                                    nonExistingSingletonPopover(m);
+                                    nonExistingSingletonPopover(m, item);
                                 }
                             }
                         }
@@ -193,20 +193,19 @@ class ModelBrowserEngine {
                 });
     }
 
-    private static void nonExistingSingletonPopover(ModelBrowserNode mbn) {
+    private static void nonExistingSingletonPopover(ModelBrowserNode mbn, TreeViewItem tvi) {
         String popoverId = popoverId(mbn);
         if (document.getElementById(popoverId) != null) {
             logger.debug("Add popover for non-existing singleton resource %s", mbn.identifier);
             AddressTemplate anonymous = mbn.template.anonymiseLast(); // /a=b/c=d -> /a=b/c=*
-            popover(By.data(identifier, mbn.identifier))
+            tvi.add(popover(By.data(identifier, mbn.identifier))
                     .id(popoverId)
                     .addHeader(mbn.name)
                     .addBody(popoverBody()
                             .add(div().add("This resource does not yet exist."))
                             .add(div().add(button("Add resource").link().inline()
                                     .onClick((e, b) -> ModelBrowserEvents.AddResource.dispatch(b.element(),
-                                            anonymous, mbn.name, true)))))
-                    .appendToBody();
+                                            anonymous, mbn.name, true))))));
         } else {
             logger.warn("Add popover for non-existing singleton resource %s already exists", mbn.identifier);
         }

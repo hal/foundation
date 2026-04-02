@@ -31,7 +31,6 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
-import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Size.xs;
 
 class Dashboard {
@@ -62,8 +61,7 @@ class Dashboard {
                                 dlt.icon(icon);
                             }
                         })
-                        .help(attributeDescriptionPopover(label, ad.get(attribute), descriptionOnly)
-                                .placement(auto)))
+                        .help(attributeDescriptionPopover(label, ad.get(attribute), descriptionOnly)))
                 .addDescription(descriptionListDescription().run(withDld));
     }
 }

@@ -27,7 +27,6 @@ import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.op.finder.ColumnRegistry;
 import org.patternfly.extension.finder.Finder;
-import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 

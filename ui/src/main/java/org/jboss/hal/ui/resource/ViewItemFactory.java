@@ -126,9 +126,9 @@ public class ViewItemFactory {
                     .apply(element -> element.tabIndex = 0)
                     .text(nestedLabel)
                     .element();
-            attributeDescriptionPopover(nestedLabel, nestedDescription, all)
+            nestedTextElement.appendChild(attributeDescriptionPopover(nestedLabel, nestedDescription, all)
                     .trigger(nestedTextElement)
-                    .appendToBody();
+                    .element());
             wrapHtmlContainer(term.element())
                     .add(nestedElementSeparator())
                     .add(nestedTextElement);

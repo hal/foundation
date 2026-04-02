@@ -36,7 +36,7 @@ import org.patternfly.component.list.DataListItem;
 import org.patternfly.component.menu.Menu;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarItem;
-import org.patternfly.component.tooltip.Tooltip;
+import org.patternfly.component.tooltip.PopperTooltip;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
@@ -87,7 +87,6 @@ import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
-import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.icon.IconSets.fas.plus;
@@ -97,7 +96,7 @@ import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.Gap.md;
-import static org.patternfly.popper.Placement.auto;
+import static org.patternfly.popper.PopperPlacement.auto;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
@@ -135,11 +134,11 @@ class ResourceList implements IsElement<HTMLElement> {
                 .build();
 
         addItem = toolbarItem();
-        Tooltip.tooltip(addItem.element(), "Add").appendToBody();
+        PopperTooltip.tooltip(addItem.element(), "Add").appendToBody();
         String refreshId = Id.unique("refresh");
         ToolbarItem refreshItem = toolbarItem()
                 .add(button().id(refreshId).plain().icon(redo()).onClick((e, b) -> refresh()))
-                .add(tooltip(By.id(refreshId), "Refresh").placement(auto));
+                .add(PopperTooltip.tooltip(By.id(refreshId), "Refresh").placement(auto));
 
         Variable spacer = componentVar(component(Classes.toolbar), "spacer");
         Variable filterGroupSpacer = componentVar(component(Classes.toolbar, Classes.group), "m-filter-group", "spacer");

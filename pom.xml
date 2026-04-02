@@ -83,7 +83,7 @@
         <!-- Dependency versions -->
         <version.checkstyle.config>1.0.8.Final</version.checkstyle.config>
         <version.corepack>v0.34.6</version.corepack>
-        <version.elemento>2.4.10</version.elemento>
+        <version.elemento>2.4.11</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
         <version.junit>6.0.3</version.junit>
@@ -91,7 +91,7 @@
         <version.mockito>5.23.0</version.mockito>
         <version.node>v24.10.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
-        <version.patternfly.java>0.6.16</version.patternfly.java>
+        <version.patternfly.java>0.7.1</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.10.0</version.central.publishing.plugin>

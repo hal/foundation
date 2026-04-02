@@ -50,7 +50,6 @@ public class DeprecatedMultiSelect<T> implements IsElement<HTMLElement> {
     DeprecatedMultiSelect(Filter<T> filter, String text) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text(text))
-                .stayOpen()
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> setBooleanFilter(filter, DeprecatedAttribute.NAME, menuItems,
                                 ORIGIN))

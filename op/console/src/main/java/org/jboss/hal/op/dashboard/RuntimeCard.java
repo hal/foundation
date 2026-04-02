@@ -78,7 +78,6 @@ import static org.patternfly.layout.flex.FlexShorthand._1;
 import static org.patternfly.layout.flex.Gap.md;
 import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.layout.flex.JustifyContent.center;
-import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Size.xl;
 
 class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
@@ -209,21 +208,18 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(descriptionListGroup("host-name")
                                 .addTerm(descriptionListTerm("Name")
                                         .help(attributeDescriptionPopover("Name", ad.get("host-operating-system"),
-                                                descriptionOnly)
-                                                .placement(auto)))
+                                                descriptionOnly)))
                                 .addDescription(descriptionListDescription(modelNode.get("host-operating-system").asString())))
                         .addItem(descriptionListGroup("host-arch")
                                 .addTerm(descriptionListTerm("Architecture")
                                         .help(attributeDescriptionPopover("Architecture", cpuAd.get("host-cpu-arch"),
-                                                descriptionOnly)
-                                                .placement(auto)))
+                                                descriptionOnly)))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "host-cpu.host-cpu-arch").asString())))
                         .addItem(descriptionListGroup("host-cores")
                                 .addTerm(descriptionListTerm("Cores")
                                         .help(attributeDescriptionPopover("Cores", cpuAd.get("host-core-count"),
-                                                descriptionOnly)
-                                                .placement(auto)))
+                                                descriptionOnly)))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "host-cpu.host-core-count").asString())))));
     }
@@ -241,15 +237,13 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(descriptionListGroup("jvm-version")
                                 .addTerm(descriptionListTerm("Version")
                                         .help(attributeDescriptionPopover("Version", jvmAd.get("jvm-version"),
-                                                descriptionOnly)
-                                                .placement(auto)))
+                                                descriptionOnly)))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "jvm.jvm-version").asString())))
                         .addItem(descriptionListGroup("jvm-vendor")
                                 .addTerm(descriptionListTerm("Vendor")
                                         .help(attributeDescriptionPopover("Vendor", jvmAd.get("jvm-vendor"),
-                                                descriptionOnly)
-                                                .placement(auto)))
+                                                descriptionOnly)))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "jvm.jvm-vendor").asString())))));
     }

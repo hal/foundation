@@ -36,7 +36,6 @@ import org.jboss.hal.model.server.Server;
 import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;
-import org.patternfly.popper.Placement;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
@@ -151,8 +150,7 @@ class StatusCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(descriptionListGroup("runtime-configuration-state")
                                 .addTerm(descriptionListTerm("Configuration state")
                                         .help(attributeDescriptionPopover("Configuration state",
-                                                rootAttributes.get("runtime-configuration-state"), descriptionOnly)
-                                                .placement(Placement.auto)))
+                                                rootAttributes.get("runtime-configuration-state"), descriptionOnly)))
                                 .addDescription(stateDld = descriptionListDescription()
                                         .add(runtimeConfigurationStateLabel(runtimeConfigurationState))))
                         .addItem(dlg(rootAttributes, "running-mode", dld -> {

@@ -226,9 +226,8 @@ class FormItemFactory {
                 insertFirst(formGroupLabel.element(), nestedElementSeparator());
                 insertFirst(formGroupLabel.element(), parentHelpButton);
                 insertFirst(formGroupLabel.element(), parentLabelElement);
-                attributeDescriptionPopover(parentLabel, parentDescription, all)
-                        .trigger(parentHelpButton)
-                        .appendToBody();
+                formGroupLabel.add(attributeDescriptionPopover(parentLabel, parentDescription, all)
+                        .trigger(parentHelpButton));
                 // </unstable>
             } else {
                 String label = labelBuilder(ra.name);

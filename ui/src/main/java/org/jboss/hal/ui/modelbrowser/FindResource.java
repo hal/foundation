@@ -95,7 +95,6 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.layout.grid.Grid.grid;
 import static org.patternfly.layout.grid.GridItem.gridItem;
-import static org.patternfly.popper.Placement.auto;
 import static org.patternfly.style.Breakpoints.breakpoints;
 import static org.patternfly.style.Classes.search;
 import static org.patternfly.style.Classes.util;
@@ -199,7 +198,6 @@ class FindResource {
 
         Popover scopeInfo = popover()
                 .autoWidth()
-                .placement(auto)
                 .addHeader(popoverHeader().text("Where to search"))
                 .addBody(popoverBody()
                         .add(flex().direction(column).rowGap(Gap.md)
@@ -209,7 +207,6 @@ class FindResource {
 
         Popover comparisonInfo = popover()
                 .autoWidth()
-                .placement(auto)
                 .addHeader(popoverHeader().text("How to search"))
                 .addBody(popoverBody()
                         .add(flex().direction(column).rowGap(Gap.md)

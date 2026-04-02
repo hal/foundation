@@ -56,7 +56,6 @@ public class DeReDeExMultiSelect<T> implements IsElement<HTMLElement> {
     DeReDeExMultiSelect(Filter<T> filter) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text("Status"))
-                .stayOpen()
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> {
                             setBooleanFilter(filter, DefinedAttribute.NAME, menuItems, ORIGIN);
@@ -83,7 +82,8 @@ public class DeReDeExMultiSelect<T> implements IsElement<HTMLElement> {
                                 .addGroup(menuGroup()
                                         .addList(menuList()
                                                 .addItem(menuItem(ExpressionAttribute.NAME + "-true", "Expressions allowed"))
-                                                .addItem(menuItem(ExpressionAttribute.NAME + "-false", "No expressions allowed"))))
+                                                .addItem(menuItem(ExpressionAttribute.NAME + "-false",
+                                                        "No expressions allowed"))))
                         ));
     }
 

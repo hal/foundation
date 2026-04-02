@@ -459,8 +459,8 @@ abstract class FormItem implements
         resetValidation();
         failSafeRemoveFromParent(nativeContainer);
         formGroupControl.add(expressionContainer = expressionContainer());
-        tooltip(By.id(switchToNativeModeId), "Switch to native mode").appendTo(expressionContainer);
-        tooltip(By.id(resolveExpressionId), "Resolve expression").appendTo(expressionContainer);
+        expressionContainer.appendChild(tooltip(By.id(switchToNativeModeId), "Switch to native mode").element());
+        expressionContainer.appendChild(tooltip(By.id(resolveExpressionId), "Resolve expression").element());
         inputMode = EXPRESSION;
         afterSwitchedToExpressionMode();
     }
@@ -480,7 +480,7 @@ abstract class FormItem implements
         resetValidation();
         failSafeRemoveFromParent(expressionContainer);
         formGroupControl.add(nativeContainer = nativeContainer());
-        tooltip(By.id(switchToExpressionModeId), "Switch to expression mode").appendTo(nativeContainer);
+        nativeContainer.appendChild(tooltip(By.id(switchToExpressionModeId), "Switch to expression mode").element());
         inputMode = NATIVE;
         afterSwitchedToNativeMode();
     }

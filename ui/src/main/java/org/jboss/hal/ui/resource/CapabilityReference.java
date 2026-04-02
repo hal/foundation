@@ -34,6 +34,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.patternfly.component.label.Label;
+import org.patternfly.component.tooltip.PopperTooltip;
 import org.patternfly.popper.Modifiers;
 import org.patternfly.popper.Popper;
 import org.patternfly.popper.PopperBuilder;
@@ -69,13 +70,12 @@ import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
-import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
-import static org.patternfly.popper.Placement.bottom;
+import static org.patternfly.popper.PopperPlacement.bottom;
 import static org.patternfly.style.Classes.list;
 import static org.patternfly.style.Classes.menu;
 import static org.patternfly.style.Classes.modifier;
@@ -188,7 +188,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
         findResources().then(__ -> {
             setVisible(providedBy, state == State.ONE_RESOURCE || state == State.MULTIPLE_RESOURCES);
             if (state == State.ONE_RESOURCE && singleTemplate != null) {
-                tooltip(providedBy.element(), singleTemplate.toString()).appendToBody();
+                PopperTooltip.tooltip(providedBy.element(), singleTemplate.toString()).appendToBody();
             }
             return null;
         });

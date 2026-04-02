@@ -51,7 +51,6 @@ public class ParametersReturnValueMultiSelect<T> implements IsElement<HTMLElemen
     ParametersReturnValueMultiSelect(Filter<T> filter) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text("Signature"))
-                .stayOpen()
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> {
                             setBooleanFilter(filter, ParametersAttribute.NAME, menuItems, ORIGIN);
