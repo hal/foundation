@@ -23,30 +23,83 @@ import java.util.Map;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
+import static org.jboss.hal.core.Humanize.CaseType.CAPITAL;
+import static org.jboss.hal.core.Humanize.CaseType.SENTENCE;
 
-/** Generates human-readable labels from terms used in the management model. */
-public class LabelBuilder {
+/** Generates human-readable text from terms used in the management model. */
+public class Humanize {
 
     // ------------------------------------------------------ factory
 
-    public static String labelBuilder(String name) {
-        return new LabelBuilder(false).label(name);
+    /**
+     * Converts a given name into a sentence-cased, human-readable text. This method processes the input by capitalizing the
+     * first letter of the name and ensuring the rest of the text is in lowercase, suitable for display purposes.
+     *
+     * @param name The input name to be converted into a sentence case. Must not be null.
+     * @return A sentence-cased, human-readable version of the input name.
+     */
+    public static String sentenceCase(String name) {
+        return new Humanize(SENTENCE).label(name);
     }
 
-    public static String labelBuilder(List<String> names, String conjunction) {
-        return new LabelBuilder(false).enumeration(names, conjunction);
+    /**
+     * Converts a list of names into a sentence-cased, human-readable enumeration. The method handles edge cases such as an
+     * empty list, a single name, or two names. For lists with more than two names, the items are separated by commas, with the
+     * last item joined using the specified conjunction.
+     *
+     * @param names       The list of names to be converted into a sentence-cased enumeration. This can be null or empty.
+     * @param conjunction The conjunction to use between the final two names when the list has more than one name (e.g., "and"
+     *                    or "or").
+     * @return A sentence-cased enumeration string. If the input list is null or empty, an empty string is returned. If the list
+     * contains one name, the sentence-cased version of the name is returned. If the list has multiple names, a comma-separated
+     * string with the conjunction is returned, formatted in sentence case.
+     */
+    public static String sentenceCase(List<String> names, String conjunction) {
+        return new Humanize(SENTENCE).enumeration(names, conjunction);
     }
 
-    public static String labelBuilderAllWords(String name) {
-        return new LabelBuilder(true).label(name);
+    /**
+     * Converts a given name into a capital-cased, human-readable text. This method processes the input string by capitalizing
+     * each word, ensuring the resulting text conforms to a title-like format suitable for display purposes.
+     *
+     * @param name The input name to be converted into a capital-cased text. Must not be null.
+     * @return A capital-cased, human-readable text derived from the input name.
+     */
+    public static String capitalCase(String name) {
+        return new Humanize(CAPITAL).label(name);
     }
 
-    public static String labelBuilderAllWords(List<String> names, String conjunction) {
-        return new LabelBuilder(true).enumeration(names, conjunction);
+    /**
+     * Converts a list of names into a human-readable, capital-cased enumeration. Each name in the list is processed to ensure
+     * it appears in capital case, and the names are formatted into a single string using commas and the specified conjunction.
+     *
+     * @param names       The list of names to be enumerated and converted to a capital case. The list can be null or empty.
+     * @param conjunction The conjunction to use between the last two names in the enumeration (e.g., "and" or "or"). Must not
+     *                    be null or empty.
+     * @return A capital-cased string representing the enumeration of the provided names. If the input list is null or empty, an
+     * empty string is returned. If the list has one name, its capital-cased version is returned. For multiple names, they are
+     * joined in a comma-separated, capital-cased format with the conjunction applied to the last two names.
+     */
+    public static String capitalCase(List<String> names, String conjunction) {
+        return new Humanize(CAPITAL).enumeration(names, conjunction);
     }
 
     // ------------------------------------------------------ instance
 
+    /**
+     * Enum representing the type of casing to be applied to text.
+     *
+     * <ul>
+     *   <li>SENTENCE: Capitalizes the first letter of the text and converts the rest to lowercase.</li>
+     *   <li>CAPITAL: Capitalizes the first letter of each word in the text.</li>
+     * </ul>
+     */
+    public enum CaseType {
+        SENTENCE,
+        CAPITAL
+    }
+
+    private static final String DELIMITER = " / ";
     private static final String QUOTE = "'";
     private static final String SPACE = " ";
 
@@ -121,19 +174,28 @@ public class LabelBuilder {
         SPECIALS.put("uuid", "UUID");
         SPECIALS.put("vm", "VM");
         SPECIALS.put("xa", "XA");
+        SPECIALS.put("war", "WAR");
         SPECIALS.put("wsdl", "WSDL");
     }
 
-    private final boolean capitalizeAllWords;
+    private final CaseType caseType;
 
-    LabelBuilder(boolean capitalizeAllWords) {
-        this.capitalizeAllWords = capitalizeAllWords;
+    Humanize(CaseType caseType) {
+        this.caseType = caseType;
     }
 
+    /**
+     * Converts a given name into a human-readable text. If the name contains a dot (.), it is split into parts, and each part
+     * is recursively labeled and joined with {@value #DELIMITER}. Otherwise, the method processes the name by replacing dashes
+     * with spaces, replacing special characters, and capitalizing words as needed.
+     *
+     * @param name The input name to be converted into a human-readable text.
+     * @return A human-readable text based on the input name.
+     */
     public String label(String name) {
         if (name.contains(".")) {
             String[] parts = name.split("\\.");
-            return String.join(" / ", stream(parts).map(this::label).collect(joining(" / ")));
+            return String.join(DELIMITER, stream(parts).map(this::label).collect(joining(DELIMITER)));
         } else {
             String label = name;
             label = label.replace('-', ' ');
@@ -144,10 +206,15 @@ public class LabelBuilder {
     }
 
     /**
-     * Turns a list of names from the management model into a human-readable enumeration wrapped in quotes and separated with
-     * commas. The last name is separated with the specified conjunction.
+     * Creates a human-readable enumeration from a list of names, separated by a conjunction. Handles edge cases such as a
+     * single name or two names in the list. If the list contains more than two names, all names except the last are separated
+     * by commas, and the last name is joined using the specified conjunction.
      *
-     * @return The list of names as a human-readable string or an empty string if the names are null or empty.
+     * @param names       The list of names to be enumerated. This can be null or empty.
+     * @param conjunction The conjunction to use between the final two names in the enumeration (e.g., "and" or "or").
+     * @return A formatted enumeration string. If the input list is null or empty, an empty string is returned. If the list
+     * contains a single name, it returns the name wrapped in quotes. For multiple names, it formats the list as a
+     * comma-separated string with the conjunction applied to the last two names.
      */
     public String enumeration(List<String> names, String conjunction) {
         String enumeration = "";
@@ -193,7 +260,7 @@ public class LabelBuilder {
         for (int i = 0; i < buffer.length; i++) {
             char ch = buffer[i];
             if (Character.isWhitespace(ch)) {
-                capitalizeNext = capitalizeAllWords;
+                capitalizeNext = caseType == CAPITAL;
             } else if (capitalizeNext) {
                 buffer[i] = Character.toUpperCase(ch);
                 capitalizeNext = false;

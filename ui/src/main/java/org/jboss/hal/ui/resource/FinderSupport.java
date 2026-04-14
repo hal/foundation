@@ -59,7 +59,7 @@ public class FinderSupport {
      * {@code subsystem=datasources/data-source=*}. This address template is used for the
      * {@value ModelDescriptionConstants#READ_CHILDREN_NAMES_OPERATION} operation to read the child resources.
      * <p>
-     * The items are built using {@code itemFn}. In addition, the following key/values are stored in the finder item
+     * The items are built using {@code itemFn}. In addition, the following key/values are stored in the finder item's
      * {@linkplain org.patternfly.core.ComponentContext component context}:
      * <ul>
      *     <li>{@link #RESOURCE_NAME_KEY}: The resource name ({@link String})</li>

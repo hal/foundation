@@ -17,6 +17,7 @@ package org.jboss.hal.ui.resource;
 
 import java.util.List;
 
+import org.jboss.hal.core.Humanize;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
@@ -42,8 +43,7 @@ import static org.jboss.elemento.Elements.h;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Elements.span;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
-import static org.jboss.hal.core.LabelBuilder.labelBuilderAllWords;
+import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
@@ -218,7 +218,7 @@ public class ResourceDialogs {
             resolved = new WildcardResolver(LTR, resource).resolve(template);
         } else {
             title = modalHeaderTitle().run(mht -> span(mht.textDelegate())
-                    .add("Add " + labelBuilder(template.last().key) + " ")
+                    .add("Add " + Humanize.sentenceCase(template.last().key) + " ")
                     .run(span -> {
                         if (resource != null) {
                             span.add(code(resource));
@@ -414,7 +414,7 @@ public class ResourceDialogs {
      */
     public static Promise<ModelNode> deleteResourceModal(AddressTemplate template) {
         AddressTemplate resolvedTemplate = new StatementContextResolver(uic().statementContext()).resolve(template);
-        String name = labelBuilderAllWords(resolvedTemplate.last().value);
+        String name = capitalCase(resolvedTemplate.last().value);
         return new Promise<>((resolve, reject) -> modal().size(sm)
                 .addHeader("Delete resource")
                 .addBody(modalBody()

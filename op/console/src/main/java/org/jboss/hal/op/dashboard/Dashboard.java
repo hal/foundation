@@ -17,6 +17,7 @@ package org.jboss.hal.op.dashboard;
 
 import java.util.function.Consumer;
 
+import org.jboss.hal.core.Humanize;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.patternfly.component.emptystate.EmptyState;
@@ -24,7 +25,7 @@ import org.patternfly.component.list.DescriptionListDescription;
 import org.patternfly.component.list.DescriptionListGroup;
 import org.patternfly.icon.PredefinedIcon;
 
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
@@ -53,7 +54,7 @@ class Dashboard {
 
     static DescriptionListGroup dlg(AttributeDescriptions ad, String attribute, PredefinedIcon icon,
             Consumer<DescriptionListDescription> withDld) {
-        String label = labelBuilder(attribute);
+        String label = sentenceCase(attribute);
         return descriptionListGroup(attribute)
                 .addTerm(descriptionListTerm(label)
                         .run(dlt -> {

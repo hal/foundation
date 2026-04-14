@@ -36,7 +36,7 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.wrapHtmlContainer;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
@@ -53,12 +53,12 @@ import static org.jboss.hal.resources.HalClasses.restricted;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
 import static org.jboss.hal.resources.HalClasses.undefined;
 import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.modelNodeCode;
 import static org.jboss.hal.ui.BuildingBlocks.nestedElementSeparator;
 import static org.jboss.hal.ui.BuildingBlocks.renderExpression;
 import static org.jboss.hal.ui.BuildingBlocks.resolveExpressionIcon;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.CapabilityReference.capabilityReference;
@@ -114,8 +114,8 @@ public class ViewItemFactory {
             // So we set up the internals of DescriptionListTerm manually.
             AttributeDescription parentDescription = ra.description.parent();
             AttributeDescription nestedDescription = ra.description;
-            String parentLabel = labelBuilder(parentDescription.name());
-            String nestedLabel = labelBuilder(ra.name);
+            String parentLabel = sentenceCase(parentDescription.name());
+            String nestedLabel = sentenceCase(ra.name);
             term = descriptionListTerm(parentLabel)
                     .css(halComponent(resource, HalClasses.nestedLabel))
                     .help(attributeDescriptionPopover(parentLabel, parentDescription, all));
@@ -134,7 +134,7 @@ public class ViewItemFactory {
                     .add(nestedTextElement);
             // </unstable>
         } else {
-            String label = labelBuilder(ra.name);
+            String label = sentenceCase(ra.name);
             term = descriptionListTerm(label)
                     .help(attributeDescriptionPopover(label, ra.description, all));
 

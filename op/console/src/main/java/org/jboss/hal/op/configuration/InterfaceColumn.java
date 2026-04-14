@@ -39,7 +39,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.span;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT_INTERFACE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.QUERY_OPERATION;
@@ -113,7 +113,7 @@ public class InterfaceColumn implements ColumnProvider {
             if (!socketBindingGroups.isEmpty()) {
                 // TODO Add link to socket binding group
                 resourceView.add(viewItem("sbg",
-                        descriptionListTerm(labelBuilder(SOCKET_BINDING_GROUP)),
+                        descriptionListTerm(sentenceCase(SOCKET_BINDING_GROUP)),
                         span().text(socketBindingGroups.stream().collect(joining(", "))).element()));
             }
         });

@@ -42,16 +42,16 @@ import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.flow.Flow.parallel;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.Severity.danger;
@@ -168,7 +168,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 AttributeDescriptions runtimeAttributes = runtimeMeta.resourceDescription().attributes();
 
                 // Test of the native popover
-                var consoleTerm = descriptionListTerm(labelBuilder("console-version"));
+                var consoleTerm = descriptionListTerm(sentenceCase("console-version"));
                 var consoleText = (HTMLElement) consoleTerm.textDelegate();
                 var consoleGroup = descriptionListGroup("console-version")
                         .addTerm(consoleTerm)
@@ -177,7 +177,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 consoleGroup.add(popover(() -> consoleText)
                         .css(util("min-width"))
                         .style(utilVar("min-width", "MinWidth").name, "40ch")
-                        .addHeader(labelBuilder("console-version"))
+                        .addHeader(sentenceCase("console-version"))
                         .addBody(popoverBody().add(
                                 "The version of the console you're currently using. If not available, the version defaults to '0.0.0'.")));
 
@@ -190,7 +190,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(dlg(envAttributes, "stability", dld ->
                                 dld.add(stabilityLabel(environment.serverStability()))))
                         .addItem(descriptionListGroup("operation-mode")
-                                .addTerm(descriptionListTerm(labelBuilder("operation-mode")))
+                                .addTerm(descriptionListTerm(sentenceCase("operation-mode")))
                                 .addDescription(descriptionListDescription(environment.operationMode().name())))
                         .addItem(configFileDlg(envAttributes, envNode))
                         .addItem(dlg(runtimeAttributes, "uptime", arrowUp(), dld -> {
@@ -246,7 +246,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
         } else {
             String domainConfig = filename(envNode.get("domain-config-file").asString());
             String hostConfig = filename(envNode.get("host-config-file").asString());
-            String label = labelBuilder("config-file");
+            String label = sentenceCase("config-file");
             return descriptionListGroup("config-file")
                     .addTerm(descriptionListTerm(label).icon(cog())
                             .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)))

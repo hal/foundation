@@ -38,7 +38,8 @@ import elemental2.promise.Promise;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.flow.Flow.parallel;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.capitalCase;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
@@ -184,7 +185,7 @@ public class CrudOperations {
     private String typeName(AddressTemplate template) {
         AddressTemplate resolvedTemplate = new StatementContextResolver(statementContext).resolve(template);
         String type = resolvedTemplate.last().key;
-        String failSafeType = type == null ? "Management model" : labelBuilder(type);
+        String failSafeType = type == null ? "Management model" : capitalCase(type);
         String name = resolvedTemplate.last().value;
         return name != null ? failSafeType + " " + name : failSafeType;
     }

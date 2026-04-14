@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.core.Humanize;
 import org.jboss.hal.ui.filter.MultiSelects;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MultiSelect;
@@ -28,7 +29,7 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuGroup.menuGroup;
@@ -54,7 +55,7 @@ class StatisticsEnabledMultiSelect implements IsElement<HTMLElement> {
 
     StatisticsEnabledMultiSelect(Filter<ResourceData> filter) {
         filter.onChange(this::onFilterChanged);
-        this.multiSelect = multiSelect(menuToggle().text(labelBuilder(STATISTICS_ENABLED)))
+        this.multiSelect = multiSelect(menuToggle().text(Humanize.sentenceCase(STATISTICS_ENABLED)))
                 .addMenu(multiSelectGroupMenu()
                         .onMultiSelect((e, c, menuItems) -> setFilter(filter, menuItems))
                         .addContent(menuContent()

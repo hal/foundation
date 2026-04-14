@@ -27,7 +27,7 @@ import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.button.Button;
-import org.patternfly.component.tooltip.PopperTooltip;
+import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.component.tree.TreeView;
 import org.patternfly.component.tree.TreeViewItem;
 
@@ -35,6 +35,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.Elements.insertAfter;
 import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.tree;
@@ -47,6 +48,7 @@ import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
+import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.component.tree.TreeView.treeView;
 import static org.patternfly.component.tree.TreeViewType.selectableItems;
 import static org.patternfly.core.AsyncStatus.pending;
@@ -56,10 +58,9 @@ import static org.patternfly.icon.IconSets.fas.arrowRight;
 import static org.patternfly.icon.IconSets.fas.home;
 import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.icon.IconSets.fas.search;
-import static org.patternfly.popper.PopperPlacement.bottom;
-import static org.patternfly.popper.PopperPlacement.bottomStart;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Padding.noPadding;
+import static org.patternfly.style.Placement.bottomStart;
 import static org.patternfly.style.Size.sm;
 import static org.patternfly.style.Sticky.top;
 
@@ -74,8 +75,8 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
     private final Button forwardButton;
     private final TreeView treeView;
     private final HTMLElement root;
-    private PopperTooltip backTooltip;
-    private PopperTooltip forwardTooltip;
+    private Tooltip backTooltip;
+    private Tooltip forwardTooltip;
 
     ModelBrowserTree(ModelBrowser modelBrowser) {
         this.modelBrowser = modelBrowser;
@@ -93,24 +94,30 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
         GotoResource gotoResource = new GotoResource();
         Button collapseButton = button().plain().icon(minusSquare()).onClick((e, b) -> treeView.collapse());
 
-        PopperTooltip.tooltip(refreshButton.element(), "Refresh").placement(bottom).appendToBody();
-        PopperTooltip.tooltip(homeButton.element(), "Home").placement(bottom).appendToBody();
-        PopperTooltip.tooltip(findResource.element(), "Find a resource").placement(bottom).appendToBody();
-        PopperTooltip.tooltip(gotoResource.element(), "Go to resource").placement(bottom).appendToBody();
-        PopperTooltip.tooltip(collapseButton.element(), "Collapse all").placement(bottom).appendToBody();
-
         root = div().css(halComponent(HalClasses.modelBrowser, tree))
                 .add(pageSection().sticky(top).padding(noPadding)
                         .add(toolbar()
                                 .addContent(toolbarContent()
                                         .addGroup(toolbarGroup(actionGroupPlain).css(modifier("wrap"))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(backButton))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(forwardButton))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(homeButton))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(refreshButton))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(findResource))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(gotoResource))
-                                                .addItem(toolbarItem().css(modifier("gap", sm)).add(collapseButton))))))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(backButton))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(forwardButton))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(homeButton)
+                                                        .add(tooltip(homeButton.element(), "Home")))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(refreshButton)
+                                                        .add(tooltip(refreshButton.element(), "Refresh")))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(findResource)
+                                                        .add(tooltip(findResource.element(), "Find a resource")))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(gotoResource)
+                                                        .add(tooltip(gotoResource.element(), "Go to resource")))
+                                                .addItem(toolbarItem().css(modifier("gap", sm))
+                                                        .add(collapseButton)
+                                                        .add(tooltip(collapseButton.element(), "Collapse all")))))))
                 .add(pageSection().padding(noPadding).add(treeView))
                 .element();
     }
@@ -285,9 +292,8 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                 node = treeViewItem.get(Keys.MODEL_BROWSER_NODE);
             }
             if (backTooltip == null) {
-                backTooltip = PopperTooltip.tooltip(backButton.element(), "")
-                        .placement(bottomStart)
-                        .appendToBody();
+                backTooltip = tooltip(backButton.element(), "").placement(bottomStart);
+                insertAfter(backTooltip, backButton.element());
             }
             if (node != null) {
                 backTooltip.text("Go back to " + node.template);
@@ -304,9 +310,8 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                 node = treeViewItem.get(Keys.MODEL_BROWSER_NODE);
             }
             if (forwardTooltip == null) {
-                forwardTooltip = PopperTooltip.tooltip(forwardButton.element(), "")
-                        .placement(bottomStart)
-                        .appendToBody();
+                forwardTooltip = tooltip(forwardButton.element(), "").placement(bottomStart);
+                insertAfter(forwardTooltip, forwardButton.element());
             }
             if (node != null) {
                 forwardTooltip.text("Go forward to " + node.template);

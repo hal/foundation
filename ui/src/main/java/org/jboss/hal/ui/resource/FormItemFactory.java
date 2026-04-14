@@ -37,7 +37,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.elemento.Elements.span;
-import static org.jboss.hal.core.LabelBuilder.labelBuilder;
+import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
@@ -53,9 +53,9 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.nestedElementSeparator;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.FormItemProviders.specialFormItems;
@@ -202,8 +202,8 @@ class FormItemFactory {
                 // If the internal DOM of FormGroupLabel changes, this will no longer work
                 AttributeDescription parentDescription = ra.description.parent();
                 AttributeDescription nestedDescription = ra.description;
-                String parentLabel = labelBuilder(parentDescription.name());
-                String nestedLabel = labelBuilder(ra.name);
+                String parentLabel = sentenceCase(parentDescription.name());
+                String nestedLabel = sentenceCase(ra.name);
                 formGroupLabel = formGroupLabel(nestedLabel)
                         .css(halComponent(resource, HalClasses.nestedLabel))
                         .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, nestedDescription, all));
@@ -230,7 +230,7 @@ class FormItemFactory {
                         .trigger(parentHelpButton));
                 // </unstable>
             } else {
-                String label = labelBuilder(ra.name);
+                String label = sentenceCase(ra.name);
                 formGroupLabel = formGroupLabel(label)
                         .help(label + " description", attributeDescriptionPopover(label, ra.description, all));
 
@@ -248,7 +248,7 @@ class FormItemFactory {
                 formGroupLabel.classList().add(halModifier(deprecated));
             }
         } else {
-            formGroupLabel = formGroupLabel(labelBuilder(ra.name));
+            formGroupLabel = formGroupLabel(sentenceCase(ra.name));
         }
         return formGroupLabel;
     }

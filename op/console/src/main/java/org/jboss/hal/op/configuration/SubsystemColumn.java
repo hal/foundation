@@ -24,7 +24,7 @@ import org.jboss.hal.ui.resource.FinderSupport;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
 
-import static org.jboss.hal.core.LabelBuilder.labelBuilderAllWords;
+import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.ui.BuildingBlocks.stackPreview;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -40,7 +40,6 @@ import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHea
 import static org.patternfly.extension.finder.FinderItem.finderItem;
 import static org.patternfly.extension.finder.FinderItemActions.finderItemActions;
 import static org.patternfly.icon.IconSets.fas.externalLinkAlt;
-import static org.patternfly.icon.IconSets.fas.plus;
 import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.icon.IconSets.fas.trash;
 import static org.patternfly.layout.stack.StackItem.stackItem;
@@ -60,15 +59,14 @@ public class SubsystemColumn implements ColumnProvider {
     public FinderColumn get() {
         FinderColumn column = finderColumn(ID);
         return column.addHeader(finderColumnHeader("Subsystem").addActions(finderColumnActions()
-                        .addButton(button(plus()).plain().small().onClick((e, b) -> add(column)))
                         .addButton(button(redo()).plain().small().onClick((e, b) -> column.reload()))))
                 .addItems(childResources(__ -> TEMPLATE, node -> finderItem(Id.build(node.asString()))
-                        .text(labelBuilderAllWords(node.asString()))
+                        .text(capitalCase(node.asString()))
                         .run(item -> item.addActions(finderItemActions()
                                 .addButton(button(externalLinkAlt()).plain().small().onClick((e, b) -> view(item)))
                                 .addButton(button(trash()).plain().small().onClick((e, b) -> remove(item)))))))
                 .onPreview(metadataPreview((name, metadata, preview) ->
-                        stackPreview(preview, labelBuilderAllWords(name), stack -> stack.addItem(stackItem()
+                        stackPreview(preview, capitalCase(name), stack -> stack.addItem(stackItem()
                                 .add(content(p).editorial().text(metadata.resourceDescription().description()))))));
     }
 
