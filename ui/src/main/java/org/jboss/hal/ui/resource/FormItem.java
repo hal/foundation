@@ -37,6 +37,7 @@ import org.patternfly.component.help.HelperText;
 import org.patternfly.component.inputgroup.InputGroupText;
 import org.patternfly.core.ComponentContext;
 
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 
@@ -102,6 +103,9 @@ abstract class FormItem implements
     TextInput textControl;
     HTMLElement expressionContainer;
     HTMLElement nativeContainer;
+    private HTMLDivElement switchToNativeModeTooltip;
+    private HTMLDivElement resolveExpressionTooltip;
+    private HTMLElement switchToExpressionModeTooltip;
 
     FormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
         this.identifier = identifier;
@@ -458,9 +462,16 @@ abstract class FormItem implements
     final void switchToExpressionMode() {
         resetValidation();
         failSafeRemoveFromParent(nativeContainer);
+        failSafeRemoveFromParent(switchToNativeModeTooltip);
+        failSafeRemoveFromParent(resolveExpressionTooltip);
+
+        switchToNativeModeTooltip = tooltip(By.id(switchToNativeModeId), "Switch to native mode").element();
+        resolveExpressionTooltip = tooltip(By.id(resolveExpressionId), "Resolve expression").element();
+
         formGroupControl.add(expressionContainer = expressionContainer());
-        expressionContainer.appendChild(tooltip(By.id(switchToNativeModeId), "Switch to native mode").element());
-        expressionContainer.appendChild(tooltip(By.id(resolveExpressionId), "Resolve expression").element());
+        expressionContainer.appendChild(switchToNativeModeTooltip);
+        expressionContainer.appendChild(resolveExpressionTooltip);
+
         inputMode = EXPRESSION;
         afterSwitchedToExpressionMode();
     }
@@ -479,8 +490,12 @@ abstract class FormItem implements
     final void switchToNativeMode() {
         resetValidation();
         failSafeRemoveFromParent(expressionContainer);
+        failSafeRemoveFromParent(switchToExpressionModeTooltip);
+
+        switchToExpressionModeTooltip = tooltip(By.id(switchToExpressionModeId), "Switch to expression mode").element();
         formGroupControl.add(nativeContainer = nativeContainer());
-        nativeContainer.appendChild(tooltip(By.id(switchToExpressionModeId), "Switch to expression mode").element());
+        nativeContainer.appendChild(switchToExpressionModeTooltip);
+
         inputMode = NATIVE;
         afterSwitchedToNativeMode();
     }

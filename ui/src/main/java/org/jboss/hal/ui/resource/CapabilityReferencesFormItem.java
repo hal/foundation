@@ -191,7 +191,11 @@ class CapabilityReferencesFormItem extends FormItem {
 
     private void values(List<String> values) {
         if (typeahead.menu().hasAsyncItems()) {
-            typeahead.onLoaded((__, st) -> st.selectIdentifiers(values));
+            typeahead.menu().load().then(__ -> {
+                typeahead.selectIdentifiers(values);
+                return null;
+            });
+            typeahead.onLoaded((__, mt) -> mt.selectIdentifiers(values));
         } else {
             typeahead.selectIdentifiers(values);
         }
