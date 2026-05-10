@@ -7,6 +7,25 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate to PatternFly Java 0.7.x
+
+### Fixed
+
+- Fix resource toolbar and update documentation links
+- Fix tooltip cleanup when switching between expression and native mode in form items
+- Fix capability reference value selection for async typeahead items
+
+### Upgrades
+
+- Bump PatternFly Java to 0.7.4
+- Bump Elemento to 2.4.10
+- Bump Quarkus to 3.35.2
+- Bump JBoss Parent to 53
+- Bump J2CL Maven Plugin to 0.23.7
+- Bump Wildfly Galleon Maven Plugin to 8.1.3.Final
+
 ## [0.2.7] - 2026-03-25
 
 ### Added
