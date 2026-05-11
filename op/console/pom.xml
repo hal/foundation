@@ -140,6 +140,16 @@
                             <arguments>pnpm install</arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>pnpm-sbom</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>corepack</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>pnpm run sbom</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

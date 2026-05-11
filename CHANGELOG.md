@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add CycloneDX SBOM generation for NPM runtime dependencies in assembly JARs
+
 ### Changed
 
 - Migrate to PatternFly Java 0.7.x

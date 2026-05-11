@@ -14,7 +14,8 @@
     "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
     "watch": "concurrently \"pnpm run start:parcel\" \"pnpm run start:server\" \"pnpm run open:browser\"",
     "prod:feature-pack": "parcel build src/web/index.html --dist-dir target/feature-pack-resources --public-url /halop",
-    "prod:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources"
+    "prod:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources",
+    "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --no-recurse --only patternfly --only dompurify"
   },
   "dependencies": {
     "@patternfly-java/charts": "catalog:pfj",
@@ -24,6 +25,7 @@
     "dompurify": "^3.3.3"
   },
   "devDependencies": {
+    "@cyclonedx/cdxgen": "^12.3.3",
     "@parcel/config-default": "^2.16.4",
     "@parcel/core": "^2.16.4",
     "@parcel/reporter-cli": "^2.16.4",

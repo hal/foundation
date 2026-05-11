@@ -28,6 +28,13 @@
             <directory>${project.build.directory}/standalone-resources</directory>
             <outputDirectory>console</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>META-INF/sbom</outputDirectory>
+            <includes>
+                <include>npm-bom.cdx.json</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <files>
         <file>
