@@ -17,7 +17,6 @@ package org.jboss.hal.op.dashboard;
 
 import java.util.function.Consumer;
 
-import org.jboss.hal.core.Humanize;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.patternfly.component.emptystate.EmptyState;

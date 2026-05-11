@@ -14,9 +14,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Migrate to PatternFly Java 0.7.x
+- Update format and validate scripts to include feature-pack and standalone modules
 
 ### Fixed
 
+- Remove unused imports across multiple modules
 - Fix resource toolbar and update documentation links
 - Fix tooltip cleanup when switching between expression and native mode in form items
 - Fix capability reference value selection for async typeahead items

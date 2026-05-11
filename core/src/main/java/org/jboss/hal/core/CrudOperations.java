@@ -39,7 +39,6 @@ import elemental2.promise.Promise;
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.flow.Flow.parallel;
 import static org.jboss.hal.core.Humanize.capitalCase;
-import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.success;
 import static org.jboss.hal.core.Notification.warning;
