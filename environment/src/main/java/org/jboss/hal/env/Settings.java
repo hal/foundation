@@ -31,6 +31,10 @@ import static elemental2.dom.DomGlobal.navigator;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Cookie-backed user preferences for the management console. Each setting is identified by a {@link Key} and stored as a
+ * browser cookie. Settings can be persistent (surviving browser restarts) or session-scoped.
+ */
 @ApplicationScoped
 public class Settings {
 
@@ -43,6 +47,9 @@ public class Settings {
         values = new EnumMap<>(Key.class);
     }
 
+    /**
+     * Loads a setting from its cookie, falling back to the given default value if the cookie is absent.
+     */
     public <T> void load(Key key, T defaultValue) {
         String value = Cookies.get(cookieName(key));
         if (value == null) {
@@ -55,10 +62,17 @@ public class Settings {
         }
     }
 
+    /**
+     * Returns the value for the given key, or {@link Value#EMPTY} if not set.
+     */
     public Value get(Key key) {
         return values.getOrDefault(key, Value.EMPTY);
     }
 
+    /**
+     * Sets a setting value and persists it to a cookie. Persistent keys survive browser restarts; session keys are cleared
+     * when the browser closes.
+     */
     public <T> void set(Key key, T value) {
         values.put(key, new Value(value != null ? String.valueOf(value) : null));
         if (value == null) {
@@ -93,6 +107,9 @@ public class Settings {
         return Id.build(Ids.COOKIE, key.key);
     }
 
+    /**
+     * Setting keys with their cookie identifier and persistence flag.
+     */
     public enum Key {
         TITLE("title", true),
 
@@ -127,6 +144,9 @@ public class Settings {
         }
     }
 
+    /**
+     * A typed wrapper around a setting's string value, providing conversion to boolean, int, and set types.
+     */
     public static class Value {
 
         private static final Value EMPTY = new Value("undefined");

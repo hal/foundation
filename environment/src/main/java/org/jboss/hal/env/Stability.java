@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.env;
 
+/**
+ * WildFly feature stability levels, ordered from {@link #DEFAULT} (most stable) to {@link #EXPERIMENTAL} (least stable).
+ */
 public enum Stability {
 
     DEFAULT(0, "default"),
@@ -25,6 +28,10 @@ public enum Stability {
 
     EXPERIMENTAL(300, "experimental");
 
+    /**
+     * Parses a stability level from its string name, returning the given default if the value is {@code null} or
+     * unrecognized.
+     */
     public static Stability parse(String value, Stability defaultValue) {
         Stability stability = defaultValue;
         if (value != null) {
@@ -37,6 +44,9 @@ public enum Stability {
         return stability;
     }
 
+    /**
+     * Returns a random stability level (used for testing).
+     */
     public static Stability random() {
         return Stability.values()[(int) (Math.random() * Stability.values().length)];
     }

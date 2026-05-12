@@ -27,6 +27,20 @@ import static org.jboss.hal.env.OperationMode.STANDALONE;
 import static org.jboss.hal.env.Stability.COMMUNITY;
 import static org.jboss.hal.env.Version.EMPTY_VERSION;
 
+/**
+ * Central {@code @ApplicationScoped} CDI bean holding runtime information about the connected WildFly instance. Populated
+ * during the bootstrap sequence.
+ * <p>
+ * Properties are split into two categories:
+ * <ul>
+ *     <li><strong>Build-time properties</strong> (final): {@code applicationId}, {@code applicationName},
+ *     {@code applicationVersion}, {@code base}, {@code buildType}, {@code builtInStability}. Set from J2CL system properties
+ *     during construction and immutable thereafter.</li>
+ *     <li><strong>Runtime properties</strong> (mutable): {@code instanceName}, {@code productVersion}, {@code operationMode},
+ *     {@code serverStability}, {@code accessControlProvider}, and others. Updated via the {@link #update} methods during
+ *     bootstrap and when the console connects to a different WildFly instance.</li>
+ * </ul>
+ */
 @ApplicationScoped
 public class Environment {
 
@@ -87,7 +101,9 @@ public class Environment {
 
     // ------------------------------------------------------ update
 
-    // update non-final properties as part of the bootstrap process
+    /**
+     * Updates the runtime properties with values read from the WildFly management model during bootstrap.
+     */
     public void update(String instanceName, String instanceOrganization, String productName, Version productVersion,
             Version managementVersion, OperationMode operationMode) {
         this.instanceName = instanceName;
@@ -98,15 +114,24 @@ public class Environment {
         this.operationMode = operationMode;
     }
 
+    /**
+     * Updates the domain controller name.
+     */
     public void update(String domainController) {
         this.domainController = domainController;
     }
 
+    /**
+     * Updates the access control provider and SSO flag.
+     */
     public void update(AccessControlProvider accessControlProvider, boolean sso) {
         this.accessControlProvider = accessControlProvider;
         this.sso = sso;
     }
 
+    /**
+     * Updates the server stability level and permissible stability levels.
+     */
     public void update(Stability stability, Stability[] permissibleStabilityLevels) {
         this.serverStability = stability;
         this.permissibleStabilityLevels = permissibleStabilityLevels;
@@ -227,10 +252,16 @@ public class Environment {
         return highlight;
     }
 
+    /**
+     * Returns {@code true} if the server is running in standalone mode.
+     */
     public boolean standalone() {
         return operationMode == OperationMode.STANDALONE;
     }
 
+    /**
+     * Returns {@code true} if the server is running in domain mode.
+     */
     public boolean domain() {
         return operationMode == OperationMode.DOMAIN;
     }

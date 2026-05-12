@@ -22,6 +22,10 @@ import static org.jboss.hal.resources.Urls.LOGOUT;
 import static org.jboss.hal.resources.Urls.MANAGEMENT;
 import static org.jboss.hal.resources.Urls.UPLOAD;
 
+/**
+ * Provides the management endpoint URLs derived from the console's origin. Initialized during bootstrap and updated when
+ * connecting to a different WildFly instance.
+ */
 @ApplicationScoped
 public class Endpoints {
 
