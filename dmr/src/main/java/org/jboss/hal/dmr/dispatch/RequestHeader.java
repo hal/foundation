@@ -15,6 +15,13 @@
  */
 package org.jboss.hal.dmr.dispatch;
 
+/**
+ * HTTP request headers used when communicating with the WildFly management endpoint.
+ *
+ * <p>
+ * These headers control content negotiation ({@code Accept}, {@code Content-Type}) and identify the client application
+ * ({@code X-Management-Client-Name}) to the server. Only headers actually used by the HAL console are defined here.
+ */
 public enum RequestHeader {
 
     // only those which are used in HAL

@@ -19,6 +19,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Represents the process state of one or more WildFly servers, indicating whether a reload or restart is required.
+ *
+ * <p>
+ * After executing management operations that modify server configuration, the server may require a reload (to re-read
+ * configuration without stopping) or a restart (to fully stop and start). This class aggregates {@link ServerState}
+ * instances for all affected servers.
+ *
+ * <p>
+ * In standalone mode, there is a single server state. In domain mode, multiple servers across different hosts may have
+ * different process states.
+ */
 public class ProcessState implements Iterable<ServerState> {
 
     private final Set<ServerState> serverStates;

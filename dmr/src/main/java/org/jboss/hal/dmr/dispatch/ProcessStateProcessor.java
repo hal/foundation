@@ -25,6 +25,15 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.PROCESS_STATE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELOAD_REQUIRED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESTART_REQUIRED;
 
+/**
+ * A {@link DmrHeaderProcessor} that detects server process state changes from DMR response headers and fires
+ * {@link ProcessStateEvent} CDI events.
+ *
+ * <p>
+ * This processor inspects the {@code process-state} header in operation responses. If any server reports
+ * {@code reload-required} or {@code restart-required}, it aggregates them into a {@link ProcessState} and fires a
+ * {@link ProcessStateEvent} to notify the application.
+ */
 @ApplicationScoped
 public class ProcessStateProcessor implements DmrHeaderProcessor {
 

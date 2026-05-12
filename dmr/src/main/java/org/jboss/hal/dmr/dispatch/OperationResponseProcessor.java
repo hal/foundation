@@ -25,6 +25,18 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SUCCESS;
 import static org.jboss.hal.dmr.dispatch.HeaderValues.APPLICATION_DMR_ENCODED;
 import static org.jboss.hal.dmr.dispatch.HttpMethod.GET;
 
+/**
+ * Processes DMR response bodies, extracting the result {@link ModelNode} and checking for failure outcomes.
+ *
+ * <p>
+ * This processor decodes base64-encoded DMR responses from the management endpoint. For POST operations, the response
+ * includes {@code outcome} and {@code result} fields. For GET operations, the response contains only the result data, so
+ * this processor repackages it into a standard format with {@code outcome=SUCCESS} and a {@code result} field.
+ *
+ * <p>
+ * If decoding fails or the content type is not {@code application/dmr-encoded}, a failure {@link ModelNode} is returned
+ * with an appropriate error description.
+ */
 public class OperationResponseProcessor implements DmrResponseProcessor {
 
     @Override

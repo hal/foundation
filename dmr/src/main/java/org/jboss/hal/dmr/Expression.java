@@ -21,6 +21,18 @@ import java.util.function.Predicate;
 
 import elemental2.core.JsRegExp;
 
+/**
+ * Utility for detecting and parsing WildFly management model expressions (e.g., {@code ${env.JAVA_HOME}}).
+ *
+ * <p>
+ * Expressions in the WildFly management model allow for dynamic value resolution at runtime. They follow the format
+ * {@code ${name}} or {@code ${name:default}}, where {@code name} is the expression identifier and {@code default} is an
+ * optional fallback value.
+ *
+ * <p>
+ * This class provides methods to check if a string is an expression, extract embedded expressions from strings, and split
+ * expressions into their constituent parts.
+ */
 public class Expression {
 
     static final String REG_EXP = "^[a-zA-Z_$][a-zA-Z\\d_$\\.\\-]*$";

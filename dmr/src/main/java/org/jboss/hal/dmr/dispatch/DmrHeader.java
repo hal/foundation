@@ -26,6 +26,14 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.HOST;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESPONSE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESPONSE_HEADERS;
 
+/**
+ * Represents a custom DMR response header, consisting of an operation name and its associated {@link ModelNode} value.
+ *
+ * <p>
+ * WildFly management operations can return custom headers in their responses. In standalone mode, there is a single header
+ * for the server. In domain mode, headers are returned per server, identified by server group, host, and server name. This
+ * class encapsulates those headers and provides factory methods to extract them from operation response payloads.
+ */
 public class DmrHeader {
 
     // ------------------------------------------------------ factory

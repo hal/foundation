@@ -53,6 +53,19 @@ import static org.jboss.hal.dmr.dispatch.RequestHeader.CONTENT_TYPE;
 import static org.jboss.hal.dmr.dispatch.RequestHeader.X_MANAGEMENT_CLIENT_NAME;
 import static org.jboss.hal.env.Settings.Key.RUN_AS;
 
+/**
+ * Central {@code @ApplicationScoped} service for executing DMR {@link Operation operations} and {@link Composite
+ * composites} against the WildFly management endpoint via HTTP POST.
+ *
+ * <p>
+ * The dispatcher encodes operations in base64-encoded DMR format, sends them to the management endpoint, and decodes the
+ * responses back into {@link ModelNode} structures. It automatically processes custom DMR response headers via registered
+ * {@link DmrHeaderProcessor} instances and supports RBAC run-as semantics when configured.
+ *
+ * <p>
+ * Operations can be executed synchronously (returning a {@link Promise}) or asynchronously (with a success callback and
+ * error handler). Failed operations trigger the {@link DispatcherErrorHandler}, which logs the error by default.
+ */
 @ApplicationScoped
 public class Dispatcher {
 

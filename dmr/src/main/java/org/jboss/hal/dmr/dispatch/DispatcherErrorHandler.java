@@ -17,6 +17,13 @@ package org.jboss.hal.dmr.dispatch;
 
 import org.jboss.hal.dmr.Operation;
 
+/**
+ * Callback invoked when a DMR operation fails.
+ *
+ * <p>
+ * Implementations receive the failed operation and an error message describing what went wrong. The default error handler
+ * in {@link Dispatcher} logs the error and the operation's CLI representation.
+ */
 @FunctionalInterface
 public interface DispatcherErrorHandler {
 

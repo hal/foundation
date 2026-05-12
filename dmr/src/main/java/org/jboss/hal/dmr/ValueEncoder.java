@@ -15,6 +15,22 @@
  */
 package org.jboss.hal.dmr;
 
+/**
+ * Encodes and decodes special characters ({@code /}, {@code :}, {@code =}) in DMR address values.
+ *
+ * <p>
+ * Resource addresses in the WildFly management model use {@code /}, {@code :}, and {@code =} as structural delimiters.
+ * When these characters appear in actual resource names or keys, they must be escaped to avoid ambiguity. This class
+ * provides methods to encode values before constructing addresses and decode values when extracting names from addresses.
+ *
+ * <p>
+ * Encoding replaces special characters with their escaped equivalents:
+ * <ul>
+ * <li>{@code /} becomes {@code \/}</li>
+ * <li>{@code :} becomes {@code \:}</li>
+ * <li>{@code =} becomes {@code \=}</li>
+ * </ul>
+ */
 public class ValueEncoder {
 
     public static final String ENCODED_SLASH = "\\/";

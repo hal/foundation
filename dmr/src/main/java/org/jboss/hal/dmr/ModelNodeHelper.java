@@ -23,6 +23,13 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.MANAGEMENT_MAJOR_VERSI
 import static org.jboss.hal.dmr.ModelDescriptionConstants.MANAGEMENT_MICRO_VERSION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.MANAGEMENT_MINOR_VERSION;
 
+/**
+ * Utility methods for navigating nested {@link ModelNode} structures and extracting management model version information.
+ *
+ * <p>
+ * This class provides helpers for common operations on {@link ModelNode} instances, including traversing nested paths,
+ * converting string values to enum constants, and parsing version metadata from the management model.
+ */
 public final class ModelNodeHelper {
 
     // ------------------------------------------------------ nested

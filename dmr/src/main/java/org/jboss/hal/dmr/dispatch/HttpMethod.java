@@ -15,6 +15,13 @@
  */
 package org.jboss.hal.dmr.dispatch;
 
+/**
+ * HTTP methods used for management endpoint communication.
+ *
+ * <p>
+ * The WildFly management endpoint supports both GET (read-only operations) and POST (all operations including mutations).
+ * Most operations use POST with DMR-encoded payloads.
+ */
 public enum HttpMethod {
     GET, POST;
 }

@@ -17,6 +17,13 @@ package org.jboss.hal.dmr.dispatch;
 
 import org.jboss.hal.event.ApplicationEvent;
 
+/**
+ * CDI event fired when the {@link ProcessState} changes after executing a DMR operation.
+ *
+ * <p>
+ * This event is fired by {@link ProcessStateProcessor} when response headers indicate that one or more servers require a
+ * reload or restart. UI components can observe this event to display notifications or warnings to the user.
+ */
 public class ProcessStateEvent implements ApplicationEvent {
 
     public final ProcessState processState;
