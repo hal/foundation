@@ -13,19 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.model.filter;
-
-import org.jboss.hal.meta.description.OperationDescription;
-import org.patternfly.filter.FilterAttribute;
 
 /**
- * Filter attribute matching whether an operation has parameters.
+ * Model class for WildFly subsystem metadata within deployments.
+ * <p>
+ * Represents subsystem information associated with deployed applications.
  */
-public class ParametersAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
-
-    public static final String NAME = "parameters";
-
-    public ParametersAttribute() {
-        super(NAME, (operation, parameter) -> parameter == !operation.parameters().isEmpty());
-    }
-}
+package org.jboss.hal.model.subsystem;

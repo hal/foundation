@@ -17,6 +17,9 @@ package org.jboss.hal.model.filter;
 
 import java.util.List;
 
+/**
+ * Represents an access type filter value with a display label.
+ */
 public class AccessTypeValue {
 
     public static List<AccessTypeValue> accessTypeValues() {

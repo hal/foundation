@@ -20,6 +20,9 @@ import java.util.function.Function;
 import org.jboss.hal.meta.description.Description;
 import org.patternfly.filter.FilterAttribute;
 
+/**
+ * Filter attribute matching the deprecation status of management model entries.
+ */
 public class DeprecatedAttribute<T> extends FilterAttribute<T, Boolean> {
 
     public static final String NAME = "deprecated";

@@ -22,6 +22,9 @@ import org.jboss.hal.dmr.ModelType;
 
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Represents a value type filter entry consisting of a DMR {@link ModelType} and a display label.
+ */
 public class TypeValues {
 
     public static List<TypeValues> typeValues() {

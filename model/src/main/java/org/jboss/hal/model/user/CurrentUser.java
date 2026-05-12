@@ -20,6 +20,9 @@ import java.util.HashSet;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
+/**
+ * CDI producer that creates the default {@link Current} {@link User} instance, updated during bootstrap with actual credentials.
+ */
 public class CurrentUser {
 
     @Produces

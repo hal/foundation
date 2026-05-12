@@ -17,6 +17,9 @@ package org.jboss.hal.model.filter;
 
 import java.util.List;
 
+/**
+ * Represents a storage type filter value with a display label.
+ */
 public class StorageValue {
 
     public static List<StorageValue> storageValues() {

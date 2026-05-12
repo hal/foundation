@@ -34,6 +34,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_RESOURCES_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RECURSIVE_DEPTH;
 
+/**
+ * Service for reading deployment resources from the management model.
+ */
 @ApplicationScoped
 public class Deployments {
 

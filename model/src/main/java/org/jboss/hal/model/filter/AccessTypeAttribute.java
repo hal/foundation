@@ -22,6 +22,9 @@ import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
 
+/**
+ * Filter attribute matching the access type (read-only, read-write, metric) of management model entries.
+ */
 public class AccessTypeAttribute<T> extends FilterAttribute<T, AccessTypeValue> {
 
     public static final String NAME = "access-type";

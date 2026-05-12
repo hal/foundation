@@ -24,6 +24,9 @@ import org.jboss.hal.model.subsystem.Subsystem;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SUBSYSTEM;
 
+/**
+ * A nested deployment within a parent {@link Deployment}, such as a WAR inside an EAR.
+ */
 public class Subdeployment extends NamedNode {
 
     private final Deployment parent;

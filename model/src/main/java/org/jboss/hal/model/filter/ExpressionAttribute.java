@@ -22,6 +22,9 @@ import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
 
+/**
+ * Filter attribute matching whether a management attribute contains an expression value.
+ */
 public class ExpressionAttribute<T> extends FilterAttribute<T, Boolean> {
 
     public static final String NAME = "expression";

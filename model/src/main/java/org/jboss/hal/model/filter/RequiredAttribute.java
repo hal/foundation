@@ -22,6 +22,9 @@ import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRED;
 
+/**
+ * Filter attribute matching the required status of management model entries.
+ */
 public class RequiredAttribute<T> extends FilterAttribute<T, Boolean> {
 
     public static final String NAME = "required";

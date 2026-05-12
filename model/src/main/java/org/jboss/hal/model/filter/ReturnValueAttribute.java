@@ -18,6 +18,9 @@ package org.jboss.hal.model.filter;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.patternfly.filter.FilterAttribute;
 
+/**
+ * Filter attribute matching whether an operation has a return value.
+ */
 public class ReturnValueAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
 
     public static final String NAME = "return-value";

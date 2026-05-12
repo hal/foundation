@@ -22,6 +22,9 @@ import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORAGE;
 
+/**
+ * Filter attribute matching the storage type (configuration or runtime) of management model entries.
+ */
 public class StorageAttribute<T> extends FilterAttribute<T, StorageValue> {
 
     public static final String NAME = "storage";

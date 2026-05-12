@@ -13,19 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.model.filter;
-
-import org.jboss.hal.meta.description.OperationDescription;
-import org.patternfly.filter.FilterAttribute;
 
 /**
- * Filter attribute matching whether an operation has parameters.
+ * Filter attribute implementations for the model browser.
+ * <p>
+ * Each filter attribute defines how a specific property (name, type, access type, storage type, etc.)
+ * is extracted from management model nodes and matched against filter values.
+ * Filter attributes extend {@link org.patternfly.filter.FilterAttribute} and are used
+ * to enable user-driven filtering of model browser content.
  */
-public class ParametersAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
-
-    public static final String NAME = "parameters";
-
-    public ParametersAttribute() {
-        super(NAME, (operation, parameter) -> parameter == !operation.parameters().isEmpty());
-    }
-}
+package org.jboss.hal.model.filter;

@@ -20,6 +20,9 @@ import java.util.function.Function;
 import org.jboss.hal.dmr.ModelNode;
 import org.patternfly.filter.FilterAttribute;
 
+/**
+ * Filter attribute matching whether a management attribute has a defined value.
+ */
 public class DefinedAttribute<T> extends FilterAttribute<T, Boolean> {
 
     public static final String NAME = "defined";

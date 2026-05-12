@@ -19,6 +19,9 @@ import java.util.function.Function;
 
 import org.patternfly.filter.FilterAttribute;
 
+/**
+ * Filter attribute matching the name of management model entries.
+ */
 public class NameAttribute<T> extends FilterAttribute<T, String> {
 
     public static final String NAME = "name";

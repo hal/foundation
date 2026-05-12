@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.model.deployment;
 
+/** Runtime status of a deployment. */
 public enum DeploymentStatus {
 
     OK, FAILED, STOPPED, UNDEFINED

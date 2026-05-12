@@ -25,6 +25,9 @@ import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 
+/**
+ * Filter attribute matching the value type of management model entries.
+ */
 public class TypesAttribute<T> extends FilterAttribute<T, List<TypeValues>> {
 
     public static final String NAME = "types";

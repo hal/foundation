@@ -18,6 +18,9 @@ package org.jboss.hal.model.subsystem;
 import org.jboss.hal.dmr.NamedNode;
 import org.jboss.hal.dmr.Property;
 
+/**
+ * A WildFly subsystem within a deployment, wrapping the subsystem's management model node.
+ */
 public class Subsystem extends NamedNode {
 
     public Subsystem(Property property) {

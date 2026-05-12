@@ -26,6 +26,9 @@ import org.jboss.hal.model.server.Server;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Abstract base for model nodes that aggregate {@link Server} instances (such as hosts and server groups).
+ */
 public abstract class HasServersNode extends NamedNode {
 
     private final List<Server> servers;
