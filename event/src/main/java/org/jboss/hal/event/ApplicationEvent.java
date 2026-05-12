@@ -16,7 +16,9 @@
 package org.jboss.hal.event;
 
 /**
- * Marker interface for HAL application events managed and sent by CDI.
+ * Marker interface for HAL application events managed and dispatched by CDI. Unlike {@link UIEvent}, which uses browser DOM
+ * custom events, application events are fired with {@code @Inject Event<T>} and observed with {@code @Observes}, enabling
+ * cross-component communication independent of the DOM hierarchy.
  */
 public interface ApplicationEvent {
 }

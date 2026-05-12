@@ -19,14 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Marker interface for HAL UI events. Implementations should provide static factory methods to create and return instances of
- * {@link elemental2.dom.CustomEvent}s.
+ * Marker interface for HAL UI events dispatched as browser {@link elemental2.dom.CustomEvent}s on HTML elements.
+ *
+ * <p>
+ * Implementations should provide static factory methods that create and return {@link elemental2.dom.CustomEvent} instances.
+ * Use {@link #type(String, String...)} to build namespaced event type strings (e.g., {@code "hal::model-browser::add"}).
  *
  * @see <a
- * href="https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events">https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events</a>
+ *         href="https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events">Creating and triggering
+ *         events (MDN)</a>
  */
 public interface UIEvent {
 
+    /**
+     * Builds a namespaced event type string by joining {@code "hal"}, the given identifier, and any additional identifiers with
+     * {@code "::"} as separator. For example, {@code type("model-browser", "add")} produces {@code "hal::model-browser::add"}.
+     *
+     * @param identifier  the primary event identifier
+     * @param identifiers optional additional identifiers for further namespacing
+     * @return the namespaced event type string
+     */
     static String type(String identifier, String... identifiers) {
         List<String> allIdentifiers = new ArrayList<>();
         allIdentifiers.add("hal");
