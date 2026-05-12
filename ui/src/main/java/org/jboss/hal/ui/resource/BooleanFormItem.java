@@ -45,6 +45,12 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.none;
 import static org.patternfly.style.Classes.switch_;
 
+/**
+ * Form item for editing boolean management attributes, rendered as a toggle switch.
+ * <p>
+ * Supports both native boolean values and expression mode for dynamic configuration. The switch is read-only when the
+ * attribute is marked as read-only in the management model metadata.
+ */
 // TODO Implement sensitive
 //  Example: /subsystem=jmx, attribute "non-core-mbean-sensitivity"
 public class BooleanFormItem extends FormItem {

@@ -65,6 +65,15 @@ import static org.patternfly.style.Classes.handle;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.resizing;
 
+/**
+ * The main model browser component, providing a tree view of the WildFly management resource hierarchy with detail panels
+ * for attributes, operations, and capabilities.
+ * <p>
+ * The model browser uses a split-pane layout with a resizable splitter. The left pane displays the resource tree, and the
+ * right pane shows details for the selected resource including filterable tables of attributes and operations.
+ * <p>
+ * The tree width can be adjusted by dragging the splitter and is persisted to local storage.
+ */
 public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory

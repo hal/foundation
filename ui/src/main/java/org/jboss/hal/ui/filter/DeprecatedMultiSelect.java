@@ -34,6 +34,11 @@ import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectGroupMenu;
 
+/**
+ * Multi-select filter for the deprecation status of management model entries.
+ * <p>
+ * Provides two options: "Deprecated" and "Not deprecated" to filter entries based on their deprecation status.
+ */
 public class DeprecatedMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory

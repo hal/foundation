@@ -30,6 +30,11 @@ import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.icon.IconSets.fas.search;
 
+/**
+ * Empty-state component displayed when no items match the current filter criteria.
+ * <p>
+ * Shows a search icon with a message and a "Clear all filters" button to reset the filter state.
+ */
 public class NoMatch<T> implements IsElement<HTMLElement> {
 
     private final EmptyState emptyState;

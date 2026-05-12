@@ -41,6 +41,12 @@ import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectGroupMenu;
 
+/**
+ * Multi-select filter combining storage type and access type filters.
+ * <p>
+ * Provides two filter groups: "Storage" (configuration/runtime) and "Access type" (read-write/read-only/metric). Only one
+ * selection is allowed per group.
+ */
 public class StorageAccessTypeMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory

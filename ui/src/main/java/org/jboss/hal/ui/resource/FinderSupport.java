@@ -40,6 +40,12 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OP
 import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
 import static org.jboss.hal.ui.UIContext.uic;
 
+/**
+ * Utility for building finder-style navigation paths from management resource addresses.
+ * <p>
+ * Provides helper methods for loading child resources asynchronously and creating metadata-based previews for finder
+ * columns. Integrates with PatternFly's finder extension to provide consistent navigation patterns.
+ */
 public class FinderSupport {
 
     public static final String RESOURCE_NAME_KEY = "resource-name";

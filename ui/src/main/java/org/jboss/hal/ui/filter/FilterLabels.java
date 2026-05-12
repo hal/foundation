@@ -36,6 +36,13 @@ import org.patternfly.filter.Filter;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.filter.FilterAttributeModifier.collectionRemove;
 
+/**
+ * Displays active filter selections as removable PatternFly labels.
+ * <p>
+ * Provides factory methods to create label groups for common filter attributes such as deprecation status, required
+ * status, expression support, storage type, access type, and value types. Each label is closeable, allowing users to
+ * remove individual filter criteria.
+ */
 public class FilterLabels {
 
     public static <T> List<Label> deReDeExLabels(Filter<T> filter) {

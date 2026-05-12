@@ -35,6 +35,12 @@ import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectGroupMenu;
 
+/**
+ * Multi-select filter for whether operations have parameters or return values.
+ * <p>
+ * Provides two filter groups: "Parameters" (with "Parameters" and "No parameters" options) and "Return value" (with
+ * "Return value" and "No return value" options).
+ */
 public class ParametersReturnValueMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory

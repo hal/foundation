@@ -38,6 +38,12 @@ import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectCheckboxMenu;
 
+/**
+ * Multi-select filter for the value types of management model attributes.
+ * <p>
+ * Allows filtering by data types such as STRING, INT, BOOLEAN, LONG, LIST, OBJECT, etc. Multiple types can be selected
+ * simultaneously.
+ */
 public class TypesMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory

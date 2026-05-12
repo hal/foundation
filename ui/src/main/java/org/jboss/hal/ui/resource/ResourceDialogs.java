@@ -89,6 +89,12 @@ import static org.patternfly.style.Size.sm;
 import static org.patternfly.token.Token.globalFontSizeXs;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
+/**
+ * Factory methods for creating resource management dialogs (add, reset, remove).
+ * <p>
+ * Provides modal dialogs and wizards for common resource operations. All dialogs return promises that resolve to
+ * {@link ModelNode} values or undefined (empty {@code ModelNode}) if the operation was canceled.
+ */
 public class ResourceDialogs {
 
     // ------------------------------------------------------ add

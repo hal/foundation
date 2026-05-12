@@ -25,6 +25,13 @@ import org.jboss.hal.model.filter.ReturnValueAttribute;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
 
+/**
+ * Filter configuration for the operations table in the model browser.
+ * <p>
+ * Combines multiple filter attributes using AND logic: name, parameters, return value, deprecation status, and global
+ * operations visibility. The global operations filter is set based on user preferences and preserved when resetting
+ * filters.
+ */
 public class OperationsFilter extends Filter<OperationDescription> {
 
     private final boolean showGlobalOperations;

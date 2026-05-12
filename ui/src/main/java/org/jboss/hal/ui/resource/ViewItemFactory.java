@@ -83,6 +83,13 @@ import static org.patternfly.style.Classes.text;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Color.grey;
 
+/**
+ * Creates read-only {@link ViewItem} components for displaying management attribute values.
+ * <p>
+ * Generates appropriate UI representations based on the attribute's type, constraints, and metadata. Supports simple
+ * types, lists, objects, expressions, capability references, and units. Handles nested attributes, deprecation status,
+ * and stability levels.
+ */
 public class ViewItemFactory {
 
     private static final Logger logger = Logger.getLogger(ViewItemFactory.class.getName());

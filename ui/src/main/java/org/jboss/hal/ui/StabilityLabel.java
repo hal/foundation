@@ -31,6 +31,13 @@ import static org.jboss.hal.ui.BuildingBlocks.stabilityIcon;
 import static org.jboss.hal.ui.BuildingBlocks.stabilityStatus;
 import static org.patternfly.component.label.Label.label;
 
+/**
+ * A PatternFly {@link Label} component that displays a WildFly {@link Stability} level with an appropriate icon and
+ * color.
+ * <p>
+ * The label uses PatternFly status colors and icons to visually represent the stability level (e.g., experimental,
+ * preview, community, default).
+ */
 public class StabilityLabel implements
         ElementClassListMethods<HTMLElement, StabilityLabel>,
         ElementTextDelegate<HTMLElement, StabilityLabel>,

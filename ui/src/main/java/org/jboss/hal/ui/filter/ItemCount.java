@@ -24,6 +24,12 @@ import static org.jboss.elemento.Elements.span;
 import static org.patternfly.token.Token.globalFontSizeSm;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
+/**
+ * Displays the count of visible items relative to the total (e.g., "3 of 10").
+ * <p>
+ * Observes changes to both visible and total counts and updates the display text automatically. Uses singular or plural
+ * forms based on the count values.
+ */
 public class ItemCount implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory

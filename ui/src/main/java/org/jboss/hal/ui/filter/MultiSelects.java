@@ -24,6 +24,12 @@ import org.patternfly.filter.FilterAttribute;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Factory methods for creating standard filter multi-select components.
+ * <p>
+ * Provides utility methods for synchronizing boolean filters with multi-select menu items and collecting identifiers from
+ * filter attributes.
+ */
 public class MultiSelects {
 
     public static <T> void setBooleanFilter(Filter<T> filter, String filterAttribute, List<MenuItem> menuItems, String origin) {

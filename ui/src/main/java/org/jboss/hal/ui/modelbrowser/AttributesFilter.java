@@ -27,6 +27,12 @@ import org.jboss.hal.model.filter.TypesAttribute;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
 
+/**
+ * Filter configuration for the attributes table in the model browser.
+ * <p>
+ * Combines multiple filter attributes using AND logic: name, types, required status, deprecation status, storage type,
+ * access type, and expression support.
+ */
 public class AttributesFilter extends Filter<AttributeDescription> {
 
     public AttributesFilter() {

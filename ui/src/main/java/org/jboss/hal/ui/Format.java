@@ -33,6 +33,12 @@ import static org.jboss.elemento.intl.Unit.megabyte;
 import static org.jboss.elemento.intl.Unit.terabyte;
 import static org.jboss.hal.ui.UIContext.uic;
 
+/**
+ * Locale-aware formatters for file sizes, durations, and percentages using the Internationalization API.
+ * <p>
+ * All methods in this class use the user's locale from {@link UIContext#settings()} to format values according to
+ * regional conventions.
+ */
 public class Format {
 
     /**

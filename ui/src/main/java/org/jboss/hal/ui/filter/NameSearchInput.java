@@ -26,6 +26,11 @@ import elemental2.dom.HTMLElement;
 import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
 import static org.patternfly.icon.IconSets.fas.search;
 
+/**
+ * Search input for filtering management model entries by name.
+ * <p>
+ * Provides a PatternFly search input with autocomplete disabled and bidirectional synchronization with the filter state.
+ */
 public class NameSearchInput<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
