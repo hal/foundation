@@ -26,6 +26,17 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * A fixed-capacity, least-recently-used (LRU) cache. When the cache exceeds its capacity, the least recently accessed entry is
+ * evicted automatically. Registered {@link RemovalHandler}s are notified on eviction.
+ *
+ * <p>
+ * Accessing an entry via {@link #get(Object)} or updating it via {@link #put(Object, Object)} promotes it to the most recently
+ * used position. This implementation is not thread-safe.
+ *
+ * @param <K> the type of keys
+ * @param <V> the type of values
+ */
 public class LRUCache<K, V> {
 
     private final int capacity;
@@ -42,14 +53,20 @@ public class LRUCache<K, V> {
 
     // ------------------------------------------------------ api
 
+    /** Returns {@code true} if the cache contains an entry for the given key. */
     public boolean contains(K key) {
         return cacheMap.containsKey(key);
     }
 
+    /** Returns the number of entries currently in the cache. */
     public int size() {
         return cacheMap.size();
     }
 
+    /**
+     * Returns the value associated with the given key, or {@code null} if no entry exists. Accessing an entry promotes it to the
+     * most recently used position.
+     */
     public V get(K key) {
         Node<K, V> node = cacheMap.get(key);
         if (node == null) {
@@ -60,18 +77,26 @@ public class LRUCache<K, V> {
         return node.value;
     }
 
+    /** Returns a set view of the cache entries. */
     public Set<Map.Entry<K, Node<K, V>>> entries() {
         return cacheMap.entrySet();
     }
 
+    /** Returns a set of all keys in the cache. */
     public Set<K> keys() {
         return cacheMap.values().stream().map(n -> n.key).collect(toSet());
     }
 
+    /** Returns a list of all values in the cache. */
     public List<V> values() {
         return cacheMap.values().stream().map(n -> n.value).collect(toList());
     }
 
+    /**
+     * Associates the given value with the given key. If the key already exists, its value is updated and the entry is promoted to
+     * the most recently used position. If the cache is at capacity, the least recently used entry is evicted and
+     * {@link RemovalHandler}s are notified.
+     */
     public void put(K key, V value) {
         Node<K, V> existingNode = cacheMap.get(key);
         if (existingNode != null) {
@@ -89,6 +114,10 @@ public class LRUCache<K, V> {
         }
     }
 
+    /**
+     * Removes the entry for the given key and returns its value, or {@code null} if no entry exists. Removal handlers are
+     * <strong>not</strong> notified for explicit removals.
+     */
     public V remove(K key) {
         Node<K, V> existingNode = cacheMap.remove(key);
         if (existingNode != null) {
@@ -98,6 +127,7 @@ public class LRUCache<K, V> {
         return null;
     }
 
+    /** Registers a handler that is called whenever an entry is evicted due to capacity overflow. */
     public void addRemovalHandler(RemovalHandler<K, V> handler) {
         removalHandlers.add(handler);
     }
@@ -125,6 +155,7 @@ public class LRUCache<K, V> {
 
     // ------------------------------------------------------ inner classes
 
+    /** A key-value pair stored in the cache. */
     public static class Node<K, V> {
 
         public final K key;

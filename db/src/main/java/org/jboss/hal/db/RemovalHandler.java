@@ -15,8 +15,15 @@
  */
 package org.jboss.hal.db;
 
+/** Callback invoked when an entry is evicted from an {@link LRUCache} due to capacity overflow. */
 @FunctionalInterface
 public interface RemovalHandler<K, V> {
 
+    /**
+     * Called when an entry is evicted from the cache.
+     *
+     * @param key   the key of the evicted entry
+     * @param value the value of the evicted entry
+     */
     void onRemoval(K key, V value);
 }

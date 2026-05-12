@@ -22,9 +22,11 @@ import jsinterop.base.JsPropertyMap;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
 
+/** JsInterop interface representing a PouchDB document backed by a native JavaScript object. */
 @JsType(isNative = true, namespace = GLOBAL, name = "Object")
 public interface Document extends JsPropertyMap<Object> {
 
+    /** Creates a new document with the given {@code _id} property. */
     @JsOverlay
     static Document of(String id) {
         Document document = Js.cast(JsPropertyMap.of());
@@ -32,6 +34,7 @@ public interface Document extends JsPropertyMap<Object> {
         return document;
     }
 
+    /** Returns the document's {@code _id} property. */
     @JsOverlay
     default String id() {
         return getAsAny("_id").asString();
