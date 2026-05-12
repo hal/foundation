@@ -31,31 +31,44 @@ import static org.patternfly.component.Severity.info;
 import static org.patternfly.component.Severity.success;
 import static org.patternfly.component.Severity.warning;
 
+/**
+ * A notification displayed in the console's notification drawer. Backed by a native JavaScript object via JsInterop for
+ * compatibility with PouchDB storage. Use the static factory methods ({@link #info(String, String)},
+ * {@link #success(String, String)}, {@link #warning(String, String)}, {@link #error(String, String)}) to create instances.
+ *
+ * <p>
+ * Notifications can carry additional {@link #details(String) details} and track their {@link #read} and {@link #cleared} state.
+ */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Notification {
 
     // ------------------------------------------------------ factory
 
+    /** Creates an informational notification with the given title and description. */
     @JsOverlay
     public static Notification info(String title, String description) {
         return notification(info, title, description);
     }
 
+    /** Creates a success notification with the given title and description. */
     @JsOverlay
     public static Notification success(String title, String description) {
         return notification(success, title, description);
     }
 
+    /** Creates a warning notification with the given title and description. */
     @JsOverlay
     public static Notification warning(String title, String description) {
         return notification(warning, title, description);
     }
 
+    /** Creates an error notification with the given title and description. */
     @JsOverlay
     public static Notification error(String title, String description) {
         return notification(danger, title, description);
     }
 
+    /** Creates a "not yet implemented" informational notification. */
     @JsOverlay
     public static Notification nyi() {
         return notification(info, "Not yet implemented", "This feature is not yet implemented");
@@ -88,12 +101,19 @@ public class Notification {
 
     // ------------------------------------------------------ builder
 
+    /** Appends plain-text details to this notification and returns {@code this} for chaining. */
     @JsOverlay
     public final Notification details(String details) {
         this.details.push(notificationDetails(details, false));
         return this;
     }
 
+    /**
+     * Appends details to this notification and returns {@code this} for chaining.
+     *
+     * @param details      the detail text to append
+     * @param preformatted {@code true} to render the details as preformatted text
+     */
     @JsOverlay
     public final Notification details(String details, boolean preformatted) {
         this.details.push(notificationDetails(details, preformatted));
@@ -102,11 +122,13 @@ public class Notification {
 
     // ------------------------------------------------------ api
 
+    /** Returns the notification severity as a typed {@link org.patternfly.component.Severity} enum value. */
     @JsOverlay
     public final Severity severity() {
         return Severity.of(severity);
     }
 
+    /** Returns the age of this notification in milliseconds since it was created. */
     @JsOverlay
     public final double age() {
         return JsDate.now() - timestamp;

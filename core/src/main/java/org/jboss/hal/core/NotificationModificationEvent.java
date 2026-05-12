@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.jboss.hal.event.ApplicationEvent;
 
+/** CDI event fired when notifications are read, cleared, uncleared, or removed. */
 public class NotificationModificationEvent implements ApplicationEvent {
 
     public final NotificationModification modification;

@@ -102,6 +102,14 @@ public class CrudOperations {
 
     // ------------------------------------------------------ update
 
+    /**
+     * Executes the given operations as a composite against the management model. If the operation list is empty, a "not
+     * modified" warning is sent instead.
+     *
+     * @param template   the address template identifying the resource being updated
+     * @param operations the list of write-attribute operations to execute
+     * @return a promise that resolves with the composite result
+     */
     public Promise<CompositeResult> update(AddressTemplate template, List<Operation> operations) {
         if (!operations.isEmpty()) {
             Composite composite = new Composite(operations);
@@ -125,6 +133,12 @@ public class CrudOperations {
 
     // ------------------------------------------------------ read
 
+    /**
+     * Reads the resource at the specified address template, including runtime attributes.
+     *
+     * @param template the address template of the resource to read
+     * @return a promise that resolves with the resource's model node
+     */
     public Promise<ModelNode> read(AddressTemplate template) {
         Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(INCLUDE_RUNTIME, true)
@@ -139,6 +153,12 @@ public class CrudOperations {
                 });
     }
 
+    /**
+     * Reads both the resource and its metadata in parallel.
+     *
+     * @param template the address template of the resource
+     * @return a promise that resolves with a tuple of the resource model node and its metadata
+     */
     public Promise<Tuple<ModelNode, Metadata>> readWithMetadata(AddressTemplate template) {
         Task<FlowContext> resourceTask = context -> read(template).then(result -> {
             context.set("resource", result);
@@ -164,6 +184,12 @@ public class CrudOperations {
 
     // ------------------------------------------------------ delete
 
+    /**
+     * Deletes the resource at the specified address template.
+     *
+     * @param template the address template of the resource to delete
+     * @return a promise that resolves with the result of the remove operation
+     */
     public Promise<ModelNode> delete(AddressTemplate template) {
         Operation operation = new Operation.Builder(template.resolve(statementContext), REMOVE).build();
         return dispatcher.execute(operation)

@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.core;
 
+/** Enumerates the types of modifications that can be applied to notifications. */
 public enum NotificationModification {
     READ, CLEAR, REMOVE, UNCLEAR
 }

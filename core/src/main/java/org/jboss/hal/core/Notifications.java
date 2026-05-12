@@ -40,6 +40,11 @@ import static org.jboss.hal.core.NotificationModification.REMOVE;
 import static org.jboss.hal.core.NotificationModification.UNCLEAR;
 import static org.patternfly.component.Severity.danger;
 
+/**
+ * Manages the lifecycle of {@link Notification} instances using an {@link org.jboss.hal.db.LRUCache LRU cache}. Provides
+ * methods for sending, reading, clearing, and removing notifications. Fires CDI events ({@link NotificationAddEvent},
+ * {@link NotificationModificationEvent}) to notify the UI of changes.
+ */
 @ApplicationScoped
 public class Notifications {
 
@@ -63,20 +68,24 @@ public class Notifications {
 
     // ------------------------------------------------------ api
 
+    /** Returns the notification with the given ID, or {@code null} if not found. */
     public Notification get(String id) {
         return cache.get(id);
     }
 
+    /** Sends a notification by caching it and firing a {@link NotificationAddEvent}. */
     public void send(Notification notification) {
         cache.put(notification.id, notification);
         addEvent.fire(new NotificationAddEvent(notification));
     }
 
+    /** Marks the notification with the given ID as read. */
     public void markAsRead(String id) {
         readInternal(id);
         modificationEvent.fire(new NotificationModificationEvent(READ, List.of(id)));
     }
 
+    /** Marks all notifications with the given IDs as read. */
     public void markAsRead(List<String> ids) {
         for (String id : ids) {
             readInternal(id);
@@ -84,15 +93,18 @@ public class Notifications {
         modificationEvent.fire(new NotificationModificationEvent(READ, ids));
     }
 
+    /** Marks all cached notifications as read. */
     public void markAllAsRead() {
         markAsRead(new ArrayList<>(cache.keys()));
     }
 
+    /** Clears the notification with the given ID, marking it as both read and cleared. */
     public void clear(String id) {
         clearInternal(id);
         modificationEvent.fire(new NotificationModificationEvent(CLEAR, List.of(id)));
     }
 
+    /** Clears all notifications with the given IDs. */
     public void clear(List<String> ids) {
         for (String id : ids) {
             clearInternal(id);
@@ -100,10 +112,12 @@ public class Notifications {
         modificationEvent.fire(new NotificationModificationEvent(CLEAR, ids));
     }
 
+    /** Clears all cached notifications. */
     public void clearAll() {
         clear(new ArrayList<>(cache.keys()));
     }
 
+    /** Reverses the last clear operation by unclearning all currently cleared notifications. */
     public void unclearLast() {
         List<String> uncleared = new ArrayList<>();
         for (Map.Entry<String, LRUCache.Node<String, Notification>> entry : cache.entries()) {
@@ -117,11 +131,13 @@ public class Notifications {
         }
     }
 
+    /** Removes the notification with the given ID from the cache entirely. */
     public void remove(String id) {
         cache.remove(id);
         modificationEvent.fire(new NotificationModificationEvent(REMOVE, List.of(id)));
     }
 
+    /** Removes all notifications with the given IDs from the cache. */
     public void remove(List<String> ids) {
         for (String id : ids) {
             cache.remove(id);
@@ -129,6 +145,11 @@ public class Notifications {
         modificationEvent.fire(new NotificationModificationEvent(REMOVE, ids));
     }
 
+    /**
+     * Returns a formatted timestamp for the notification with the given ID. Uses relative time (e.g., "2 minutes ago") for
+     * recent notifications and absolute date/time for older ones. The threshold is {@value #RELATIVE_TIME_THRESHOLD}
+     * milliseconds.
+     */
     public String timestamp(String id) {
         Notification notification = cache.get(id);
         if (notification != null) {
@@ -145,12 +166,14 @@ public class Notifications {
         return "";
     }
 
+    /** Returns the count of unread notifications. */
     public int countUnread() {
         return (int) cache.values().stream()
                 .filter(n -> !n.read)
                 .count();
     }
 
+    /** Returns the count of unread notifications with {@link org.patternfly.component.Severity#danger danger} severity. */
     public int countUnreadDanger() {
         return (int) cache.values().stream()
                 .filter(n -> !n.read && danger.name().equals(n.severity))

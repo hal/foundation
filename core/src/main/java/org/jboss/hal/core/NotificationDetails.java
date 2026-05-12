@@ -19,6 +19,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
+/** Holds additional detail text for a {@link Notification}, optionally rendered as preformatted content. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class NotificationDetails {
 
