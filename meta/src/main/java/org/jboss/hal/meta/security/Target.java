@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.meta.security;
 
+/**
+ * The target type of a security {@link Constraint}: either an {@link #ATTRIBUTE} or an {@link #OPERATION}.
+ */
 public enum Target {
     OPERATION(":"), ATTRIBUTE("@");
 

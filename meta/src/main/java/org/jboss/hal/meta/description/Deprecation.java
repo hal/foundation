@@ -21,6 +21,10 @@ import org.jboss.hal.env.Version;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REASON;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SINCE;
 
+/**
+ * Deprecation information for a management model element, including the version since which it was deprecated and an optional
+ * reason.
+ */
 public class Deprecation extends ModelNode {
 
     public Deprecation() {

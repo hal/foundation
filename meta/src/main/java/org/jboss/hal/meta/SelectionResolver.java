@@ -21,6 +21,9 @@ import java.util.function.Supplier;
 
 import static org.jboss.hal.meta.Placeholder.SELECTED_RESOURCE;
 
+/**
+ * A {@link TemplateResolver} that resolves the {@code {selection}} placeholder to the currently selected resource name.
+ */
 public class SelectionResolver implements TemplateResolver {
 
     private final Supplier<String> selection;

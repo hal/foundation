@@ -45,6 +45,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SUGGEST_CAPABILITIES;
 
+/**
+ * Registry mapping WildFly capabilities to the {@link AddressTemplate address templates} of resources that provide them.
+ */
 @ApplicationScoped
 public class CapabilityRegistry {
 

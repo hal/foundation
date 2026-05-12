@@ -24,6 +24,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESOURCE_DESCRIPTION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SECURITY_CONTEXT;
 
+/**
+ * Pairs a {@link org.jboss.hal.meta.description.ResourceDescription} with a
+ * {@link org.jboss.hal.meta.security.SecurityContext} for a specific management resource.
+ */
 public class Metadata extends ModelNode {
 
     public static Metadata undefined() {

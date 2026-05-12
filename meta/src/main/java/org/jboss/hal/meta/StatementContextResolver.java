@@ -18,6 +18,9 @@ package org.jboss.hal.meta;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A {@link TemplateResolver} that resolves placeholders using the values stored in the {@link StatementContext}.
+ */
 public class StatementContextResolver implements TemplateResolver {
 
     private final StatementContext statementContext;

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Red Hat
+ *  Copyright 2025 Red Hat
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,14 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.meta;
 
 /**
- * Thrown when a placeholder in an {@link AddressTemplate} cannot be resolved.
+ * Management model tree traversal for discovering WildFly resources by walking the resource tree using configurable traversal
+ * strategies.
  */
-public class ResolveException extends RuntimeException {
-
-    public ResolveException(String message) {
-        super(message);
-    }
-}
+package org.jboss.hal.meta.tree;

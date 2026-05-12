@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.meta.security;
 
+/**
+ * Permission types for management model elements: {@link #READABLE} and {@link #WRITABLE}.
+ */
 public enum Permission {
 
     READABLE, WRITABLE, EXECUTABLE

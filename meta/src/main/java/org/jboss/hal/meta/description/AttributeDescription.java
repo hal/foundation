@@ -41,6 +41,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 import static org.jboss.hal.dmr.ModelType.LIST;
 import static org.jboss.hal.dmr.ModelType.OBJECT;
 
+/**
+ * Description of a management resource attribute, providing access to its type, default value, deprecation status, and other
+ * metadata.
+ */
 public class AttributeDescription extends NamedNode implements Description {
 
     private final AttributeDescription parent;

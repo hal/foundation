@@ -26,6 +26,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER_CONFIG;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER_GROUP;
 
+/**
+ * A named placeholder in an {@link AddressTemplate}, enclosed in curly braces (e.g., {@code {selected.server}}).
+ */
 public class Placeholder {
 
     // ------------------------------------------------------ well-known placeholders

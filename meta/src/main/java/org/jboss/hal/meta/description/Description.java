@@ -23,6 +23,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.DEPRECATED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DESCRIPTION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STABILITY;
 
+/**
+ * Common interface for management model descriptions (attributes, operations, capabilities).
+ */
 public interface Description {
 
     ModelNode modelNode();

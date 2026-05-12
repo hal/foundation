@@ -22,6 +22,9 @@ import java.util.List;
 import static java.util.Collections.reverse;
 import static org.jboss.hal.meta.WildcardResolver.Direction.RTL;
 
+/**
+ * A {@link TemplateResolver} that resolves wildcard segments ({@code *}) in address templates.
+ */
 public class WildcardResolver implements TemplateResolver {
 
     public enum Direction {

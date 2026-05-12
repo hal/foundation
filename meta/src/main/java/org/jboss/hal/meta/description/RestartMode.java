@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.meta.description;
 
+/**
+ * Indicates whether modifying an attribute requires a server restart and at what level.
+ */
 public enum RestartMode {
 
     ALL_SERVICES,

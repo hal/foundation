@@ -23,6 +23,10 @@ import jakarta.inject.Inject;
 
 import org.jboss.hal.env.Environment;
 
+/**
+ * Holds the current values for {@link Placeholder placeholders} used in {@link AddressTemplate address templates}.
+ * Populated during navigation and used to resolve templates into concrete DMR addresses.
+ */
 @ApplicationScoped
 public class StatementContext {
 

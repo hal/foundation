@@ -25,6 +25,9 @@ import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DYNAMIC;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DYNAMIC_ELEMENTS;
 
+/**
+ * Description of a capability provided or referenced by a management resource.
+ */
 public class CapabilityDescription extends NamedNode implements Description {
 
     public CapabilityDescription(ModelNode modelNode) {

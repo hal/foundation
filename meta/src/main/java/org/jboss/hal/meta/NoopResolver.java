@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.meta;
 
+/**
+ * A {@link TemplateResolver} that returns the placeholder value unchanged, used as a pass-through default.
+ */
 public class NoopResolver implements TemplateResolver {
 
     public NoopResolver() {

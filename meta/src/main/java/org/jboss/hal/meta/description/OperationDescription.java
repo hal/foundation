@@ -48,6 +48,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPE
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WHOAMI_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
 
+/**
+ * Description of a management operation, providing access to its parameters and return type.
+ */
 public class OperationDescription extends NamedNode implements Description {
 
     public static final Set<String> GLOBAL_OPERATIONS = new HashSet<>();
