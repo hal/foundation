@@ -28,7 +28,7 @@ import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
 public class SystemPropertyColumn implements ColumnProvider {
 
     public static final String ID = "system-property-column";
-    private static final AddressTemplate TEMPLATE = AddressTemplate.of("system-property=*");
+    private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("system-property=*");
 
     @Override
     public String identifier() {

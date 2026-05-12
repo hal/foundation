@@ -58,7 +58,7 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 public class InterfaceColumn implements ColumnProvider {
 
     public static final String ID = "interface-column";
-    private static final AddressTemplate TEMPLATE = AddressTemplate.of("interface=*");
+    private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("interface=*");
 
     private final Dispatcher dispatcher;
     private final CrudOperations crud;
@@ -97,7 +97,7 @@ public class InterfaceColumn implements ColumnProvider {
     }
 
     private void addSocketBindingGroup(ResourceView resourceView, String interface_) {
-        AddressTemplate template = AddressTemplate.of("{selected.profile}/socket-binding-group=*");
+        AddressTemplate template = AddressTemplate.ofTrusted("{selected.profile}/socket-binding-group=*");
         Operation operation = new Operation.Builder(template.resolve(statementContext), QUERY_OPERATION)
                 .param(SELECT, new ModelNode().add(NAME))
                 .param(WHERE, new ModelNode().set(DEFAULT_INTERFACE, interface_))

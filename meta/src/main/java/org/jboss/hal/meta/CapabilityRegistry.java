@@ -49,7 +49,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SUGGEST_CAPABILITIES;
 public class CapabilityRegistry {
 
     private static final Logger logger = Logger.getLogger(CapabilityRegistry.class.getName());
-    private static final AddressTemplate TEMPLATE = AddressTemplate.of("{domain.controller}/core-service=capability-registry");
+    private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("{domain.controller}/core-service=capability-registry");
 
     private final Dispatcher dispatcher;
     private final StatementContext statementContext;
@@ -136,7 +136,7 @@ public class CapabilityRegistry {
         public Promise<FlowContext> apply(FlowContext context) {
             logger.debug("Read provider point %s for %s and %s", providerPoint, capability, value);
             List<AddressTemplate> foundTemplates = context.get(Keys.ADDRESS_TEMPLATES);
-            ResourceAddress address = AddressTemplate.of(providerPoint).resolve();
+            ResourceAddress address = AddressTemplate.ofTrusted(providerPoint).resolve();
             Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION)
                     .param(ATTRIBUTES_ONLY, true)
                     .build();

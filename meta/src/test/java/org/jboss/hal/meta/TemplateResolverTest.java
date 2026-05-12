@@ -26,7 +26,7 @@ class TemplateResolverTest {
 
     @Test
     void resolve() {
-        AddressTemplate template = AddressTemplate.of("{a}/{b}/{c}");
+        AddressTemplate template = AddressTemplate.ofTrusted("{a}/{b}/{c}");
 
         TemplateResolver a = resolver("a");
         TemplateResolver b = resolver("b");

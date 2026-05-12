@@ -153,18 +153,18 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
     public void refresh() {
         removeChildrenFrom(gallery);
 
-        AddressTemplate productInfoTmpl = AddressTemplate.of("{domain.controller}");
+        AddressTemplate productInfoTmpl = AddressTemplate.ofTrusted("{domain.controller}");
         Task<FlowContext> productInfoTask = context -> metadataRepository.lookup(productInfoTmpl)
                 .then(metadata -> context.resolve(METADATA_KEY, metadata));
         Operation productInfoOp = new Operation.Builder(productInfoTmpl.resolve(statementContext), PRODUCT_INFO).build();
 
-        AddressTemplate memoryTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=memory");
+        AddressTemplate memoryTmpl = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=memory");
         Operation memoryOp = new Operation.Builder(memoryTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
 
-        AddressTemplate threadsTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=threading");
+        AddressTemplate threadsTmpl = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=threading");
         Operation threadsOp = new Operation.Builder(threadsTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
@@ -276,12 +276,12 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
     @SuppressWarnings("DuplicatedCode")
     public void autoRefresh() {
         if (memoryUtilization != null && threadsBullet != null) {
-            AddressTemplate memoryTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=memory");
+            AddressTemplate memoryTmpl = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=memory");
             Operation memoryOp = new Operation.Builder(memoryTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
                     .param(ATTRIBUTES_ONLY, true)
                     .param(INCLUDE_RUNTIME, true)
                     .build();
-            AddressTemplate threadsTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=threading");
+            AddressTemplate threadsTmpl = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=threading");
             Operation threadsOp = new Operation.Builder(threadsTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
                     .param(ATTRIBUTES_ONLY, true)
                     .param(INCLUDE_RUNTIME, true)

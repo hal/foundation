@@ -15,7 +15,7 @@
     "watch": "concurrently \"pnpm run start:parcel\" \"pnpm run start:server\" \"pnpm run open:browser\"",
     "prod:feature-pack": "parcel build src/web/index.html --dist-dir target/feature-pack-resources --public-url /halop",
     "prod:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources",
-    "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --no-recurse --only patternfly --only dompurify"
+    "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --json-pretty --only patternfly --only dompurify"
   },
   "dependencies": {
     "@patternfly-java/charts": "catalog:pfj",

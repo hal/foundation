@@ -120,7 +120,7 @@ class ModelBrowserEngine {
                     String child = name.substring(index + 1);
                     ModelBrowserNode mbn = mbns.computeIfAbsent(singleton,
                             key -> new ModelBrowserNode(template.append(key, "*"), key, SINGLETON_FOLDER));
-                    mbn.children.add(new ModelBrowserNode(template.append(name), child, SINGLETON_RESOURCE));
+                    mbn.children.add(new ModelBrowserNode(template.appendTrusted(name), child, SINGLETON_RESOURCE));
                 } else {
                     if (template.template.endsWith("*")) {
                         mbns.put(name,

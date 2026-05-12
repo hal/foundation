@@ -31,7 +31,7 @@ import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
 public class SocketBindingGroupColumn implements ColumnProvider {
 
     public static final String ID = "socket-binding-group-column";
-    private static final AddressTemplate TEMPLATE = AddressTemplate.of("socket-binding-group=*");
+    private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("socket-binding-group=*");
 
     private final Instance<ColumnRegistry> registry;
 

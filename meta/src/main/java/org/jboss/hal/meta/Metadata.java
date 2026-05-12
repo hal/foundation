@@ -61,7 +61,7 @@ public class Metadata extends ModelNode {
     }
 
     public ResourceAddress resourceAddress() {
-        return AddressTemplate.of(address).resolve();
+        return AddressTemplate.ofTrusted(address).resolve();
     }
 
     public ResourceDescription resourceDescription() {

@@ -221,7 +221,7 @@ public class MetadataRepository {
     @JsMethod(name = "get")
     private static Object jsGet(String address) {
         if (instance != null) {
-            Metadata metadata = instance.get(AddressTemplate.of(address));
+            Metadata metadata = instance.get(AddressTemplate.ofTrusted(address));
             return JSON.parse(metadata.toJSONString());
         } else {
             logger.error("MetadataRepository not initialized");
@@ -232,7 +232,7 @@ public class MetadataRepository {
     @JsMethod(name = "lookup")
     private static Promise<Object> jsLookup(String address) {
         if (instance != null) {
-            return instance.lookup(AddressTemplate.of(address))
+            return instance.lookup(AddressTemplate.ofTrusted(address))
                     .then(metadata -> Promise.resolve(JSON.parse(metadata.toJSONString())));
         } else {
             logger.error("MetadataRepository not initialized");

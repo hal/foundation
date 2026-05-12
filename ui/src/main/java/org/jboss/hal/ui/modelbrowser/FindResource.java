@@ -337,7 +337,7 @@ class FindResource {
                         .filter(s -> !s.trim().isEmpty())
                         .collect(toSet());
                 boolean contains = comparisonContainsRadio.value();
-                AddressTemplate rootTemplate = AddressTemplate.of(rootInput.value());
+                AddressTemplate rootTemplate = AddressTemplate.ofTrusted(rootInput.value());
                 timeout = setTimeout(__ -> searchButton.text("Stop").startProgress(), Timeouts.LOADING_TIMEOUT);
                 uic().modelTree().traverse(continuation, rootTemplate, exclude, EnumSet.noneOf(TraverseType.class),
                                 TraverseOperation.NOOP,

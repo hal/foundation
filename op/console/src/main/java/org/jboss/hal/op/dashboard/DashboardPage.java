@@ -62,7 +62,7 @@ public class DashboardPage implements Page {
     // Use a loader to check whether the health subsystem is available
     public static LoadData<Boolean> checkHealth() {
         return (place, parameter) -> {
-            ResourceAddress address = AddressTemplate.of("/subsystem=microprofile-health-smallrye").resolve();
+            ResourceAddress address = AddressTemplate.ofTrusted("/subsystem=microprofile-health-smallrye").resolve();
             Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION).build();
             return uic().dispatcher().execute(operation)
                     .then(result -> Promise.resolve(true))
@@ -172,11 +172,11 @@ public class DashboardPage implements Page {
         // Look up all necessary metadata for all cards here.
         // The metadata in the cards will then be read from the cache.
         metadataRepository.lookup(asList(
-                AddressTemplate.of("{domain.controller}"),
+                AddressTemplate.ofTrusted("{domain.controller}"),
                 environment.standalone()
-                        ? AddressTemplate.of("core-service=server-environment")
-                        : AddressTemplate.of("{domain.controller}/core-service=host-environment"),
-                AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=runtime")
+                        ? AddressTemplate.ofTrusted("core-service=server-environment")
+                        : AddressTemplate.ofTrusted("{domain.controller}/core-service=host-environment"),
+                AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=runtime")
         )).then(__ -> {
             for (DashboardCard card : cards) {
                 card.refresh();

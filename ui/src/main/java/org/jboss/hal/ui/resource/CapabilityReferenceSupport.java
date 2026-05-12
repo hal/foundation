@@ -99,7 +99,7 @@ class CapabilityReferenceSupport {
     }
 
     private static Task<FlowContext> resolveWildcards(String providerPoint) {
-        AddressTemplate ppTemplate = AddressTemplate.of(providerPoint);
+        AddressTemplate ppTemplate = AddressTemplate.ofTrusted(providerPoint);
         if (ppTemplate.parent().fullyQualified()) {
             return context -> {
                 List<AddressTemplate> templates = context.get("templates");

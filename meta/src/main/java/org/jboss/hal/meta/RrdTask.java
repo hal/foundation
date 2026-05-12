@@ -102,7 +102,7 @@ class RrdTask implements Task<ProcessingContext> {
     private List<Operation> createRrd(ProcessingContext context) {
         List<Operation> operations = new ArrayList<>();
         for (String address : context.addresses) {
-            ResourceAddress resourceAddress = AddressTemplate.of(address).resolve(); // to get the encoding right
+            ResourceAddress resourceAddress = AddressTemplate.ofTrusted(address).resolve(); // to get the encoding right
             operations.add(new Operation.Builder(resourceAddress, READ_RESOURCE_DESCRIPTION_OPERATION)
                     .param(OPERATIONS, true)
                     .param(ACCESS_CONTROL, COMBINED_DESCRIPTIONS)

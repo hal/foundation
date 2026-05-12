@@ -54,8 +54,8 @@ class ReadStability implements Task<FlowContext> {
     @Override
     public Promise<FlowContext> apply(FlowContext context) {
         AddressTemplate template = environment.standalone()
-                ? AddressTemplate.of("core-service=server-environment")
-                : AddressTemplate.of("{domain.controller}/core-service=host-environment");
+                ? AddressTemplate.ofTrusted("core-service=server-environment")
+                : AddressTemplate.ofTrusted("{domain.controller}/core-service=host-environment");
         Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(INCLUDE_RUNTIME, true)
                 .param(ATTRIBUTES_ONLY, true)

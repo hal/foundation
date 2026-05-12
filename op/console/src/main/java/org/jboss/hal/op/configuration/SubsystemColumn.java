@@ -48,7 +48,7 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 public class SubsystemColumn implements ColumnProvider {
 
     public static final String ID = "subsystem-column";
-    private static final AddressTemplate TEMPLATE = AddressTemplate.of("subsystem=*");
+    private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("subsystem=*");
 
     @Override
     public String identifier() {

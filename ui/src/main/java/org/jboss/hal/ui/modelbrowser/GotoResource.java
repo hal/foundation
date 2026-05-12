@@ -115,7 +115,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
     private void gotoResource(Event event) {
         if (Key.Enter.match(event)) {
             HTMLInputElement inputElement = (HTMLInputElement) event.target;
-            AddressTemplate template = AddressTemplate.of(inputElement.value);
+            AddressTemplate template = AddressTemplate.ofTrusted(inputElement.value);
             if (!template.fullyQualified()) {
                 failSafeRemoveFromParent(multiple);
                 uic().modelTree().resolveWildcards(template).then(templates -> {

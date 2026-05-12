@@ -40,7 +40,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
-import static org.jboss.hal.dmr.ValueEncoder.encode;
 import static org.jboss.hal.ui.resource.ResourceDialogs.addResourceModal;
 import static org.patternfly.component.Ordered.DATA_ORDER;
 import static org.patternfly.component.button.Button.button;
@@ -143,7 +142,7 @@ class ExpressionsSection implements IsElement<HTMLElement> {
     // ------------------------------------------------------ internal
 
     private void newExpression() {
-        addResourceModal(AddressTemplate.of("system-property=*"), null, false).then(modelNode -> {
+        addResourceModal(AddressTemplate.ofTrusted("system-property=*"), null, false).then(modelNode -> {
             String expression = modelNode.get(NAME).asString();
             task.addExpression(expression, true);
             return null;
@@ -182,7 +181,7 @@ class ExpressionsSection implements IsElement<HTMLElement> {
     }
 
     private AddressTemplate systemPropertyAddress(String expression) {
-        return AddressTemplate.of("system-property=" + encode(expression));
+        return AddressTemplate.of("system-property", expression);
     }
 
     private static HTMLContainerBuilder<HTMLElement> undefined() {

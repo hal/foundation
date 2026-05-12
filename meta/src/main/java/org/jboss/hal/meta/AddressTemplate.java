@@ -23,7 +23,6 @@ import java.util.function.Predicate;
 import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ResourceAddress;
-import org.jboss.hal.dmr.ValueEncoder;
 import org.jboss.hal.meta.WildcardResolver.Direction;
 
 import static java.util.Collections.emptyList;
@@ -54,26 +53,70 @@ import static org.jboss.hal.dmr.ValueEncoder.ENCODED_SLASH;
  * {selected.server}/deployment=foo
  * subsystem=logging/logger={selection}
  * </pre>
- * <p>
- * <strong>Resolving</strong><br/>
+ *
+ * <h2>Creating and Appending</h2>
+ * There are two families of methods, following the naming convention of
+ * <a href="https://www.gwtproject.org/javadoc/latest/com/google/gwt/safehtml/shared/SafeHtmlUtils.html">SafeHtmlUtils</a>:
+ * <dl>
+ *     <dt><strong>{@code of(...)} / {@code append(...)}</strong> — safe, encoding handled for you</dt>
+ *     <dd>Accept <em>decoded</em> (raw) values. Special characters ({@code /}, {@code :}, {@code =}) in the value are encoded
+ *     automatically. Use these methods when working with dynamic, runtime, or user-provided values. Examples:
+ *     <ul>
+ *         <li>{@link #of(String, String)} — single key/value segment</li>
+ *         <li>{@link #of(Segment)}, {@link #of(List)}, {@link #of(ResourceAddress)} — from structured objects</li>
+ *         <li>{@link #of(Placeholder)} — from a placeholder</li>
+ *         <li>{@link #append(String, String)} — append a key/value segment</li>
+ *         <li>{@link #append(Segment)}, {@link #append(AddressTemplate)}, {@link #append(Placeholder)} — append structured
+ *         objects</li>
+ *     </ul>
+ *     </dd>
+ *     <dt><strong>{@code ofTrusted(...)} / {@code appendTrusted(...)}</strong> — caller vouches, no encoding applied</dt>
+ *     <dd>Accept an <em>encoded</em> template string. The caller is responsible for correct escaping of special characters in
+ *     values (e.g., {@code \/}, {@code \:}, {@code \=}). No encoding or validation of values is performed. Use these methods
+ *     for static, compile-time template literals where you control the content. Examples:
+ *     <ul>
+ *         <li>{@link #ofTrusted(String)} — create from a trusted template string</li>
+ *         <li>{@link #appendTrusted(String)} — append a trusted template string</li>
+ *     </ul>
+ *     </dd>
+ * </dl>
+ *
+ * <h2>Resolving</h2>
  * To get a fully qualified {@link ResourceAddress} from an address template use one of the <code>resolve()</code> methods and a
  * {@link TemplateResolver}. In general, you should prefer address templates over
  * {@linkplain ResourceAddress resource addresses}.
- * <p>
- * <strong>Encoding</strong><br/>
- * Some characters in values must be encoded using the backslash character:
+ *
+ * <h2>Encoding</h2>
+ * Internally, segment values are stored in <em>decoded</em> form. Encoding only happens at serialization time (in
+ * {@link Segment#toString()} and {@link #toString()}). The following characters are encoded:
  * <ul>
  *     <li><code>/</code> → <code>\/</code></li>
  *     <li><code>=</code> → <code>\=</code></li>
  *     <li><code>:</code> → <code>\:</code></li>
  * </ul>
- * When creating a template from a {@linkplain AddressTemplate#of(String) string},
- * or {@linkplain AddressTemplate#append(String) appending} a string, you must take care of the encoding.
- * If you create a template from {@linkplain AddressTemplate#of(List) segments}, the encoding is done for you.
  */
 public final class AddressTemplate implements Iterable<Segment> {
 
-    // ------------------------------------------------------ factory
+    // ------------------------------------------------------ trusted factory (no encoding)
+
+    /**
+     * Creates an address template from a <strong>trusted, encoded</strong> template string.
+     * <p>
+     * The caller vouches that the string is correctly formatted. Special characters in values ({@code /}, {@code :}, {@code =})
+     * must already be escaped with a backslash (e.g., {@code \/}, {@code \:}, {@code \=}). <strong>No encoding is
+     * applied.</strong>
+     * <p>
+     * Use this method for static, compile-time template literals. For dynamic or user-provided values, use
+     * {@link #of(String, String)} instead, which handles encoding automatically.
+     *
+     * @param template the trusted, encoded template string
+     * @return a new address template
+     */
+    public static AddressTemplate ofTrusted(String template) {
+        return new AddressTemplate(parseSegments(template));
+    }
+
+    // ------------------------------------------------------ safe factories (encoding handled)
 
     /**
      * Creates a new root address template, which represents the empty address.
@@ -83,22 +126,32 @@ public final class AddressTemplate implements Iterable<Segment> {
     }
 
     /**
-     * Creates a new address template from an <strong>encoded</strong> string template. Special characters in the template must
-     * be encoded.
+     * Creates a new address template with a single segment from the given key and value. <strong>The value is automatically
+     * encoded</strong> — callers must <strong>not</strong> pre-encode the value.
+     *
+     * @param key   the resource type (e.g., {@code "subsystem"}, {@code "deployment"})
+     * @param value the resource name, which may contain special characters ({@code /}, {@code :}, {@code =})
+     * @return a new address template
      */
-    public static AddressTemplate of(String template) {
-        return new AddressTemplate(parse(template));
+    public static AddressTemplate of(String key, String value) {
+        return of(singletonList(new Segment(key, value)));
     }
 
-    /** Creates a new address template from a placeholder. */
+    /**
+     * Creates a new address template from a placeholder.
+     */
     public static AddressTemplate of(Placeholder placeholder) {
         if (placeholder != null) {
-            return new AddressTemplate(parse("/" + placeholder.expression()));
+            return new AddressTemplate(parseSegments("/" + placeholder.expression()));
         } else {
             return new AddressTemplate(emptyList());
         }
     }
 
+    /**
+     * Creates a new address template from a single segment. The segment stores its value in decoded form — encoding is handled
+     * at serialization time.
+     */
     public static AddressTemplate of(Segment segment) {
         return of(singletonList(segment));
     }
@@ -111,14 +164,25 @@ public final class AddressTemplate implements Iterable<Segment> {
     }
 
     /**
-     * Creates a new address template from a list of segments. Special characters in segment values must not be encoded.
+     * Creates a new address template from a list of segments. Segments store their values in decoded form — encoding is handled
+     * at serialization time.
      */
     public static AddressTemplate of(List<Segment> segments) {
         return segments != null ? new AddressTemplate(segments) : new AddressTemplate(emptyList());
     }
 
+    /**
+     * Creates a new address template from a resource address by extracting its property list directly. No encode/decode
+     * round-trip is performed.
+     */
     public static AddressTemplate of(ResourceAddress address) {
-        return of(address.toString());
+        if (address != null && address.isDefined()) {
+            List<Segment> segments = address.asPropertyList().stream()
+                    .map(p -> new Segment(p.getName(), p.getValue().asString()))
+                    .collect(toCollection(LinkedList::new));
+            return new AddressTemplate(segments);
+        }
+        return root();
     }
 
     // ------------------------------------------------------ instance
@@ -156,60 +220,66 @@ public final class AddressTemplate implements Iterable<Segment> {
     }
 
     /**
-     * @return the string representation of this address template. If the template contains special characters, they're encoded.
+     * @return the string representation of this address template (same as {@link #template}). If the template contains special
+     * characters, they're encoded.
+     * @see AddressTemplate#template
      */
     @Override
     public String toString() {
         return template;
     }
 
-    // ------------------------------------------------------ append / sub and parent
+    // ------------------------------------------------------ trusted append (no encoding)
 
     /**
-     * Appends a key-value pair to this address template by encoding the value and formatting it as "key=value". The resulting
-     * template is then appended to the current template, and a new address template is returned.
+     * Appends the specified <strong>trusted, encoded</strong> template string to this template and returns a new template.
+     * <p>
+     * The caller vouches that the string is correctly formatted. Special characters in values must already be escaped with a
+     * backslash (e.g., {@code \/}, {@code \:}, {@code \=}). <strong>No encoding is applied.</strong>
+     * <p>
+     * For dynamic or user-provided values, use {@link #append(String, String)} instead, which handles encoding automatically.
      *
-     * @param key   the key to include in the appended pair
-     * @param value the value to include in the appended pair, which will be encoded using {@link ValueEncoder#encode(String)}
-     * @return a new address template with the appended key-value pair
-     */
-    public AddressTemplate append(String key, String value) {
-        return append(key + "=" + ValueEncoder.encode(value));
-    }
-
-    /**
-     * Appends a key-value pair, constructed from the specified {@link Segment}, to this address template. The segment's value
-     * is encoded using {@link ValueEncoder#encode(String)}, and then formatted as "key=value". The resulting template is
-     * appended to the current template, and a new address template is returned.
-     *
-     * @param segment the segment containing the key and value to append. The value will be encoded before appending.
-     * @return a new address template with the appended key-value pair.
-     */
-    public AddressTemplate append(Segment segment) {
-        return append(segment.key + "=" + ValueEncoder.encode(segment.value));
-    }
-
-    /**
-     * Appends the specified <strong>encoded</strong> template to this template and returns a new template. Special characters
-     * in the template must be encoded. If the specified template does not start with a slash, '/' is automatically appended.
-     *
-     * @param template the <strong>encoded</strong> template to append (makes no difference whether it starts with '/' or not)
+     * @param template the trusted, encoded template string (makes no difference whether it starts with '/' or not)
      * @return a new template
      */
-    public AddressTemplate append(String template) {
-        String first;
-        String second;
-        if (isEmpty()) {
-            first = "";
-        } else {
-            first = this.template.substring(1);
+    public AddressTemplate appendTrusted(String template) {
+        if (template == null || template.isEmpty()) {
+            return this;
         }
-        if (template != null && template.startsWith("/") && !template.startsWith(ENCODED_SLASH)) {
-            second = template.substring(1);
-        } else {
-            second = template;
-        }
-        return AddressTemplate.of(first + "/" + second);
+        LinkedList<Segment> newSegments = new LinkedList<>(this.segments);
+        newSegments.addAll(parseSegments(template));
+        return new AddressTemplate(newSegments);
+    }
+
+    // ------------------------------------------------------ safe append (encoding handled)
+
+    /**
+     * Appends a key-value segment to this template and returns a new template. <strong>The value is automatically
+     * encoded</strong> — callers must <strong>not</strong> pre-encode the value.
+     *
+     * @param key   the resource type
+     * @param value the resource name, which may contain special characters ({@code /}, {@code :}, {@code =})
+     * @return a new address template with the appended segment
+     */
+    public AddressTemplate append(String key, String value) {
+        String cleanKey = (key != null && key.startsWith("/") && !key.startsWith(ENCODED_SLASH))
+                ? key.substring(1) : key;
+        LinkedList<Segment> newSegments = new LinkedList<>(this.segments);
+        newSegments.add(new Segment(cleanKey, value));
+        return new AddressTemplate(newSegments);
+    }
+
+    /**
+     * Appends a segment to this template and returns a new template. The segment stores its value in decoded form — encoding is
+     * handled at serialization time.
+     *
+     * @param segment the segment to append
+     * @return a new address template with the appended segment
+     */
+    public AddressTemplate append(Segment segment) {
+        LinkedList<Segment> newSegments = new LinkedList<>(this.segments);
+        newSegments.add(segment);
+        return new AddressTemplate(newSegments);
     }
 
     /**
@@ -218,8 +288,27 @@ public final class AddressTemplate implements Iterable<Segment> {
      * @return a new template
      */
     public AddressTemplate append(AddressTemplate template) {
-        return append(template.toString());
+        LinkedList<Segment> newSegments = new LinkedList<>(this.segments);
+        newSegments.addAll(template.segments);
+        return new AddressTemplate(newSegments);
     }
+
+    /**
+     * Appends a placeholder to this template and returns a new template.
+     *
+     * @param placeholder the placeholder to append
+     * @return a new template
+     */
+    public AddressTemplate append(Placeholder placeholder) {
+        if (placeholder != null) {
+            LinkedList<Segment> newSegments = new LinkedList<>(this.segments);
+            newSegments.addAll(parseSegments(placeholder.expression()));
+            return new AddressTemplate(newSegments);
+        }
+        return this;
+    }
+
+    // ------------------------------------------------------ sub and parent
 
     /**
      * Works like {@link List#subList(int, int)} over the tokens of this template and throws the same exceptions.
@@ -238,7 +327,7 @@ public final class AddressTemplate implements Iterable<Segment> {
     /** @return the parent address template or the root template */
     public AddressTemplate parent() {
         if (isEmpty() || size() == 1) {
-            return AddressTemplate.of("/");
+            return root();
         } else {
             return subTemplate(0, size() - 1);
         }
@@ -246,7 +335,7 @@ public final class AddressTemplate implements Iterable<Segment> {
 
     public AddressTemplate anonymiseLast() {
         if (isEmpty()) {
-            return AddressTemplate.of("");
+            return root();
         } else if (!"*".equals(last().value)) {
             return parent().append(last().key, "*");
         } else {
@@ -358,7 +447,7 @@ public final class AddressTemplate implements Iterable<Segment> {
 
     // ------------------------------------------------------ internal
 
-    private static LinkedList<Segment> parse(String template) {
+    private static LinkedList<Segment> parseSegments(String template) {
         LinkedList<Segment> segments = new LinkedList<>();
 
         if (template != null && !template.trim().isEmpty()) {
@@ -417,7 +506,7 @@ public final class AddressTemplate implements Iterable<Segment> {
                             if (!backslash) {
                                 key = pvs.substring(0, i);
                                 value = pvs.substring(i + 1);
-                                segments.add(new Segment(key, ValueEncoder.decode(value)));
+                                segments.add(new Segment(key, org.jboss.hal.dmr.ValueEncoder.decode(value)));
                             }
                             backslash = false;
                         } else {

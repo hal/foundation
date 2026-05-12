@@ -138,7 +138,7 @@ class LogCard implements DashboardCard {
         title.text(logFile);
         removeChildrenFrom(cardBody);
 
-        ResourceAddress address = AddressTemplate.of("subsystem=logging/log-file=" + logFile).resolve();
+        ResourceAddress address = AddressTemplate.ofTrusted("subsystem=logging").append("log-file", logFile).resolve();
         Operation operation = new Operation.Builder(address, READ_LOG_FILE)
                 .param(LINES, 100)
                 .param(TAIL, true)

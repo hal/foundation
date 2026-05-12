@@ -43,7 +43,7 @@ public class Constraint {
         if (result.length != 5) {
             throw new IllegalArgumentException("Invalid constraint: " + input);
         }
-        return new Constraint(AddressTemplate.of(result.at(2)), result.at(4),
+        return new Constraint(AddressTemplate.ofTrusted(result.at(2)), result.at(4),
                 Target.parse(result.at(3)), Permission.valueOf(result.at(1).toUpperCase()));
     }
 

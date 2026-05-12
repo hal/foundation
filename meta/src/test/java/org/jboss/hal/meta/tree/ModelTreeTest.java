@@ -26,16 +26,16 @@ class ModelTreeTest {
 
     @Test
     void allWildcards() {
-        AddressTemplate template = AddressTemplate.of("a=*/b=*/c=*");
-        assertEquals(AddressTemplate.of("a=a0/b=*"), nextWildcard(template, AddressTemplate.of("a=a0")));
-        assertEquals(AddressTemplate.of("a=a0/b=b0/c=*"), nextWildcard(template, AddressTemplate.of("a=a0/b=b0")));
-        assertNull(nextWildcard(template, AddressTemplate.of("a=a0/b=b0/c=c0")));
+        AddressTemplate template = AddressTemplate.ofTrusted("a=*/b=*/c=*");
+        assertEquals(AddressTemplate.ofTrusted("a=a0/b=*"), nextWildcard(template, AddressTemplate.ofTrusted("a=a0")));
+        assertEquals(AddressTemplate.ofTrusted("a=a0/b=b0/c=*"), nextWildcard(template, AddressTemplate.ofTrusted("a=a0/b=b0")));
+        assertNull(nextWildcard(template, AddressTemplate.ofTrusted("a=a0/b=b0/c=c0")));
     }
 
     @Test
     void withFixedPart() {
-        AddressTemplate template = AddressTemplate.of("a=*/b=fix/c=*");
-        assertEquals(AddressTemplate.of("a=a0/b=fix/c=*"), nextWildcard(template, AddressTemplate.of("a=a0")));
-        assertNull(nextWildcard(template, AddressTemplate.of("a=a0/b=fix/c=c0")));
+        AddressTemplate template = AddressTemplate.ofTrusted("a=*/b=fix/c=*");
+        assertEquals(AddressTemplate.ofTrusted("a=a0/b=fix/c=*"), nextWildcard(template, AddressTemplate.ofTrusted("a=a0")));
+        assertNull(nextWildcard(template, AddressTemplate.ofTrusted("a=a0/b=fix/c=c0")));
     }
 }

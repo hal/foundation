@@ -102,7 +102,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(domainStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -125,7 +125,7 @@ class MetadataResolverTest {
         };
         MetadataResolver resolver = new MetadataResolver(domainStatementContext());
         for (String[] fixture : fixtures) {
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template);
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template);
         }
     }
 
@@ -145,7 +145,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(domainStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -163,7 +163,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(standaloneStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -197,7 +197,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(domainStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -211,7 +211,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(standaloneStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -331,7 +331,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(standaloneStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -347,7 +347,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(domainStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }
@@ -364,7 +364,7 @@ class MetadataResolverTest {
         MetadataResolver resolver = new MetadataResolver(domainStatementContext());
         for (int i = 0; i < fixtures.length; i++) {
             String[] fixture = fixtures[i];
-            assertEquals(fixture[1], resolver.resolve(AddressTemplate.of(fixture[0])).template,
+            assertEquals(fixture[1], resolver.resolve(AddressTemplate.ofTrusted(fixture[0])).template,
                     String.format("fixtures[%d]", i));
         }
     }

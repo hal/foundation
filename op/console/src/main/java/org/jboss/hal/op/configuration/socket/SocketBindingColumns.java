@@ -38,7 +38,7 @@ class SocketBindingColumns {
                         String group = groupSegment.item.get(RESOURCE_NAME_KEY);
                         String type = typeSegment.item.get(RESOURCE_NAME_KEY);
                         if (group != null && type != null) {
-                            return AddressTemplate.of("{selected.profile}")
+                            return AddressTemplate.ofTrusted("{selected.profile}")
                                     .append(SOCKET_BINDING_GROUP, group)
                                     .append(type, "*");
                         }

@@ -76,7 +76,7 @@ class HealthCard implements DashboardCard {
     public void refresh() {
         removeChildrenFrom(cardBody);
 
-        ResourceAddress address = AddressTemplate.of("/subsystem=microprofile-health-smallrye").resolve();
+        ResourceAddress address = AddressTemplate.ofTrusted("/subsystem=microprofile-health-smallrye").resolve();
         Operation operation = new Operation.Builder(address, "check").build();
         dispatcher.execute(operation)
                 .then(result -> {

@@ -33,44 +33,44 @@ class StatementContextResolverTest {
     @Test
     void empty() {
         StatementContextResolver resolver = new StatementContextResolver(statementContext());
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("a=b")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("a=b")).template);
     }
 
     @Test
     void resolveValue() {
         StatementContextResolver resolver = new StatementContextResolver(statementContext("a", "a", "b", "b"));
-        assertEquals("/a=a", resolver.resolve(AddressTemplate.of("a={a}")).template);
-        assertEquals("/{a}=a", resolver.resolve(AddressTemplate.of("{a}=a")).template);
-        assertEquals("/{a}=a", resolver.resolve(AddressTemplate.of("{a}={a}")).template);
-        assertEquals("/b=b", resolver.resolve(AddressTemplate.of("b={b}")).template);
-        assertEquals("/a=a/b=b", resolver.resolve(AddressTemplate.of("a={a}/b={b}")).template);
-        assertEquals("/{a}=a/{b}=b", resolver.resolve(AddressTemplate.of("{a}={a}/{b}={b}")).template);
+        assertEquals("/a=a", resolver.resolve(AddressTemplate.ofTrusted("a={a}")).template);
+        assertEquals("/{a}=a", resolver.resolve(AddressTemplate.ofTrusted("{a}=a")).template);
+        assertEquals("/{a}=a", resolver.resolve(AddressTemplate.ofTrusted("{a}={a}")).template);
+        assertEquals("/b=b", resolver.resolve(AddressTemplate.ofTrusted("b={b}")).template);
+        assertEquals("/a=a/b=b", resolver.resolve(AddressTemplate.ofTrusted("a={a}/b={b}")).template);
+        assertEquals("/{a}=a/{b}=b", resolver.resolve(AddressTemplate.ofTrusted("{a}={a}/{b}={b}")).template);
     }
 
     @Test
     void resolveKnownPlaceholdersDomain() {
         StatementContextResolver resolver = new StatementContextResolver(domainStatementContext());
-        assertEquals("/host=primary", resolver.resolve(AddressTemplate.of("{domain.controller}")).template);
-        assertEquals("/deployment=hello-world", resolver.resolve(AddressTemplate.of("{selected.deployment}")).template);
-        assertEquals("/host=secondary", resolver.resolve(AddressTemplate.of("{selected.host}")).template);
-        assertEquals("/profile=full", resolver.resolve(AddressTemplate.of("{selected.profile}")).template);
-        assertEquals("/server=server1", resolver.resolve(AddressTemplate.of("{selected.server}")).template);
-        assertEquals("/server-config=server2", resolver.resolve(AddressTemplate.of("{selected.server-config}")).template);
+        assertEquals("/host=primary", resolver.resolve(AddressTemplate.ofTrusted("{domain.controller}")).template);
+        assertEquals("/deployment=hello-world", resolver.resolve(AddressTemplate.ofTrusted("{selected.deployment}")).template);
+        assertEquals("/host=secondary", resolver.resolve(AddressTemplate.ofTrusted("{selected.host}")).template);
+        assertEquals("/profile=full", resolver.resolve(AddressTemplate.ofTrusted("{selected.profile}")).template);
+        assertEquals("/server=server1", resolver.resolve(AddressTemplate.ofTrusted("{selected.server}")).template);
+        assertEquals("/server-config=server2", resolver.resolve(AddressTemplate.ofTrusted("{selected.server-config}")).template);
         assertEquals("/server-group=main-server-group",
-                resolver.resolve(AddressTemplate.of("{selected.server-group}")).template);
-        assertEquals("/foo=bar", resolver.resolve(AddressTemplate.of("foo={selected.resource}")).template);
+                resolver.resolve(AddressTemplate.ofTrusted("{selected.server-group}")).template);
+        assertEquals("/foo=bar", resolver.resolve(AddressTemplate.ofTrusted("foo={selected.resource}")).template);
     }
 
     @Test
     void resolveKnownPlaceholdersStandalone() {
         StatementContextResolver resolver = new StatementContextResolver(standaloneStatementContext());
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("{domain.controller}/a=b")).template);
-        assertEquals("/deployment=hello-world", resolver.resolve(AddressTemplate.of("{selected.deployment}")).template);
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("{selected.host}/a=b")).template);
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("{selected.profile}/a=b")).template);
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("{selected.server}/a=b")).template);
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("{selected.server-config}/a=b")).template);
-        assertEquals("/a=b", resolver.resolve(AddressTemplate.of("{selected.server-group}/a=b")).template);
-        assertEquals("/foo=bar", resolver.resolve(AddressTemplate.of("foo={selected.resource}")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("{domain.controller}/a=b")).template);
+        assertEquals("/deployment=hello-world", resolver.resolve(AddressTemplate.ofTrusted("{selected.deployment}")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("{selected.host}/a=b")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("{selected.profile}/a=b")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("{selected.server}/a=b")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("{selected.server-config}/a=b")).template);
+        assertEquals("/a=b", resolver.resolve(AddressTemplate.ofTrusted("{selected.server-group}/a=b")).template);
+        assertEquals("/foo=bar", resolver.resolve(AddressTemplate.ofTrusted("foo={selected.resource}")).template);
     }
 }

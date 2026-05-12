@@ -110,7 +110,7 @@ class StatusCard implements Attachable, AutoRefresh, DashboardCard {
         //noinspection DuplicatedCode
         removeChildrenFrom(cardBody);
 
-        AddressTemplate template = AddressTemplate.of("{domain.controller}");
+        AddressTemplate template = AddressTemplate.ofTrusted("{domain.controller}");
         Task<FlowContext> metadataTask = context -> metadataRepository.lookup(template)
                 .then(metadata -> context.resolve(METADATA_KEY, metadata));
         Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
@@ -190,7 +190,7 @@ class StatusCard implements Attachable, AutoRefresh, DashboardCard {
 
     @Override
     public void autoRefresh() {
-        AddressTemplate template = AddressTemplate.of("{domain.controller}");
+        AddressTemplate template = AddressTemplate.ofTrusted("{domain.controller}");
         Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)

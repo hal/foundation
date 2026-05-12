@@ -124,7 +124,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
         //noinspection DuplicatedCode
         removeChildrenFrom(cardBody);
 
-        AddressTemplate rootTmpl = AddressTemplate.of("{domain.controller}");
+        AddressTemplate rootTmpl = AddressTemplate.ofTrusted("{domain.controller}");
         Task<FlowContext> rootTask = context -> metadataRepository.lookup(rootTmpl)
                 .then(metadata -> context.resolve(ROOT_KEY, metadata));
         Operation rootOp = new Operation.Builder(rootTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
@@ -133,8 +133,8 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 .build();
 
         AddressTemplate envTmpl = environment.standalone()
-                ? AddressTemplate.of("core-service=server-environment")
-                : AddressTemplate.of("{domain.controller}/core-service=host-environment");
+                ? AddressTemplate.ofTrusted("core-service=server-environment")
+                : AddressTemplate.ofTrusted("{domain.controller}/core-service=host-environment");
         Task<FlowContext> envTask = context -> metadataRepository.lookup(envTmpl)
                 .then(value -> context.resolve(ENV_KEY, value));
         Operation envOp = new Operation.Builder(envTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
@@ -142,7 +142,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 .param(INCLUDE_RUNTIME, true)
                 .build();
 
-        AddressTemplate runtimeTmpl = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=runtime");
+        AddressTemplate runtimeTmpl = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=runtime");
         Task<FlowContext> runtimeTask = context -> metadataRepository.lookup(runtimeTmpl)
                 .then(value -> context.resolve(RUNTIME_KEY, value));
         Operation runtimeOp = new Operation.Builder(runtimeTmpl.resolve(statementContext), READ_RESOURCE_OPERATION)
@@ -224,7 +224,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
     @Override
     public void autoRefresh() {
         if (uptimeDld != null) {
-            AddressTemplate template = AddressTemplate.of("{domain.controller}/core-service=platform-mbean/type=runtime");
+            AddressTemplate template = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=runtime");
             Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
                     .param(ATTRIBUTES_ONLY, true)
                     .param(INCLUDE_RUNTIME, true)

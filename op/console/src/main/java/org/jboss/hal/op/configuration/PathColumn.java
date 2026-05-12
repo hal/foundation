@@ -28,7 +28,7 @@ import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
 public class PathColumn implements ColumnProvider {
 
     public static final String ID = "path-column";
-    private static final AddressTemplate TEMPLATE = AddressTemplate.of("path=*");
+    private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("path=*");
 
     @Override
     public String identifier() {

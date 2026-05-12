@@ -14,6 +14,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Migrate to PatternFly Java 0.7.x
+- Refactor AddressTemplate API to distinguish trusted (pre-encoded) and safe (auto-encoding) methods following SafeHtmlUtils naming conventions
 - Update format and validate scripts to include feature-pack and standalone modules
 
 ### Fixed
