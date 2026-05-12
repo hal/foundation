@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.resources;
 
+/**
+ * HTML data attribute names used by CRUD operation messaging.
+ */
 public interface Dataset {
 
     String crudMessageType = "halCmt";

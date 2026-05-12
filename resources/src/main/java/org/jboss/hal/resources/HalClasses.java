@@ -15,6 +15,10 @@
  */
 package org.jboss.hal.resources;
 
+/**
+ * CSS class name constants following a BEM-like naming convention. Component classes use the {@code hal-c-} prefix, while
+ * modifier classes use the {@code hal-m-} prefix.
+ */
 public interface HalClasses {
 
     // ------------------------------------------------------ constants (a-z)
@@ -50,10 +54,23 @@ public interface HalClasses {
 
     // ------------------------------------------------------ api
 
+    /**
+     * Builds a BEM-style component class name with optional elements.
+     *
+     * @param component the component name
+     * @param elements  optional element names to append with double-underscore separator
+     * @return a CSS class name in the format {@code hal-c-<component>} or {@code hal-c-<component>__<element1>-<element2>}
+     */
     static String halComponent(String component, String... elements) {
         return compose('c', component, elements);
     }
 
+    /**
+     * Builds a BEM-style modifier class name.
+     *
+     * @param modifier the modifier name
+     * @return a CSS class name in the format {@code hal-m-<modifier>}, or an empty string if the modifier is {@code null} or empty
+     */
     static String halModifier(String modifier) {
         return modifier != null && !modifier.isEmpty() ? "hal-m-" + modifier : "";
     }

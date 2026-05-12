@@ -35,6 +35,13 @@ public interface Urls {
     String WILDFLY_HOMEPAGE = "https://www.wildfly.org";
     String ZULIP_CHAT = "https://wildfly.zulipchat.com/";
 
+    /**
+     * Replaces the {@code %v} placeholder in the given URL with the specified WildFly version.
+     *
+     * @param url     the URL containing the {@code %v} placeholder
+     * @param version the WildFly version to substitute
+     * @return the URL with the version placeholder replaced
+     */
     static String replaceVersion(String url, String version) {
         return url.replace("%v", version);
     }

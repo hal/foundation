@@ -18,6 +18,9 @@ package org.jboss.hal.resources;
 import org.kie.j2cl.tools.processors.annotations.TranslationBundle;
 import org.kie.j2cl.tools.processors.annotations.TranslationKey;
 
+/**
+ * Localization bundle for translated UI strings, processed by the KIE J2CL translation processor.
+ */
 @TranslationBundle
 public interface L10nBundle {
 

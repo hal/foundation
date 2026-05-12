@@ -36,6 +36,13 @@ public interface Ids {
 
     // ------------------------------------------------------ dynamic IDs (a-z)
 
+    /**
+     * Generates a unique HTML ID for a host-server pair.
+     *
+     * @param host   the host name
+     * @param server the server name
+     * @return a composite ID combining the host and server names
+     */
     static String hostServer(String host, String server) {
         return Id.build(host, server);
     }

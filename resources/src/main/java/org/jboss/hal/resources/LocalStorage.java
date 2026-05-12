@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.resources;
 
+/**
+ * Browser {@code localStorage} keys used for persisting UI state across sessions.
+ */
 public interface LocalStorage {
 
     String ENDPOINTS = "hal-endpoints";
