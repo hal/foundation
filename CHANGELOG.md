@@ -9,6 +9,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add comprehensive API documentation (package-info, class-level, and method-level Javadoc with `@snippet` examples) across all code modules
 - Add CycloneDX SBOM generation for NPM runtime dependencies in assembly JARs
 
 ### Changed
