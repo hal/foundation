@@ -11,7 +11,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add comprehensive API documentation (package-info, class-level, and method-level Javadoc with `@snippet` examples) across all code modules
 - Add CycloneDX SBOM generation for NPM runtime dependencies in assembly JARs
-- Add CI workflow to build and publish a JVM-mode development container image (`quay.io/halconsole/hal-op:development`) on every push to main
+- Add CI workflow to build and publish a JVM-mode test-suite container image (`quay.io/halconsole/hal-op:test-suite`) on every push to main
+- Add `test-suite` Maven profile for test-suite builds with sourcemaps and readable JavaScript
+- Add `TEST_SUITE` build type to `BuildType` enum
 
 ### Changed
 

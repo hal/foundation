@@ -446,6 +446,13 @@
             </properties>
         </profile>
         <profile>
+            <id>test-suite</id>
+            <properties>
+                <j2cl.incremental>false</j2cl.incremental>
+                <environment.build>test-suite</environment.build>
+            </properties>
+        </profile>
+        <profile>
             <id>quick-build</id>
             <activation>
                 <property>

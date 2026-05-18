@@ -22,13 +22,15 @@ public enum BuildType {
 
     DEVELOPMENT,
 
-    PRODUCTION;
+    PRODUCTION,
+
+    TEST_SUITE;
 
     public static BuildType parse(String value, BuildType defaultValue) {
         BuildType build = defaultValue;
         if (value != null) {
             try {
-                build = BuildType.valueOf(value.toUpperCase());
+                build = BuildType.valueOf(value.toUpperCase().replace('-', '_'));
             } catch (IllegalArgumentException ignore) {
                 // ignore
             }
