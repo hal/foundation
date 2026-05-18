@@ -1,0 +1,14 @@
+FROM eclipse-temurin:25-jre
+WORKDIR /work/
+RUN chown 1001 /work \
+    && chmod "g+rwX" /work \
+    && chown 1001:root /work
+COPY --chown=1001:root target/quarkus-app/lib/ /work/lib/
+COPY --chown=1001:root target/quarkus-app/*.jar /work/
+COPY --chown=1001:root target/quarkus-app/app/ /work/app/
+COPY --chown=1001:root target/quarkus-app/quarkus/ /work/quarkus/
+
+EXPOSE 9090
+USER 1001
+
+ENTRYPOINT ["java", "-jar", "/work/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]

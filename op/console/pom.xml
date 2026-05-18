@@ -192,7 +192,7 @@
 
     <profiles>
         <profile>
-            <id>prod</id>
+            <id>feature-pack</id>
             <build>
                 <plugins>
                     <plugin>
@@ -206,17 +206,7 @@
                                     <goal>corepack</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>pnpm run prod:feature-pack</arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>pnpm-run-prod-standalone</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>corepack</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>pnpm run prod:standalone</arguments>
+                                    <arguments>pnpm run build:feature-pack</arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -237,6 +227,35 @@
                                     </descriptors>
                                 </configuration>
                             </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>standalone</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>pnpm-run-prod-standalone</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>corepack</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>pnpm run build:standalone</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
                             <execution>
                                 <id>assemble-standalone</id>
                                 <phase>package</phase>
@@ -269,7 +288,7 @@
                                     <goal>corepack</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>pnpm run prod:standalone</arguments>
+                                    <arguments>pnpm run build:test-suite</arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -279,14 +298,14 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>assemble-standalone</id>
+                                <id>assemble-test-suite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
                                     <descriptors>
-                                        <descriptor>src/assembly/standalone.xml</descriptor>
+                                        <descriptor>src/assembly/test-suite.xml</descriptor>
                                     </descriptors>
                                 </configuration>
                             </execution>

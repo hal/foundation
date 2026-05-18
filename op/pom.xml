@@ -65,6 +65,18 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>hal-op</artifactId>
+                <version>${project.version}</version>
+                <classifier>test-suite-resources</classifier>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>hal-op-subsystem</artifactId>
                 <version>${project.version}</version>
                 <exclusions>
@@ -93,6 +105,12 @@
             <id>standalone</id>
             <modules>
                 <module>standalone</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>test-suite</id>
+            <modules>
+                <module>test-suite</module>
             </modules>
         </profile>
     </profiles>

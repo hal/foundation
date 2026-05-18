@@ -14,12 +14,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Add CI workflow to build and publish a JVM-mode test-suite container image (`quay.io/halconsole/hal-op:test-suite`) on every push to main
 - Add `test-suite` Maven profile for test-suite builds with sourcemaps and readable JavaScript
 - Add `TEST_SUITE` build type to `BuildType` enum
+- Add dedicated `op/test-suite` Quarkus module for test-suite Docker images
 
 ### Changed
 
 - Migrate to PatternFly Java 0.7.x
 - Refactor AddressTemplate API to distinguish trusted (pre-encoded) and safe (auto-encoding) methods following SafeHtmlUtils naming conventions
 - Update format and validate scripts to include feature-pack and standalone modules
+- Separate build variants into self-contained Maven profiles: `-P op,feature-pack`, `-P op,standalone`, `-P op,test-suite` (remove `prod` profile)
+- Rename pnpm scripts from `prod:*` to `build:*` for consistency with Maven profiles
 
 ### Fixed
 

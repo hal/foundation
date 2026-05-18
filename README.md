@@ -39,7 +39,7 @@ on the management interface at http://localhost:9990/halop.
    `org.jboss.hal:hal-op-feature-pack:0.2.7`](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack)
 
     ```shell
-    mvn install -P prod,op,feature-pack
+    mvn install -P op,feature-pack
     ```
 
 2. Provision a WildFly server. You can use the provided [
@@ -78,14 +78,14 @@ There are many ways to run halOP in standalone mode:
 #### Build and run on your own (JVM)
 
 ```shell
-mvn install -P prod,op,standalone
+mvn install -P op,standalone
 java -jar op/standalone/target/quarkus-app/quarkus-run.jar
 ```
 
 #### Build and run on your own (native)
 
 ```shell
-mvn install -P prod,op,standalone,native
+mvn install -P op,standalone,native
 op/standalone/target/hal-op-standalone-0.2.7-runner
 ```
 

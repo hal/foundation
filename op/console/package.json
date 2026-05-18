@@ -13,8 +13,9 @@
     "start:server": "node server.js 1234 1235",
     "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
     "watch": "concurrently \"pnpm run start:parcel\" \"pnpm run start:server\" \"pnpm run open:browser\"",
-    "prod:feature-pack": "parcel build src/web/index.html --dist-dir target/feature-pack-resources --public-url /halop",
-    "prod:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources",
+    "build:feature-pack": "parcel build src/web/index.html --dist-dir target/feature-pack-resources --public-url /halop",
+    "build:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources",
+    "build:test-suite": "parcel build src/web/index.html --no-optimize --dist-dir target/test-suite-resources",
     "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --json-pretty --only patternfly --only dompurify"
   },
   "dependencies": {
@@ -22,10 +23,10 @@
     "@patternfly-java/core": "catalog:pfj",
     "@patternfly-java/finder": "catalog:pfj",
     "@patternfly/patternfly": "^6.4.0",
-    "dompurify": "^3.4.2"
+    "dompurify": "^3.4.5"
   },
   "devDependencies": {
-    "@cyclonedx/cdxgen": "^12.3.3",
+    "@cyclonedx/cdxgen": "^12.4.1",
     "@parcel/config-default": "^2.16.4",
     "@parcel/core": "^2.16.4",
     "@parcel/reporter-cli": "^2.16.4",

@@ -437,22 +437,6 @@
             </modules>
         </profile>
         <profile>
-            <id>prod</id>
-            <properties>
-                <j2cl.compilationLevel>ADVANCED</j2cl.compilationLevel>
-                <j2cl.incremental>false</j2cl.incremental>
-                <j2cl.sourcemaps>false</j2cl.sourcemaps>
-                <environment.build>production</environment.build>
-            </properties>
-        </profile>
-        <profile>
-            <id>test-suite</id>
-            <properties>
-                <j2cl.incremental>false</j2cl.incremental>
-                <environment.build>test-suite</environment.build>
-            </properties>
-        </profile>
-        <profile>
             <id>quick-build</id>
             <activation>
                 <property>
@@ -545,6 +529,31 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>feature-pack</id>
+            <properties>
+                <j2cl.compilationLevel>ADVANCED</j2cl.compilationLevel>
+                <j2cl.incremental>false</j2cl.incremental>
+                <j2cl.sourcemaps>false</j2cl.sourcemaps>
+                <environment.build>production</environment.build>
+            </properties>
+        </profile>
+        <profile>
+            <id>standalone</id>
+            <properties>
+                <j2cl.compilationLevel>ADVANCED</j2cl.compilationLevel>
+                <j2cl.incremental>false</j2cl.incremental>
+                <j2cl.sourcemaps>false</j2cl.sourcemaps>
+                <environment.build>production</environment.build>
+            </properties>
+        </profile>
+        <profile>
+            <id>test-suite</id>
+            <properties>
+                <j2cl.incremental>false</j2cl.incremental>
+                <environment.build>test-suite</environment.build>
+            </properties>
         </profile>
     </profiles>
 

@@ -20,17 +20,20 @@ mvn clean verify
 # Build halOP (most common during development)
 mvn clean verify -P op
 
-# Production build
-mvn install -P op,prod
+# Build standalone (production)
+mvn install -P op,standalone
+
+# Build Galleon feature pack (production)
+mvn install -P op,feature-pack
+
+# Build test suite
+mvn package -P op,test-suite
 
 # Quick build (skip tests and checks)
 mvn install -P quick-build
 
 # Native binary (requires GraalVM)
-mvn install -P op,prod,native -Dquarkus.native.container-build=false
-
-# Build Galleon feature pack
-mvn install -P prod,op,feature-pack
+mvn install -P op,standalone,native -Dquarkus.native.container-build=false
 
 # Run a single test class
 mvn test -pl <module> -Dtest=<TestClassName>
@@ -92,7 +95,8 @@ All code modules live under `code-parent` for shared dependency management:
 
 Application modules:
 - `op/console` — J2CL-compiled SPA (Parcel bundler, PatternFly 6)
-- `op/standalone` — Quarkus HTTP server wrapping the SPA
+- `op/standalone` — Quarkus HTTP server wrapping the SPA (production)
+- `op/test-suite` — Quarkus HTTP server wrapping the SPA (test suite, Docker)
 - `op/subsystem` — WildFly subsystem extension for the HAL console
 - `op/feature-pack` — Galleon feature pack to provision HAL into WildFly
 
