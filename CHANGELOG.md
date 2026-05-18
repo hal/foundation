@@ -23,6 +23,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Update format and validate scripts to include feature-pack and standalone modules
 - Separate build variants into self-contained Maven profiles: `-P op,feature-pack`, `-P op,standalone`, `-P op,test-suite` (remove `prod` profile)
 - Rename pnpm scripts from `prod:*` to `build:*` for consistency with Maven profiles
+- Move shared Quarkus config to `pluginManagement` in `op/pom.xml` to reduce duplication between standalone and test-suite modules
 
 ### Fixed
 
