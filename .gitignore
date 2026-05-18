@@ -6,6 +6,7 @@ release.properties
 .flattened-pom.xml
 .DS_Store
 .claude
+.pnpm-store
 .project
 .classpath
 .settings/
