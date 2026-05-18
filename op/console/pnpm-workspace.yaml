@@ -20,10 +20,8 @@ catalogs:
     '@patternfly-java/core': ^0.7.3
     '@patternfly-java/finder': ^0.7.3
 
-ignoredBuiltDependencies:
-  - '@swc/core'
-  - lmdb
-  - msgpackr-extract
-
-onlyBuiltDependencies:
-  - '@parcel/watcher'
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': false
+  lmdb: false
+  msgpackr-extract: false
