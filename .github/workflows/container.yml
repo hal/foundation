@@ -1,4 +1,4 @@
-name: Container
+name: halOP Container
 
 on:
   workflow_dispatch:
@@ -8,6 +8,7 @@ permissions:
 
 jobs:
   build-native-image:
+    name: Build Native Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,6 +34,7 @@ jobs:
           retention-days: 1
 
   build-image:
+    name: Build Container Image
     needs: build-native-image
     runs-on: ubuntu-latest
     steps:

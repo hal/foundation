@@ -1,4 +1,4 @@
-name: Test Suite Image
+name: Test Suite Container
 
 on:
   workflow_run:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-push:
-    name: Build and Push Test Suite Image
+    name: Build and Push Container
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
