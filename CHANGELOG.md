@@ -9,6 +9,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add `op/ouia` module: NPM package `@halconsole/ouia` that generates TypeScript constants and functions from `Ids.java` for OUIA-based test automation
+- Add OUIA documentation (`OUIA.md`) with component inventory, implementation plan, and ID sharing strategy
+- Add npm publish step to release workflow for automated `@halconsole/ouia` publishing
 - Add comprehensive API documentation (package-info, class-level, and method-level Javadoc with `@snippet` examples) across all code modules
 - Add CycloneDX SBOM generation for NPM runtime dependencies in assembly JARs
 - Add CI workflow to build and publish a JVM-mode test-suite container image (`quay.io/halconsole/hal-op:test-suite`) on every push to main
