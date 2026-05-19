@@ -108,3 +108,7 @@ mvn --quiet install  &> /dev/null
 cd "${script_dir}"
 msg "Update version to ${CYAN}${NEW_VERSION}${NOFORMAT}"
 mvn --quiet versions:set -DnewVersion="${NEW_VERSION}" -P op,os &> /dev/null
+msg "Update NPM version to ${CYAN}${NEW_VERSION}${NOFORMAT}"
+cd op/ouia
+npm version "${NEW_VERSION}" --no-git-tag-version &> /dev/null
+cd "${script_dir}"

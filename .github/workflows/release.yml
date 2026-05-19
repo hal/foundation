@@ -70,8 +70,6 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - id: get-version
-        uses: battila7/get-version-action@v2.3.0
       - uses: actions/checkout@v6
       - uses: actions/setup-java@v5
         with:
@@ -80,10 +78,8 @@ jobs:
           cache: maven
       - run: ./mvnw --show-version --batch-mode --no-transfer-progress package -P op
       - run: |
-          VERSION="${{ steps.get-version.outputs.version-without-v }}"
           cd op/ouia
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
-          npm version "${VERSION}" --no-git-tag-version
           npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
