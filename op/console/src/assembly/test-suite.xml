@@ -31,6 +31,10 @@
         <fileSet>
             <directory>${project.build.directory}/console</directory>
             <outputDirectory>console</outputDirectory>
+            <includes>
+                <include>**/*.js</include>
+                <include>**/*.js.map</include>
+            </includes>
         </fileSet>
     </fileSets>
 </assembly>
