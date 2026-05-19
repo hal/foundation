@@ -28,11 +28,9 @@
             <directory>${project.build.directory}/test-suite-resources</directory>
             <outputDirectory>console</outputDirectory>
         </fileSet>
-    </fileSets>
-    <files>
-        <file>
-            <source>${project.build.directory}/console/console.js</source>
+        <fileSet>
+            <directory>${project.build.directory}/console</directory>
             <outputDirectory>console</outputDirectory>
-        </file>
-    </files>
+        </fileSet>
+    </fileSets>
 </assembly>

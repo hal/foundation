@@ -1,6 +1,7 @@
 name: Test Suite Container
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '20 3 * * *'
   workflow_run:
@@ -11,7 +12,7 @@ on:
 jobs:
   build-and-push:
     name: Build and Push Container
-    if: github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       MVN: ./mvnw --show-version --batch-mode --no-transfer-progress
