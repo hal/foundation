@@ -15,11 +15,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fix pnpm lockfile mismatch causing test-suite CI failure after PatternFly Java 0.8.3 bump
 
-## [0.3.7] - 2026-05-20
-
 ### Upgrades
 
 - Bump PatternFly Java to 0.8.3
+
+## [0.3.7] - 2026-05-20
+
+> [!WARNING]
+> Not an official release. Please don't use!
 
 ## [0.3.6] - 2026-05-20
 
