@@ -20,6 +20,7 @@ import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.Segment;
@@ -69,7 +70,7 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.style.Size._3xl;
 import static org.patternfly.style.Sticky.top;
 
-class ModelBrowserDetail implements IsElement<HTMLElement> {
+class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserDetail> {
 
     static String lastTab = null;
     private final ModelBrowser modelBrowser;
@@ -94,6 +95,17 @@ class ModelBrowserDetail implements IsElement<HTMLElement> {
                                         .add(description = p().text("")))))
                 .add(pageSection = pageSection().css(halComponent(HalClasses.modelBrowser, detail, content)))
                 .element();
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/ModelBrowserDetail";
+    }
+
+    @Override
+    public ModelBrowserDetail that() {
+        return this;
     }
 
     @Override

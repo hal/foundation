@@ -18,6 +18,7 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.bootstrap.BootstrapErrorElement;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
 import org.patternfly.component.page.MastheadLogo;
@@ -39,7 +40,7 @@ import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Height;
 import static org.patternfly.token.Token.globalBackgroundColor100;
 
-public class ErrorSkeleton implements IsElement<HTMLElement> {
+public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ErrorSkeleton> {
 
     // ------------------------------------------------------ factory
 
@@ -63,6 +64,17 @@ public class ErrorSkeleton implements IsElement<HTMLElement> {
                                                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                                                         Resources.INSTANCE.logo().getText()).asString())))))
                 .addMain(pageMain = pageMain(Ids.MAIN_ID));
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/ErrorSkeleton";
+    }
+
+    @Override
+    public ErrorSkeleton that() {
+        return this;
     }
 
     @Override

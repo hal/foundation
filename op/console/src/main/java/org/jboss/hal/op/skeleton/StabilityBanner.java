@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import org.jboss.elemento.Callback;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.Ids;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.env.Stability;
 import org.patternfly.icon.PredefinedIcon;
 
@@ -44,7 +45,7 @@ import static org.patternfly.layout.flex.SpaceItems.none;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Orientation.vertical;
 
-public class StabilityBanner implements IsElement<HTMLElement> {
+public class StabilityBanner implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, StabilityBanner> {
 
     // ------------------------------------------------------ factory
 
@@ -80,6 +81,17 @@ public class StabilityBanner implements IsElement<HTMLElement> {
                                 .add(a(replaceVersion(STABILITY_LEVELS, uic().environment().productVersionLink()), "_blank")
                                         .text("More info"))))
                 .element();
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/StabilityBanner";
+    }
+
+    @Override
+    public StabilityBanner that() {
+        return this;
     }
 
     @Override

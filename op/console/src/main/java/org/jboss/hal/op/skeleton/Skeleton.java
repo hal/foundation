@@ -18,6 +18,7 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.endpoint.EndpointStorage;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
@@ -61,7 +62,7 @@ import static org.patternfly.style.Classes.static_;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Height;
 
-public class Skeleton implements IsElement<HTMLElement> {
+public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, Skeleton> {
 
     // ------------------------------------------------------ factory
 
@@ -124,6 +125,17 @@ public class Skeleton implements IsElement<HTMLElement> {
         } else {
             root = page.element();
         }
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/Skeleton";
+    }
+
+    @Override
+    public Skeleton that() {
+        return this;
     }
 
     @Override

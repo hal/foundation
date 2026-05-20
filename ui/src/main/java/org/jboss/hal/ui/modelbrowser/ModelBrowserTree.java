@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.flow.FlowContext;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
@@ -65,7 +66,7 @@ import static org.patternfly.style.Placement.bottomStart;
 import static org.patternfly.style.Size.sm;
 import static org.patternfly.style.Sticky.top;
 
-class ModelBrowserTree implements IsElement<HTMLElement> {
+class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserTree> {
 
     // ------------------------------------------------------ instance
 
@@ -132,6 +133,17 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
                                                         .add(tooltip(collapseButton.element(), "Collapse all")))))))
                 .add(pageSection().padding(noPadding).add(treeView))
                 .element();
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/ModelBrowserTree";
+    }
+
+    @Override
+    public ModelBrowserTree that() {
+        return this;
     }
 
     @Override

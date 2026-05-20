@@ -9,6 +9,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add `OuiaSupport` interface to 10 custom HAL components (Skeleton, ErrorSkeleton, StabilityBanner, EndpointTable, EndpointForm, EndpointSelector, ModelBrowserTree, ModelBrowserDetail, ResourceToolbar, ResourceList) adding `data-ouia-component-type` attributes with `HalOP/<Name>` naming convention
 - Add `op/ouia` module: NPM package `@halconsole/ouia` that generates TypeScript constants and functions from `Ids.java` for OUIA-based test automation
 - Add OUIA documentation (`OUIA.md`) with component inventory, implementation plan, and ID sharing strategy
 - Add npm publish step to release workflow for automated `@halconsole/ouia` publishing
@@ -37,7 +38,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Upgrades
 
-- Bump PatternFly Java to 0.7.4
+- Bump PatternFly Java to 0.8.0
 - Bump Elemento to 2.4.10
 - Bump Quarkus to 3.35.2
 - Bump JBoss Parent to 53

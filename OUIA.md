@@ -100,6 +100,43 @@ Added OUIA IDs to buttons and modals — the primary interactive controls needed
 - `generate.mjs` — fixed varargs handling for the `ouia()` method
 - `pom.xml` — bumped PatternFly Java to 0.7.8 (OUIA sub-component support)
 
+### OuiaSupport on Custom Components (COMPLETE)
+
+Implemented the `OuiaSupport<E, B>` interface (introduced in PatternFly Java 0.8.0) on 10 custom HAL components. This adds `data-ouia-component-type` attributes to container elements, complementing the existing `data-ouia-component-id` attributes on child buttons/modals from phases 1 & 2.
+
+**Naming convention:** `HalOP/<ComponentName>` (e.g., `HalOP/ModelBrowserTree`)
+
+**Components:**
+
+| Component | Type |
+|---|---|
+| `Skeleton` | `HalOP/Skeleton` |
+| `ErrorSkeleton` | `HalOP/ErrorSkeleton` |
+| `StabilityBanner` | `HalOP/StabilityBanner` |
+| `EndpointTable` | `HalOP/EndpointTable` |
+| `EndpointForm` | `HalOP/EndpointForm` |
+| `EndpointSelector` | `HalOP/EndpointSelector` |
+| `ModelBrowserTree` | `HalOP/ModelBrowserTree` |
+| `ModelBrowserDetail` | `HalOP/ModelBrowserDetail` |
+| `ResourceToolbar` | `HalOP/ResourceToolbar` |
+| `ResourceList` | `HalOP/ResourceList` |
+
+**Per-component change (~5 lines):**
+- Implement `OuiaSupport<HTMLElement, ClassName>`
+- Add `ouiaComponentType()` returning the type string
+- Add `that()` returning `this`
+- Call `initOuia()` at end of constructor
+
+This enables dave test selectors to scope by container type:
+
+```typescript
+// Find the refresh button inside the model browser tree
+const refreshBtn = page.locator(
+  '[data-ouia-component-type="HalOP/ModelBrowserTree"] ' +
+  `[data-ouia-component-id="${MODEL_BROWSER_REFRESH_BTN}"]`
+);
+```
+
 ### Phase 3 — Remaining Controls (PLANNED)
 
 Deferred items for future implementation:

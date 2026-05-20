@@ -17,6 +17,7 @@ package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
 import org.patternfly.component.form.Form;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.switch_.Switch;
@@ -46,7 +47,7 @@ import static org.patternfly.component.switch_.Switch.switch_;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.link;
 
-class EndpointForm implements IsElement<HTMLElement> {
+class EndpointForm implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, EndpointForm> {
 
     private static final String DEFAULT_HOST = "localhost";
     private static final String DEFAULT_PORT = "9990";
@@ -121,6 +122,17 @@ class EndpointForm implements IsElement<HTMLElement> {
         secureSwitch.onChange((e, c, value) -> url.set(buildUrl(value, hostInput.value(), portInput.value())));
         hostInput.onChange((e, c, value) -> url.set(buildUrl(secureSwitch.value(), value, portInput.value())));
         portInput.onChange((e, c, value) -> url.set(buildUrl(secureSwitch.value(), hostInput.value(), value)));
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/EndpointForm";
+    }
+
+    @Override
+    public EndpointForm that() {
+        return this;
     }
 
     @Override

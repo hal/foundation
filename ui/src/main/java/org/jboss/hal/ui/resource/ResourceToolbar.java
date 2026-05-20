@@ -19,6 +19,7 @@ import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.security.ElementGuard;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.resources.Ids;
 import org.jboss.hal.model.filter.AccessTypeAttribute;
@@ -64,7 +65,7 @@ import static org.patternfly.icon.IconSets.fas.powerOff;
 import static org.patternfly.icon.IconSets.fas.redo;
 import static org.patternfly.style.Classes.modifier;
 
-class ResourceToolbar implements IsElement<HTMLElement> {
+class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceToolbar> {
 
     // ------------------------------------------------------ factory
 
@@ -130,6 +131,17 @@ class ResourceToolbar implements IsElement<HTMLElement> {
                         .addItem(toolbarItem()
                                 .add(button("Clear all filters").link().inline()
                                         .onClick((e, c) -> filter.resetAll()))));
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/ResourceToolbar";
+    }
+
+    @Override
+    public ResourceToolbar that() {
+        return this;
     }
 
     @Override

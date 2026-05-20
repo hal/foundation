@@ -17,6 +17,7 @@ package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.Ids;
+import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleSelect;
@@ -42,7 +43,7 @@ import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
  * The class is implemented as a singleton to ensure a single instance is shared across the application. It uses components such
  * as SingleSelect, MenuList, and other utility methods to build an interactive UI for endpoint selection.
  */
-public class EndpointSelector implements IsElement<HTMLElement> {
+public class EndpointSelector implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, EndpointSelector> {
 
     private static EndpointSelector instance;
 
@@ -85,6 +86,17 @@ public class EndpointSelector implements IsElement<HTMLElement> {
                                                     return null;
                                                 })))));
         singleSelect.select(storage.current().id, false);
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/EndpointSelector";
+    }
+
+    @Override
+    public EndpointSelector that() {
+        return this;
     }
 
     @Override

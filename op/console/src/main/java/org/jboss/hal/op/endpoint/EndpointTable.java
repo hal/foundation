@@ -22,6 +22,7 @@ import org.jboss.elemento.Callback;
 import org.jboss.hal.resources.Ids;
 import org.jboss.elemento.IsElement;
 import org.patternfly.component.table.Table;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.component.table.Tr;
 import org.patternfly.handler.SelectHandler;
 import org.patternfly.icon.IconSets;
@@ -44,7 +45,7 @@ import static org.patternfly.icon.IconSets.fas.pencilAlt;
 import static org.patternfly.icon.IconSets.fas.trash;
 import static org.patternfly.layout.bullseye.Bullseye.bullseye;
 
-class EndpointTable implements IsElement<HTMLElement> {
+class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, EndpointTable> {
 
     private final Table table;
     private final Tr emptyRow;
@@ -74,6 +75,17 @@ class EndpointTable implements IsElement<HTMLElement> {
                                 .addItem(th().screenReader("Edit"))
                                 .addItem(th().screenReader("Remove"))))
                 .addBody(tbody());
+        initOuia();
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/EndpointTable";
+    }
+
+    @Override
+    public EndpointTable that() {
+        return this;
     }
 
     @Override

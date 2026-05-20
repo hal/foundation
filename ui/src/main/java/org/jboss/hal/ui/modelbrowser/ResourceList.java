@@ -39,6 +39,7 @@ import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarItem;
 import org.patternfly.component.tooltip.PopperTooltip;
 import org.patternfly.core.ObservableValue;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
 import org.patternfly.layout.flex.Flex;
@@ -104,7 +105,7 @@ import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.componentVar;
 
-class ResourceList implements IsElement<HTMLElement> {
+class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceList> {
 
     private static final Logger logger = Logger.getLogger(ResourceList.class.getName());
 
@@ -160,6 +161,7 @@ class ResourceList implements IsElement<HTMLElement> {
                 .add(toolbar)
                 .add(listContainer = div().element())
                 .element();
+        initOuia();
         load();
     }
 
@@ -224,6 +226,16 @@ class ResourceList implements IsElement<HTMLElement> {
                                 .addItems(missingChildren, mbn -> menuItem(mbn.template.identifier(), mbn.name)
                                         .onClick((e, mi) -> AddResource.dispatch(element(), parent.template, mbn.name,
                                                 parent.type == SINGLETON_FOLDER)))));
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "HalOP/ResourceList";
+    }
+
+    @Override
+    public ResourceList that() {
+        return this;
     }
 
     @Override
