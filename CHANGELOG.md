@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix release workflow
+
 ## [0.3.5] - 2026-05-20
 
 ### Changed

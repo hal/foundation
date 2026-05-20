@@ -81,7 +81,7 @@ jobs:
           cache: maven
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 25
       - run: ./mvnw --show-version --batch-mode --no-transfer-progress package -P op
       - run: npm publish --access public --provenance
         working-directory: op/ouia
