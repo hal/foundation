@@ -7,6 +7,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Switch npm publishing to OIDC Trusted Publishing, removing the need for stored NPM tokens
+
+### Fixed
+
+- Fix Windows native binary build by skipping editorconfig check (CRLF/LF mismatch on Windows runners)
+
 ## [0.3.4] - 2026-05-20
 
 ### Added
