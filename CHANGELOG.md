@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Upgrades
+
+- Bump PatternFly Java to 0.8.3
+
 ## [0.3.6] - 2026-05-20
 
 ### Fixed
