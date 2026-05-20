@@ -29,6 +29,8 @@ import elemental2.dom.URL;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.ValidationStatus.success;
 import static org.patternfly.component.ValidationStatus.warning;
+import org.jboss.hal.resources.Ids;
+
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormGroup.formGroup;
@@ -99,6 +101,7 @@ class EndpointForm implements IsElement<HTMLElement> {
                                                         .readonly()))
                                         .addItem(inputGroupItem()
                                                 .addButton(button("Ping").control()
+                                                        .ouiaId(Ids.ENDPOINT_PING_BTN)
                                                         .onClick((event, component) -> ping()))))));
 
         endpoint = null;

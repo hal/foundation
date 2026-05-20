@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
@@ -122,7 +123,9 @@ class LogCard implements DashboardCard {
                 .addBody(cardBody = cardBody().style("text-align", "center"))
                 .add(divider(hr))
                 .addFooter(cardFooter()
-                        .add(button("Show log file").link().inline().onClick((e, c) -> notifications.send(nyi()))))
+                        .add(button("Show log file").link().inline()
+                                .ouiaId(Ids.LOG_SHOW_BTN)
+                                .onClick((e, c) -> notifications.send(nyi()))))
                 .element();
 
     }
@@ -197,6 +200,7 @@ class LogCard implements DashboardCard {
                                 .addActions(emptyStateActions()
                                         .add(button("Choose log file")
                                                 .link()
+                                                .ouiaId(Ids.LOG_CHOOSE_BTN)
                                                 .onClick((event, component) -> chooseLogFile()))))));
     }
 

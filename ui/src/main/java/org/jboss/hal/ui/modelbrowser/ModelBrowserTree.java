@@ -25,6 +25,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.tooltip.Tooltip;
@@ -84,15 +85,26 @@ class ModelBrowserTree implements IsElement<HTMLElement> {
 
         treeView = treeView(selectableItems).guides()
                 .onSelect((event, treeViewItem, selected) -> navigate(treeViewItem, true));
-        backButton = button().plain().icon(arrowLeft()).disabled().onClick((event, component) -> back());
-        forwardButton = button().plain().icon(arrowRight()).disabled().onClick((event, component) -> forward());
-        Button refreshButton = button().plain().icon(redo()).onClick((e, b) -> reload());
-        Button homeButton = button().plain().icon(home()).onClick((e, b) -> modelBrowser.home());
+        backButton = button().plain().icon(arrowLeft()).disabled()
+                .ouiaId(Ids.MODEL_BROWSER_BACK_BTN)
+                .onClick((event, component) -> back());
+        forwardButton = button().plain().icon(arrowRight()).disabled()
+                .ouiaId(Ids.MODEL_BROWSER_FORWARD_BTN)
+                .onClick((event, component) -> forward());
+        Button refreshButton = button().plain().icon(redo())
+                .ouiaId(Ids.MODEL_BROWSER_REFRESH_BTN)
+                .onClick((e, b) -> reload());
+        Button homeButton = button().plain().icon(home())
+                .ouiaId(Ids.MODEL_BROWSER_HOME_BTN)
+                .onClick((e, b) -> modelBrowser.home());
         Button findResource = button().plain()
                 .icon(search())
+                .ouiaId(Ids.MODEL_BROWSER_FIND_BTN)
                 .onClick((e, b) -> new FindResource(b.element(), selectedAddress()).open());
         GotoResource gotoResource = new GotoResource();
-        Button collapseButton = button().plain().icon(minusSquare()).onClick((e, b) -> treeView.collapse());
+        Button collapseButton = button().plain().icon(minusSquare())
+                .ouiaId(Ids.MODEL_BROWSER_COLLAPSE_BTN)
+                .onClick((e, b) -> treeView.collapse());
 
         root = div().css(halComponent(HalClasses.modelBrowser, tree))
                 .add(pageSection().sticky(top).padding(noPadding)

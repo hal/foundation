@@ -122,8 +122,9 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
+        String ouiaContext = template.isEmpty() ? "root" : template.last().key;
         this.root = div().css(halComponent(resource))
-                .add(toolbar = resourceToolbar(this, filter, visible, total))
+                .add(toolbar = resourceToolbar(ouiaContext, this, filter, visible, total))
                 .add(rootContainer = div().css(halComponent(resource, body)))
                 .element();
 

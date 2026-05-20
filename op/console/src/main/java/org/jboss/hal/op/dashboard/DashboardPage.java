@@ -45,6 +45,8 @@ import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.content.Content.content;
+import static org.jboss.hal.resources.Ids.PAGE_DASHBOARD;
+import static org.jboss.hal.resources.Ids.PAGE_DASHBOARD_HEADER;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.Direction.column;
@@ -125,10 +127,10 @@ public class DashboardPage implements Page {
                     statusCard));
         }
 
-        HTMLElement header = pageSection().limitWidth()
+        HTMLElement header = pageSection().ouiaId(PAGE_DASHBOARD_HEADER).limitWidth()
                 .add(content().add(title(1, _3xl).text("WildFly Application Server")))
                 .element();
-        HTMLElement dashboard = pageSection().limitWidth()
+        HTMLElement dashboard = pageSection().ouiaId(PAGE_DASHBOARD).limitWidth()
                 .add(grid().gutter().run(grid -> {
                             if (environment.standalone()) {
                                 grid

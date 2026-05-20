@@ -31,6 +31,7 @@ import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.router.Link.link;
 import static org.patternfly.component.content.Content.content;
+import static org.jboss.hal.resources.Ids.PAGE_RUNTIME;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;
@@ -48,7 +49,7 @@ public class RuntimePage implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(pageSection()
+        return singletonList(pageSection().ouiaId(PAGE_RUNTIME)
                 .add(content()
                         .add(title(1, _3xl, "Runtime"))
                         .add(p().text("Not yet implemented!"))

@@ -54,10 +54,11 @@ public class ErrorSkeleton implements IsElement<HTMLElement> {
 
     ErrorSkeleton() {
         page = page()
-                .addMasthead(masthead()
+                .addMasthead(masthead().ouiaId(Ids.MASTHEAD)
                         .addMain(mastheadMain()
                                 .addBrand(mastheadBrand()
                                         .addLogo(MastheadLogo.mastheadLogo("/")
+                                                .ouiaId(Ids.MASTHEAD_LOGO)
                                                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                                                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                                                         Resources.INSTANCE.logo().getText()).asString())))))
@@ -72,7 +73,7 @@ public class ErrorSkeleton implements IsElement<HTMLElement> {
     // ------------------------------------------------------ add
 
     public ErrorSkeleton add(BootstrapErrorElement bootstrapError) {
-        pageMain.add(pageSection()
+        pageMain.add(pageSection().ouiaId(Ids.PAGE_ERROR)
                 .limitWidth()
                 .add(div().style("background-color", globalBackgroundColor100.var)
                         .add(bootstrapError)));

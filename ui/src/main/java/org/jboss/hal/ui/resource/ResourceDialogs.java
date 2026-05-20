@@ -26,6 +26,7 @@ import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.WildcardResolver;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.ui.resource.FormItemFlags.Placeholder;
 import org.jboss.hal.ui.resource.FormItemFlags.Scope;
 import org.patternfly.component.modal.Modal;
@@ -237,8 +238,10 @@ public class ResourceDialogs {
                 .then(metadata -> {
                     OperationDescription operationDescription = metadata.resourceDescription().operations().get(ADD);
                     if (operationDescription.isDefined()) {
+                        String context = templateContext(template);
                         ResourceForm resourceForm = resourceForm(resolved, metadata, operationDescription, resource, singleton);
                         modal().size(lg).top()
+                                .ouiaId(Ids.ouia(context, Ids._ADD, Ids._MODAL))
                                 .addHeader(modalHeader()
                                         .addTitle(title)
                                         .addDescription(metadata.resourceDescription().description()))
@@ -246,7 +249,8 @@ public class ResourceDialogs {
                                         .add(div().css(halComponent(HalClasses.resource))
                                                 .add(resourceForm)))
                                 .addFooter(modalFooter()
-                                        .addButton(button("Add").primary(), (__, modal) ->
+                                        .addButton(button("Add").primary()
+                                                .ouiaId(Ids.ouia(context, Ids._ADD, Ids._BTN)), (__, modal) ->
                                                 addResource(resolved, resourceForm).then(modelNode -> {
                                                     if (modelNode.isDefined()) {
                                                         modal.close();
@@ -254,7 +258,8 @@ public class ResourceDialogs {
                                                     }
                                                     return null;
                                                 }))
-                                        .addButton(button("Cancel").link(), (__, modal) ->
+                                        .addButton(button("Cancel").link()
+                                                .ouiaId(Ids.ouia(context, Ids._CANCEL, Ids._BTN)), (__, modal) ->
                                                 closeAndResolveWithUndefined(modal, resolve)))
                                 .appendToBody()
                                 .open();
@@ -324,11 +329,13 @@ public class ResourceDialogs {
                 .then(metadata -> {
                     OperationDescription operationDescription = metadata.resourceDescription().operations().get(operation);
                     if (operationDescription.isDefined()) {
+                        String context = templateContext(template);
                         String title = template.template + ":" + operation + "()";
                         boolean parameters = !operationDescription.parameters().isEmpty();
                         StackItem resultContainer = stackItem();
                         ResourceForm resourceForm = operationForm(template, metadata, operationDescription);
                         modal().size(lg).top()
+                                .ouiaId(Ids.ouia(context, Ids._EXECUTE, Ids._MODAL))
                                 .addHeader(modalHeader()
                                         .addTitle(title)
                                         .addDescription(operationDescription.description()))
@@ -339,9 +346,11 @@ public class ResourceDialogs {
                                                                 .add(resourceForm)))
                                                 .addItem(resultContainer)))
                                 .addFooter(modalFooter()
-                                        .addButton(button("Execute").primary(), (__, modal) ->
+                                        .addButton(button("Execute").primary()
+                                                .ouiaId(Ids.ouia(context, Ids._EXECUTE, Ids._BTN)), (__, modal) ->
                                                 executeOperation(template, operationDescription, resourceForm, resultContainer))
-                                        .addButton(button("Close").link(), (__, modal) -> modal.close()))
+                                        .addButton(button("Close").link()
+                                                .ouiaId(Ids.ouia(context, Ids._CLOSE, Ids._BTN)), (__, modal) -> modal.close()))
                                 .appendToBody()
                                 .open();
                         if (!parameters) {
@@ -419,16 +428,19 @@ public class ResourceDialogs {
      * successful, or rejects with an error or resolves to an undefined {@link ModelNode} if the operation is canceled
      */
     public static Promise<ModelNode> deleteResourceModal(AddressTemplate template) {
+        String context = templateContext(template);
         AddressTemplate resolvedTemplate = new StatementContextResolver(uic().statementContext()).resolve(template);
         String name = capitalCase(resolvedTemplate.last().value);
         return new Promise<>((resolve, reject) -> modal().size(sm)
+                .ouiaId(Ids.ouia(context, Ids._DELETE, Ids._MODAL))
                 .addHeader("Delete resource")
                 .addBody(modalBody()
                         .add("Do you really want to delete ")
                         .add(span().css(util("font-weight-bold")).text(name))
                         .add("?"))
                 .addFooter(modalFooter()
-                        .addButton(button("Delete").primary(), (__, modal) -> uic().crud().delete(resolvedTemplate)
+                        .addButton(button("Delete").primary()
+                                .ouiaId(Ids.ouia(context, Ids._DELETE, Ids._BTN)), (__, modal) -> uic().crud().delete(resolvedTemplate)
                                 .then(result -> {
                                     modal.close();
                                     // The result is undefined for :remove().
@@ -443,12 +455,17 @@ public class ResourceDialogs {
                                     reject.onInvoke(error);
                                     return null;
                                 }))
-                        .addButton(button("Cancel").link(), (__, modal) -> closeAndResolveWithUndefined(modal, resolve)))
+                        .addButton(button("Cancel").link()
+                                .ouiaId(Ids.ouia(context, Ids._CANCEL, Ids._BTN)), (__, modal) -> closeAndResolveWithUndefined(modal, resolve)))
                 .appendToBody()
                 .open());
     }
 
     // ------------------------------------------------------ internal
+
+    private static String templateContext(AddressTemplate template) {
+        return template.isEmpty() ? "root" : template.last().key;
+    }
 
     private static void closeAndResolveWithUndefined(Modal modal, ResolveCallbackFn<ModelNode> resolve) {
         modal.close();

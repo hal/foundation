@@ -25,6 +25,7 @@ import elemental2.dom.HTMLElement;
 import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.p;
 import static org.patternfly.component.content.Content.content;
+import static org.jboss.hal.resources.Ids.PAGE_NO_DATA;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;
@@ -33,7 +34,7 @@ public class NoData implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        return singletonList(pageSection()
+        return singletonList(pageSection().ouiaId(PAGE_NO_DATA)
                 .add(content()
                         .add(title(1, _3xl, "No data"))
                         .add(p().text("The data for the page " + place.route + " could not be loaded.")))

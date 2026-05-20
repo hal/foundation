@@ -21,6 +21,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.env.Settings;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.description.ResourceDescription;
@@ -139,6 +140,7 @@ class OperationsTable implements IsElement<HTMLElement> {
                                                                 operation.name())) {
                                                             td.add(span().css(component(table, text))
                                                                     .add(button("Execute").tertiary()
+                                                                            .ouiaId(Ids.ouia("operation", operation.name(), Ids._EXECUTE, Ids._BTN))
                                                                             .onClick((e, c) -> execute(operation))));
                                                         }
                                                     }));

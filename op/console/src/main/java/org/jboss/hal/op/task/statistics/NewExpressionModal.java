@@ -18,6 +18,7 @@ package org.jboss.hal.op.task.statistics;
 import java.util.function.Consumer;
 
 import org.jboss.hal.dmr.Expression;
+import org.jboss.hal.resources.Ids;
 import org.patternfly.component.ValidationStatus;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.help.HelperText;
@@ -58,7 +59,7 @@ class NewExpressionModal {
 
     NewExpressionModal(Consumer<String> callback) {
         this.callback = callback;
-        this.modal = modal().size(md);
+        this.modal = modal().size(md).ouiaId(Ids.EXPRESSION_MODAL);
         this.textInput = textInput("new-expression").applyTo(input ->
                 input.on(keydown, event -> {
                     if (Enter.match(event)) {
@@ -84,8 +85,10 @@ class NewExpressionModal {
                                         .addControl(textInput)
                                         .addHelperText(helperText)))))
                 .addFooter(modalFooter()
-                        .addButton(button("Ok").primary(), (e, m) -> validate(textInput.value()))
-                        .addButton(button("Cancel").link(), (e, m) -> m.close()))
+                        .addButton(button("Ok").primary().ouiaId(Ids.EXPRESSION_OK_BTN),
+                                (e, m) -> validate(textInput.value()))
+                        .addButton(button("Cancel").link().ouiaId(Ids.EXPRESSION_CANCEL_BTN),
+                                (e, m) -> m.close()))
                 .appendToBody()
                 .open();
         textInput.input().element().focus();

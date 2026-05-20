@@ -36,6 +36,7 @@ import org.jboss.hal.model.RunningMode;
 import org.jboss.hal.model.RunningState;
 import org.jboss.hal.model.RuntimeConfigurationState;
 import org.jboss.hal.model.SuspendState;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.ui.resource.FinderSupport;
 import org.jboss.hal.ui.resource.ResourceDialogs;
 import org.patternfly.component.codeblock.CodeBlock;
@@ -466,10 +467,14 @@ public class BuildingBlocks {
             Function<FinderPath, AddressTemplate> templateFn, Supplier<FinderColumn> nextColumn) {
         FinderColumn column = finderColumn(id);
         column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
-                        .addButton(button(plus()).plain().small().onClick((e, b) ->
-                                addResourceModal(templateFn.apply(column.finder().path()), null, false)
-                                        .then(__ -> column.reload())))
-                        .addButton(button(redo()).plain().small().onClick((e, b) -> column.reload()))))
+                        .addButton(button(plus()).plain().small()
+                                .ouiaId(Ids.ouia(id, Ids._ADD, Ids._BTN))
+                                .onClick((e, b) ->
+                                        addResourceModal(templateFn.apply(column.finder().path()), null, false)
+                                                .then(__ -> column.reload())))
+                        .addButton(button(redo()).plain().small()
+                                .ouiaId(Ids.ouia(id, Ids._REFRESH, Ids._BTN))
+                                .onClick((e, b) -> column.reload()))))
                 .defaultSearch()
                 .showSearchThreshold(5)
                 .addItems(childResources(templateFn, node -> {
@@ -477,7 +482,9 @@ public class BuildingBlocks {
                     item.text(node.asString()).addActions(finderItemActions()
                             .addButton(button(externalLinkAlt()).plain().small().onClick((e, b) ->
                                     uic().notifications().send(nyi())))
-                            .addButton(button(trash()).plain().small().onClick((e, b) -> {
+                            .addButton(button(trash()).plain().small()
+                                    .ouiaId(Ids.ouia(id, Ids._DELETE, Ids._BTN))
+                                    .onClick((e, b) -> {
                                 AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
                                 deleteResourceModal(template).then(n -> {
                                     if (n.isDefined()) { // undefined means canceled

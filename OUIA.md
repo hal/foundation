@@ -4,7 +4,7 @@
 
 [OUIA](https://www.patternfly.org/developer-resources/open-ui-automation) (Open UI Automation) is a specification that standardizes HTML attributes on UI components for automated testing. It provides reliable, stable locators that testing tools (Playwright, Selenium, Cypress) can use instead of fragile CSS selectors or XPaths.
 
-The halOP test suite **dave** (`/Users/hpehl/dev/hal/dave`) uses Playwright and should leverage OUIA attributes to locate and interact with UI elements.
+The halOP test suite **dave** (`/Users/hpehl/dev/hal/dave`) uses Playwright and leverages OUIA attributes to locate and interact with UI elements.
 
 ## OUIA Attributes
 
@@ -16,113 +16,131 @@ The halOP test suite **dave** (`/Users/hpehl/dev/hal/dave`) uses Playwright and 
 
 OUIA is **gated by localStorage**: attributes are only rendered when `localStorage.setItem("ouia", "true")` is set in the browser. Zero overhead in production.
 
-## Current State (as of 2026-05-19)
+## ID Naming Convention
 
-### What's Already Working
+- **Prefix**: `hal-op-`
+- **Pattern**: `hal-op-<context>-<action>[-<qualifier>]`
+- **Composition**: `Ids.ouia(String first, String... rest)` joins segments with `-` via Elemento's `Id.build()`
 
-- **PatternFly Java v0.7.5** (used by halOP) has full OUIA support, fixed in the latest release.
-- All 85+ PatternFly component types **automatically** set `data-ouia-component-type` and `data-ouia-safe="true"` in their constructors.
-- Every PatternFly Java component exposes a `.ouiaId(String)` fluent method to set a stable `data-ouia-component-id`.
+### Examples
 
-### What's Missing
+| ID | Component |
+|---|---|
+| `hal-op-endpoint-connect-btn` | Connect button in endpoint modal |
+| `hal-op-data-source-add-modal` | Add resource modal for data sources |
+| `hal-op-model-browser-refresh-btn` | Refresh button in model browser toolbar |
+| `hal-op-operation-read-resource-execute-btn` | Execute button for `read-resource` operation |
 
-**No `.ouiaId()` calls exist in the halOP codebase.** Without explicit component IDs, dave can find components by type (e.g., "all buttons") but cannot reliably target a *specific* button instance.
+### Suffix Constants
 
-## Component Inventory
+Defined in `Ids.java` for composition:
 
-Approximate count of PatternFly component instantiations in halOP:
-
-| Category | Count | Components |
-|---|---|---|
-| Interactive controls | ~132 | Buttons (82), selects (30), dropdowns (7), modals (7), menus (6) |
-| Contextual elements | ~57 | Labels (33), cards (12), navigation items (6), alerts (6) |
-| Supporting elements | ~43 | Tabs, drawers, radios, text inputs, toolbars |
-| **Total** | **~232** | Across ~150 Java files (`op/console`: 72, `ui`: 78) |
-
-## Implementation Plan
-
-### Phase 1 — Navigation & Page Structure (~15 components)
-
-Navigation items, page sections, masthead elements. Unblocks dave for basic app navigation tests.
-
-### Phase 2 — Interactive Controls (~130 components)
-
-Buttons, dropdowns, selects, modals. Enables testing CRUD operations and workflows.
-
-### Phase 3 — Content Elements (~90 components)
-
-Labels, cards, tables, alerts. Enables asserting on displayed data.
-
-### What a Change Looks Like
-
-Each change is a one-liner — adding `.ouiaId("stable-id")` to a component:
-
-```java
-// Before
-button("Save").primary().onClick(this::save)
-
-// After
-button("Save").primary().ouiaId("resource-save").onClick(this::save)
 ```
-
-### Where to Define IDs
-
-Static OUIA IDs should be defined as constants in `resources/src/main/java/org/jboss/hal/resources/Ids.java`. This interface is the centralized location for QA-reusable IDs (see its Javadoc).
-
-For dynamic IDs (containing resource names, server names, etc.), use `Ids` helper methods that generate deterministic composite IDs.
+_ADD, _BTN, _CANCEL, _CLOSE, _CONNECT, _DELETE, _EDIT,
+_EXECUTE, _MODAL, _OK, _REFRESH, _RESET, _SAVE, _SEARCH
+```
 
 ## Sharing IDs Between Java and TypeScript
 
-halOP defines OUIA IDs in Java (`Ids.java`). The test suite dave is a TypeScript/Playwright project. The IDs must stay in sync. Options:
+IDs are defined in Java (`Ids.java`) and shared with the dave test suite via the `@halconsole/ouia` NPM package.
 
-### Option A: Code Generation (Recommended)
+The generator script `op/ouia/generate.mjs` parses `Ids.java` and emits `op/ouia/src/ids.ts` containing:
+- The `buildId()` function (port of Elemento's `Id.build()`)
+- The `ouia()` composition function
+- All static ID constants
+- All dynamic ID builder functions
 
-Use a Maven plugin or build script to generate a TypeScript constants file from `Ids.java` at build time.
+The NPM package is published as part of the release workflow.
 
-- **Pros**: Single source of truth, compile-time safety, automated sync
-- **Cons**: Requires build tooling setup
+## Implementation Status
 
-### Option B: Shared JSON/YAML File
+### Phase 1 — Navigation & Page Structure (COMPLETE)
 
-Define IDs in a shared data file (e.g., `ouia-ids.json`), read by both Java and TypeScript.
+Added OUIA IDs to navigation, masthead, and page structure elements.
 
-- **Pros**: Language-neutral, simple to maintain
-- **Cons**: Java side needs to read from file or generate code from it; less idiomatic
+**Files modified:**
+- `Ids.java` — added navigation and page section constants
+- `NavigationProducer.java` — navigation items
+- `Skeleton.java`, `ErrorSkeleton.java` — masthead, sidebar, main content sections
+- `DashboardPage.java`, `DeploymentsPage.java`, `RuntimePage.java`, `ConfigurationPage.java`, `TasksPage.java`, `ModelBrowserPage.java` — page sections
+- `NotFound.java`, `NoData.java` — error page sections
 
-### Option C: Manual Sync with Naming Convention
+### Phase 2 — Buttons & Modals (COMPLETE)
 
-Maintain parallel constants in both codebases with a strict naming convention and CI validation.
+Added OUIA IDs to buttons and modals — the primary interactive controls needed for dave to test CRUD operations and workflows.
 
-- **Pros**: No build tooling needed, simple to start
-- **Cons**: Drift risk, manual effort, harder to scale
+**Approach:**
+- **Static IDs** for `op/console` components (fixed, known contexts)
+- **Context-based dynamic IDs** for reusable `ui` module components (context derived from `AddressTemplate.last().key`)
 
-### Option D: TypeScript Generation from Annotation Processing
+**op/console files modified:**
+- `EndpointModal.java` — modal, connect/save, cancel buttons
+- `EndpointForm.java` — ping button
+- `EndpointTable.java` — add link button
+- `EndpointSelector.java` — select another button
+- `BootstrapErrorElement.java` — select management interface button
+- `StabilityBanner.java` — got it / dismiss button
+- `NewExpressionModal.java` — modal, ok, cancel buttons
+- `NotificationElements.java` — mark all read, clear all, unclear last items
+- `LogCard.java` — show log file, choose log file buttons
+- `TasksPage.java` — per-task launch buttons (dynamic from `task.id()`)
 
-Use a Java annotation processor to scan `Ids.java` and emit a `.ts` file during compilation.
+**ui module files modified:**
+- `ResourceDialogs.java` — add/execute/delete modals and their buttons; context derived from template
+- `ResourceToolbar.java` — reset, refresh, edit, save, cancel buttons; `ouiaContext` parameter added
+- `ResourceManager.java` — passes template-derived context to toolbar
+- `ModelBrowserTree.java` — back, forward, home, refresh, find, collapse buttons
+- `FindResource.java` — modal, search, cancel buttons
+- `ResourceList.java` — add button with template-derived context
+- `OperationsTable.java` — execute button with operation name in context
+- `BuildingBlocks.java` — crudColumn add, refresh, delete buttons
 
-- **Pros**: Integrated into Maven build, type-safe
-- **Cons**: More complex setup, annotation processor maintenance
+**Supporting changes:**
+- `Ids.java` — added `ouia()` composition method, suffix constants, ~30 static ID constants
+- `generate.mjs` — fixed varargs handling for the `ouia()` method
+- `pom.xml` — bumped PatternFly Java to 0.7.8 (OUIA sub-component support)
+
+### Phase 3 — Remaining Controls (PLANNED)
+
+Deferred items for future implementation:
+
+- Per-row action buttons (edit/remove in tables) — need row context
+- Filter multi-selects (TypesMultiSelect, etc.)
+- Text inputs
+- Tabs
+- ResourcesSection / ExpressionsSection small buttons
+- DashboardCard per-card refresh buttons
+- NotificationListener per-notification action dropdowns
+- Labels, cards, alerts, and other content elements
+
+## Verification
+
+```bash
+# Build
+mvn compile -P op,quick-build -q
+
+# Full build with tests
+mvn verify -P op
+```
+
+Run in dev mode (`mvn j2cl:watch -P op` + `cd op/console && npm run watch`) and verify OUIA attributes appear in browser DevTools after `localStorage.setItem("ouia", "true")`.
 
 ## dave Test Selectors
 
 With OUIA enabled, Playwright tests in dave can locate elements like this:
 
 ```typescript
-// By component type only
-const buttons = page.locator('[data-ouia-component-type="PF6/Component/Button"]');
+import { ENDPOINT_CONNECT_BTN, ouia } from "@halconsole/ouia";
+
+// Using a static ID constant
+const connectBtn = page.locator(`[data-ouia-component-id="${ENDPOINT_CONNECT_BTN}"]`);
+
+// Using the ouia() composition function for dynamic IDs
+const addModal = page.locator(`[data-ouia-component-id="${ouia("data-source", "add", "modal")}"]`);
 
 // By component type + specific ID
-const saveButton = page.locator('[data-ouia-component-type="PF6/Component/Button"][data-ouia-component-id="resource-save"]');
-
-// By ID only (when unique)
-const nav = page.locator('[data-ouia-component-id="main-navigation"]');
+const saveButton = page.locator(
+  '[data-ouia-component-type="PF6/Component/Button"]' +
+  `[data-ouia-component-id="${ouia("data-source", "save", "btn")}"]`
+);
 ```
-
-For dave, consider creating a helper/page-object layer that wraps these selectors using shared ID constants.
-
-## Effort Summary
-
-- **Difficulty**: Low — each change is a one-liner
-- **Scale**: Medium — ~232 instances across ~150 files, mostly mechanical
-- **Risk**: Low — purely additive, no behavior change
-- **Estimated time**: 2-3 days for full coverage, a few hours for Phase 1

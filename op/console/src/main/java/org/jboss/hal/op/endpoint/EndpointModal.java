@@ -38,6 +38,8 @@ import static org.patternfly.component.modal.ModalBody.modalBody;
 import static org.patternfly.component.modal.ModalFooter.modalFooter;
 import static org.patternfly.component.modal.ModalHeader.modalHeader;
 import static org.patternfly.component.modal.ModalHeaderDescription.modalHeaderDescription;
+import org.jboss.hal.resources.Ids;
+
 import static org.patternfly.style.Size.md;
 
 public class EndpointModal {
@@ -67,13 +69,16 @@ public class EndpointModal {
 
         add = button("Add")
                 .secondary()
+                .ouiaId(Ids.ENDPOINT_ADD_BTN)
                 .onClick((event, component) -> newEndpoint());
         ok = button("Connect")
                 .primary()
+                .ouiaId(Ids.ENDPOINT_CONNECT_BTN)
                 .disabled()
                 .onClick((event, component) -> saveOrConnect());
         cancel = button("Cancel")
                 .link()
+                .ouiaId(Ids.ENDPOINT_CANCEL_BTN)
                 .onClick((event, component) -> cancel());
 
         form = new EndpointForm(storage);
@@ -87,6 +92,7 @@ public class EndpointModal {
 
         modal = modal()
                 .size(md)
+                .ouiaId(Ids.ENDPOINT_MODAL)
                 .hideClose()
                 .autoClose(false)
                 .closeOnEsc(closable)

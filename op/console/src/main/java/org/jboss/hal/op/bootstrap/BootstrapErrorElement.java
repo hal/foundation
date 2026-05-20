@@ -16,6 +16,7 @@
 package org.jboss.hal.op.bootstrap;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.resources.Ids;
 import org.patternfly.component.content.Content;
 
 import elemental2.dom.HTMLElement;
@@ -55,7 +56,8 @@ public class BootstrapErrorElement implements IsElement<HTMLElement> {
                         .add(details(error)))
                 .addFooter(emptyStateFooter()
                         .addActions(emptyStateActions()
-                                .add(button("Select management interface", selectUrl).primary())))
+                                .add(button("Select management interface", selectUrl).primary()
+                                        .ouiaId(Ids.BOOTSTRAP_SELECT_BTN))))
                 .element();
     }
 

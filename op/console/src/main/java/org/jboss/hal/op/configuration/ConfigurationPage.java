@@ -35,6 +35,7 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.h1;
 import static org.patternfly.component.content.ContentType.p;
+import static org.jboss.hal.resources.Ids.PAGE_CONFIGURATION;
 import static org.patternfly.extension.finder.Finder.finder;
 import static org.patternfly.extension.finder.FinderPreview.finderPreview;
 import static org.patternfly.layout.stack.Stack.stack;
@@ -79,7 +80,7 @@ public class ConfigurationPage implements Page {
         // of the component registry is still satisfied.
         // If necessary, an instance to the finder can be obtained with
         // Finder finder = componentRegistry().lookupComponent(ComponentType.Finder);
-        return singletonList(finder().registerComponent().css(util("h-100"))
+        return singletonList(finder().ouiaId(PAGE_CONFIGURATION).registerComponent().css(util("h-100"))
                 .addItem(columnRegistry.column(ConfigurationColumn.ID).get())
                 .addPreview(finderPreview().css(halComponent("finder", "preview"))
                         .add(stack().gutter()

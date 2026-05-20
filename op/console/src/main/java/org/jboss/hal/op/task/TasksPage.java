@@ -23,6 +23,7 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.LoadedData;
+import org.jboss.hal.resources.Ids;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
@@ -48,6 +49,8 @@ import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.icon.IconSize.xl;
 import static org.patternfly.component.page.Page.page;
 import static org.patternfly.component.page.PageBreadcrumb.pageBreadcrumb;
+import static org.jboss.hal.resources.Ids.PAGE_TASKS;
+import static org.jboss.hal.resources.Ids.PAGE_TASKS_HEADER;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.AlignItems.center;
@@ -77,7 +80,7 @@ public class TasksPage implements Page {
 
     private Iterable<HTMLElement> allTasks() {
         return asList(
-                pageSection().limitWidth()
+                pageSection().ouiaId(PAGE_TASKS_HEADER).limitWidth()
                         .add(content()
                                 .add(title(1, _3xl, "Tasks")))
                         .add(content(p)
@@ -85,7 +88,7 @@ public class TasksPage implements Page {
                                 .text("Tasks enable you to complete complex tasks quickly and easily. " +
                                         "They combine multiple steps that involve configuring different subsystems and resources."))
                         .element(),
-                pageSection().fill()
+                pageSection().ouiaId(PAGE_TASKS).fill()
                         .add(gallery().gutter().addItems(tasksSortedByTitle(), this::taskItem)).element());
     }
 
@@ -108,6 +111,7 @@ public class TasksPage implements Page {
                                 .add(task.summary()))
                         .addFooter(cardFooter()
                                 .add(button().css(util("mr-md")).secondary().text("Launch")
+                                        .ouiaId(Ids.ouia(task.id(), Ids._BTN))
                                         .disabled(!task.enabled())
                                         .onClick((e, c) -> startTask(task)))));
     }

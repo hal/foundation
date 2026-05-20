@@ -77,13 +77,14 @@ public class Skeleton implements IsElement<HTMLElement> {
 
     Skeleton(EndpointStorage endpointStorage, Navigation navigation) {
         MastheadLogo logo = mastheadLogo("/")
+                .ouiaId(Ids.MASTHEAD_LOGO)
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                         Resources.INSTANCE.logo().getText()).asString());
 
         NotificationElements notificationElements = notificationElements();
 
-        Toolbar toolbar = toolbar().css(modifier(fullHeight), modifier(static_))
+        Toolbar toolbar = toolbar().ouiaId(Ids.MASTHEAD_TOOLBAR).css(modifier(fullHeight), modifier(static_))
                 .addContent(toolbarContent()
                         .add(toolbarItem().css(modifier("overflow-container"))
                                 .add(navigation))
@@ -99,7 +100,7 @@ public class Skeleton implements IsElement<HTMLElement> {
 
         Page page = page()
                 .addSkipToContent(skipToContent(Ids.MAIN_ID))
-                .addMasthead(masthead()
+                .addMasthead(masthead().ouiaId(Ids.MASTHEAD)
                         .addMain(mastheadMain()
                                 .addBrand(mastheadBrand()
                                         .addLogo(logo)))

@@ -97,7 +97,10 @@ function parseIdsJava(source) {
       .filter((p) => p.length > 0)
       .map((p) => {
         const parts = p.split(/\s+/);
-        return { type: parts[0], name: parts[1] };
+        const type = parts[0];
+        const name = parts[1];
+        const varargs = type.endsWith("...");
+        return { type, name, varargs };
       });
 
     const buildCallRegex = /Id\.build\(([^)]+)\)/;
@@ -178,10 +181,33 @@ function emitTypeScript({ constants, methods }) {
     );
     lines.push("");
     for (const { name, params, buildArgs } of methods) {
+      const paramNames = new Set(params.map((p) => p.name));
+      const varargsParam = params.find((p) => p.varargs);
       const tsParams = params
-        .map((p) => `${p.name}: string`)
+        .map((p) =>
+          p.varargs
+            ? `...${p.name}: string[]`
+            : `${p.name}: string`,
+        )
         .join(", ");
-      const tsArgs = buildArgs.join(", ");
+      const tsArgs = buildArgs
+        .map((arg) => {
+          const trimmed = arg.replace(/^"|"$/g, "");
+          if (arg.startsWith('"')) return arg;
+          if (paramNames.has(arg)) {
+            return params.find((p) => p.name === arg)?.varargs
+              ? `...${arg}`
+              : arg;
+          }
+          if (varargsParam) {
+            const nonVarargsParams = params
+              .filter((p) => !p.varargs)
+              .map((p) => p.name);
+            return [...nonVarargsParams, `...${varargsParam.name}`].join(", ");
+          }
+          return arg;
+        })
+        .join(", ");
       lines.push(
         `export function ${name}(${tsParams}): string {`,
       );

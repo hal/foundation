@@ -20,6 +20,7 @@ import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.security.ElementGuard;
 import org.jboss.hal.meta.security.SecurityContext;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
@@ -67,13 +68,14 @@ class ResourceToolbar implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    static ResourceToolbar resourceToolbar(ResourceManager resourceManager, Filter<ResourceAttribute> filter,
-            ObservableValue<Integer> visible, ObservableValue<Integer> total) {
-        return new ResourceToolbar(resourceManager, filter, visible, total);
+    static ResourceToolbar resourceToolbar(String ouiaContext, ResourceManager resourceManager,
+            Filter<ResourceAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
+        return new ResourceToolbar(ouiaContext, resourceManager, filter, visible, total);
     }
 
     // ------------------------------------------------------ instance
 
+    private final String ouiaContext;
     private final String resetId;
     private final String refreshId;
     private final String editId;
@@ -85,8 +87,9 @@ class ResourceToolbar implements IsElement<HTMLElement> {
     private ToolbarItem resetItem;
     private ToolbarItem editItem;
 
-    private ResourceToolbar(ResourceManager resourceManager, Filter<ResourceAttribute> filter,
+    private ResourceToolbar(String ouiaContext, ResourceManager resourceManager, Filter<ResourceAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
+        this.ouiaContext = ouiaContext;
         this.resourceManager = resourceManager;
 
         this.resetId = Id.unique("reset");
@@ -153,14 +156,20 @@ class ResourceToolbar implements IsElement<HTMLElement> {
     // method on the tooltips is called and the overlay setup is done correctly.
     private ToolbarGroup viewActionGroup() {
         resetItem = toolbarItem()
-                .add(button().id(resetId).plain().icon(powerOff()).onClick((e, b) -> resourceManager.reset()))
+                .add(button().id(resetId).plain().icon(powerOff())
+                        .ouiaId(Ids.ouia(ouiaContext, Ids._RESET, Ids._BTN))
+                        .onClick((e, b) -> resourceManager.reset()))
                 .add(tooltip(By.id(resetId),
                         "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
         ToolbarItem refreshItem = toolbarItem()
-                .add(button().id(refreshId).plain().icon(redo()).onClick((e, b) -> resourceManager.refresh()))
+                .add(button().id(refreshId).plain().icon(redo())
+                        .ouiaId(Ids.ouia(ouiaContext, Ids._REFRESH, Ids._BTN))
+                        .onClick((e, b) -> resourceManager.refresh()))
                 .add(tooltip(By.id(refreshId), "Refresh"));
         editItem = toolbarItem()
-                .add(button().id(editId).plain().icon(edit()).onClick((e, b) -> resourceManager.load(EDIT)))
+                .add(button().id(editId).plain().icon(edit())
+                        .ouiaId(Ids.ouia(ouiaContext, Ids._EDIT, Ids._BTN))
+                        .onClick((e, b) -> resourceManager.load(EDIT)))
                 .add(tooltip(By.id(editId), "Edit resource"));
         viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
                 .addItem(refreshItem)
@@ -171,9 +180,13 @@ class ResourceToolbar implements IsElement<HTMLElement> {
 
     private ToolbarGroup editActionGroup() {
         ToolbarItem saveItem = toolbarItem()
-                .add(button("Save").primary().onClick((e, b) -> resourceManager.save()));
+                .add(button("Save").primary()
+                        .ouiaId(Ids.ouia(ouiaContext, Ids._SAVE, Ids._BTN))
+                        .onClick((e, b) -> resourceManager.save()));
         ToolbarItem cancelItem = toolbarItem()
-                .add(button("Cancel").secondary().onClick((e, b) -> resourceManager.cancel()));
+                .add(button("Cancel").secondary()
+                        .ouiaId(Ids.ouia(ouiaContext, Ids._CANCEL, Ids._BTN))
+                        .onClick((e, b) -> resourceManager.cancel()));
         editActionGroup = toolbarGroup(buttonGroup).css(modifier("align-right"))
                 .addItem(saveItem)
                 .addItem(cancelItem);

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.jboss.elemento.Callback;
+import org.jboss.hal.resources.Ids;
 import org.jboss.elemento.IsElement;
 import org.patternfly.component.table.Table;
 import org.patternfly.component.table.Tr;
@@ -60,6 +61,7 @@ class EndpointTable implements IsElement<HTMLElement> {
                                         .headingLevel(2)
                                         .addFooter(emptyStateFooter()
                                                 .add(button().link().text("Add management interface")
+                                                        .ouiaId(Ids.ENDPOINT_TABLE_ADD_BTN)
                                                         .onClick((event, component) -> create.call()))))));
         this.update = update;
         this.delete = delete;

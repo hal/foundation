@@ -16,6 +16,7 @@
 package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleSelect;
@@ -77,6 +78,7 @@ public class EndpointSelector implements IsElement<HTMLElement> {
                                 .add(button("Choose another management interface")
                                         .link()
                                         .inline()
+                                        .ouiaId(Ids.ENDPOINT_SELECT_BTN)
                                         .onClick((event, component) ->
                                                 endpointModal(storage, true).open().then(endpoint -> {
                                                     connect(endpoint);
