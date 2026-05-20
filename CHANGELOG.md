@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-05-20
+
 ### Added
 
 - Add `OuiaSupport` interface to 10 custom HAL components (Skeleton, ErrorSkeleton, StabilityBanner, EndpointTable, EndpointForm, EndpointSelector, ModelBrowserTree, ModelBrowserDetail, ResourceToolbar, ResourceList) adding `data-ouia-component-type` attributes with `HalOP/<Name>` naming convention
@@ -292,7 +294,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/hal/foundation/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/hal/foundation/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/hal/foundation/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/hal/foundation/compare/v0.2.7...v0.3.0
