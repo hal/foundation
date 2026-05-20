@@ -169,7 +169,8 @@ function emitTypeScript({ constants, methods }) {
       "// ------------------------------------------------------ static IDs",
     );
     lines.push("");
-    for (const { name, value } of constants) {
+    const sorted = [...constants].sort((a, b) => a.name.localeCompare(b.name));
+    for (const { name, value } of sorted) {
       lines.push(`export const ${name} = "${value}";`);
     }
   }

@@ -14,4 +14,4 @@
 ///  limitations under the License.
 ///
 
-export { buildId, COOKIE, hostServer, MAIN_ID, STANDALONE_HOST, STANDALONE_SERVER } from "./ids.js";
+export * from "./ids.js";

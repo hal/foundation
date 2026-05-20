@@ -31,6 +31,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Fix `@halconsole/ouia` package exports: re-export all OUIA ID constants and `ouia()` function from package root
 - Remove unused imports across multiple modules
 - Fix resource toolbar and update documentation links
 - Fix tooltip cleanup when switching between expression and native mode in form items
