@@ -7,8 +7,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.3.0] - 2026-05-20
-
 ### Added
 
 - Add `OuiaSupport` interface to 10 custom HAL components (Skeleton, ErrorSkeleton, StabilityBanner, EndpointTable, EndpointForm, EndpointSelector, ModelBrowserTree, ModelBrowserDetail, ResourceToolbar, ResourceList) adding `data-ouia-component-type` attributes with `HalOP/<Name>` naming convention
@@ -38,6 +36,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix resource toolbar and update documentation links
 - Fix tooltip cleanup when switching between expression and native mode in form items
 - Fix capability reference value selection for async typeahead items
+- Fix license header excludes for generated OUIA files (`dist/`, `ids.ts`, `*.mjs`) that caused the 0.3.0 release to fail
 
 ### Upgrades
 
@@ -47,6 +46,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Bump JBoss Parent to 53
 - Bump J2CL Maven Plugin to 0.23.7
 - Bump Wildfly Galleon Maven Plugin to 8.1.3.Final
+
+## [0.3.0] - 2026-05-20
+
+> [!WARNING]
+> Not an official release. Please don't use!
 
 ## [0.2.7] - 2026-03-25
 

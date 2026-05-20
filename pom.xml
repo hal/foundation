@@ -213,12 +213,14 @@
                                 <header>build-config/src/main/resources/etc/license.txt</header>
                                 <excludes>
                                     <exclude>**/*.ftl</exclude>
+                                    <exclude>**/*.mjs</exclude>
                                     <exclude>**/*.mp4</exclude>
                                     <exclude>**/*.pem</exclude>
                                     <exclude>**/*.png</exclude>
                                     <exclude>**/*license*.txt</exclude>
                                     <exclude>**/.dockerignore</exclude>
                                     <exclude>**/.parcel-cache/**</exclude>
+                                    <exclude>**/dist/**</exclude>
                                     <exclude>**/Dockerfile*</exclude>
                                     <exclude>**/banner.txt</exclude>
                                     <exclude>**/cert.pem</exclude>
@@ -227,6 +229,7 @@
                                     <exclude>**/node/**</exclude>
                                     <exclude>**/node_modules/**</exclude>
                                     <exclude>**/pnpm-lock.yaml</exclude>
+                                    <exclude>**/ouia/src/ids.ts</exclude>
                                     <exclude>**/src/demo/java/**</exclude>
                                     <exclude>**/src/main/resources/META-INF/externs/**</exclude>
                                     <exclude>**/src/main/resources/META-INF/resources/**</exclude>

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2025 Red Hat
+ *  Copyright 2024 Red Hat
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 /**
  * Metadata layer for the HAL management console providing address templates, metadata caching, statement context
  * resolution, and security information for WildFly management resources.
