@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.6] - 2026-05-20
+
 ### Fixed
 
 - Fix release workflow
@@ -313,7 +315,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.3.5...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.3.6...HEAD
+[0.3.6]: https://github.com/hal/foundation/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/hal/foundation/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/hal/foundation/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/hal/foundation/compare/v0.3.2...v0.3.3
