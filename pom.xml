@@ -230,6 +230,7 @@
                                     <exclude>**/node_modules/**</exclude>
                                     <exclude>**/pnpm-lock.yaml</exclude>
                                     <exclude>**/ouia/src/ids.ts</exclude>
+                                    <exclude>src/ids.ts</exclude>
                                     <exclude>**/src/demo/java/**</exclude>
                                     <exclude>**/src/main/resources/META-INF/externs/**</exclude>
                                     <exclude>**/src/main/resources/META-INF/resources/**</exclude>
