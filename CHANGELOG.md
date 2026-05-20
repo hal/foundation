@@ -7,6 +7,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add `bump-pfj.sh` script to update PatternFly Java version across Maven, pnpm catalog, and lockfile in one step
+
+### Fixed
+
+- Fix pnpm lockfile mismatch causing test-suite CI failure after PatternFly Java 0.8.3 bump
+
 ## [0.3.7] - 2026-05-20
 
 ### Upgrades
