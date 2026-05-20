@@ -9,6 +9,10 @@ on:
     types: [ completed ]
     branches: [ main ]
 
+concurrency:
+  group: test-suite-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-push:
     name: Build and Push Container
@@ -23,6 +27,8 @@ jobs:
           java-version: 25
           distribution: temurin
           cache: maven
+      - run: $MVN install
+        working-directory: bom
       - run: $MVN package -P op,test-suite -DskipTests
       - run: |
           sudo apt-get update

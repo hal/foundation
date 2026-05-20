@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix intermittent test-suite CI failure caused by missing BOM install step
+- Fix duplicate test-suite workflow runs by adding concurrency group
+
 ## [0.3.8] - 2026-05-20
 
 ### Added
