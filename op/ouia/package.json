@@ -1,6 +1,6 @@
 {
   "name": "@halconsole/ouia",
-  "version": "0.3.2",
+  "version": "0.3.3-SNAPSHOT",
   "description": "OUIA IDs and utilities for halOP test automation",
   "license": "Apache-2.0",
   "type": "module",
