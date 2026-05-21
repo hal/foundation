@@ -44,7 +44,6 @@
 
     <modules>
         <module>console</module>
-        <module>ouia</module>
     </modules>
 
     <dependencyManagement>

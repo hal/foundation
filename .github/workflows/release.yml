@@ -66,25 +66,6 @@ jobs:
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-  publish-npm:
-    needs: deploy
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
-        with:
-          java-version: 25
-          distribution: temurin
-          cache: maven
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 25
-      - run: ./mvnw --show-version --batch-mode --no-transfer-progress package -P op
-      - run: npm publish --access public --provenance
-        working-directory: op/ouia
 
   release:
     needs: deploy

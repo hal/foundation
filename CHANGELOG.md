@@ -7,6 +7,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- Remove `@halconsole/ouia` NPM package (`op/ouia` module) — OUIA IDs are now synced directly by dave's `sync:ouia` command
+- Remove NPM publish job from release workflow
+- Remove `OUIA.md` documentation (superseded by dave's own OUIA docs)
+
 ### Fixed
 
 - Fix intermittent test-suite CI failure caused by missing BOM install step
