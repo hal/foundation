@@ -33,6 +33,7 @@ import org.jboss.hal.model.RuntimeConfigurationState;
 import org.jboss.hal.model.SuspendState;
 import org.jboss.hal.model.host.Host;
 import org.jboss.hal.model.server.Server;
+import org.jboss.hal.resources.Ids;
 import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;
@@ -87,7 +88,7 @@ class StatusCard implements Attachable, AutoRefresh, DashboardCard {
         this.statementContext = statementContext;
         this.dispatcher = dispatcher;
         this.metadataRepository = metadataRepository;
-        this.card = card().addBody(cardBody = cardBody());
+        this.card = card().ouiaId(Ids.DASHBOARD_STATUS_CARD).addBody(cardBody = cardBody());
     }
 
     @Override

@@ -59,6 +59,11 @@ public class NameSearchInput<T> implements IsElement<HTMLElement> {
         });
     }
 
+    public NameSearchInput<T> ouiaId(String id) {
+        searchInput.ouiaId(id);
+        return this;
+    }
+
     @Override
     public HTMLElement element() {
         return searchInput.element();

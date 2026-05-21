@@ -22,6 +22,7 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.model.deployment.Deployment;
 import org.jboss.hal.model.deployment.DeploymentStatus;
 import org.jboss.hal.model.deployment.Deployments;
+import org.jboss.hal.resources.Ids;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.card.CardTitle;
 import org.patternfly.component.title.Title;
@@ -69,7 +70,7 @@ class DeploymentCard implements DashboardCard {
     DeploymentCard(Environment environment, Deployments deployments) {
         this.environment = environment;
         this.deployments = deployments;
-        this.root = card().css(util("h-100"))
+        this.root = card().ouiaId(Ids.DASHBOARD_DEPLOYMENT_CARD).css(util("h-100"))
                 .addHeader(cardHeader()
                         .addTitle(cardTitle = cardTitle())
                         .addActions(refreshActions()))

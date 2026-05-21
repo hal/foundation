@@ -115,7 +115,7 @@ class LogCard implements DashboardCard {
         this.dispatcher = dispatcher;
         this.notifications = notifications;
         this.title = title(2, xl, "");
-        this.root = card().fullHeight()
+        this.root = card().ouiaId(Ids.DASHBOARD_LOG_CARD).fullHeight()
                 .addHeader(cardHeader()
                         .addTitle(cardTitle()
                                 .run(ct -> ct.textDelegate().appendChild(title.element())))

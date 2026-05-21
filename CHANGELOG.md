@@ -7,6 +7,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add OUIA IDs to model browser components (tree, tabs, breadcrumb, heading, filters, global ops switch)
+- Add OUIA IDs to dashboard cards (Overview, Deployment, Documentation, Health, Log, Status)
+- Add dynamic OUIA IDs to task cards
+- Add `ouiaId()` method to `NameSearchInput` for per-caller OUIA IDs
+
 ### Removed
 
 - Remove `@halconsole/ouia` NPM package (`op/ouia` module) — OUIA IDs are now synced directly by dave's `sync:ouia` command

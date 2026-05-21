@@ -85,6 +85,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
         this.history = new History<>();
 
         treeView = treeView(selectableItems).guides()
+                .ouiaId(Ids.MODEL_BROWSER_TREE)
                 .onSelect((event, treeViewItem, selected) -> navigate(treeViewItem, true));
         backButton = button().plain().icon(arrowLeft()).disabled()
                 .ouiaId(Ids.MODEL_BROWSER_BACK_BTN)

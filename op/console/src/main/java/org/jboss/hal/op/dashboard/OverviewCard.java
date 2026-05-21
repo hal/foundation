@@ -29,6 +29,7 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.jboss.hal.resources.Ids;
 import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;
@@ -95,7 +96,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
         this.statementContext = statementContext;
         this.dispatcher = dispatcher;
         this.metadataRepository = metadataRepository;
-        this.card = card()
+        this.card = card().ouiaId(Ids.DASHBOARD_OVERVIEW_CARD)
                 .addTitle(cardTitle()
                         .run(ct -> ct.textDelegate().appendChild(title(2, Size.xl, "Overview").element())))
                 .addBody(cardBody = cardBody());

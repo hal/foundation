@@ -57,6 +57,16 @@ public interface Ids {
     String PAGE_TASKS = "hal-op-page-tasks";
     String PAGE_TASKS_HEADER = "hal-op-page-tasks-header";
 
+    // ------------------------------------------------------ OUIA IDs - dashboard (a-z)
+
+    String DASHBOARD_DEPLOYMENT_CARD = "hal-op-dashboard-deployment-card";
+    String DASHBOARD_DOCUMENTATION_CARD = "hal-op-dashboard-documentation-card";
+    String DASHBOARD_HEALTH_CARD = "hal-op-dashboard-health-card";
+    String DASHBOARD_LOG_CARD = "hal-op-dashboard-log-card";
+    String DASHBOARD_OVERVIEW_CARD = "hal-op-dashboard-overview-card";
+    String DASHBOARD_RUNTIME_CARD = "hal-op-dashboard-runtime-card";
+    String DASHBOARD_STATUS_CARD = "hal-op-dashboard-status-card";
+
     // ------------------------------------------------------ OUIA IDs - bootstrap (a-z)
 
     String BOOTSTRAP_SELECT_BTN = "hal-op-bootstrap-select-btn";
@@ -90,12 +100,23 @@ public interface Ids {
 
     // ------------------------------------------------------ OUIA IDs - model browser (a-z)
 
+    String MODEL_BROWSER_ATTRIBUTES_FILTER = "hal-op-model-browser-attributes-filter";
     String MODEL_BROWSER_BACK_BTN = "hal-op-model-browser-back-btn";
+    String MODEL_BROWSER_BREADCRUMB = "hal-op-model-browser-breadcrumb";
     String MODEL_BROWSER_COLLAPSE_BTN = "hal-op-model-browser-collapse-btn";
     String MODEL_BROWSER_FIND_BTN = "hal-op-model-browser-find-btn";
     String MODEL_BROWSER_FORWARD_BTN = "hal-op-model-browser-forward-btn";
+    String MODEL_BROWSER_GLOBAL_OPS_SWITCH = "hal-op-model-browser-global-ops-switch";
     String MODEL_BROWSER_HOME_BTN = "hal-op-model-browser-home-btn";
+    String MODEL_BROWSER_OPERATIONS_FILTER = "hal-op-model-browser-operations-filter";
     String MODEL_BROWSER_REFRESH_BTN = "hal-op-model-browser-refresh-btn";
+    String MODEL_BROWSER_RESOURCE_HEADING = "hal-op-model-browser-resource-heading";
+    String MODEL_BROWSER_TAB_ATTRIBUTES = "hal-op-model-browser-tab-attributes";
+    String MODEL_BROWSER_TAB_CAPABILITIES = "hal-op-model-browser-tab-capabilities";
+    String MODEL_BROWSER_TAB_DATA = "hal-op-model-browser-tab-data";
+    String MODEL_BROWSER_TAB_OPERATIONS = "hal-op-model-browser-tab-operations";
+    String MODEL_BROWSER_TABS = "hal-op-model-browser-tabs";
+    String MODEL_BROWSER_TREE = "hal-op-model-browser-tree";
 
     // ------------------------------------------------------ OUIA IDs - notification (a-z)
 

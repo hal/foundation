@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.env.Environment;
+import org.jboss.hal.resources.Ids;
 import org.patternfly.layout.flex.AlignItems;
 import org.patternfly.layout.flex.AlignSelf;
 
@@ -76,7 +77,7 @@ class DocumentationCard implements DashboardCard {
     private final HTMLElement root;
 
     DocumentationCard(Environment environment) {
-        this.root = card().fullHeight().add(flex().css(util("h-100"))
+        this.root = card().ouiaId(Ids.DASHBOARD_DOCUMENTATION_CARD).fullHeight().add(flex().css(util("h-100"))
                         .alignItems(AlignItems.stretch)
                         .alignSelf(AlignSelf.stretch)
                         .addItem(flexItem().flex(_1)

@@ -102,7 +102,7 @@ public class TasksPage implements Page {
 
     private GalleryItem taskItem(Task task) {
         return galleryItem()
-                .add(card().fullHeight()
+                .add(card().ouiaId(Ids.ouia(task.id(), "card")).fullHeight()
                         .addHeader(cardHeader()
                                 .add(flex().direction(row).alignItems(center)
                                         .addItem(flexItem().add(icon(task.icon()).size(xl)))
