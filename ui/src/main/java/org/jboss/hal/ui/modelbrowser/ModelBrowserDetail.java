@@ -20,7 +20,6 @@ import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
-import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.Segment;
@@ -33,6 +32,7 @@ import org.patternfly.component.page.PageBreadcrumb;
 import org.patternfly.component.page.PageSection;
 import org.patternfly.component.title.Title;
 import org.patternfly.component.tooltip.Tooltip;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.layout.flex.FlexItem;
 
 import elemental2.dom.HTMLElement;

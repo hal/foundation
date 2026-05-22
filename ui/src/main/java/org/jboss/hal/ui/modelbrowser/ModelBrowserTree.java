@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.flow.FlowContext;
-import org.patternfly.core.OuiaSupport;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
@@ -32,6 +31,7 @@ import org.patternfly.component.button.Button;
 import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.component.tree.TreeView;
 import org.patternfly.component.tree.TreeViewItem;
+import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
 
