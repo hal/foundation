@@ -156,6 +156,7 @@
                     <configuration>
                         <excludes>
                             <exclude>**/.parcel-cache/**</exclude>
+                            <exclude>**/.pnpm-store/**</exclude>
                             <exclude>**/*.png</exclude>
                             <exclude>**/*.mp4</exclude>
                             <exclude>**/node/**</exclude>
