@@ -34,7 +34,7 @@
     <description>WildFly subsystem extension for HAL console on premise</description>
 
     <properties>
-        <version.org.wildfly>39.0.1.Final</version.org.wildfly>
+        <version.org.wildfly>40.0.0.Final</version.org.wildfly>
         <version.org.wildfly.core>31.0.3.Final</version.org.wildfly.core>
     </properties>
 
