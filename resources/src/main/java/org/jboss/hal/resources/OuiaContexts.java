@@ -26,6 +26,6 @@ package org.jboss.hal.resources;
  */
 public interface OuiaContexts {
 
-    String ROOT = "root";
     String OPERATION = "operation";
+    String ROOT = "root";
 }
