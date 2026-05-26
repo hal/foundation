@@ -70,6 +70,7 @@ public interface OuiaIds {
     String FIND_RESOURCE_MODAL = "hal-op-find-resource-modal";
     String FIND_RESOURCE_SEARCH_BTN = "hal-op-find-resource-search-btn";
     String LOG_CHOOSE_BTN = "hal-op-log-choose-btn";
+    String MAIN = "hal-op-main";
     String LOG_SHOW_BTN = "hal-op-log-show-btn";
     String MASTHEAD = "hal-op-masthead";
     String MASTHEAD_LOGO = "hal-op-masthead-logo";

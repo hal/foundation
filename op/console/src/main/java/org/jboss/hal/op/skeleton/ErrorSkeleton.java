@@ -64,7 +64,7 @@ public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLEl
                                                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                                                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                                                         Resources.INSTANCE.logo().getText()).asString())))))
-                .addMain(pageMain = pageMain(Ids.MAIN_ID));
+                .addMain(pageMain = pageMain(Ids.MAIN_ID).ouiaId(OuiaIds.MAIN));
         initOuia();
     }
 

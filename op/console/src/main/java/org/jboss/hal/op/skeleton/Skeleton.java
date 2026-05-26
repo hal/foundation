@@ -109,7 +109,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                         .addContent(mastheadContent()
                                 .addToolbar(toolbar)))
                 .addNotificationDrawer(notificationElements.drawer())
-                .addMain(pageMain(Ids.MAIN_ID).fill());
+                .addMain(pageMain(Ids.MAIN_ID).ouiaId(OuiaIds.MAIN).fill());
         page.wire(notificationElements.badge(), notificationElements.drawer());
 
         if (uic().environment().highlightStability()) {
