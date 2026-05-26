@@ -25,8 +25,8 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.description.ResourceDescription;
 import org.jboss.hal.model.filter.GlobalOperationsAttribute;
-import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.Keys;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.list.List;
 import org.patternfly.component.table.Tbody;
@@ -140,7 +140,7 @@ class OperationsTable implements IsElement<HTMLElement> {
                                                                 operation.name())) {
                                                             td.add(span().css(component(table, text))
                                                                     .add(button("Execute").tertiary()
-                                                                            .ouiaId(Ids.ouia("operation", operation.name(), Ids._EXECUTE, Ids._BTN))
+                                                                            .ouiaId(OuiaIds.ouia("operation", operation.name(), "execute", "btn"))
                                                                             .onClick((e, c) -> execute(operation))));
                                                         }
                                                     }));

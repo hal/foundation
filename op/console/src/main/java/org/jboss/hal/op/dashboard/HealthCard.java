@@ -23,7 +23,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.Severity;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.icon.Icon;
@@ -64,7 +64,7 @@ class HealthCard implements DashboardCard {
 
     HealthCard(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
-        this.root = card().ouiaId(Ids.DASHBOARD_HEALTH_CARD)
+        this.root = card().ouiaId(OuiaIds.DASHBOARD_HEALTH_CARD)
                 .addHeader(cardHeader()
                         .addTitle(cardTitle()
                                 .run(ct -> ct.textDelegate().appendChild(title(2, xl, "Health").element())))

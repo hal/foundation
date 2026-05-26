@@ -27,7 +27,7 @@ import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
 import org.jboss.hal.ui.filter.NameSearchInput;
 import org.jboss.hal.ui.resource.ResourceManager.State;
@@ -69,14 +69,13 @@ class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
 
     // ------------------------------------------------------ factory
 
-    static ResourceToolbar resourceToolbar(String ouiaContext, ResourceManager resourceManager,
+    static ResourceToolbar resourceToolbar(ResourceManager resourceManager,
             Filter<ResourceAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
-        return new ResourceToolbar(ouiaContext, resourceManager, filter, visible, total);
+        return new ResourceToolbar(resourceManager, filter, visible, total);
     }
 
     // ------------------------------------------------------ instance
 
-    private final String ouiaContext;
     private final String resetId;
     private final String refreshId;
     private final String editId;
@@ -88,9 +87,8 @@ class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     private ToolbarItem resetItem;
     private ToolbarItem editItem;
 
-    private ResourceToolbar(String ouiaContext, ResourceManager resourceManager, Filter<ResourceAttribute> filter,
+    private ResourceToolbar(ResourceManager resourceManager, Filter<ResourceAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
-        this.ouiaContext = ouiaContext;
         this.resourceManager = resourceManager;
 
         this.resetId = Id.unique("reset");
@@ -169,18 +167,18 @@ class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     private ToolbarGroup viewActionGroup() {
         resetItem = toolbarItem()
                 .add(button().id(resetId).plain().icon(powerOff())
-                        .ouiaId(Ids.ouia(ouiaContext, Ids._RESET, Ids._BTN))
+                        .ouiaId(OuiaIds.RESET_BTN)
                         .onClick((e, b) -> resourceManager.reset()))
                 .add(tooltip(By.id(resetId),
                         "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
         ToolbarItem refreshItem = toolbarItem()
                 .add(button().id(refreshId).plain().icon(redo())
-                        .ouiaId(Ids.ouia(ouiaContext, Ids._REFRESH, Ids._BTN))
+                        .ouiaId(OuiaIds.REFRESH_BTN)
                         .onClick((e, b) -> resourceManager.refresh()))
                 .add(tooltip(By.id(refreshId), "Refresh"));
         editItem = toolbarItem()
                 .add(button().id(editId).plain().icon(edit())
-                        .ouiaId(Ids.ouia(ouiaContext, Ids._EDIT, Ids._BTN))
+                        .ouiaId(OuiaIds.EDIT_BTN)
                         .onClick((e, b) -> resourceManager.load(EDIT)))
                 .add(tooltip(By.id(editId), "Edit resource"));
         viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
@@ -193,11 +191,11 @@ class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     private ToolbarGroup editActionGroup() {
         ToolbarItem saveItem = toolbarItem()
                 .add(button("Save").primary()
-                        .ouiaId(Ids.ouia(ouiaContext, Ids._SAVE, Ids._BTN))
+                        .ouiaId(OuiaIds.SAVE_BTN)
                         .onClick((e, b) -> resourceManager.save()));
         ToolbarItem cancelItem = toolbarItem()
                 .add(button("Cancel").secondary()
-                        .ouiaId(Ids.ouia(ouiaContext, Ids._CANCEL, Ids._BTN))
+                        .ouiaId(OuiaIds.CANCEL_BTN)
                         .onClick((e, b) -> resourceManager.cancel()));
         editActionGroup = toolbarGroup(buttonGroup).css(modifier("align-right"))
                 .addItem(saveItem)

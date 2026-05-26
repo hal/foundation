@@ -23,11 +23,11 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.LoadedData;
-import org.jboss.hal.resources.Ids;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.task.Task;
 import org.patternfly.layout.gallery.GalleryItem;
 
@@ -35,6 +35,8 @@ import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
+import static org.jboss.hal.resources.OuiaIds.PAGE_TASKS;
+import static org.jboss.hal.resources.OuiaIds.PAGE_TASKS_HEADER;
 import static org.patternfly.component.breadcrumb.Breadcrumb.breadcrumb;
 import static org.patternfly.component.breadcrumb.BreadcrumbItem.breadcrumbItem;
 import static org.patternfly.component.button.Button.button;
@@ -49,8 +51,6 @@ import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.icon.IconSize.xl;
 import static org.patternfly.component.page.Page.page;
 import static org.patternfly.component.page.PageBreadcrumb.pageBreadcrumb;
-import static org.jboss.hal.resources.Ids.PAGE_TASKS;
-import static org.jboss.hal.resources.Ids.PAGE_TASKS_HEADER;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.AlignItems.center;
@@ -102,7 +102,7 @@ public class TasksPage implements Page {
 
     private GalleryItem taskItem(Task task) {
         return galleryItem()
-                .add(card().ouiaId(Ids.ouia(task.id(), "card")).fullHeight()
+                .add(card().ouiaId(OuiaIds.ouia(task.id(), "card")).fullHeight()
                         .addHeader(cardHeader()
                                 .add(flex().direction(row).alignItems(center)
                                         .addItem(flexItem().add(icon(task.icon()).size(xl)))
@@ -111,7 +111,7 @@ public class TasksPage implements Page {
                                 .add(task.summary()))
                         .addFooter(cardFooter()
                                 .add(button().css(util("mr-md")).secondary().text("Launch")
-                                        .ouiaId(Ids.ouia(task.id(), Ids._BTN))
+                                        .ouiaId(OuiaIds.ouia(task.id(), "btn"))
                                         .disabled(!task.enabled())
                                         .onClick((e, c) -> startTask(task)))));
     }

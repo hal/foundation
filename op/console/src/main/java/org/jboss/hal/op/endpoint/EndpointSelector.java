@@ -16,11 +16,11 @@
 package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.resources.Ids;
-import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.resources.Keys;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleSelect;
+import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.URL;
@@ -79,7 +79,7 @@ public class EndpointSelector implements IsElement<HTMLElement>, OuiaSupport<HTM
                                 .add(button("Choose another management interface")
                                         .link()
                                         .inline()
-                                        .ouiaId(Ids.ENDPOINT_SELECT_BTN)
+                                        .ouiaId(OuiaIds.ENDPOINT_SELECT_BTN)
                                         .onClick((event, component) ->
                                                 endpointModal(storage, true).open().then(endpoint -> {
                                                     connect(endpoint);

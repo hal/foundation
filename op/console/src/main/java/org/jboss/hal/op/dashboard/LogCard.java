@@ -21,10 +21,10 @@ import java.util.function.Supplier;
 
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.Operation;
-import org.jboss.hal.resources.Ids;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.title.Title;
 import org.patternfly.icon.PredefinedIcon;
@@ -115,7 +115,7 @@ class LogCard implements DashboardCard {
         this.dispatcher = dispatcher;
         this.notifications = notifications;
         this.title = title(2, xl, "");
-        this.root = card().ouiaId(Ids.DASHBOARD_LOG_CARD).fullHeight()
+        this.root = card().ouiaId(OuiaIds.DASHBOARD_LOG_CARD).fullHeight()
                 .addHeader(cardHeader()
                         .addTitle(cardTitle()
                                 .run(ct -> ct.textDelegate().appendChild(title.element())))
@@ -124,7 +124,7 @@ class LogCard implements DashboardCard {
                 .add(divider(hr))
                 .addFooter(cardFooter()
                         .add(button("Show log file").link().inline()
-                                .ouiaId(Ids.LOG_SHOW_BTN)
+                                .ouiaId(OuiaIds.LOG_SHOW_BTN)
                                 .onClick((e, c) -> notifications.send(nyi()))))
                 .element();
 
@@ -200,7 +200,7 @@ class LogCard implements DashboardCard {
                                 .addActions(emptyStateActions()
                                         .add(button("Choose log file")
                                                 .link()
-                                                .ouiaId(Ids.LOG_CHOOSE_BTN)
+                                                .ouiaId(OuiaIds.LOG_CHOOSE_BTN)
                                                 .onClick((event, component) -> chooseLogFile()))))));
     }
 

@@ -24,8 +24,8 @@ import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.elemento.Elements.p;
+import static org.jboss.hal.resources.OuiaIds.PAGE_NO_DATA;
 import static org.patternfly.component.content.Content.content;
-import static org.jboss.hal.resources.Ids.PAGE_NO_DATA;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;

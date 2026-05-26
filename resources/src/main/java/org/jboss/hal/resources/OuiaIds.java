@@ -18,17 +18,32 @@ package org.jboss.hal.resources;
 import org.jboss.elemento.Id;
 
 /**
- * Static OUIA IDs used for QA element identification. These IDs follow the {@code hal-op-<component>} naming convention and are
- * synchronized with the dave test suite.
- * <p>
- * Use {@link #ouia(String, String...)} to compose dynamic OUIA IDs from {@link OuiaContexts} and {@link OuiaSuffixes}.
+ * OUIA IDs used for QA element identification. All IDs follow the {@code hal-op-<segment>-<segment>-...} naming convention and
+ * are synchronized with the dave test suite.
  *
- * @see OuiaContexts
- * @see OuiaSuffixes
+ * <p>
+ * There are two kinds of OUIA IDs:
+ *
+ * <ol>
+ * <li><strong>Static IDs</strong> — string constants defined in this interface (e.g. {@link #MASTHEAD}, {@link #ADD_BTN}).
+ * Use these for singleton components where only one instance is visible at a time.</li>
+ * <li><strong>Dynamic IDs</strong> — composed at runtime via {@link #ouia(String, String...)} (e.g.
+ * {@code ouia("operation", op.name(), "execute", "btn")}). Use these for multi-instance components where several instances
+ * coexist on the same page and need distinguishing IDs.</li>
+ * </ol>
+ *
+ * <p>
+ * <strong>Known limitation:</strong> When creating dependent resources on the fly (via capability references), multiple add
+ * modals can stack on top of each other — all sharing the same static {@link #ADD_MODAL}, {@link #ADD_BTN}, and
+ * {@link #CANCEL_BTN} IDs. Tests should target the topmost (last-in-DOM) modal to interact with the active one.
  */
 public interface OuiaIds {
 
+    String ADD_BTN = "hal-op-add-btn";
+    String ADD_MODAL = "hal-op-add-modal";
     String BOOTSTRAP_SELECT_BTN = "hal-op-bootstrap-select-btn";
+    String CANCEL_BTN = "hal-op-cancel-btn";
+    String CLOSE_BTN = "hal-op-close-btn";
     String DASHBOARD_DEPLOYMENT_CARD = "hal-op-dashboard-deployment-card";
     String DASHBOARD_DOCUMENTATION_CARD = "hal-op-dashboard-documentation-card";
     String DASHBOARD_HEALTH_CARD = "hal-op-dashboard-health-card";
@@ -36,6 +51,9 @@ public interface OuiaIds {
     String DASHBOARD_OVERVIEW_CARD = "hal-op-dashboard-overview-card";
     String DASHBOARD_RUNTIME_CARD = "hal-op-dashboard-runtime-card";
     String DASHBOARD_STATUS_CARD = "hal-op-dashboard-status-card";
+    String DELETE_BTN = "hal-op-delete-btn";
+    String DELETE_MODAL = "hal-op-delete-modal";
+    String EDIT_BTN = "hal-op-edit-btn";
     String ENDPOINT_ADD_BTN = "hal-op-endpoint-add-btn";
     String ENDPOINT_CANCEL_BTN = "hal-op-endpoint-cancel-btn";
     String ENDPOINT_CONNECT_BTN = "hal-op-endpoint-connect-btn";
@@ -43,6 +61,8 @@ public interface OuiaIds {
     String ENDPOINT_PING_BTN = "hal-op-endpoint-ping-btn";
     String ENDPOINT_SELECT_BTN = "hal-op-endpoint-select-btn";
     String ENDPOINT_TABLE_ADD_BTN = "hal-op-endpoint-table-add-btn";
+    String EXECUTE_BTN = "hal-op-execute-btn";
+    String EXECUTE_MODAL = "hal-op-execute-modal";
     String EXPRESSION_CANCEL_BTN = "hal-op-expression-cancel-btn";
     String EXPRESSION_MODAL = "hal-op-expression-modal";
     String EXPRESSION_OK_BTN = "hal-op-expression-ok-btn";
@@ -92,13 +112,16 @@ public interface OuiaIds {
     String PAGE_RUNTIME = "hal-op-page-runtime";
     String PAGE_TASKS = "hal-op-page-tasks";
     String PAGE_TASKS_HEADER = "hal-op-page-tasks-header";
+    String REFRESH_BTN = "hal-op-refresh-btn";
+    String RESET_BTN = "hal-op-reset-btn";
+    String SAVE_BTN = "hal-op-save-btn";
     String STABILITY_DISMISS_BTN = "hal-op-stability-dismiss-btn";
 
     /**
      * Composes an OUIA ID with the {@code hal-op} prefix.
      *
-     * @param first the first segment after the prefix (typically from {@link OuiaContexts})
-     * @param rest  additional segments (typically from {@link OuiaSuffixes})
+     * @param first the first segment after the prefix
+     * @param rest  additional segments
      * @return a composite OUIA ID like {@code hal-op-<first>-<rest[0]>-<rest[1]>-...}
      */
     static String ouia(String first, String... rest) {

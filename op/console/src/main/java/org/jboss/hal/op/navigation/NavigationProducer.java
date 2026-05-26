@@ -20,11 +20,12 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.PlaceManager;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.navigation.Navigation;
-import org.jboss.hal.resources.Ids;
 import org.patternfly.component.navigation.NavigationType.Horizontal;
 
 import static org.patternfly.component.navigation.NavigationItem.navigationItem;
+
 public class NavigationProducer {
 
     @Inject PlaceManager placeManager;
@@ -32,19 +33,19 @@ public class NavigationProducer {
     @Produces
     @ApplicationScoped
     public Navigation navigation() {
-        return Navigation.navigation(Horizontal.primary).ouiaId(Ids.NAV)
+        return Navigation.navigation(Horizontal.primary).ouiaId(OuiaIds.NAV)
                 // IDs must match the routes!
                 .addItem(navigationItem("/", "Dashboard", placeManager.href("/"))
-                        .ouiaId(Ids.NAV_DASHBOARD))
+                        .ouiaId(OuiaIds.NAV_DASHBOARD))
                 .addItem(navigationItem("/deployments", "Deployments", placeManager.href("/deployments"))
-                        .ouiaId(Ids.NAV_DEPLOYMENTS))
+                        .ouiaId(OuiaIds.NAV_DEPLOYMENTS))
                 .addItem(navigationItem("/tasks", "Tasks", placeManager.href("/tasks"))
-                        .ouiaId(Ids.NAV_TASKS))
+                        .ouiaId(OuiaIds.NAV_TASKS))
                 .addItem(navigationItem("/configuration", "Configuration", placeManager.href("/configuration"))
-                        .ouiaId(Ids.NAV_CONFIGURATION))
+                        .ouiaId(OuiaIds.NAV_CONFIGURATION))
                 .addItem(navigationItem("/runtime", "Runtime", placeManager.href("/runtime"))
-                        .ouiaId(Ids.NAV_RUNTIME))
+                        .ouiaId(OuiaIds.NAV_RUNTIME))
                 .addItem(navigationItem("/management-model", "Management model", placeManager.href("/management-model"))
-                        .ouiaId(Ids.NAV_MODEL_BROWSER));
+                        .ouiaId(OuiaIds.NAV_MODEL_BROWSER));
     }
 }

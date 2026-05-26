@@ -29,9 +29,10 @@ import org.jboss.hal.ui.modelbrowser.ModelBrowser;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
+import static org.jboss.hal.resources.OuiaIds.PAGE_MODEL_BROWSER;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowser.modelBrowser;
-import static org.jboss.hal.resources.Ids.PAGE_MODEL_BROWSER;
 import static org.patternfly.component.page.PageSection.pageSection;
+
 @Dependent
 @Route("/management-model")
 public class ModelBrowserPage implements Page {

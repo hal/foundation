@@ -23,7 +23,7 @@ import org.jboss.hal.model.filter.DeprecatedAttribute;
 import org.jboss.hal.model.filter.GlobalOperationsAttribute;
 import org.jboss.hal.model.filter.ParametersAttribute;
 import org.jboss.hal.model.filter.ReturnValueAttribute;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
 import org.jboss.hal.ui.filter.NameSearchInput;
 import org.patternfly.component.switch_.Switch;
@@ -69,13 +69,13 @@ class OperationsToolbar implements IsElement<HTMLElement> {
         boolean showGlobalOperations = uic().settings().get(Settings.Key.SHOW_GLOBAL_OPERATIONS).asBoolean();
         toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter).ouiaId(Ids.MODEL_BROWSER_OPERATIONS_FILTER)))
+                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter).ouiaId(OuiaIds.MODEL_BROWSER_OPERATIONS_FILTER)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(parametersReturnValueMultiSelect(filter)))
                                 .addItem(toolbarItem().add(deprecatedMultiSelect(filter, "Status"))))
                         .addItem(toolbarItem().style("align-self", "center")
                                 .add(globalOperationsSwitch = switch_(Id.unique("global-operations"), "global-operations")
-                                        .ouiaId(Ids.MODEL_BROWSER_GLOBAL_OPS_SWITCH)
+                                        .ouiaId(OuiaIds.MODEL_BROWSER_GLOBAL_OPS_SWITCH)
                                         .label("Show global operations")
                                         .value(showGlobalOperations, false)
                                         .onChange((e, c, v) -> {

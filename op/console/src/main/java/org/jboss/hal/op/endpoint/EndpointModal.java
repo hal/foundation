@@ -18,6 +18,7 @@ package org.jboss.hal.op.endpoint;
 import java.util.List;
 
 import org.jboss.elemento.logger.Logger;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.modal.Modal;
 
@@ -38,8 +39,6 @@ import static org.patternfly.component.modal.ModalBody.modalBody;
 import static org.patternfly.component.modal.ModalFooter.modalFooter;
 import static org.patternfly.component.modal.ModalHeader.modalHeader;
 import static org.patternfly.component.modal.ModalHeaderDescription.modalHeaderDescription;
-import org.jboss.hal.resources.Ids;
-
 import static org.patternfly.style.Size.md;
 
 public class EndpointModal {
@@ -69,16 +68,16 @@ public class EndpointModal {
 
         add = button("Add")
                 .secondary()
-                .ouiaId(Ids.ENDPOINT_ADD_BTN)
+                .ouiaId(OuiaIds.ENDPOINT_ADD_BTN)
                 .onClick((event, component) -> newEndpoint());
         ok = button("Connect")
                 .primary()
-                .ouiaId(Ids.ENDPOINT_CONNECT_BTN)
+                .ouiaId(OuiaIds.ENDPOINT_CONNECT_BTN)
                 .disabled()
                 .onClick((event, component) -> saveOrConnect());
         cancel = button("Cancel")
                 .link()
-                .ouiaId(Ids.ENDPOINT_CANCEL_BTN)
+                .ouiaId(OuiaIds.ENDPOINT_CANCEL_BTN)
                 .onClick((event, component) -> cancel());
 
         form = new EndpointForm(storage);
@@ -92,7 +91,7 @@ public class EndpointModal {
 
         modal = modal()
                 .size(md)
-                .ouiaId(Ids.ENDPOINT_MODAL)
+                .ouiaId(OuiaIds.ENDPOINT_MODAL)
                 .hideClose()
                 .autoClose(false)
                 .closeOnEsc(closable)

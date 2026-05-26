@@ -25,8 +25,8 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.model.filter.NameAttribute;
-import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.Keys;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -179,17 +179,16 @@ class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, R
                 removeChildrenFrom(addItem);
                 if (supportsAdd(parent, missingChildren)) {
                     boolean singleton = parent.type == SINGLETON_FOLDER;
-                    String templateContext = parent.template.isEmpty() ? "root" : parent.template.last().key;
                     if (missingChildren.isEmpty()) {
                         addItem.add(button().plain()
                                 .icon(plus())
-                                .ouiaId(Ids.ouia(templateContext, Ids._ADD, Ids._BTN))
+                                .ouiaId(OuiaIds.ADD_BTN)
                                 .onClick((e, b) -> AddResource.dispatch(element(),
                                         parent.template, null, singleton)));
                     } else if (missingChildren.size() == 1) {
                         addItem.add(button().plain()
                                 .icon(plus())
-                                .ouiaId(Ids.ouia(templateContext, Ids._ADD, Ids._BTN))
+                                .ouiaId(OuiaIds.ADD_BTN)
                                 .onClick((e, b) -> AddResource.dispatch(element(),
                                         parent.template, missingChildren.get(0).name, singleton)));
                     } else {

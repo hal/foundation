@@ -18,14 +18,15 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.endpoint.EndpointStorage;
-import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.component.page.MastheadLogo;
 import org.patternfly.component.page.Page;
 import org.patternfly.component.toolbar.Toolbar;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
@@ -78,14 +79,14 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
 
     Skeleton(EndpointStorage endpointStorage, Navigation navigation) {
         MastheadLogo logo = mastheadLogo("/")
-                .ouiaId(Ids.MASTHEAD_LOGO)
+                .ouiaId(OuiaIds.MASTHEAD_LOGO)
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                         Resources.INSTANCE.logo().getText()).asString());
 
         NotificationElements notificationElements = notificationElements();
 
-        Toolbar toolbar = toolbar().ouiaId(Ids.MASTHEAD_TOOLBAR).css(modifier(fullHeight), modifier(static_))
+        Toolbar toolbar = toolbar().ouiaId(OuiaIds.MASTHEAD_TOOLBAR).css(modifier(fullHeight), modifier(static_))
                 .addContent(toolbarContent()
                         .add(toolbarItem().css(modifier("overflow-container"))
                                 .add(navigation))
@@ -101,7 +102,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
 
         Page page = page()
                 .addSkipToContent(skipToContent(Ids.MAIN_ID))
-                .addMasthead(masthead().ouiaId(Ids.MASTHEAD)
+                .addMasthead(masthead().ouiaId(OuiaIds.MASTHEAD)
                         .addMain(mastheadMain()
                                 .addBrand(mastheadBrand()
                                         .addLogo(logo)))

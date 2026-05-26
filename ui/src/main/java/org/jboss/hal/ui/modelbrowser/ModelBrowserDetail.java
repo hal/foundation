@@ -24,7 +24,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.breadcrumb.Breadcrumb;
 import org.patternfly.component.icon.Icon;
 import org.patternfly.component.icon.IconSize;
@@ -87,11 +87,11 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
         this.root = div().css(halComponent(HalClasses.modelBrowser, detail))
                 .add(pageGroup()
                         .sticky(top)
-                        .addSection(pageBreadcrumb = pageBreadcrumb().ouiaId(Ids.MODEL_BROWSER_BREADCRUMB))
+                        .addSection(pageBreadcrumb = pageBreadcrumb().ouiaId(OuiaIds.MODEL_BROWSER_BREADCRUMB))
                         .addSection(pageSection()
                                 .add(content()
                                         .add(flex().alignItems(center)
-                                                .addItem(flexItem().add(header = title(1, _3xl, "").ouiaId(Ids.MODEL_BROWSER_RESOURCE_HEADING)))
+                                                .addItem(flexItem().add(header = title(1, _3xl, "").ouiaId(OuiaIds.MODEL_BROWSER_RESOURCE_HEADING)))
                                                 .addItem(stabilityContainer = flexItem()))
                                         .add(description = p().text("")))))
                 .add(pageSection = pageSection().css(halComponent(HalClasses.modelBrowser, detail, content)))

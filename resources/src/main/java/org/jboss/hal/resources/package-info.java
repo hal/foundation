@@ -22,8 +22,11 @@
  * <strong>Key Interfaces:</strong>
  *
  * <dl>
+ * <dt>{@link org.jboss.hal.resources.OuiaIds}</dt>
+ * <dd>Static OUIA IDs for QA automation and dynamic OUIA ID composition via {@link org.jboss.hal.resources.OuiaIds#ouia(String, String...)}</dd>
+ *
  * <dt>{@link org.jboss.hal.resources.Ids}</dt>
- * <dd>HTML element IDs for QA stability</dd>
+ * <dd>Non-OUIA HTML element IDs (not synced to the test suite)</dd>
  *
  * <dt>{@link org.jboss.hal.resources.Keys}</dt>
  * <dd>Typed keys for map-like component contexts</dd>
@@ -51,8 +54,11 @@
  * <strong>Example Usage:</strong>
  *
  * {@snippet :
- *     // Generate a stable HTML ID
- *     String id = Ids.hostServer("master", "server-one");
+ *     // Use a static OUIA ID
+ *     String id = OuiaIds.MASTHEAD;
+ *
+ *     // Compose a dynamic OUIA ID
+ *     String dynamicId = OuiaIds.ouia("operation", "read-resource", "execute", "btn");
  *
  *     // Build a BEM-style CSS class
  *     String css = HalClasses.halComponent("resource", "header");

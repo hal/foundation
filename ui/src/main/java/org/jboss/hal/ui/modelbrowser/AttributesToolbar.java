@@ -23,7 +23,7 @@ import org.jboss.hal.model.filter.ExpressionAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
 import org.jboss.hal.ui.filter.NameSearchInput;
 import org.patternfly.component.toolbar.Toolbar;
@@ -64,7 +64,7 @@ class AttributesToolbar implements IsElement<HTMLElement> {
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter).ouiaId(Ids.MODEL_BROWSER_ATTRIBUTES_FILTER)))
+                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter).ouiaId(OuiaIds.MODEL_BROWSER_ATTRIBUTES_FILTER)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(typesFilterMultiSelect(filter)))
                                 .addItem(toolbarItem().add(reDeExMultiSelect(filter)))

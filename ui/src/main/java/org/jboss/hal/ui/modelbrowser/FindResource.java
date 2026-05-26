@@ -25,7 +25,7 @@ import org.jboss.hal.meta.tree.TraverseContext;
 import org.jboss.hal.meta.tree.TraverseContinuation;
 import org.jboss.hal.meta.tree.TraverseOperation;
 import org.jboss.hal.meta.tree.TraverseType;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.form.Form;
@@ -288,7 +288,7 @@ class FindResource {
         searchModal = modal().css(halComponent(modelBrowser, search))
                 .top()
                 .size(lg)
-                .ouiaId(Ids.FIND_RESOURCE_MODAL)
+                .ouiaId(OuiaIds.FIND_RESOURCE_MODAL)
                 .addHeader("Find a resource")
                 .addBody(modalBody()
                         .add(flex().direction(column).rowGap(Gap.md)
@@ -298,11 +298,11 @@ class FindResource {
                                 .addItem(noResults)))
                 .addFooter(modalFooter()
                         .addButton(searchButton = button("Search").primary()
-                                .ouiaId(Ids.FIND_RESOURCE_SEARCH_BTN)
+                                .ouiaId(OuiaIds.FIND_RESOURCE_SEARCH_BTN)
                                 .progress(false, "Search is in progress")
                                 .onClick((e, b) -> search()))
                         .addButton(button("Cancel").link()
-                                .ouiaId(Ids.FIND_RESOURCE_CANCEL_BTN)
+                                .ouiaId(OuiaIds.FIND_RESOURCE_CANCEL_BTN)
                                 .onClick((e, b) -> close())))
                 .appendToBody();
         setVisible(searchResults, false);

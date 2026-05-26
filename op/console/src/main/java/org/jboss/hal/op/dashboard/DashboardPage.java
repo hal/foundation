@@ -43,10 +43,10 @@ import elemental2.promise.Promise;
 
 import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.hal.resources.OuiaIds.PAGE_DASHBOARD;
+import static org.jboss.hal.resources.OuiaIds.PAGE_DASHBOARD_HEADER;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.content.Content.content;
-import static org.jboss.hal.resources.Ids.PAGE_DASHBOARD;
-import static org.jboss.hal.resources.Ids.PAGE_DASHBOARD_HEADER;
 import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.layout.flex.Direction.column;

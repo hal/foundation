@@ -19,9 +19,9 @@ import java.util.function.Supplier;
 
 import org.jboss.elemento.Callback;
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.resources.Ids;
-import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.env.Stability;
+import org.jboss.hal.resources.OuiaIds;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.icon.PredefinedIcon;
 
 import elemental2.dom.HTMLElement;
@@ -75,7 +75,7 @@ public class StabilityBanner implements IsElement<HTMLElement>, OuiaSupport<HTML
                                 .addItem(flexItem().add(icon.get())))
                         .add(flex().spaceItems(sm).style("position:fixed;right:var(--pf-t--global--spacer--lg)")
                                 .add(button("Got it").link().inline()
-                                        .ouiaId(Ids.STABILITY_DISMISS_BTN)
+                                        .ouiaId(OuiaIds.STABILITY_DISMISS_BTN)
                                         .onClick((event, component) -> gotIt.call()))
                                 .add(divider(hr).orientation(vertical))
                                 .add(a(replaceVersion(STABILITY_LEVELS, uic().environment().productVersionLink()), "_blank")

@@ -32,10 +32,10 @@ import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.OuiaIds.PAGE_CONFIGURATION;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.h1;
 import static org.patternfly.component.content.ContentType.p;
-import static org.jboss.hal.resources.Ids.PAGE_CONFIGURATION;
 import static org.patternfly.extension.finder.Finder.finder;
 import static org.patternfly.extension.finder.FinderPreview.finderPreview;
 import static org.patternfly.layout.stack.Stack.stack;

@@ -17,7 +17,7 @@ package org.jboss.hal.ui.modelbrowser;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 
 import elemental2.dom.HTMLElement;
 
@@ -33,26 +33,26 @@ class ResourceDetails implements IsElement<HTMLElement> {
 
     ResourceDetails(ModelBrowserNode mbn, Metadata metadata) {
         this.root = tabs()
-                .ouiaId(Ids.MODEL_BROWSER_TABS)
+                .ouiaId(OuiaIds.MODEL_BROWSER_TABS)
                 .initialSelection(ModelBrowserDetail.lastTab)
                 .addItem(tab("data", "Data")
-                        .ouiaId(Ids.MODEL_BROWSER_TAB_DATA)
+                        .ouiaId(OuiaIds.MODEL_BROWSER_TAB_DATA)
                         .addContent(tabContent().css(util("pt-md"))
                                 .add(resourceManager(mbn.template, metadata))))
                 .run(tbs -> {
                     if (!metadata.resourceDescription().attributes().isEmpty()) {
                         tbs.addItem(tab("attributes", "Attributes")
-                                .ouiaId(Ids.MODEL_BROWSER_TAB_ATTRIBUTES)
+                                .ouiaId(OuiaIds.MODEL_BROWSER_TAB_ATTRIBUTES)
                                 .addContent(tabContent().css(util("pt-md"))
                                         .add(new AttributesTable(metadata))));
                     }
                 })
                 .addItem(tab("operations", "Operations")
-                        .ouiaId(Ids.MODEL_BROWSER_TAB_OPERATIONS)
+                        .ouiaId(OuiaIds.MODEL_BROWSER_TAB_OPERATIONS)
                         .addContent(tabContent().css(util("pt-md"))
                                 .add(new OperationsTable(mbn.template, metadata))))
                 .addItem(tab("capabilities", "Capabilities")
-                        .ouiaId(Ids.MODEL_BROWSER_TAB_CAPABILITIES)
+                        .ouiaId(OuiaIds.MODEL_BROWSER_TAB_CAPABILITIES)
                         .addContent(tabContent()
                                 .add(new CapabilitiesTable(metadata))))
                 .onSelect((e, tab, selected) -> ModelBrowserDetail.lastTab = tab.identifier())

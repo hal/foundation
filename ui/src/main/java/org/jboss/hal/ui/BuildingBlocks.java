@@ -36,7 +36,7 @@ import org.jboss.hal.model.RunningMode;
 import org.jboss.hal.model.RunningState;
 import org.jboss.hal.model.RuntimeConfigurationState;
 import org.jboss.hal.model.SuspendState;
-import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.FinderSupport;
 import org.jboss.hal.ui.resource.ResourceDialogs;
 import org.patternfly.component.codeblock.CodeBlock;
@@ -468,12 +468,12 @@ public class BuildingBlocks {
         FinderColumn column = finderColumn(id);
         column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
                         .addButton(button(plus()).plain().small()
-                                .ouiaId(Ids.ouia(id, Ids._ADD, Ids._BTN))
+                                .ouiaId(OuiaIds.ouia(id, "add", "btn"))
                                 .onClick((e, b) ->
                                         addResourceModal(templateFn.apply(column.finder().path()), null, false)
                                                 .then(__ -> column.reload())))
                         .addButton(button(redo()).plain().small()
-                                .ouiaId(Ids.ouia(id, Ids._REFRESH, Ids._BTN))
+                                .ouiaId(OuiaIds.ouia(id, "refresh", "btn"))
                                 .onClick((e, b) -> column.reload()))))
                 .defaultSearch()
                 .showSearchThreshold(5)
@@ -483,7 +483,7 @@ public class BuildingBlocks {
                             .addButton(button(externalLinkAlt()).plain().small().onClick((e, b) ->
                                     uic().notifications().send(nyi())))
                             .addButton(button(trash()).plain().small()
-                                    .ouiaId(Ids.ouia(id, Ids._DELETE, Ids._BTN))
+                                    .ouiaId(OuiaIds.ouia(id, "delete", "btn"))
                                     .onClick((e, b) -> {
                                 AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
                                 deleteResourceModal(template).then(n -> {

@@ -16,12 +16,13 @@
 package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.form.Form;
-import org.patternfly.core.OuiaSupport;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.switch_.Switch;
 import org.patternfly.core.ObservableValue;
+import org.patternfly.core.OuiaSupport;
 
 import elemental2.core.TypeError;
 import elemental2.dom.HTMLElement;
@@ -30,8 +31,6 @@ import elemental2.dom.URL;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.ValidationStatus.success;
 import static org.patternfly.component.ValidationStatus.warning;
-import org.jboss.hal.resources.Ids;
-
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormGroup.formGroup;
@@ -102,7 +101,7 @@ class EndpointForm implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, E
                                                         .readonly()))
                                         .addItem(inputGroupItem()
                                                 .addButton(button("Ping").control()
-                                                        .ouiaId(Ids.ENDPOINT_PING_BTN)
+                                                        .ouiaId(OuiaIds.ENDPOINT_PING_BTN)
                                                         .onClick((event, component) -> ping()))))));
 
         endpoint = null;

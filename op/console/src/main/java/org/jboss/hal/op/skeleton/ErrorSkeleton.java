@@ -18,12 +18,13 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.bootstrap.BootstrapErrorElement;
-import org.patternfly.core.OuiaSupport;
 import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.page.MastheadLogo;
 import org.patternfly.component.page.Page;
 import org.patternfly.component.page.PageMain;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
@@ -55,11 +56,11 @@ public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLEl
 
     ErrorSkeleton() {
         page = page()
-                .addMasthead(masthead().ouiaId(Ids.MASTHEAD)
+                .addMasthead(masthead().ouiaId(OuiaIds.MASTHEAD)
                         .addMain(mastheadMain()
                                 .addBrand(mastheadBrand()
                                         .addLogo(MastheadLogo.mastheadLogo("/")
-                                                .ouiaId(Ids.MASTHEAD_LOGO)
+                                                .ouiaId(OuiaIds.MASTHEAD_LOGO)
                                                 .style(componentVar(component(Classes.brand), Height).name, "36px")
                                                 .apply(e -> e.innerHTML = SafeHtmlUtils.fromSafeConstant(
                                                         Resources.INSTANCE.logo().getText()).asString())))))
@@ -85,7 +86,7 @@ public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLEl
     // ------------------------------------------------------ add
 
     public ErrorSkeleton add(BootstrapErrorElement bootstrapError) {
-        pageMain.add(pageSection().ouiaId(Ids.PAGE_ERROR)
+        pageMain.add(pageSection().ouiaId(OuiaIds.PAGE_ERROR)
                 .limitWidth()
                 .add(div().style("background-color", globalBackgroundColor100.var)
                         .add(bootstrapError)));
