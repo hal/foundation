@@ -20,8 +20,8 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.By;
+import org.jboss.elemento.router.AnnotatedPlaces;
 import org.jboss.elemento.router.PlaceManager;
-import org.jboss.elemento.router.Places;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.resources.Ids;
 import org.kie.j2cl.tools.di.core.BeanManager;
@@ -42,7 +42,7 @@ public class PlaceManagerProducer {
                 .title(title -> "HAL • " + title)
                 .notFound(NotFound::new)
                 .noData(NoData::new)
-                .register(new Places(beanManager))
+                .register(new AnnotatedPlaces(beanManager))
                 .afterPlace((placeManager, place) -> navigation.select(place.route));
     }
 }
