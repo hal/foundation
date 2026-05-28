@@ -97,9 +97,4 @@ parse_params() {
 
 parse_params "$@"
 setup_colors
-mvn -P op,feature-pack,standalone,os \
-  org.apache.maven.plugins:maven-enforcer-plugin:enforce \
-  org.apache.maven.plugins:maven-checkstyle-plugin:check \
-  com.mycila:license-maven-plugin:check \
-  org.ec4j.maven:editorconfig-maven-plugin:check \
-  net.revelc.code:impsort-maven-plugin:check
+mvn process-sources -P check,op,feature-pack,standalone,os

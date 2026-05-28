@@ -208,9 +208,11 @@ These can be combined with the profiles above.
 
 | Profile       | Purpose                                                                    |
 |---------------|----------------------------------------------------------------------------|
+| `format`      | Auto-formats source files (editorconfig, import sort, license headers)     |
+| `check`       | Validates source files (enforcer, editorconfig, import sort, license, checkstyle) |
 | `native`      | GraalVM native image build (use with `-P op,standalone,native`)            |
 | `jbang`       | Uber-JAR packaging for JBang execution (use with `-P op,standalone,jbang`) |
-| `quick-build` | Skips all checks and tests (also activatable via `-Dquickly`)              |
+| `quick-build` | Skips tests and npm (also activatable via `-Dquickly`)                     |
 | `release`     | Source/Javadoc JARs, GPG signing, Maven Central publishing                 |
 
 ## Common Combinations
@@ -222,7 +224,9 @@ mvn install -P op,standalone                # Standalone edition (JVM)
 mvn install -P op,standalone,native         # Standalone edition (native binary)
 mvn install -P op,feature-pack              # Galleon feature pack
 mvn package -P op,test-suite                # Test suite container
-mvn install -P quick-build                  # Fast build, skip all checks
+mvn install -P quick-build                  # Fast build, skip tests
+mvn process-sources -P format,op            # Auto-format halOP sources
+mvn process-sources -P check,op             # Validate halOP sources
 ```
 
 # Contributing

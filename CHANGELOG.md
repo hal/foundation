@@ -26,6 +26,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Move formatting and validation plugins (enforcer, checkstyle, editorconfig, impsort, license) to opt-in `format` and `check` Maven profiles — normal builds no longer run linting
+- Refactor `format.sh` and `validate.sh` to use Maven profiles instead of direct plugin goal invocations
+- Simplify `quick-build` profile to only skip tests and npm (plugin skip properties removed since plugins are now opt-in)
 - Migrate frontend bundler from Parcel to Vite, simplifying the dev server and removing CSS container query workarounds
 - Consolidate all OUIA IDs into a single `OuiaIds` interface for consistent, centralized management
 

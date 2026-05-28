@@ -71,9 +71,11 @@ These are additive and can be combined with the packaging profiles above.
 
 | Profile | Defined in | Purpose |
 |---|---|---|
+| `format` | root `pom.xml` | Auto-formats source files (editorconfig, import sort, license headers) |
+| `check` | root `pom.xml` | Validates source files (enforcer, editorconfig, import sort, license, checkstyle) |
 | `native` | `op/standalone/pom.xml` | GraalVM native image build (requires `-P op,standalone,native`) |
 | `jbang` | `op/standalone/pom.xml` | Uber-JAR packaging for JBang execution |
-| `quick-build` | root `pom.xml` | Skips all checks and tests (also activatable via `-Dquickly`) |
+| `quick-build` | root `pom.xml` | Skips tests and npm (also activatable via `-Dquickly`) |
 | `release` | root `pom.xml`, `bom/pom.xml` | Source/Javadoc JARs, GPG signing, Central publishing |
 
 ### Common Profile Combinations
@@ -86,6 +88,8 @@ mvn install -P op,standalone,native         # Standalone server (native binary)
 mvn install -P op,feature-pack              # Galleon feature pack
 mvn package -P op,test-suite                # Test suite container
 mvn install -P quick-build                  # Fast build, skip everything
+mvn process-sources -P format,op            # Auto-format halOP sources
+mvn process-sources -P check,op             # Validate halOP sources
 mvn deploy -P op,feature-pack,standalone,jbang,os,release  # Full release
 ```
 
@@ -114,12 +118,16 @@ Java changes require manual browser refresh. HTML/CSS changes auto-reload via Vi
 
 ## Code Formatting & Validation
 
+Formatting and validation plugins are **opt-in** — they do not run during normal builds. Use the `format` and `check` profiles or the wrapper scripts:
+
 ```bash
-./format.sh      # Auto-format (license headers, editorconfig, imports)
-./validate.sh    # Check formatting without modifying
+./format.sh      # Auto-format all sources (license headers, editorconfig, imports)
+./validate.sh    # Check all sources without modifying
+mvn process-sources -P format,op   # Auto-format halOP sources only
+mvn process-sources -P check,op    # Validate halOP sources only
 ```
 
-Enforced by: Checkstyle (WildFly ruleset), license-maven-plugin (Apache 2.0 headers), impsort-maven-plugin (import ordering).
+Enforced by: maven-enforcer-plugin (Maven/JDK version), Checkstyle (WildFly ruleset), license-maven-plugin (Apache 2.0 headers), editorconfig-maven-plugin, impsort-maven-plugin (import ordering).
 
 Style: 4-space indent, UTF-8, max line length 128, LF line endings.
 
