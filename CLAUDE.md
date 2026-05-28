@@ -60,7 +60,7 @@ Two processes are needed simultaneously:
 
 1. **J2CL watch** (Java → JS compilation): `mvn j2cl:watch -P op`
    Wait for `Build Complete: ready for browser refresh`
-2. **Parcel watch** (HTML/CSS bundling): `cd op/console && npm run watch`
+2. **Parcel watch** (HTML/CSS bundling): `cd op/console && pnpm run watch`
    Opens browser at http://localhost:1234
 
 Java changes require manual browser refresh. HTML/CSS changes auto-reload via Parcel.

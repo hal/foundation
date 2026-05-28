@@ -22,11 +22,11 @@
     "@patternfly-java/charts": "catalog:pfj",
     "@patternfly-java/core": "catalog:pfj",
     "@patternfly-java/finder": "catalog:pfj",
-    "@patternfly/patternfly": "^6.4.0",
-    "dompurify": "^3.4.5"
+    "@patternfly/patternfly": "^6.5.2",
+    "dompurify": "^3.4.6"
   },
   "devDependencies": {
-    "@cyclonedx/cdxgen": "^12.4.1",
+    "@cyclonedx/cdxgen": "^12.4.4",
     "@parcel/config-default": "^2.16.4",
     "@parcel/core": "^2.16.4",
     "@parcel/reporter-cli": "^2.16.4",
@@ -39,6 +39,5 @@
     "parcel-resolver-ignore": "^2.2.1",
     "wait-on": "^9.0.10"
   },
-  "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38",
-  "pnpm": {}
+  "packageManager": "pnpm@11.4.0"
 }
