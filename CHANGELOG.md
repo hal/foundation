@@ -30,6 +30,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Fix compilation errors from PatternFly Java 0.9.0 icon renames (FontAwesome 5 → 7) and removed `ThemeSelector.withContrast()` API
+- Fix `AnnotatedPlaces` → `Places` rename from Elemento 2.4.11
 - Fix intermittent test-suite CI failure caused by missing BOM install step
 - Fix duplicate test-suite workflow runs by adding concurrency group
 
@@ -37,9 +39,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
 - Bump WildFly BOM and Galleon feature pack dependencies
-- Bump Quarkus platform to 3.35.4
+- Bump Quarkus platform to 3.36.0
 - Bump PatternFly Java to 0.9.0
 - Bump PatternFly to 6.5.2, DOMPurify to 3.4.6, and cdxgen to 12.4.4
+- Bump Galleon Maven plugin to 8.1.6.Final
 
 ## [0.3.8] - 2026-05-20
 
