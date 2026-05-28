@@ -31,6 +31,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Fix compilation errors from PatternFly Java 0.9.0 icon renames (FontAwesome 5 → 7) and removed `ThemeSelector.withContrast()` API
+- Fix icon name references in ui module for PatternFly Java 0.9.0 (FontAwesome v6 naming: search→magnifyingGlass, edit→penToSquare, home→house, redo→rotateRight, times→xmark, etc.)
 - Fix `AnnotatedPlaces` → `Places` rename from Elemento 2.4.11
 - Fix intermittent test-suite CI failure caused by missing BOM install step
 - Fix duplicate test-suite workflow runs by adding concurrency group
