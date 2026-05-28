@@ -18,10 +18,9 @@
 
 # --------------------------------------------------
 #
-# Formats the source code by applying
-#   - license-maven-plugin
-#   - editorconfig-maven-plugin
-#   - impsort-maven-plugin
+# Formats the source code using the 'format' Maven
+# profile (license headers, editorconfig, import
+# sorting).
 #
 # --------------------------------------------------
 

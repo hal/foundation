@@ -121,8 +121,8 @@ Java changes require manual browser refresh. HTML/CSS changes auto-reload via Vi
 Formatting and validation plugins are **opt-in** — they do not run during normal builds. Use the `format` and `check` profiles or the wrapper scripts:
 
 ```bash
-./format.sh      # Auto-format all sources (license headers, editorconfig, imports)
-./validate.sh    # Check all sources without modifying
+./format.sh    # Auto-format all sources (license headers, editorconfig, imports)
+./check.sh     # Check all sources without modifying
 mvn process-sources -P format,op   # Auto-format halOP sources only
 mvn process-sources -P check,op    # Validate halOP sources only
 ```

@@ -18,12 +18,9 @@
 
 # --------------------------------------------------
 #
-# Validates the source code by applying
-#   - maven-enforcer-plugin
-#   - maven-checkstyle-plugin
-#   - license-maven-plugin
-#   - editorconfig-maven-plugin
-#   - impsort-maven-plugin
+# Checks the source code using the 'check' Maven
+# profile (enforcer, checkstyle, license headers,
+# editorconfig, import sorting).
 #
 # --------------------------------------------------
 

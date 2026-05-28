@@ -229,6 +229,17 @@ mvn process-sources -P format,op            # Auto-format halOP sources
 mvn process-sources -P check,op             # Validate halOP sources
 ```
 
+# Scripts
+
+| Script | Purpose |
+|---|---|
+| `format.sh` | Auto-format source files (license headers, editorconfig, import sorting) using the `format` Maven profile |
+| `check.sh` | Validate source files (enforcer, checkstyle, license headers, editorconfig, import sorting) using the `check` Maven profile |
+| `bump-pfj.sh` | Bump PatternFly Java to a new version (Maven property, pnpm catalog, lockfile) |
+| `versionBump.sh` | Bump the project version in Maven POMs |
+| `release.sh` | Create a new release (version bump, changelog, tag, push, snapshot bump) |
+| `unrelease.sh` | Undo a failed release (delete tag, revert version bump) |
+
 # Contributing
 
 This is an open-source project. That means that everybody can contribute. It's not hard to get started. So
