@@ -20,10 +20,21 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove NPM publish job from release workflow
 - Remove `OUIA.md` documentation (superseded by dave's own OUIA docs)
 
+### Changed
+
+- Consolidate all OUIA IDs into a single `OuiaIds` interface for consistent, centralized management
+
 ### Fixed
 
 - Fix intermittent test-suite CI failure caused by missing BOM install step
 - Fix duplicate test-suite workflow runs by adding concurrency group
+
+### Upgrades
+
+- Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
+- Bump WildFly BOM and Galleon feature pack dependencies
+- Bump Quarkus platform to 3.35.4
+- Bump PatternFly to 6.5.2, DOMPurify to 3.4.6, and cdxgen to 12.4.4
 
 ## [0.3.8] - 2026-05-20
 
