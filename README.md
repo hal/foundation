@@ -179,6 +179,50 @@ This version of HAL integrates with the OpenShift console. It can be used to man
 
 halOS is not yet implemented!
 
+# Maven Profiles
+
+The build uses Maven profiles to select editions, packaging targets, and build options. Profiles are layered across three levels: the root `pom.xml` sets J2CL and environment properties, `op/pom.xml` activates modules, and `op/console/pom.xml` runs the appropriate Vite build and assembly.
+
+## Edition Profiles
+
+| Profile | Purpose |
+|---|---|
+| `op` | Activates the `op/` module tree (halOP edition) |
+| `os` | Activates the `os/` module tree (halOS edition — not yet implemented) |
+
+## Packaging Profiles
+
+Each packaging profile requires `op` as a prerequisite. They are mutually exclusive for local development.
+
+| Profile | Purpose | J2CL Compilation |
+|---|---|---|
+| `standalone` | Builds the Quarkus standalone server | `ADVANCED` (production) |
+| `feature-pack` | Builds the Galleon feature pack and WildFly subsystem | `ADVANCED` (production) |
+| `test-suite` | Builds the test-suite server for Docker-based testing | `BUNDLE_JAR` (development) |
+
+## Modifier Profiles
+
+These can be combined with the profiles above.
+
+| Profile | Purpose |
+|---|---|
+| `native` | GraalVM native image build (use with `-P op,standalone,native`) |
+| `jbang` | Uber-JAR packaging for JBang execution |
+| `quick-build` | Skips all checks and tests (also activatable via `-Dquickly`) |
+| `release` | Source/Javadoc JARs, GPG signing, Maven Central publishing |
+
+## Common Combinations
+
+```shell
+mvn verify                                  # Code modules only (no edition)
+mvn compile -P op                           # Compile halOP
+mvn install -P op,standalone                # Standalone server (JVM)
+mvn install -P op,standalone,native         # Standalone server (native binary)
+mvn install -P op,feature-pack              # Galleon feature pack
+mvn package -P op,test-suite                # Test suite container
+mvn install -P quick-build                  # Fast build, skip all checks
+```
+
 # Contributing
 
 This is an open-source project. That means that everybody can contribute. It's not hard to get started. So

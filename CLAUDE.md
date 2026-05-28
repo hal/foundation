@@ -42,6 +42,53 @@ mvn test -pl <module> -Dtest=<TestClassName>
 mvn test -pl <module> -Dtest=<TestClassName>#<methodName>
 ```
 
+## Maven Profiles
+
+The build uses Maven profiles at three levels: the root `pom.xml` sets J2CL/environment **properties**, `op/pom.xml` activates **modules**, and `op/console/pom.xml` runs the right **Vite build** and **assembly**. Profile IDs are consistent across levels so a single `-P` flag cascades through all three.
+
+### Edition Profiles
+
+| Profile | Purpose |
+|---|---|
+| `op` | Activates the `op/` module tree (halOP edition) |
+| `os` | Activates the `os/` module tree (halOS edition — not yet implemented) |
+
+These are independent module activators and can be combined (the release build uses both).
+
+### Packaging Profiles
+
+Each requires `op` as a prerequisite. They are mutually exclusive for local development, but the release build activates all of them together.
+
+| Profile | Purpose | J2CL Mode |
+|---|---|---|
+| `standalone` | Builds the Quarkus standalone server | `ADVANCED` (production) |
+| `feature-pack` | Builds the Galleon feature pack + WildFly subsystem; sets `environment.base=/halop` | `ADVANCED` (production) |
+| `test-suite` | Builds the test-suite Quarkus server (Docker-based) | `BUNDLE_JAR` (development) |
+
+### Modifier Profiles
+
+These are additive and can be combined with the packaging profiles above.
+
+| Profile | Defined in | Purpose |
+|---|---|---|
+| `native` | `op/standalone/pom.xml` | GraalVM native image build (requires `-P op,standalone,native`) |
+| `jbang` | `op/standalone/pom.xml` | Uber-JAR packaging for JBang execution |
+| `quick-build` | root `pom.xml` | Skips all checks and tests (also activatable via `-Dquickly`) |
+| `release` | root `pom.xml`, `bom/pom.xml` | Source/Javadoc JARs, GPG signing, Central publishing |
+
+### Common Profile Combinations
+
+```bash
+mvn verify                                  # Code modules only (no edition)
+mvn compile -P op                           # Compile halOP (CI verification)
+mvn install -P op,standalone                # Standalone server (JVM)
+mvn install -P op,standalone,native         # Standalone server (native binary)
+mvn install -P op,feature-pack              # Galleon feature pack
+mvn package -P op,test-suite                # Test suite container
+mvn install -P quick-build                  # Fast build, skip everything
+mvn deploy -P op,feature-pack,standalone,jbang,os,release  # Full release
+```
+
 ## Galleon Provisioning
 
 After building the feature pack, provision a WildFly server with the HAL console using the Galleon CLI:

@@ -9,6 +9,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add Maven profile documentation to CLAUDE.md and README.md covering edition, packaging, and modifier profiles with combination rules
 - Add OUIA IDs to model browser components (tree, tabs, breadcrumb, heading, filters, global ops switch)
 - Add OUIA IDs to dashboard cards (Overview, Deployment, Documentation, Health, Log, Status)
 - Add dynamic OUIA IDs to task cards
