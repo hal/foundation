@@ -65,7 +65,7 @@ import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
 import static org.patternfly.core.Attributes.role;
 import static org.patternfly.core.Attributes.tabindex;
 import static org.patternfly.core.Attributes.type;
-import static org.patternfly.icon.IconSets.fas.questionCircle;
+import static org.patternfly.icon.IconSets.fas.circleQuestion;
 import static org.patternfly.style.Classes.button;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.form;
@@ -219,7 +219,7 @@ class FormItemFactory {
                                 .attr(tabindex, 0)
                                 .aria(Aria.label, parentLabel + " description")
                                 .add(span().css(component(button, icon))
-                                        .add(questionCircle())))
+                                        .add(circleQuestion())))
                         .element();
                 // Use insert-first calls and add the elements in reverse order
                 // to not mess with the required marker added in FormGroupLabel.attach()

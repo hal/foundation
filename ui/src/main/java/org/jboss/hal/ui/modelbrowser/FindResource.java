@@ -280,7 +280,7 @@ class FindResource {
 
         noResults = flexItem()
                 .add(emptyState()
-                        .icon(fas.search())
+                        .icon(fas.magnifyingGlass())
                         .text("No results found")
                         .addBody(emptyStateBody()
                                 .text("No resources match the search criteria.")));

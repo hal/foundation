@@ -118,14 +118,14 @@ import static org.patternfly.extension.finder.FinderColumnActions.finderColumnAc
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;
 import static org.patternfly.extension.finder.FinderItemActions.finderItemActions;
-import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
-import static org.patternfly.icon.IconSets.fas.externalLinkAlt;
+import static org.patternfly.icon.IconSets.fas.circleInfo;
 import static org.patternfly.icon.IconSets.fas.flask;
-import static org.patternfly.icon.IconSets.fas.infoCircle;
+import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 import static org.patternfly.icon.IconSets.fas.plus;
-import static org.patternfly.icon.IconSets.fas.redo;
-import static org.patternfly.icon.IconSets.fas.search;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.icon.IconSets.fas.trash;
+import static org.patternfly.icon.IconSets.fas.triangleExclamation;
+import static org.patternfly.icon.IconSets.fas.upRightFromSquare;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
@@ -309,7 +309,7 @@ public class BuildingBlocks {
 
     public static <T> EmptyState emptyRow(Filter<T> filter) {
         return emptyState()
-                .icon(search())
+                .icon(magnifyingGlass())
                 .text("No results found")
                 .addBody(emptyStateBody()
                         .text(
@@ -431,9 +431,9 @@ public class BuildingBlocks {
         if (stability == EXPERIMENTAL) {
             return flask();
         } else if (stability == PREVIEW) {
-            return exclamationTriangle();
+            return triangleExclamation();
         }
-        return infoCircle();
+        return circleInfo();
     }
 
     public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
@@ -472,7 +472,7 @@ public class BuildingBlocks {
                                 .onClick((e, b) ->
                                         addResourceModal(templateFn.apply(column.finder().path()), null, false)
                                                 .then(__ -> column.reload())))
-                        .addButton(button(redo()).plain().small()
+                        .addButton(button(rotateRight()).plain().small()
                                 .ouiaId(OuiaIds.ouia(id, "refresh", "btn"))
                                 .onClick((e, b) -> column.reload()))))
                 .defaultSearch()
@@ -480,7 +480,7 @@ public class BuildingBlocks {
                 .addItems(childResources(templateFn, node -> {
                     FinderItem item = finderItem(Id.build(node.asString()));
                     item.text(node.asString()).addActions(finderItemActions()
-                            .addButton(button(externalLinkAlt()).plain().small().onClick((e, b) ->
+                            .addButton(button(upRightFromSquare()).plain().small().onClick((e, b) ->
                                     uic().notifications().send(nyi())))
                             .addButton(button(trash()).plain().small()
                                     .ouiaId(OuiaIds.ouia(id, "delete", "btn"))

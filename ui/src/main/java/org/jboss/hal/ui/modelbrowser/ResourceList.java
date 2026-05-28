@@ -92,7 +92,7 @@ import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.icon.IconSets.fas.plus;
-import static org.patternfly.icon.IconSets.fas.redo;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
@@ -139,7 +139,7 @@ class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, R
         PopperTooltip.tooltip(addItem.element(), "Add").appendToBody();
         String refreshId = Id.unique("refresh");
         ToolbarItem refreshItem = toolbarItem()
-                .add(button().id(refreshId).plain().icon(redo()).onClick((e, b) -> refresh()))
+                .add(button().id(refreshId).plain().icon(rotateRight()).onClick((e, b) -> refresh()))
                 .add(PopperTooltip.tooltip(By.id(refreshId), "Refresh").placement(auto));
 
         Variable spacer = componentVar(component(Classes.toolbar), "spacer");

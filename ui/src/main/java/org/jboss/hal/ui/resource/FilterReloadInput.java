@@ -26,8 +26,8 @@ import org.patternfly.handler.ComponentHandler;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.textinputgroup.TextInputGroupUtilities.textInputGroupUtilities;
-import static org.patternfly.icon.IconSets.fas.redo;
-import static org.patternfly.icon.IconSets.fas.times;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
+import static org.patternfly.icon.IconSets.fas.xmark;
 
 class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
 
@@ -48,14 +48,14 @@ class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
 
         inputElement.autocomplete = "off";
         addUtilities(textInputGroupUtilities()
-                .add(clearButton = button().icon(times()).plain().onClick((e, b) -> {
+                .add(clearButton = button().icon(xmark()).plain().onClick((e, b) -> {
                     if (defaultOnClear != null) {
                         defaultOnClear.handle(e, that());
                     }
                     onClear.forEach(handler ->
                             handler.handle(e, that()));
                 }))
-                .add(button().icon(redo()).plain().onClick((e, b) ->
+                .add(button().icon(rotateRight()).plain().onClick((e, b) ->
                         onReload.forEach(handler -> handler.handle(e, that())))));
         toggleUtilities(value());
     }

@@ -24,7 +24,7 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
-import static org.patternfly.icon.IconSets.fas.search;
+import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 
 /**
  * Search input for filtering management model entries by name.
@@ -48,7 +48,7 @@ public class NameSearchInput<T> implements IsElement<HTMLElement> {
     private final SearchInput searchInput;
 
     NameSearchInput(Filter<T> filter, String placeholder) {
-        searchInput = searchInput(Id.unique()).placeholder(placeholder).icon(search())
+        searchInput = searchInput(Id.unique()).placeholder(placeholder).icon(magnifyingGlass())
                 .onKeyup((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value))
                 .onClear((event, textInputGroup) -> filter.reset(NameAttribute.NAME));
         searchInput.input().apply(input -> input.autocomplete = "off");

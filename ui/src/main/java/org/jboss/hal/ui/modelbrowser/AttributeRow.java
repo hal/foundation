@@ -46,9 +46,9 @@ import static org.patternfly.component.table.TitleCell.titleCell;
 import static org.patternfly.component.table.Tr.tr;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.icon.IconSets.fas.database;
-import static org.patternfly.icon.IconSets.fas.edit;
 import static org.patternfly.icon.IconSets.fas.lock;
 import static org.patternfly.icon.IconSets.fas.memory;
+import static org.patternfly.icon.IconSets.fas.penToSquare;
 import static org.patternfly.icon.IconSets.patternfly.trendUp;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.utilVar;
@@ -130,7 +130,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
             switch (accessType) {
                 case READ_WRITE:
                     td.add(span().id(accessTypeId)
-                            .add(edit())
+                            .add(penToSquare())
                             .add(tooltip(By.id(accessTypeId))
                                     .style("min-width", "7ch")
                                     .text("read-write")));

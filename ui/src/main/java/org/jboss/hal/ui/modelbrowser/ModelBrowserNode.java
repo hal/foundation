@@ -38,9 +38,9 @@ class ModelBrowserNode {
 
         FOLDER(IconSets.fas::folder, IconSets.fas::folderOpen),
 
-        SINGLETON_RESOURCE(IconSets.fas::fileAlt, null),
+        SINGLETON_RESOURCE(IconSets.fas::fileLines, null),
 
-        RESOURCE(IconSets.fas::fileAlt, null);
+        RESOURCE(IconSets.fas::fileLines, null);
 
         final Supplier<PredefinedIcon> icon;
         final Supplier<PredefinedIcon> expandedIcon;

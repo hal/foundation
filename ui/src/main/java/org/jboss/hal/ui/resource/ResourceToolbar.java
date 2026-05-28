@@ -60,9 +60,9 @@ import static org.patternfly.component.toolbar.ToolbarGroupType.filterGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
-import static org.patternfly.icon.IconSets.fas.edit;
+import static org.patternfly.icon.IconSets.fas.penToSquare;
 import static org.patternfly.icon.IconSets.fas.powerOff;
-import static org.patternfly.icon.IconSets.fas.redo;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.style.Classes.modifier;
 
 class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceToolbar> {
@@ -172,12 +172,12 @@ class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                 .add(tooltip(By.id(resetId),
                         "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
         ToolbarItem refreshItem = toolbarItem()
-                .add(button().id(refreshId).plain().icon(redo())
+                .add(button().id(refreshId).plain().icon(rotateRight())
                         .ouiaId(OuiaIds.REFRESH_BTN)
                         .onClick((e, b) -> resourceManager.refresh()))
                 .add(tooltip(By.id(refreshId), "Refresh"));
         editItem = toolbarItem()
-                .add(button().id(editId).plain().icon(edit())
+                .add(button().id(editId).plain().icon(penToSquare())
                         .ouiaId(OuiaIds.EDIT_BTN)
                         .onClick((e, b) -> resourceManager.load(EDIT)))
                 .add(tooltip(By.id(editId), "Edit resource"));

@@ -54,12 +54,12 @@ import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.component.tree.TreeView.treeView;
 import static org.patternfly.component.tree.TreeViewType.selectableItems;
 import static org.patternfly.core.AsyncStatus.pending;
-import static org.patternfly.icon.IconSets.far.minusSquare;
+import static org.patternfly.icon.IconSets.far.squareMinus;
 import static org.patternfly.icon.IconSets.fas.arrowLeft;
 import static org.patternfly.icon.IconSets.fas.arrowRight;
-import static org.patternfly.icon.IconSets.fas.home;
-import static org.patternfly.icon.IconSets.fas.redo;
-import static org.patternfly.icon.IconSets.fas.search;
+import static org.patternfly.icon.IconSets.fas.house;
+import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Padding.noPadding;
 import static org.patternfly.style.Placement.bottomStart;
@@ -93,18 +93,18 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
         forwardButton = button().plain().icon(arrowRight()).disabled()
                 .ouiaId(OuiaIds.MODEL_BROWSER_FORWARD_BTN)
                 .onClick((event, component) -> forward());
-        Button refreshButton = button().plain().icon(redo())
+        Button refreshButton = button().plain().icon(rotateRight())
                 .ouiaId(OuiaIds.MODEL_BROWSER_REFRESH_BTN)
                 .onClick((e, b) -> reload());
-        Button homeButton = button().plain().icon(home())
+        Button homeButton = button().plain().icon(house())
                 .ouiaId(OuiaIds.MODEL_BROWSER_HOME_BTN)
                 .onClick((e, b) -> modelBrowser.home());
         Button findResource = button().plain()
-                .icon(search())
+                .icon(magnifyingGlass())
                 .ouiaId(OuiaIds.MODEL_BROWSER_FIND_BTN)
                 .onClick((e, b) -> new FindResource(b.element(), selectedAddress()).open());
         GotoResource gotoResource = new GotoResource();
-        Button collapseButton = button().plain().icon(minusSquare())
+        Button collapseButton = button().plain().icon(squareMinus())
                 .ouiaId(OuiaIds.MODEL_BROWSER_COLLAPSE_BTN)
                 .onClick((e, b) -> treeView.collapse());
 
