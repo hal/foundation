@@ -206,12 +206,12 @@ Each packaging profile requires `op` as a prerequisite. They are mutually exclus
 
 These can be combined with the profiles above.
 
-| Profile       | Purpose                                                         |
-|---------------|-----------------------------------------------------------------|
-| `native`      | GraalVM native image build (use with `-P op,standalone,native`) |
-| `jbang`       | Uber-JAR packaging for JBang execution                          |
-| `quick-build` | Skips all checks and tests (also activatable via `-Dquickly`)   |
-| `release`     | Source/Javadoc JARs, GPG signing, Maven Central publishing      |
+| Profile       | Purpose                                                                    |
+|---------------|----------------------------------------------------------------------------|
+| `native`      | GraalVM native image build (use with `-P op,standalone,native`)            |
+| `jbang`       | Uber-JAR packaging for JBang execution (use with `-P op,standalone,jbang`) |
+| `quick-build` | Skips all checks and tests (also activatable via `-Dquickly`)              |
+| `release`     | Source/Javadoc JARs, GPG signing, Maven Central publishing                 |
 
 ## Common Combinations
 
