@@ -91,7 +91,7 @@
         <version.mockito>5.23.0</version.mockito>
         <version.node>v24.16.0</version.node>
         <version.patternfly>6.4.0</version.patternfly>
-        <version.patternfly.java>0.8.3</version.patternfly.java>
+        <version.patternfly.java>0.9.0</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.10.0</version.central.publishing.plugin>
@@ -155,7 +155,6 @@
                     <version>${version.editorconfig.plugin}</version>
                     <configuration>
                         <excludes>
-                            <exclude>**/.parcel-cache/**</exclude>
                             <exclude>**/.pnpm-store/**</exclude>
                             <exclude>**/*.png</exclude>
                             <exclude>**/*.mp4</exclude>
@@ -206,9 +205,7 @@
                         <aggregate>true</aggregate>
                         <strictCheck>true</strictCheck>
                         <useDefaultExcludes>true</useDefaultExcludes>
-                        <mapping>
-                            <parcelrc>DOUBLESLASH_STYLE</parcelrc>
-                        </mapping>
+                        <mapping/>
                         <licenseSets>
                             <licenseSet>
                                 <header>build-config/src/main/resources/etc/license.txt</header>
@@ -220,7 +217,6 @@
                                     <exclude>**/*.png</exclude>
                                     <exclude>**/*license*.txt</exclude>
                                     <exclude>**/.dockerignore</exclude>
-                                    <exclude>**/.parcel-cache/**</exclude>
                                     <exclude>**/dist/**</exclude>
                                     <exclude>**/Dockerfile*</exclude>
                                     <exclude>**/banner.txt</exclude>

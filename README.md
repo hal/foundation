@@ -15,7 +15,7 @@ The work on the new consoles is in an early state and very much in progress.
 - [Crysknife CDI](https://github.com/crysknife-io/crysknife)
 - [Elemento](https://github.com/hal/elemento)
 - [PatternFly Java](https://github.com/patternfly-java)
-- [Maven](https://maven.apache.org/), [Parcel](https://parceljs.org/), and [PNPM](https://pnpm.io/)
+- [Maven](https://maven.apache.org/), [Vite](https://vite.dev/), and [PNPM](https://pnpm.io/)
 
 # halOP (HAL On Premise)
 
@@ -149,7 +149,7 @@ podman run -it -p 9090:9090 quay.io/halconsole/hal-op
 
 If you want to contribute to halOP, follow these steps to start halOP in development mode. In the development mode, the Java
 code is transpiled to JavaScript using J2CL. The HTML and CSS are transpiled to JavaScript
-using Parcel. Changes to HTML and CSS will be detected by Parcel, and the browser reloads the page automatically.
+using Vite. Changes to HTML and CSS will be detected by Vite, and the browser reloads the page automatically.
 Changes to the Java code will be detected by the J2CL Maven plugin, but you need to reload the browser manually.
 
 To start halOP in development mode, run

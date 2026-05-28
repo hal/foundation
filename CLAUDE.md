@@ -9,7 +9,7 @@ HAL Foundation is the codebase for the next major version of the HAL management 
 - **halOP** (HAL On Premise) — successor to the current HAL console, ships with WildFly or runs standalone
 - **halOS** (HAL On OpenShift) — not yet implemented
 
-Java source is compiled to JavaScript via J2CL, bundled with Parcel, and optionally packaged in a Quarkus HTTP server for standalone deployment.
+Java source is compiled to JavaScript via J2CL, bundled with Vite, and optionally packaged in a Quarkus HTTP server for standalone deployment.
 
 ## Build Commands
 
@@ -60,10 +60,10 @@ Two processes are needed simultaneously:
 
 1. **J2CL watch** (Java → JS compilation): `mvn j2cl:watch -P op`
    Wait for `Build Complete: ready for browser refresh`
-2. **Parcel watch** (HTML/CSS bundling): `cd op/console && pnpm run watch`
+2. **Vite dev server** (HTML/CSS bundling): `cd op/console && pnpm run watch`
    Opens browser at http://localhost:1234
 
-Java changes require manual browser refresh. HTML/CSS changes auto-reload via Parcel.
+Java changes require manual browser refresh. HTML/CSS changes auto-reload via Vite HMR.
 
 ## Code Formatting & Validation
 
@@ -94,7 +94,7 @@ All code modules live under `code-parent` for shared dependency management:
 | `ui` | UI formatters, model browser, filters |
 
 Application modules:
-- `op/console` — J2CL-compiled SPA (Parcel bundler, PatternFly 6)
+- `op/console` — J2CL-compiled SPA (Vite bundler, PatternFly 6)
 - `op/standalone` — Quarkus HTTP server wrapping the SPA (production)
 - `op/test-suite` — Quarkus HTTP server wrapping the SPA (test suite, Docker)
 - `op/subsystem` — WildFly subsystem extension for the HAL console
@@ -124,7 +124,7 @@ Supporting modules: `bom` (dependency versions), `build-config` (checkstyle/lice
 - Java 21, Maven 3.9.9+ (use `./mvnw` wrapper)
 - J2CL v0.23 (Java → JavaScript transpilation)
 - Crysknife CDI, Elemento, PatternFly Java
-- Parcel, Node.js, pnpm (frontend tooling)
+- Vite, Node.js, pnpm (frontend tooling)
 - Quarkus (standalone server)
 - JUnit 6 + Mockito (testing)
 

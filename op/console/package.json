@@ -1,21 +1,11 @@
 {
   "name": "hal-op",
   "private": true,
-  "parcelIgnore": [
-    "console.js"
-  ],
-  "source": [
-    "src/web/dev.html",
-    "src/web/index.html"
-  ],
   "scripts": {
-    "start:parcel": "parcel watch src/web/dev.html --dist-dir target/console --port 1235",
-    "start:server": "node server.js 1234 1235",
-    "open:browser": "wait-on http://localhost:1234 && open http://localhost:1234",
-    "watch": "concurrently \"pnpm run start:parcel\" \"pnpm run start:server\" \"pnpm run open:browser\"",
-    "build:feature-pack": "parcel build src/web/index.html --dist-dir target/feature-pack-resources --public-url /halop",
-    "build:standalone": "parcel build src/web/index.html --dist-dir target/standalone-resources",
-    "build:test-suite": "parcel build src/web/index.html --no-optimize --dist-dir target/test-suite-resources",
+    "watch": "vite --config vite.config.js",
+    "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
+    "build:standalone": "vite build --config vite.config.js --mode standalone",
+    "build:test-suite": "vite build --config vite.config.js --mode test-suite",
     "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --json-pretty --only patternfly --only dompurify"
   },
   "dependencies": {
@@ -27,17 +17,8 @@
   },
   "devDependencies": {
     "@cyclonedx/cdxgen": "^12.4.4",
-    "@parcel/config-default": "^2.16.4",
-    "@parcel/core": "^2.16.4",
-    "@parcel/reporter-cli": "^2.16.4",
-    "@parcel/resolver-glob": "^2.16.4",
-    "concurrently": "^9.2.1",
-    "express": "^5.2.1",
-    "http-proxy-middleware": "^4.0.0",
-    "open": "^11.0.0",
-    "parcel": "^2.16.4",
-    "parcel-resolver-ignore": "^2.2.1",
-    "wait-on": "^9.0.10"
+    "esbuild": "^0.28.0",
+    "vite": "^8.0.14"
   },
   "packageManager": "pnpm@11.4.0"
 }
