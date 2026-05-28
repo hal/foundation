@@ -92,8 +92,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
-                                .addItem(toolbarItem().add(themeSelector("hal")
-                                        .withContrast()))
+                                .addItem(toolbarItem().add(themeSelector("hal")))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
                                         group.addItem(toolbarItem().add(endpointSelector(endpointStorage)));

@@ -49,7 +49,7 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.notification.NotificationDrawerItem.notificationDrawerItem;
 import static org.patternfly.component.notification.NotificationDrawerItemBody.notificationDrawerItemBody;
-import static org.patternfly.icon.IconSets.fas.ellipsisV;
+import static org.patternfly.icon.IconSets.fas.ellipsisVertical;
 
 @ApplicationScoped
 public class NotificationListener {
@@ -185,7 +185,7 @@ public class NotificationListener {
     // ------------------------------------------------------ internal factory methods
 
     private NotificationDrawerItem ndi(Notification notification) {
-        Dropdown actions = dropdown(ellipsisV(), "notification item action for " + notification.title)
+        Dropdown actions = dropdown(ellipsisVertical(), "notification item action for " + notification.title)
                 .addMenu(dropdownMenu()
                         .addContent(menuContent()
                                 .addList(menuList()

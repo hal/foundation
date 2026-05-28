@@ -27,7 +27,7 @@ import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
-import static org.patternfly.icon.IconSets.fas.shieldAlt;
+import static org.patternfly.icon.IconSets.fas.shieldHalved;
 
 @Dependent
 public class ManagementSSLTask implements Task {
@@ -46,7 +46,7 @@ public class ManagementSSLTask implements Task {
 
     @Override
     public Element icon() {
-        return shieldAlt().element();
+        return shieldHalved().element();
     }
 
     @Override

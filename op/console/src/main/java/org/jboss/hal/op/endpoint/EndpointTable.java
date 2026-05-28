@@ -41,7 +41,7 @@ import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
 import static org.patternfly.component.table.Wrap.fitContent;
-import static org.patternfly.icon.IconSets.fas.pencilAlt;
+import static org.patternfly.icon.IconSets.fas.penToSquare;
 import static org.patternfly.icon.IconSets.fas.trash;
 import static org.patternfly.layout.bullseye.Bullseye.bullseye;
 
@@ -114,7 +114,7 @@ class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, 
                     .addItem(td("URL").text(endpoint.url))
                     .addItem(td("Edit").action().wrap(fitContent)
                             .add(tableText()
-                                    .add(button().plain().icon(pencilAlt())
+                                    .add(button().plain().icon(penToSquare())
                                             .onClick((event, component) -> update.accept(endpoint)))))
                     .addItem(td("Remove").action().wrap(fitContent)
                             .add(tableText()

@@ -46,10 +46,10 @@ import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.title.Title.title;
-import static org.patternfly.icon.IconSets.fas.checkCircle;
-import static org.patternfly.icon.IconSets.fas.pauseCircle;
-import static org.patternfly.icon.IconSets.fas.question;
-import static org.patternfly.icon.IconSets.fas.timesCircle;
+import static org.patternfly.icon.IconSets.fas.circleCheck;
+import static org.patternfly.icon.IconSets.fas.circlePause;
+import static org.patternfly.icon.IconSets.fas.circleQuestion;
+import static org.patternfly.icon.IconSets.fas.circleXmark;
 import static org.patternfly.layout.flex.Display.inlineFlex;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.SpaceItems.sm;
@@ -136,14 +136,14 @@ class DeploymentCard implements DashboardCard {
     private PredefinedIcon status(DeploymentStatus status) {
         switch (status) {
             case OK:
-                return checkCircle().attr("color", globalColorStatusSuccess100.var);
+                return circleCheck().attr("color", globalColorStatusSuccess100.var);
             case FAILED:
-                return timesCircle().attr("color", globalColorStatusDanger100.var);
+                return circleXmark().attr("color", globalColorStatusDanger100.var);
             case STOPPED:
-                return pauseCircle();
+                return circlePause();
             case UNDEFINED:
             default:
-                return question().attr("color", globalColorStatusWarning100.var);
+                return circleQuestion().attr("color", globalColorStatusWarning100.var);
         }
     }
 }

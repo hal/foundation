@@ -217,6 +217,7 @@
                                     <exclude>**/*.png</exclude>
                                     <exclude>**/*license*.txt</exclude>
                                     <exclude>**/.dockerignore</exclude>
+                                    <exclude>**/.pnpm-store/**</exclude>
                                     <exclude>**/dist/**</exclude>
                                     <exclude>**/Dockerfile*</exclude>
                                     <exclude>**/banner.txt</exclude>
@@ -230,7 +231,6 @@
                                     <exclude>**/src/demo/java/**</exclude>
                                     <exclude>**/src/main/resources/META-INF/externs/**</exclude>
                                     <exclude>**/src/main/resources/META-INF/resources/**</exclude>
-                                    <exclude>**/yarn.lock</exclude>
                                     <exclude>CODEOWNERS</exclude>
                                     <exclude>LICENSE</exclude>
                                     <exclude>README.md</exclude>

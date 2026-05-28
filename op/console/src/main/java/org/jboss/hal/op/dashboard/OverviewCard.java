@@ -68,7 +68,7 @@ import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.component.popover.PopoverBody.popoverBody;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
-import static org.patternfly.icon.IconSets.fas.cog;
+import static org.patternfly.icon.IconSets.fas.gear;
 import static org.patternfly.style.Classes.helpText;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
@@ -241,7 +241,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
 
     private DescriptionListGroup configFileDlg(AttributeDescriptions envAttributes, ModelNode envNode) {
         if (environment.standalone()) {
-            return dlg(envAttributes, "config-file", cog(), dld -> {
+            return dlg(envAttributes, "config-file", gear(), dld -> {
                 dld.text(filename(envNode.get("config-file").asString()));
             });
         } else {
@@ -249,7 +249,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
             String hostConfig = filename(envNode.get("host-config-file").asString());
             String label = sentenceCase("config-file");
             return descriptionListGroup("config-file")
-                    .addTerm(descriptionListTerm(label).icon(cog())
+                    .addTerm(descriptionListTerm(label).icon(gear())
                             .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)))
                     .addDescription(descriptionListDescription()
                             .add(domainConfig)

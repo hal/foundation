@@ -54,16 +54,16 @@ public class SocketBindingTypeColumn implements ColumnProvider {
         return finderColumn(ID)
                 .addHeader(finderColumnHeader("Type"))
                 .addItem(finderItem("inbound", "Inbound")
-                        .icon(far.arrowAltCircleLeft())
+                        .icon(far.circleLeft())
                         .store(RESOURCE_NAME_KEY, SOCKET_BINDING)
                         .nextColumn(registry.get().column(InboundColumn.ID)))
                 .addItem(finderItem("outbound-local", "Outbound Local")
                         .store(RESOURCE_NAME_KEY, LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING)
-                        .icon(far.arrowAltCircleRight())
+                        .icon(far.circleRight())
                         .nextColumn(registry.get().column(OutboundLocalColumn.ID)))
                 .addItem(finderItem("outbound-remote", "Outbound Remote")
                         .store(RESOURCE_NAME_KEY, REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING)
-                        .icon(fas.arrowCircleRight())
+                        .icon(fas.circleArrowRight())
                         .nextColumn(registry.get().column(OutboundRemoteColumn.ID)));
     }
 }

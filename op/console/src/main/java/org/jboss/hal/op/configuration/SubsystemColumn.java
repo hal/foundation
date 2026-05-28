@@ -39,8 +39,8 @@ import static org.patternfly.extension.finder.FinderColumnActions.finderColumnAc
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;
 import static org.patternfly.extension.finder.FinderItemActions.finderItemActions;
-import static org.patternfly.icon.IconSets.fas.externalLinkAlt;
-import static org.patternfly.icon.IconSets.fas.redo;
+import static org.patternfly.icon.IconSets.fas.arrowUpRightFromSquare;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.icon.IconSets.fas.trash;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
@@ -59,11 +59,11 @@ public class SubsystemColumn implements ColumnProvider {
     public FinderColumn get() {
         FinderColumn column = finderColumn(ID);
         return column.addHeader(finderColumnHeader("Subsystem").addActions(finderColumnActions()
-                        .addButton(button(redo()).plain().small().onClick((e, b) -> column.reload()))))
+                        .addButton(button(rotateRight()).plain().small().onClick((e, b) -> column.reload()))))
                 .addItems(childResources(__ -> TEMPLATE, node -> finderItem(Id.build(node.asString()))
                         .text(capitalCase(node.asString()))
                         .run(item -> item.addActions(finderItemActions()
-                                .addButton(button(externalLinkAlt()).plain().small().onClick((e, b) -> view(item)))
+                                .addButton(button(arrowUpRightFromSquare()).plain().small().onClick((e, b) -> view(item)))
                                 .addButton(button(trash()).plain().small().onClick((e, b) -> remove(item)))))))
                 .onPreview(metadataPreview((name, metadata, preview) ->
                         stackPreview(preview, capitalCase(name), stack -> stack.addItem(stackItem()

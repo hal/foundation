@@ -58,9 +58,9 @@ import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateAc
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.component.title.Title.title;
-import static org.patternfly.icon.IconSets.fas.checkCircle;
-import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
-import static org.patternfly.icon.IconSets.fas.timesCircle;
+import static org.patternfly.icon.IconSets.fas.circleCheck;
+import static org.patternfly.icon.IconSets.fas.circleXmark;
+import static org.patternfly.icon.IconSets.fas.triangleExclamation;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.md;
@@ -76,8 +76,8 @@ import static org.patternfly.token.Token.globalColorStatusSuccess100;
 class LogCard implements DashboardCard {
 
     private enum Status {
-        ERROR("error", "errors", () -> timesCircle().attr("color", chartGlobalDangerColor100.var)),
-        WARN("warning", "warnings", () -> exclamationTriangle().attr("color", chartGlobalWarningColor100.var)),
+        ERROR("error", "errors", () -> circleXmark().attr("color", chartGlobalDangerColor100.var)),
+        WARN("warning", "warnings", () -> triangleExclamation().attr("color", chartGlobalWarningColor100.var)),
         SKIP(null, null, null);
 
         final String singular;
@@ -160,7 +160,7 @@ class LogCard implements DashboardCard {
                                 .spaceItems(md)
                                 .add(flex().spaceItems(sm)
                                         .add(flexItem()
-                                                .add(checkCircle().attr("color", globalColorStatusSuccess100.var)))
+                                                .add(circleCheck().attr("color", globalColorStatusSuccess100.var)))
                                         .add(div().text("No errors or warnings"))));
                     } else if (statusMap.size() == 1) {
                         Map.Entry<Status, Long> entry = statusMap.entrySet().iterator().next();

@@ -37,8 +37,8 @@ import static org.patternfly.component.notification.NotificationDrawer.notificat
 import static org.patternfly.component.notification.NotificationDrawerBody.notificationDrawerBody;
 import static org.patternfly.component.notification.NotificationDrawerHeader.notificationDrawerHeader;
 import static org.patternfly.component.notification.NotificationDrawerList.notificationDrawerList;
-import static org.patternfly.icon.IconSets.fas.ellipsisV;
-import static org.patternfly.icon.IconSets.fas.search;
+import static org.patternfly.icon.IconSets.fas.ellipsisVertical;
+import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 
 public class NotificationElements {
 
@@ -58,13 +58,13 @@ public class NotificationElements {
         NotificationDrawerBody notificationDrawerBody = notificationDrawerBody().registerSubComponent()
                 .addList(notificationDrawerList)
                 .addEmptyState(emptyState()
-                        .icon(search())
+                        .icon(magnifyingGlass())
                         .text("No notifications found")
                         .addBody(emptyStateBody()
                                 .text("There are currently no notifications.")));
 
         drawer.addHeader(notificationDrawerHeader().registerSubComponent()
-                        .addAction(dropdown(ellipsisV(), "notification drawer actions")
+                        .addAction(dropdown(ellipsisVertical(), "notification drawer actions")
                                 .addMenu(dropdownMenu()
                                         .addContent(menuContent()
                                                 .addList(menuList()

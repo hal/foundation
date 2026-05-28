@@ -103,7 +103,7 @@ import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.filter.FilterOperator.AND;
-import static org.patternfly.icon.IconSets.fas.ellipsisV;
+import static org.patternfly.icon.IconSets.fas.ellipsisVertical;
 import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.screenReader;
@@ -506,7 +506,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     private Dropdown expressionDropdown(ResourceData rd, MenuList expressionList, MenuList nestedExpressionList) {
         Dropdown dropdown = rd == null
                 ? dropdown(menuToggle("Expression").secondary())
-                : dropdown(ellipsisV(), "Expressions for " + rd.template).placement(bottomEnd);
+                : dropdown(ellipsisVertical(), "Expressions for " + rd.template).placement(bottomEnd);
         dropdown.addMenu(dropdownMenu()
                 .addContent(menuContent()
                         .addGroup(menuGroup().addList(menuList().addItem(statisticsEnabledItem(rd))))

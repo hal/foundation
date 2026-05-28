@@ -49,7 +49,7 @@ import static org.patternfly.component.list.DataListItem.dataListItem;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowDown;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
-import static org.patternfly.icon.IconSets.fas.exclamationTriangle;
+import static org.patternfly.icon.IconSets.fas.triangleExclamation;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Size.xl;
 import static org.patternfly.style.Status.danger;
@@ -121,7 +121,7 @@ class HealthCard implements DashboardCard {
         } else if ("DOWN".equals(status.asString())) {
             return icon(arrowDown()).status(danger);
         } else {
-            return icon(exclamationTriangle()).status(warning);
+            return icon(triangleExclamation()).status(warning);
         }
     }
 

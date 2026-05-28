@@ -22,7 +22,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.CardActions.cardActions;
-import static org.patternfly.icon.IconSets.fas.redo;
+import static org.patternfly.icon.IconSets.fas.rotateRight;
 
 interface DashboardCard extends IsElement<HTMLElement> {
 
@@ -30,6 +30,6 @@ interface DashboardCard extends IsElement<HTMLElement> {
 
     default CardActions refreshActions() {
         return cardActions()
-                .add(button().plain().icon(redo()).onClick((e, c) -> refresh()));
+                .add(button().plain().icon(rotateRight()).onClick((e, c) -> refresh()));
     }
 }
