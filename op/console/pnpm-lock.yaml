@@ -7,14 +7,14 @@ settings:
 catalogs:
   pfj:
     '@patternfly-java/charts':
-      specifier: ^0.9.0
-      version: 0.9.0
+      specifier: ^0.9.1
+      version: 0.9.1
     '@patternfly-java/core':
-      specifier: ^0.9.0
-      version: 0.9.0
+      specifier: ^0.9.1
+      version: 0.9.1
     '@patternfly-java/finder':
-      specifier: ^0.9.0
-      version: 0.9.0
+      specifier: ^0.9.1
+      version: 0.9.1
 
 importers:
 
@@ -22,42 +22,42 @@ importers:
     dependencies:
       '@patternfly-java/charts':
         specifier: catalog:pfj
-        version: 0.9.0
+        version: 0.9.1
       '@patternfly-java/core':
         specifier: catalog:pfj
-        version: 0.9.0(@patternfly/patternfly@6.5.2)
+        version: 0.9.1(@patternfly/patternfly@6.5.2)
       '@patternfly-java/finder':
         specifier: catalog:pfj
-        version: 0.9.0(@patternfly/patternfly@6.5.2)
+        version: 0.9.1(@patternfly/patternfly@6.5.2)
       '@patternfly/patternfly':
         specifier: ^6.5.2
         version: 6.5.2
       dompurify:
-        specifier: ^3.4.6
-        version: 3.4.6
+        specifier: ^3.4.8
+        version: 3.4.8
     devDependencies:
       '@cyclonedx/cdxgen':
-        specifier: ^12.4.4
-        version: 12.4.4
+        specifier: ^12.5.1
+        version: 12.5.1
       esbuild:
         specifier: ^0.28.0
         version: 0.28.0
       vite:
-        specifier: ^8.0.14
-        version: 8.0.14(esbuild@0.28.0)(yaml@2.9.0)
+        specifier: ^8.0.16
+        version: 8.0.16(esbuild@0.28.0)(yaml@2.9.0)
 
 packages:
 
   '@appthreat/atom-common@1.1.0':
     resolution: {integrity: sha512-vGZpJdy9e0l83o8XwDAsQUDpkMVzR4DLb7mbi5npu8Nz/R+2m5oyHlpBGuLYBKm5+KkjTInXP9eNTcMa0Mn3Uw==}
 
-  '@appthreat/atom-parsetools@1.1.5':
-    resolution: {integrity: sha512-3RNr4FKXTe8amPtQgtEfCQz6RSJB/9qDDbPzCKPGcoRAPvUv5sCero4upKc0T2NxQQEeol4SeTGOYH7rvVZ8vQ==}
+  '@appthreat/atom-parsetools@1.2.2':
+    resolution: {integrity: sha512-uH93lVI2H53x3ZbcXWUBhcm25Kv4Iz+bWHtrghCn5YHtsm223kGRKqDx3hqmfUNybz+ZqFs1WhHFW7ah4HIqEA==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@appthreat/atom@2.5.4':
-    resolution: {integrity: sha512-XQ3ADj8/oxaBg15Mc/vxedE4gHlqyPnIVJbtnq1cXEqmWl01nz/P5+vvPPl31fXR+kxsWOicQKh27nlJxrWa4g==}
+  '@appthreat/atom@2.5.5':
+    resolution: {integrity: sha512-ztiWaihwAl+ksh+jNeHey7vIjLywkTfVG8lueqlg0Pr5Nb/CEa8oBG1loirlJo6kB8sr9vUMrXjSlWu1fRDp9w==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -114,67 +114,66 @@ packages:
     resolution: {integrity: sha512-Zk4GIHsWHvs6eD+7w3v+ctA0WdukitaQjrkdM7CePkDE7J7ib8GPE20Bre63iK1Knmr3vFLIYRdXulvC2qHZzQ==}
     engines: {node: '>=20'}
 
-  '@cdxgen/cdxgen-plugins-bin-darwin-amd64@2.1.3':
-    resolution: {integrity: sha512-IqoG/iS/V73Seed+vFxmj5LDfTqw7/EEh9/di3gzn/KYFvhDGRNOFulZ7L5dI7Gf01xTYELCJ1Hlc5sm6xgHFA==}
+  '@cdxgen/cdxgen-plugins-bin-darwin-amd64@2.3.0':
+    resolution: {integrity: sha512-4OqBlnOUgQ9zRxHC6RXEU1lvYBtTeykxh6Bc6Ipl0GvXEist03Q1VZSndht1qoOCalsoEC68RFnwBRZqR286LA==}
     cpu: [x64]
     os: [darwin]
 
-  '@cdxgen/cdxgen-plugins-bin-darwin-arm64@2.1.3':
-    resolution: {integrity: sha512-tiTsbg/BVct8gQtnKw8VdOVlmI0qVDY57cFGz2QKKy9tjYYkxgZMmNx/jo0ibz1Zs1k1tEzzyYspAmYw9xelQg==}
+  '@cdxgen/cdxgen-plugins-bin-darwin-arm64@2.3.0':
+    resolution: {integrity: sha512-qR9zmK+YljLPh2IKYuhCuPFmqgEI9qWZdZnbtE0IqmaWJFeDBHpspnE26e1jrju3GaIqOhFKNxa8abAkmhxATg==}
     cpu: [arm64]
     os: [darwin]
 
-  '@cdxgen/cdxgen-plugins-bin-linux-amd64@2.1.3':
-    resolution: {integrity: sha512-axwyO05NkexkBzNp8isQkkmMVbU+Kwwa9iGwWtJi9/E5mlZ1WH4qkFpa5+hsPsElN4mhkQVB1o2iyKTIFgusDA==}
+  '@cdxgen/cdxgen-plugins-bin-linux-amd64@2.3.0':
+    resolution: {integrity: sha512-IvyH8KGnG7Gg0Vm9s+4SCZZdUuWFlrO6qwHEtUDoRSioq0mkO7bBX/xBZbGAJ4V7ZC3IUIqFCxtyktZiQF0Htw==}
     cpu: [x64]
     os: [linux]
     libc: glibc
 
-  '@cdxgen/cdxgen-plugins-bin-linux-arm64@2.1.3':
-    resolution: {integrity: sha512-nszTPSgdF2yomEqAg9lJWzCaJz6WKtiqit0wgIoH2oCcyceRyxMJZnUaq8KHZOdnRrCcedbAVo9fockQK4gFdw==}
+  '@cdxgen/cdxgen-plugins-bin-linux-arm64@2.3.0':
+    resolution: {integrity: sha512-Ey2CrO/RqgfTeg4SIsw+GHU94NKM3LY4OTXz76eRIhEO/Xd6yfZgmDnRfyNFuFoSn0okcyzR7fTOeBuLSMgxuA==}
     cpu: [arm64]
     os: [linux]
     libc: glibc
 
-  '@cdxgen/cdxgen-plugins-bin-linux-arm@2.1.3':
-    resolution: {integrity: sha512-oUDIiDcgBukGNTYr0ua97WBk/Ea+t9m3aFLSZr8cBw8z7XBiB5xio13k+Pn43f2Y44Ce5CNhEbPswj81NEMUiw==}
+  '@cdxgen/cdxgen-plugins-bin-linux-arm@2.3.0':
+    resolution: {integrity: sha512-NtY4lIN4OUJohJEKZ+646c1tgma4WRa31wWbd/7DI8aJaWcfnBXYjuMrPBvDBPW/G6AYNJs5b5Ze6+6IigmBlQ==}
     cpu: [arm]
     os: [linux]
     libc: glibc
 
-  '@cdxgen/cdxgen-plugins-bin-linux-ppc64@2.1.3':
-    resolution: {integrity: sha512-Rl374LS48QGrpD8hqJ+0Phbo1hf+T5wYxLqfNbG5UMsHqlnTfY57+L+2s5AkkoRziEbGdZxQXLv8fCbaVqT1Qg==}
+  '@cdxgen/cdxgen-plugins-bin-linux-ppc64@2.3.0':
+    resolution: {integrity: sha512-F8LnXkhvXQDrg6wfwL3JUbSnSn/MadO95z5CMXKA8BmLYNhAbYa6ybACgKpB/QV4wPObU5rsBDbHsKMYcDf81A==}
     cpu: [ppc64]
     os: [linux]
 
-  '@cdxgen/cdxgen-plugins-bin-linuxmusl-amd64@2.1.3':
-    resolution: {integrity: sha512-2EG8MUmAogy431Pl26nULx/fnQNPj8D659DSC0MN4GzgcbKEU7BgeRwy7fTMQhLPamLEKq4ft+WX2qiZUnU6pQ==}
+  '@cdxgen/cdxgen-plugins-bin-linuxmusl-amd64@2.3.0':
+    resolution: {integrity: sha512-9iIE0tSB6drYThLlYfUyS9Z2TbYdMFTHKi2usoAAgRjK/tr43mEcMxcKtqCMWRy5Jpe4dVVMcT6e3a3ySa9aXg==}
     cpu: [x64]
     os: [linux]
     libc: musl
 
-  '@cdxgen/cdxgen-plugins-bin-linuxmusl-arm64@2.1.3':
-    resolution: {integrity: sha512-wdXADkkTDJUD3Or9kpJK2rtf0Gg1gfhqvwGlDJGhr3bAv6qHRsmsxI+k0ujWex3wIzpAw3xzzr4t5vH5sH7uvg==}
+  '@cdxgen/cdxgen-plugins-bin-linuxmusl-arm64@2.3.0':
+    resolution: {integrity: sha512-xHvoyd4s/W2MGVp+dRbD3bdo5faYS7AfOPtd6hgo2hy5i5l2Wv812uYEtqPrPlL+7r1OD0dND3MGpC83+I6a4Q==}
     cpu: [arm64]
     os: [linux]
     libc: musl
 
-  '@cdxgen/cdxgen-plugins-bin-windows-amd64@2.1.3':
-    resolution: {integrity: sha512-TUE2MMjAWBj8CtEu26NlHS/CjUgJzvQkQQSFVIO6m8BLKU+G+nsmuXH4uFHbwl9u4jxOW2WDpHefcJd4zjmOOQ==}
+  '@cdxgen/cdxgen-plugins-bin-windows-amd64@2.3.0':
+    resolution: {integrity: sha512-rCzHWF+oJhEf9Tl9tWOIMYnhvlkbAhKVF+rTdoPBZWQ0iFk/LmzP6fotjWB+d23AKofC1DjxWOVlE/HyHBTmTQ==}
     cpu: [x64]
     os: [win32]
 
-  '@cdxgen/cdxgen-plugins-bin-windows-arm64@2.1.3':
-    resolution: {integrity: sha512-6qwkVrFfiVu3RIpYE6U20+m0KS+ayKJRjZsskpbqbqOYWYv1Lw0E51D/eqbhsKR4Bvqx9v1E37wq/Ecni2OlpA==}
+  '@cdxgen/cdxgen-plugins-bin-windows-arm64@2.3.0':
+    resolution: {integrity: sha512-LhPtrKIObVe99fL9mmsWa1yVPD6zhp1F77i1Cb0j2Dd1MCNUoQXlbWxs3cQC57c5tkDs1UczV6HPPVfmnqt6SA==}
     cpu: [arm64]
     os: [win32]
 
-  '@cdxgen/cdxgen-plugins-bin@2.1.3':
-    resolution: {integrity: sha512-c5Oemk0rpXrqnVfJjJIx/XsjE835bAA0gEJRryzQbgkNX7ABIB41AqNbRfIWfR/3UeDNLiiUKlAMzPUUkRrD0w==}
-    cpu: [x64]
+  '@cdxgen/cdxgen-plugins-bin@2.3.0':
+    resolution: {integrity: sha512-2E9fs28nCVoNCsGG/P9DRKfowTxWaFOdClBAj7+9r3Y2GEl9P3fy/QaKDznw3gCsbD2t2rHhwFJx8B9mWNGdZA==}
 
-  '@cyclonedx/cdxgen@12.4.4':
-    resolution: {integrity: sha512-3y5VlNtPwzOsuaxK8TpLMR4rf0cKBE92qYRBFV4iEGuvreFP5I7N1Q06p3Y+j5nOL98cxwiZyBefa9K9OWvSQw==}
+  '@cyclonedx/cdxgen@12.5.1':
+    resolution: {integrity: sha512-Sh1XuKenE5OxoMbttM3Q2UNRsw16L4KE7Rj9ayRGFjfdrlaHu5arnB03qU2nUQ3vXyE3E5e/FDX5kQNhUmoLBQ==}
     engines: {node: ^20 || ^22 || ^24 || ^25, pnpm: '>=10'}
     hasBin: true
 
@@ -412,21 +411,21 @@ packages:
     resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@oxc-project/types@0.132.0':
-    resolution: {integrity: sha512-FESMOxil5Se014ui/Eq8fT5uHJo6nIRwH0PfJrZJXs6Gek3ZVFOrpUv3YIZT20m+extU98Hg1Ym72U58rlsxUQ==}
+  '@oxc-project/types@0.133.0':
+    resolution: {integrity: sha512-KzkdCd6Uxqnf6l3HOw1xfatAlUURA0g14cvBYFyJ5SaNOQbOUvBr9PKArcPcrNIeRsBdgcUzOGrhKveVpvOIGA==}
 
-  '@patternfly-java/charts@0.9.0':
-    resolution: {integrity: sha512-U3lzAWFaNIqkEb3LjwP8a15lBWtgjpLTYMJv87Ne3ljCq71Qy9J2sMWJ6ah2zckYR6eMjKRaA9W2ZnETxGHi4w==}
+  '@patternfly-java/charts@0.9.1':
+    resolution: {integrity: sha512-AWbrNmOxIIDbdXl+HQRmQzXfqWTlx1weepRttP7hCPchtVxf9tXZNuTEgu6aHEIRfU3FsaunHheBE/V+72rhNw==}
 
-  '@patternfly-java/core@0.9.0':
-    resolution: {integrity: sha512-bHv5jRtCZ+ZWTXjqLBirH3TUxE0qDj7qxEnnTDGNGD3iOQdmX3IXffkqNoNZ79GQEwwpqnGOYNy7qr3TVJ3EMw==}
+  '@patternfly-java/core@0.9.1':
+    resolution: {integrity: sha512-mb1VbCxJTqEm40sXTNx5i0zqcyvaAsrYqanAtTbukli/FLboglQtG5iEuAOOrAhD+UEVCuvzBhx6uVIPLDnE5Q==}
     peerDependencies:
-      '@patternfly/patternfly': ^6.4.0
+      '@patternfly/patternfly': ^6.5.2
 
-  '@patternfly-java/finder@0.9.0':
-    resolution: {integrity: sha512-vrgLj/61TS6NJV967kA3BX5eG4oxGHeFEbHMRzt63kqTEfgsVhkGis5gywvI5bfwID+31nH3YW1GXXICKEmeKQ==}
+  '@patternfly-java/finder@0.9.1':
+    resolution: {integrity: sha512-KlyIdvBmA/fJaXP0tl0kiOSwYiT70p41DYyNAzMGJswlqpyofYNk9KsIgA4ELS3zzK/Aj0PWAeS5othx3QnVQA==}
     peerDependencies:
-      '@patternfly/patternfly': ^6.4.0
+      '@patternfly/patternfly': ^6.5.2
 
   '@patternfly/patternfly@6.5.2':
     resolution: {integrity: sha512-yZ71+1gt1VGzUN5amjDNd9NvttTnSOm9M0JeBL0YX1KaWXW1bmDPzTWEM+vQXuC4LVK0msHmR5hKB7KVpamAkA==}
@@ -498,97 +497,97 @@ packages:
   '@patternfly/react-tokens@6.5.1':
     resolution: {integrity: sha512-zwepLsIQTL0Lf4R2/PIBOk1m+pm0hYVT3lktf2H4+Y87eRIifwMRb19c+pr4hj4ckGvHs+WxwjTfTj2Qqwn5rw==}
 
-  '@rolldown/binding-android-arm64@1.0.2':
-    resolution: {integrity: sha512-ZS4D1JPGn/MYQN/SYDWftIE/nVsM8j/AFOYEzAoOE2O3NktQOZru+/vYXGbR/qtdLdIfGCP0lcoJiYVzsEz+iQ==}
+  '@rolldown/binding-android-arm64@1.0.3':
+    resolution: {integrity: sha512-454rs7jHngixp/NMxd5srYD57OnzSlZ/eFTETjORQHLwJG1lRtmNOJcBerZlfu4GjKqeq8aCCIQrMdHyhI51Hw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [android]
 
-  '@rolldown/binding-darwin-arm64@1.0.2':
-    resolution: {integrity: sha512-vdFA9+C/rekyGce7WqHs/xoT0ioZEWaOFyZLIV1mEeNFaFDUQrPIo8Vs2GvJ6eetb3rzDUtUBgzto3ExpXJB3w==}
+  '@rolldown/binding-darwin-arm64@1.0.3':
+    resolution: {integrity: sha512-PcAhP+ynjURNyy8SKGl5DQP94aGuB/7JrXJb/t7P+hanXvQVMWzUvRRhBAcg/lNRadBhoUPqSoP4xw5tR/KBEA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [darwin]
 
-  '@rolldown/binding-darwin-x64@1.0.2':
-    resolution: {integrity: sha512-BewSOwTHazv77DTYiAZXSqqKZ4KP/KonFisDMVU7PImxoWfB2aepnPhd2E4SWz3zDzYgDNbs6jBmTdgNnF02GA==}
+  '@rolldown/binding-darwin-x64@1.0.3':
+    resolution: {integrity: sha512-9YpfeUvSE2RS7wysJ81uOZkXJz7f7Q55H2Gvp3VEw/EsahqDtrphrZ0EwDLK5vvKOzaCrBsjF8JmnMLcUt78Gg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [darwin]
 
-  '@rolldown/binding-freebsd-x64@1.0.2':
-    resolution: {integrity: sha512-m41o7M0YWtUdqk61Tb+jnKb2rN++iRdIASlExkUoKfIAH30DOHCB8fVLzSUpbWHHU8esmEioY62PxzexE8MBuA==}
+  '@rolldown/binding-freebsd-x64@1.0.3':
+    resolution: {integrity: sha512-yB1IlAsSNHncV6SCTL27/MVGR5htvQsoGxIv5KMGXALp+Ll1wYsn+x98M9MW7qa+NdSbvrrY7ANI4wLJ0n1e6g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [freebsd]
 
-  '@rolldown/binding-linux-arm-gnueabihf@1.0.2':
-    resolution: {integrity: sha512-jcojB9H7W/jS29pMKWAK1N+fU99vXodHDTatS3b3y/XSOCiHo0kkA74pL3jJmkoQtYpOCxDvaKs1fo2Ij/1X5w==}
+  '@rolldown/binding-linux-arm-gnueabihf@1.0.3':
+    resolution: {integrity: sha512-Yi30IVAAfLUCy2MseFjbB1jAMDl1VMCAas5StnYp8da9+CKvMd2H2cbEjWcw5NPaPqzvYkVIaF1nNUG+b7u/sw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm]
     os: [linux]
 
-  '@rolldown/binding-linux-arm64-gnu@1.0.2':
-    resolution: {integrity: sha512-1jn6qDU5iiOgFgygDzKUuKP0maTi0/f1+sBLgvij/76C77Nm3ts6ufz9Bjg5q5dduxiUIxtq86JIoBvo1xQ4Ig==}
+  '@rolldown/binding-linux-arm64-gnu@1.0.3':
+    resolution: {integrity: sha512-jsO7R8To+AdlYgUmN5sHSCZbfhtMBkO0WUx8iORQnPcMMdgr7qM2DQmMwgabs3GhNztdmoKkMKQFHD6DTMCIQw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@rolldown/binding-linux-arm64-musl@1.0.2':
-    resolution: {integrity: sha512-QVLO/czFMdoMFSqlX3bcswcJNm/23r+qoa/jgtmFc/qEp6/jXmIkDjF/XIo8dPfGaiwy1xfQn8o77L79GeXFgw==}
+  '@rolldown/binding-linux-arm64-musl@1.0.3':
+    resolution: {integrity: sha512-VWkUHwWriDciit80wleYwKILoR/KMvxh/IdwS/paX+ZgpuRpCrKLUdadJbc0NpBEiyhpYawsJ73j9aCvOH+f7Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@rolldown/binding-linux-ppc64-gnu@1.0.2':
-    resolution: {integrity: sha512-hgO5Abm0w5UL6FEa2iFnZqo2KlK7TQ5QhV5x09hujBf7t5KzHQ1VmfPuTpqRy/rNlSxua3eWH374xxiVrP+lcA==}
+  '@rolldown/binding-linux-ppc64-gnu@1.0.3':
+    resolution: {integrity: sha512-5f1laC0SlIR0yDbFCd8acUhvJIag6N3zC5P7oUPN6wX0aOma+uKJ0wBDH5aq7I1PVI2ttTlhJwzwRIBnLiSGEg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@rolldown/binding-linux-s390x-gnu@1.0.2':
-    resolution: {integrity: sha512-fy8rXxuYEu602abC8MUNaPjYLIFzReOaEIEMKMUa0rFEUxNpVXhs15KSSQ4qlqSaM7B6rcj9rDZgADh/IGDzLQ==}
+  '@rolldown/binding-linux-s390x-gnu@1.0.3':
+    resolution: {integrity: sha512-Iq4ko0r4XsgbrF/LunNgHtAGLRRVE2kXonAXQ/MV0mC6jQpMOhW1SvtZja2EhC/kd05++bP78dsqBeIQyYJ6Yg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
-  '@rolldown/binding-linux-x64-gnu@1.0.2':
-    resolution: {integrity: sha512-0+bOkiQ779+r1WpoHOWHqncvyySci0vKph+myNDYb+im6meJAzHQXay6oEgnkHuUGouM1LKTZwqKpBow6Kj7CQ==}
+  '@rolldown/binding-linux-x64-gnu@1.0.3':
+    resolution: {integrity: sha512-B8m6tD5+/N5FeNQFbKlLA/2yVq9ycQP1SeedyEYYKWBNR3ZQbkvIUcNnDNM03lO1l5F2roiiFJGgvoLLyZXtSg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@rolldown/binding-linux-x64-musl@1.0.2':
-    resolution: {integrity: sha512-mjSkrzZK5Qsl0a9d1JgILOiuZOSDTVdKENcSXBoqbzSrspLR/4/IRVDo5wd2GgZjNss/viBFJdeq+j7qH2nypw==}
+  '@rolldown/binding-linux-x64-musl@1.0.3':
+    resolution: {integrity: sha512-pSdpdUJHkuCxun9LE7jvgUB9qsRgaiyNNCX7m/AvHTcq67AiT/Yhoxvw5zPfhrM8k/BfP8ce/hMOpthKDpEUow==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@rolldown/binding-openharmony-arm64@1.0.2':
-    resolution: {integrity: sha512-1v5vHasdfQAZoEHakBV72LIFAC9JjnymsiKxp+GEr/ma3+NJCPSaYK+qavInOovJkgwFrs7GccX2d6IgDA3Z5w==}
+  '@rolldown/binding-openharmony-arm64@1.0.3':
+    resolution: {integrity: sha512-OXXS3RKJgX2uLwM+gYyuH5omcH8fL1LJs96pZGgtetVCahON57+d4SJHzTgZiOjxgGkSnpXpOsWuPDGAKAigEg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [openharmony]
 
-  '@rolldown/binding-wasm32-wasi@1.0.2':
-    resolution: {integrity: sha512-mb1VobWn6NheziTk5/WEaR6AKVbrwT5sOi6C7zk3gy/pD1qtJfU1j4PgTo2NJnOtbL9Dl3Aeei8w9jJ7qC2jZQ==}
+  '@rolldown/binding-wasm32-wasi@1.0.3':
+    resolution: {integrity: sha512-JTtb8BWFynicNSoPrehsCzBtOKjZ6jhMiPFEmOiuXg1Fl8dn2KHQob+GuPSGR0dryQa1PQJbzjF3dqO/whhjLg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [wasm32]
 
-  '@rolldown/binding-win32-arm64-msvc@1.0.2':
-    resolution: {integrity: sha512-SqKonF56vA/L2yHwHYcEp2P34URpOZ7d1fS635cTkpDnUtEGdUbhI6NzsPdqeSWvAAeGDrxjWjNmibDIdFf9/A==}
+  '@rolldown/binding-win32-arm64-msvc@1.0.3':
+    resolution: {integrity: sha512-gEdFFEN70A/jxb2svrWsN3aDL7OUtmvlOy+6fa2jxG8K0wQ1ZbdeLGnidov6Yu5/733dI5ySfzFlQ/cb0bSz1g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [win32]
 
-  '@rolldown/binding-win32-x64-msvc@1.0.2':
-    resolution: {integrity: sha512-v7qRI7gXLRINcOGXt+7YmAZ6iFuyZVMIoXAxhd8oP+DR9dLfL9GfNIx7PLMxmhZdvq8waUJBQiWN9EKNy+TRBQ==}
+  '@rolldown/binding-win32-x64-msvc@1.0.3':
+    resolution: {integrity: sha512-eXB7CHuaQdqmJcc3koCNtNPmT/bj2gc999kUFgBxG8Ac0NdgXc4rkCHhqrgrhN3zddvvvrgzj1e90SuSfmyIXA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
@@ -839,8 +838,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.6:
-    resolution: {integrity: sha512-+7gzEI8trIIQkVCvQ3ucGtNfH3nOmDgVTzc62rAAOlMxLth78pwpPoZCPc7CyRzAQF89MqcfPdEWkDwnjgqktg==}
+  dompurify@3.4.8:
+    resolution: {integrity: sha512-yb1cEmaOum7wFvOCSQxyfgVlv5D47Rc30iZWoMpbDIWTnJ6grDDQyu2KFJzB2k7u0pMuJcQ1zphH//fFnw2tjQ==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -969,8 +968,8 @@ packages:
     resolution: {integrity: sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==}
     engines: {node: '>= 0.4'}
 
-  hasown@2.0.3:
-    resolution: {integrity: sha512-ej4AhfhfL2Q2zpMmLo7U1Uv9+PyhIZpgQLGT1F9miIGmiCJIoCgSmczFdrc97mWT4kVY72KA+WnnhJ5pghSvSg==}
+  hasown@2.0.4:
+    resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
 
   hermes-estree@0.36.1:
@@ -1151,8 +1150,8 @@ packages:
     resolution: {integrity: sha512-ozCC6gdQ+glXOQsveKD0YsDy8DSQFjDTz4zyzEHNV5+JP5D62LmfDZ6o1cycFx9ouG940M5dE8C8CTewdj2YWQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  lru-cache@11.5.0:
-    resolution: {integrity: sha512-5YgH9UJd7wVb9hIouI2adWpgqrrICkt070Dnj8EUY1+B4B2P9eRLPAkAAo6NICA7CEhOIeBHl46u9zSNpNu7zA==}
+  lru-cache@11.5.1:
+    resolution: {integrity: sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A==}
     engines: {node: 20 || >=22}
 
   math-intrinsics@1.1.0:
@@ -1309,10 +1308,10 @@ packages:
     resolution: {integrity: sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA==}
     engines: {node: '>= 0.10'}
 
-  react-dom@19.2.6:
-    resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
+  react-dom@19.2.7:
+    resolution: {integrity: sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ==}
     peerDependencies:
-      react: ^19.2.6
+      react: ^19.2.7
 
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
@@ -1320,8 +1319,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react@19.2.6:
-    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
+  react@19.2.7:
+    resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
     engines: {node: '>=0.10.0'}
 
   read-cmd-shim@6.0.0:
@@ -1343,8 +1342,8 @@ packages:
     resolution: {integrity: sha512-cGk8IbWEAnaCpdAt1BHzJ3Ahz5ewDJa0KseTsE3qIRMJ3C698W8psM7byCeWVpd/Ha7FUYzuRVzXoKoM6nRUbA==}
     engines: {node: '>=20'}
 
-  rolldown@1.0.2:
-    resolution: {integrity: sha512-oZx5zVDtVB44AW3eaifgDml1gWRDZGvjcfdxonE4swNPG98PrrXjaO/KrnUjzlMnztCCRVlUueA1kCXhARGk6g==}
+  rolldown@1.0.3:
+    resolution: {integrity: sha512-i00lAJ2ks1BYr7rjNjKC7BcqAS7nVfiT3QX1SI5aY+AFHblCmaUf9OE9dbdzDvW6dJxbi2ZCZiy9v3CcwOiX3g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -1426,8 +1425,8 @@ packages:
     resolution: {integrity: sha512-dzGK0boVlC4W5QFuQN1EFSl3bIDYsk7Tj40U6eIBnK2k/8ml7TZ5agbI5j5+qnoVcAA+rNtBml8SEiLxZpNqRQ==}
     engines: {node: '>=18'}
 
-  tinyglobby@0.2.16:
-    resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
+  tinyglobby@0.2.17:
+    resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
   toidentifier@1.0.1:
@@ -1454,8 +1453,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici@7.26.0:
-    resolution: {integrity: sha512-3O9Tf67pGhgOv9jM35AbhkXAKi13f3oy3aE4CSgr+TckGeY+/iu97ZXN+J7DpHPzLbVApFd1IFhcnBjREYXYcg==}
+  undici@7.27.2:
+    resolution: {integrity: sha512-uZsKNuzQxDMUY6M3pIMvy5tvlGmtq8XJ2oLAkfRKGNu+1VQAIvLy2xIVG5ATZl5wDXl/tddByAWCizRbOme+TA==}
     engines: {node: '>=20.18.1'}
 
   unpipe@1.0.0:
@@ -1607,8 +1606,8 @@ packages:
     peerDependencies:
       react: '>=16.6.0'
 
-  vite@8.0.14:
-    resolution: {integrity: sha512-s4BJJ+5y1pYL6Otw51FHhVJQhPnuRinKig64g/1+EUNaJsd3gCKdD31IPFvswUgW9/60QT9oFHbZHbQK5imcxw==}
+  vite@8.0.16:
+    resolution: {integrity: sha512-h9bXPmJichP5fLmVQo3PyaGSDE2n3aPuomeAlVRm0JLmt4rY6zmPKd59HYI4LNW8oTK7tlTsuC7l/m7awx9Jcw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1710,7 +1709,7 @@ snapshots:
   '@appthreat/atom-common@1.1.0':
     optional: true
 
-  '@appthreat/atom-parsetools@1.1.5':
+  '@appthreat/atom-parsetools@1.2.2':
     dependencies:
       '@appthreat/atom-common': 1.1.0
       '@babel/parser': 7.29.3
@@ -1718,7 +1717,7 @@ snapshots:
       typescript: 6.0.3
     optional: true
 
-  '@appthreat/atom@2.5.4':
+  '@appthreat/atom@2.5.5':
     dependencies:
       '@appthreat/atom-common': 1.1.0
     optional: true
@@ -1785,40 +1784,40 @@ snapshots:
   '@cdxgen/cdx-hbom@0.5.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-darwin-amd64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-darwin-amd64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-darwin-arm64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-darwin-arm64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-linux-amd64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-linux-amd64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-linux-arm64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-linux-arm64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-linux-arm@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-linux-arm@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-linux-ppc64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-linux-ppc64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-linuxmusl-amd64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-linuxmusl-amd64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-linuxmusl-arm64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-linuxmusl-arm64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-windows-amd64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-windows-amd64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin-windows-arm64@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin-windows-arm64@2.3.0':
     optional: true
 
-  '@cdxgen/cdxgen-plugins-bin@2.1.3':
+  '@cdxgen/cdxgen-plugins-bin@2.3.0':
     optional: true
 
-  '@cyclonedx/cdxgen@12.4.4':
+  '@cyclonedx/cdxgen@12.5.1':
     dependencies:
       '@babel/parser': 7.29.3
       '@babel/traverse': 7.29.0
@@ -1843,7 +1842,6 @@ snapshots:
       npm-package-arg: 13.0.2
       packageurl-js: 1.0.2
       parse-conflict-json: 5.0.1
-      proc-log: 6.1.0
       properties-reader: 3.0.1
       read-package-json-fast: 5.0.0
       semver: 7.8.1
@@ -1857,22 +1855,22 @@ snapshots:
       yargs: 18.0.0
       yoctocolors: 2.1.2
     optionalDependencies:
-      '@appthreat/atom': 2.5.4
-      '@appthreat/atom-parsetools': 1.1.5
+      '@appthreat/atom': 2.5.5
+      '@appthreat/atom-parsetools': 1.2.2
       '@appthreat/cdx-proto': 2.0.1
       '@bufbuild/protobuf': 2.12.0
       '@cdxgen/cdx-hbom': 0.5.0
-      '@cdxgen/cdxgen-plugins-bin': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-darwin-amd64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-darwin-arm64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-linux-amd64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-linux-arm': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-linux-arm64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-linux-ppc64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-linuxmusl-amd64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-linuxmusl-arm64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-windows-amd64': 2.1.3
-      '@cdxgen/cdxgen-plugins-bin-windows-arm64': 2.1.3
+      '@cdxgen/cdxgen-plugins-bin': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-darwin-amd64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-darwin-arm64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-linux-amd64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-linux-arm': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-linux-arm64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-linux-ppc64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-linuxmusl-amd64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-linuxmusl-arm64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-windows-amd64': 2.3.0
+      '@cdxgen/cdxgen-plugins-bin-windows-arm64': 2.3.0
       body-parser: 2.2.2
       compression: 1.8.1
       connect: 3.7.0
@@ -2028,7 +2026,7 @@ snapshots:
       '@gar/promise-retry': 1.0.3
       '@npmcli/promise-spawn': 9.0.1
       ini: 6.0.0
-      lru-cache: 11.5.0
+      lru-cache: 11.5.1
       npm-pick-manifest: 11.0.3
       proc-log: 6.1.0
       semver: 7.8.1
@@ -2057,128 +2055,128 @@ snapshots:
     dependencies:
       which: 6.0.1
 
-  '@oxc-project/types@0.132.0': {}
+  '@oxc-project/types@0.133.0': {}
 
-  '@patternfly-java/charts@0.9.0':
+  '@patternfly-java/charts@0.9.1':
     dependencies:
-      '@patternfly/react-charts': 8.5.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(victory-area@37.3.6(react@19.2.6))(victory-axis@37.3.6(react@19.2.6))(victory-bar@37.3.6(react@19.2.6))(victory-box-plot@37.3.6(react@19.2.6))(victory-chart@37.3.6(react@19.2.6))(victory-core@37.3.6(react@19.2.6))(victory-create-container@37.3.6(react@19.2.6))(victory-cursor-container@37.3.6(react@19.2.6))(victory-group@37.3.6(react@19.2.6))(victory-legend@37.3.6(react@19.2.6))(victory-line@37.3.6(react@19.2.6))(victory-pie@37.3.6(react@19.2.6))(victory-scatter@37.3.6(react@19.2.6))(victory-stack@37.3.6(react@19.2.6))(victory-tooltip@37.3.6(react@19.2.6))(victory-voronoi-container@37.3.6(react@19.2.6))(victory-zoom-container@37.3.6(react@19.2.6))
+      '@patternfly/react-charts': 8.5.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(victory-area@37.3.6(react@19.2.7))(victory-axis@37.3.6(react@19.2.7))(victory-bar@37.3.6(react@19.2.7))(victory-box-plot@37.3.6(react@19.2.7))(victory-chart@37.3.6(react@19.2.7))(victory-core@37.3.6(react@19.2.7))(victory-create-container@37.3.6(react@19.2.7))(victory-cursor-container@37.3.6(react@19.2.7))(victory-group@37.3.6(react@19.2.7))(victory-legend@37.3.6(react@19.2.7))(victory-line@37.3.6(react@19.2.7))(victory-pie@37.3.6(react@19.2.7))(victory-scatter@37.3.6(react@19.2.7))(victory-stack@37.3.6(react@19.2.7))(victory-tooltip@37.3.6(react@19.2.7))(victory-voronoi-container@37.3.6(react@19.2.7))(victory-zoom-container@37.3.6(react@19.2.7))
       '@patternfly/react-styles': 6.5.1
       '@patternfly/react-tokens': 6.5.1
       hoist-non-react-statics: 3.3.2
       lit: 3.3.3
       lodash: 4.18.1
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
       tslib: 2.8.1
-      victory-area: 37.3.6(react@19.2.6)
-      victory-axis: 37.3.6(react@19.2.6)
-      victory-bar: 37.3.6(react@19.2.6)
-      victory-box-plot: 37.3.6(react@19.2.6)
-      victory-chart: 37.3.6(react@19.2.6)
-      victory-core: 37.3.6(react@19.2.6)
-      victory-create-container: 37.3.6(react@19.2.6)
-      victory-cursor-container: 37.3.6(react@19.2.6)
-      victory-group: 37.3.6(react@19.2.6)
-      victory-legend: 37.3.6(react@19.2.6)
-      victory-line: 37.3.6(react@19.2.6)
-      victory-pie: 37.3.6(react@19.2.6)
-      victory-scatter: 37.3.6(react@19.2.6)
-      victory-stack: 37.3.6(react@19.2.6)
-      victory-tooltip: 37.3.6(react@19.2.6)
-      victory-voronoi-container: 37.3.6(react@19.2.6)
-      victory-zoom-container: 37.3.6(react@19.2.6)
+      victory-area: 37.3.6(react@19.2.7)
+      victory-axis: 37.3.6(react@19.2.7)
+      victory-bar: 37.3.6(react@19.2.7)
+      victory-box-plot: 37.3.6(react@19.2.7)
+      victory-chart: 37.3.6(react@19.2.7)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-create-container: 37.3.6(react@19.2.7)
+      victory-cursor-container: 37.3.6(react@19.2.7)
+      victory-group: 37.3.6(react@19.2.7)
+      victory-legend: 37.3.6(react@19.2.7)
+      victory-line: 37.3.6(react@19.2.7)
+      victory-pie: 37.3.6(react@19.2.7)
+      victory-scatter: 37.3.6(react@19.2.7)
+      victory-stack: 37.3.6(react@19.2.7)
+      victory-tooltip: 37.3.6(react@19.2.7)
+      victory-voronoi-container: 37.3.6(react@19.2.7)
+      victory-zoom-container: 37.3.6(react@19.2.7)
     transitivePeerDependencies:
       - echarts
 
-  '@patternfly-java/core@0.9.0(@patternfly/patternfly@6.5.2)':
+  '@patternfly-java/core@0.9.1(@patternfly/patternfly@6.5.2)':
     dependencies:
       '@patternfly/patternfly': 6.5.2
 
-  '@patternfly-java/finder@0.9.0(@patternfly/patternfly@6.5.2)':
+  '@patternfly-java/finder@0.9.1(@patternfly/patternfly@6.5.2)':
     dependencies:
       '@patternfly/patternfly': 6.5.2
 
   '@patternfly/patternfly@6.5.2': {}
 
-  '@patternfly/react-charts@8.5.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(victory-area@37.3.6(react@19.2.6))(victory-axis@37.3.6(react@19.2.6))(victory-bar@37.3.6(react@19.2.6))(victory-box-plot@37.3.6(react@19.2.6))(victory-chart@37.3.6(react@19.2.6))(victory-core@37.3.6(react@19.2.6))(victory-create-container@37.3.6(react@19.2.6))(victory-cursor-container@37.3.6(react@19.2.6))(victory-group@37.3.6(react@19.2.6))(victory-legend@37.3.6(react@19.2.6))(victory-line@37.3.6(react@19.2.6))(victory-pie@37.3.6(react@19.2.6))(victory-scatter@37.3.6(react@19.2.6))(victory-stack@37.3.6(react@19.2.6))(victory-tooltip@37.3.6(react@19.2.6))(victory-voronoi-container@37.3.6(react@19.2.6))(victory-zoom-container@37.3.6(react@19.2.6))':
+  '@patternfly/react-charts@8.5.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(victory-area@37.3.6(react@19.2.7))(victory-axis@37.3.6(react@19.2.7))(victory-bar@37.3.6(react@19.2.7))(victory-box-plot@37.3.6(react@19.2.7))(victory-chart@37.3.6(react@19.2.7))(victory-core@37.3.6(react@19.2.7))(victory-create-container@37.3.6(react@19.2.7))(victory-cursor-container@37.3.6(react@19.2.7))(victory-group@37.3.6(react@19.2.7))(victory-legend@37.3.6(react@19.2.7))(victory-line@37.3.6(react@19.2.7))(victory-pie@37.3.6(react@19.2.7))(victory-scatter@37.3.6(react@19.2.7))(victory-stack@37.3.6(react@19.2.7))(victory-tooltip@37.3.6(react@19.2.7))(victory-voronoi-container@37.3.6(react@19.2.7))(victory-zoom-container@37.3.6(react@19.2.7))':
     dependencies:
       '@patternfly/react-styles': 6.5.1
       '@patternfly/react-tokens': 6.5.1
       hoist-non-react-statics: 3.3.2
       lodash: 4.18.1
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
       tslib: 2.8.1
     optionalDependencies:
-      victory-area: 37.3.6(react@19.2.6)
-      victory-axis: 37.3.6(react@19.2.6)
-      victory-bar: 37.3.6(react@19.2.6)
-      victory-box-plot: 37.3.6(react@19.2.6)
-      victory-chart: 37.3.6(react@19.2.6)
-      victory-core: 37.3.6(react@19.2.6)
-      victory-create-container: 37.3.6(react@19.2.6)
-      victory-cursor-container: 37.3.6(react@19.2.6)
-      victory-group: 37.3.6(react@19.2.6)
-      victory-legend: 37.3.6(react@19.2.6)
-      victory-line: 37.3.6(react@19.2.6)
-      victory-pie: 37.3.6(react@19.2.6)
-      victory-scatter: 37.3.6(react@19.2.6)
-      victory-stack: 37.3.6(react@19.2.6)
-      victory-tooltip: 37.3.6(react@19.2.6)
-      victory-voronoi-container: 37.3.6(react@19.2.6)
-      victory-zoom-container: 37.3.6(react@19.2.6)
+      victory-area: 37.3.6(react@19.2.7)
+      victory-axis: 37.3.6(react@19.2.7)
+      victory-bar: 37.3.6(react@19.2.7)
+      victory-box-plot: 37.3.6(react@19.2.7)
+      victory-chart: 37.3.6(react@19.2.7)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-create-container: 37.3.6(react@19.2.7)
+      victory-cursor-container: 37.3.6(react@19.2.7)
+      victory-group: 37.3.6(react@19.2.7)
+      victory-legend: 37.3.6(react@19.2.7)
+      victory-line: 37.3.6(react@19.2.7)
+      victory-pie: 37.3.6(react@19.2.7)
+      victory-scatter: 37.3.6(react@19.2.7)
+      victory-stack: 37.3.6(react@19.2.7)
+      victory-tooltip: 37.3.6(react@19.2.7)
+      victory-voronoi-container: 37.3.6(react@19.2.7)
+      victory-zoom-container: 37.3.6(react@19.2.7)
 
   '@patternfly/react-styles@6.5.1': {}
 
   '@patternfly/react-tokens@6.5.1': {}
 
-  '@rolldown/binding-android-arm64@1.0.2':
+  '@rolldown/binding-android-arm64@1.0.3':
     optional: true
 
-  '@rolldown/binding-darwin-arm64@1.0.2':
+  '@rolldown/binding-darwin-arm64@1.0.3':
     optional: true
 
-  '@rolldown/binding-darwin-x64@1.0.2':
+  '@rolldown/binding-darwin-x64@1.0.3':
     optional: true
 
-  '@rolldown/binding-freebsd-x64@1.0.2':
+  '@rolldown/binding-freebsd-x64@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-arm-gnueabihf@1.0.2':
+  '@rolldown/binding-linux-arm-gnueabihf@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-arm64-gnu@1.0.2':
+  '@rolldown/binding-linux-arm64-gnu@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-arm64-musl@1.0.2':
+  '@rolldown/binding-linux-arm64-musl@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-ppc64-gnu@1.0.2':
+  '@rolldown/binding-linux-ppc64-gnu@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-s390x-gnu@1.0.2':
+  '@rolldown/binding-linux-s390x-gnu@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-x64-gnu@1.0.2':
+  '@rolldown/binding-linux-x64-gnu@1.0.3':
     optional: true
 
-  '@rolldown/binding-linux-x64-musl@1.0.2':
+  '@rolldown/binding-linux-x64-musl@1.0.3':
     optional: true
 
-  '@rolldown/binding-openharmony-arm64@1.0.2':
+  '@rolldown/binding-openharmony-arm64@1.0.3':
     optional: true
 
-  '@rolldown/binding-wasm32-wasi@1.0.2':
+  '@rolldown/binding-wasm32-wasi@1.0.3':
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
       '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
-  '@rolldown/binding-win32-arm64-msvc@1.0.2':
+  '@rolldown/binding-win32-arm64-msvc@1.0.3':
     optional: true
 
-  '@rolldown/binding-win32-x64-msvc@1.0.2':
+  '@rolldown/binding-win32-x64-msvc@1.0.3':
     optional: true
 
   '@rolldown/pluginutils@1.0.1': {}
@@ -2315,7 +2313,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 7.26.0
+      undici: 7.27.2
       whatwg-mimetype: 4.0.0
 
   chownr@3.0.0: {}
@@ -2448,7 +2446,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.6:
+  dompurify@3.4.8:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -2574,7 +2572,7 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.3
+      hasown: 2.0.4
       math-intrinsics: 1.1.0
     optional: true
 
@@ -2616,7 +2614,7 @@ snapshots:
   has-symbols@1.1.0:
     optional: true
 
-  hasown@2.0.3:
+  hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
     optional: true
@@ -2635,7 +2633,7 @@ snapshots:
 
   hosted-git-info@9.0.3:
     dependencies:
-      lru-cache: 11.5.0
+      lru-cache: 11.5.1
 
   htmlparser2@10.1.0:
     dependencies:
@@ -2771,7 +2769,7 @@ snapshots:
 
   lowercase-keys@3.0.0: {}
 
-  lru-cache@11.5.0: {}
+  lru-cache@11.5.1: {}
 
   math-intrinsics@1.1.0:
     optional: true
@@ -2883,7 +2881,7 @@ snapshots:
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.5.0
+      lru-cache: 11.5.1
       minipass: 7.1.3
 
   picocolors@1.1.1: {}
@@ -2920,16 +2918,16 @@ snapshots:
       unpipe: 1.0.0
     optional: true
 
-  react-dom@19.2.6(react@19.2.6):
+  react-dom@19.2.7(react@19.2.7):
     dependencies:
-      react: 19.2.6
+      react: 19.2.7
       scheduler: 0.27.0
 
   react-fast-compare@3.2.2: {}
 
   react-is@16.13.1: {}
 
-  react@19.2.6: {}
+  react@19.2.7: {}
 
   read-cmd-shim@6.0.0: {}
 
@@ -2946,26 +2944,26 @@ snapshots:
     dependencies:
       lowercase-keys: 3.0.0
 
-  rolldown@1.0.2:
+  rolldown@1.0.3:
     dependencies:
-      '@oxc-project/types': 0.132.0
+      '@oxc-project/types': 0.133.0
       '@rolldown/pluginutils': 1.0.1
     optionalDependencies:
-      '@rolldown/binding-android-arm64': 1.0.2
-      '@rolldown/binding-darwin-arm64': 1.0.2
-      '@rolldown/binding-darwin-x64': 1.0.2
-      '@rolldown/binding-freebsd-x64': 1.0.2
-      '@rolldown/binding-linux-arm-gnueabihf': 1.0.2
-      '@rolldown/binding-linux-arm64-gnu': 1.0.2
-      '@rolldown/binding-linux-arm64-musl': 1.0.2
-      '@rolldown/binding-linux-ppc64-gnu': 1.0.2
-      '@rolldown/binding-linux-s390x-gnu': 1.0.2
-      '@rolldown/binding-linux-x64-gnu': 1.0.2
-      '@rolldown/binding-linux-x64-musl': 1.0.2
-      '@rolldown/binding-openharmony-arm64': 1.0.2
-      '@rolldown/binding-wasm32-wasi': 1.0.2
-      '@rolldown/binding-win32-arm64-msvc': 1.0.2
-      '@rolldown/binding-win32-x64-msvc': 1.0.2
+      '@rolldown/binding-android-arm64': 1.0.3
+      '@rolldown/binding-darwin-arm64': 1.0.3
+      '@rolldown/binding-darwin-x64': 1.0.3
+      '@rolldown/binding-freebsd-x64': 1.0.3
+      '@rolldown/binding-linux-arm-gnueabihf': 1.0.3
+      '@rolldown/binding-linux-arm64-gnu': 1.0.3
+      '@rolldown/binding-linux-arm64-musl': 1.0.3
+      '@rolldown/binding-linux-ppc64-gnu': 1.0.3
+      '@rolldown/binding-linux-s390x-gnu': 1.0.3
+      '@rolldown/binding-linux-x64-gnu': 1.0.3
+      '@rolldown/binding-linux-x64-musl': 1.0.3
+      '@rolldown/binding-openharmony-arm64': 1.0.3
+      '@rolldown/binding-wasm32-wasi': 1.0.3
+      '@rolldown/binding-win32-arm64-msvc': 1.0.3
+      '@rolldown/binding-win32-x64-msvc': 1.0.3
 
   safe-buffer@5.2.1:
     optional: true
@@ -3054,7 +3052,7 @@ snapshots:
       minizlib: 3.1.0
       yallist: 5.0.0
 
-  tinyglobby@0.2.16:
+  tinyglobby@0.2.17:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
@@ -3078,7 +3076,7 @@ snapshots:
   typescript@6.0.3:
     optional: true
 
-  undici@7.26.0: {}
+  undici@7.27.2: {}
 
   unpipe@1.0.0:
     optional: true
@@ -3093,141 +3091,141 @@ snapshots:
   vary@1.1.2:
     optional: true
 
-  victory-area@37.3.6(react@19.2.6):
+  victory-area@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
       victory-vendor: 37.3.6
 
-  victory-axis@37.3.6(react@19.2.6):
+  victory-axis@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-bar@37.3.6(react@19.2.6):
+  victory-bar@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
       victory-vendor: 37.3.6
 
-  victory-box-plot@37.3.6(react@19.2.6):
+  victory-box-plot@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
       victory-vendor: 37.3.6
 
-  victory-brush-container@37.3.6(react@19.2.6):
+  victory-brush-container@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@19.2.6)
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-chart@37.3.6(react@19.2.6):
+  victory-chart@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
-      victory-axis: 37.3.6(react@19.2.6)
-      victory-core: 37.3.6(react@19.2.6)
-      victory-polar-axis: 37.3.6(react@19.2.6)
-      victory-shared-events: 37.3.6(react@19.2.6)
+      victory-axis: 37.3.6(react@19.2.7)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-polar-axis: 37.3.6(react@19.2.7)
+      victory-shared-events: 37.3.6(react@19.2.7)
 
-  victory-core@37.3.6(react@19.2.6):
+  victory-core@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
       victory-vendor: 37.3.6
 
-  victory-create-container@37.3.6(react@19.2.6):
+  victory-create-container@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-brush-container: 37.3.6(react@19.2.6)
-      victory-core: 37.3.6(react@19.2.6)
-      victory-cursor-container: 37.3.6(react@19.2.6)
-      victory-selection-container: 37.3.6(react@19.2.6)
-      victory-voronoi-container: 37.3.6(react@19.2.6)
-      victory-zoom-container: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-brush-container: 37.3.6(react@19.2.7)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-cursor-container: 37.3.6(react@19.2.7)
+      victory-selection-container: 37.3.6(react@19.2.7)
+      victory-voronoi-container: 37.3.6(react@19.2.7)
+      victory-zoom-container: 37.3.6(react@19.2.7)
 
-  victory-cursor-container@37.3.6(react@19.2.6):
+  victory-cursor-container@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-group@37.3.6(react@19.2.6):
+  victory-group@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@19.2.6)
-      victory-shared-events: 37.3.6(react@19.2.6)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-shared-events: 37.3.6(react@19.2.7)
 
-  victory-legend@37.3.6(react@19.2.6):
+  victory-legend@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-line@37.3.6(react@19.2.6):
+  victory-line@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
       victory-vendor: 37.3.6
 
-  victory-pie@37.3.6(react@19.2.6):
+  victory-pie@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
       victory-vendor: 37.3.6
 
-  victory-polar-axis@37.3.6(react@19.2.6):
+  victory-polar-axis@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-scatter@37.3.6(react@19.2.6):
+  victory-scatter@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-selection-container@37.3.6(react@19.2.6):
+  victory-selection-container@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-shared-events@37.3.6(react@19.2.6):
+  victory-shared-events@37.3.6(react@19.2.7):
     dependencies:
       json-stringify-safe: 5.0.1
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@19.2.6)
+      victory-core: 37.3.6(react@19.2.7)
 
-  victory-stack@37.3.6(react@19.2.6):
+  victory-stack@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@19.2.6)
-      victory-shared-events: 37.3.6(react@19.2.6)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-shared-events: 37.3.6(react@19.2.7)
 
-  victory-tooltip@37.3.6(react@19.2.6):
+  victory-tooltip@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
   victory-vendor@37.3.6:
     dependencies:
@@ -3246,28 +3244,28 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  victory-voronoi-container@37.3.6(react@19.2.6):
+  victory-voronoi-container@37.3.6(react@19.2.7):
     dependencies:
       delaunay-find: 0.0.6
       lodash: 4.18.1
-      react: 19.2.6
+      react: 19.2.7
       react-fast-compare: 3.2.2
-      victory-core: 37.3.6(react@19.2.6)
-      victory-tooltip: 37.3.6(react@19.2.6)
+      victory-core: 37.3.6(react@19.2.7)
+      victory-tooltip: 37.3.6(react@19.2.7)
 
-  victory-zoom-container@37.3.6(react@19.2.6):
+  victory-zoom-container@37.3.6(react@19.2.7):
     dependencies:
       lodash: 4.18.1
-      react: 19.2.6
-      victory-core: 37.3.6(react@19.2.6)
+      react: 19.2.7
+      victory-core: 37.3.6(react@19.2.7)
 
-  vite@8.0.14(esbuild@0.28.0)(yaml@2.9.0):
+  vite@8.0.16(esbuild@0.28.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
       postcss: 8.5.15
-      rolldown: 1.0.2
-      tinyglobby: 0.2.16
+      rolldown: 1.0.3
+      tinyglobby: 0.2.17
     optionalDependencies:
       esbuild: 0.28.0
       fsevents: 2.3.3

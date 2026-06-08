@@ -129,6 +129,7 @@ public class Humanize {
         SPECIALS.put("jacc", "JACC");
         SPECIALS.put("jaspi", "JASPI");
         SPECIALS.put("jaxrs", "JAX-RS");
+        SPECIALS.put("jberet", "JBeret");
         SPECIALS.put("jboss", "JBoss");
         SPECIALS.put("jdbc", "JDBC");
         SPECIALS.put("jca", "JCA");

@@ -34,6 +34,7 @@ import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;
 import org.patternfly.component.list.DescriptionListGroup;
+import org.patternfly.icon.IconSets;
 import org.patternfly.style.Size;
 
 import elemental2.dom.HTMLElement;
@@ -50,9 +51,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
+import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.BuildingBlocks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.BuildingBlocks.errorCode;
-import static org.jboss.hal.ui.BuildingBlocks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.Severity.danger;
@@ -69,6 +70,7 @@ import static org.patternfly.component.popover.PopoverBody.popoverBody;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.icon.IconSets.fas.arrowUp;
 import static org.patternfly.icon.IconSets.fas.gear;
+import static org.patternfly.icon.IconSets.rhUi.settingsFill;
 import static org.patternfly.style.Classes.helpText;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
@@ -225,7 +227,8 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
     @Override
     public void autoRefresh() {
         if (uptimeDld != null) {
-            AddressTemplate template = AddressTemplate.ofTrusted("{domain.controller}/core-service=platform-mbean/type=runtime");
+            AddressTemplate template = AddressTemplate.ofTrusted(
+                    "{domain.controller}/core-service=platform-mbean/type=runtime");
             Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
                     .param(ATTRIBUTES_ONLY, true)
                     .param(INCLUDE_RUNTIME, true)
@@ -241,9 +244,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
 
     private DescriptionListGroup configFileDlg(AttributeDescriptions envAttributes, ModelNode envNode) {
         if (environment.standalone()) {
-            return dlg(envAttributes, "config-file", gear(), dld -> {
-                dld.text(filename(envNode.get("config-file").asString()));
-            });
+            return dlg(envAttributes, "config-file", settingsFill(), dld -> dld.text(filename(envNode.get("config-file").asString())));
         } else {
             String domainConfig = filename(envNode.get("domain-config-file").asString());
             String hostConfig = filename(envNode.get("host-config-file").asString());

@@ -54,7 +54,7 @@ export default defineConfig(({mode}) => {
         plugins: isProd ? [] : [serveJ2cl()],
         server: {
             port: 1234,
-            open: '/dev.html',
+            open: '/',
             fs: {
                 allow: [resolve(__dirname, '../..')]
             },

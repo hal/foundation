@@ -66,7 +66,7 @@ public class DashboardPage implements Page {
         return (place, parameter) -> {
             ResourceAddress address = AddressTemplate.ofTrusted("/subsystem=microprofile-health-smallrye").resolve();
             Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION).build();
-            return uic().dispatcher().execute(operation)
+            return uic().dispatcher().execute(operation, false)
                     .then(result -> Promise.resolve(true))
                     .catch_(error -> Promise.resolve(false));
         };

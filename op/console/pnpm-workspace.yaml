@@ -16,14 +16,14 @@
 
 catalogs:
   pfj:
-    '@patternfly-java/charts': ^0.9.0
-    '@patternfly-java/core': ^0.9.0
-    '@patternfly-java/finder': ^0.9.0
+    '@patternfly-java/charts': ^0.9.1
+    '@patternfly-java/core': ^0.9.1
+    '@patternfly-java/finder': ^0.9.1
 
 allowBuilds:
   esbuild: true
 
 minimumReleaseAgeExclude:
-  - '@patternfly-java/charts@0.9.0'
-  - '@patternfly-java/core@0.9.0'
-  - '@patternfly-java/finder@0.9.0'
+  - '@patternfly-java/charts@0.9.1'
+  - '@patternfly-java/core@0.9.1'
+  - '@patternfly-java/finder@0.9.1'

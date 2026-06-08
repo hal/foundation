@@ -16,13 +16,17 @@
 package org.jboss.hal.op.configuration;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 import org.jboss.elemento.Id;
+import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.op.finder.ColumnProvider;
 import org.jboss.hal.ui.resource.FinderSupport;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
+
+import elemental2.core.Global;
 
 import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Notification.nyi;
@@ -49,6 +53,12 @@ public class SubsystemColumn implements ColumnProvider {
 
     public static final String ID = "subsystem-column";
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("subsystem=*");
+    private final PlaceManager placeManager;
+
+    @Inject
+    public SubsystemColumn(PlaceManager placeManager) {
+        this.placeManager = placeManager;
+    }
 
     @Override
     public String identifier() {
@@ -76,7 +86,9 @@ public class SubsystemColumn implements ColumnProvider {
     }
 
     private void view(FinderItem item) {
-        uic().notifications().send(nyi());
+        AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+        String address = Global.encodeURIComponent(template.toString());
+        placeManager.goTo("/configuration/" + address);
     }
 
     private void remove(FinderItem item) {

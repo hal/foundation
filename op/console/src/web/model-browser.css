@@ -93,7 +93,9 @@
     border-inline-end: solid var(--pf-t--global--border--width--100) var(--pf-t--global--border--color--default);
     cursor: col-resize;
     display: flex;
-    height: 100%;
+    height: calc(100% + 2 * var(--pf-v6-c-page__main-section--PaddingBlockEnd));
+    margin-block-start: calc(var(--pf-v6-c-page__main-section--PaddingBlockStart) * -1);
+    margin-block-end: calc(var(--pf-v6-c-page__main-section--PaddingBlockEnd) * -1);
     width: var(--hal-c-model-browser-splitter-width);
 }
 
