@@ -143,7 +143,7 @@ public class ResourceAttribute {
     public final boolean writable;
     public final boolean expression;
 
-    ResourceAttribute(ModelNode value, AttributeDescription description, SecurityContext securityContext) {
+    public ResourceAttribute(ModelNode value, AttributeDescription description, SecurityContext securityContext) {
         this.fqn = description.fullyQualifiedName();
         this.name = description.name();
         this.group = description.group();

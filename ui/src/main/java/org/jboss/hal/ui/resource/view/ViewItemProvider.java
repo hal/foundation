@@ -13,15 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.view;
+import org.jboss.hal.ui.resource.ResourceAttribute;
 
-import org.jboss.elemento.Id;
-import org.jboss.hal.ui.resource.manager.ResourceManager;
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
 
-/** Generates stable HTML element IDs for form and view items based on attribute name and display state. */
-public interface ItemIdentifier {
+/** Strategy interface for creating specialised {@link ViewItem} instances based on attribute template and metadata. */
+interface ViewItemProvider {
 
-    static String identifier(ResourceAttribute resourceAttribute, ResourceManager.State state) {
-        return Id.build(resourceAttribute.fqn, state.name());
-    }
+    /** Tests must be cheap and fast! They're executed every time a view item is created. */
+    boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
+
+    ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
 }

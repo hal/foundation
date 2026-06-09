@@ -21,7 +21,8 @@ import org.patternfly.core.ComponentContext;
 
 import elemental2.dom.HTMLElement;
 
-interface ResourceItem<I extends ResourceItem<I>> extends ComponentContext<HTMLElement, I>,
+/** Shared interface for form and view items that carry a {@link ResourceAttribute} via the component context. */
+public interface ResourceItem<I extends ResourceItem<I>> extends ComponentContext<HTMLElement, I>,
         HasIdentifier<HTMLElement, I> {
 
     default ResourceAttribute resourceAttribute() {

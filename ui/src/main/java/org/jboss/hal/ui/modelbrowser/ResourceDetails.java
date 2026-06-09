@@ -21,7 +21,7 @@ import org.jboss.hal.resources.OuiaIds;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.ui.resource.ResourceManager.resourceManager;
+import static org.jboss.hal.ui.resource.manager.ResourceManager.resourceManager;
 import static org.patternfly.component.tabs.Tab.tab;
 import static org.patternfly.component.tabs.TabContent.tabContent;
 import static org.patternfly.component.tabs.Tabs.tabs;

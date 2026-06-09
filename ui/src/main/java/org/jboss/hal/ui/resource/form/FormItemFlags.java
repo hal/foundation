@@ -13,15 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.form;
 
-import org.jboss.elemento.Id;
-import org.jboss.hal.ui.resource.manager.ResourceManager;
+/** Configuration flags passed to {@link FormItem} instances, controlling scope (new vs. existing resource) and placeholder behavior. */
+public class FormItemFlags {
 
-/** Generates stable HTML element IDs for form and view items based on attribute name and display state. */
-public interface ItemIdentifier {
+    public enum Scope {
+        NEW_RESOURCE, EXISTING_RESOURCE
+    }
 
-    static String identifier(ResourceAttribute resourceAttribute, ResourceManager.State state) {
-        return Id.build(resourceAttribute.fqn, state.name());
+    public enum Placeholder {
+        NONE, UNDEFINED, DEFAULT_VALUE
+    }
+
+    final Scope scope;
+    final Placeholder placeholder;
+
+    public FormItemFlags(Scope scope, Placeholder placeholder) {
+        this.scope = scope;
+        this.placeholder = placeholder;
     }
 }

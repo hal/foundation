@@ -74,5 +74,9 @@
             <groupId>org.jboss.elemento</groupId>
             <artifactId>elemento-intl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.elemento</groupId>
+            <artifactId>elemento-router</artifactId>
+        </dependency>
     </dependencies>
 </project>

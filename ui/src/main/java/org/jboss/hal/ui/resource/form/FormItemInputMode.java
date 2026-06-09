@@ -13,15 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.form;
 
-import org.jboss.elemento.Id;
-import org.jboss.hal.ui.resource.manager.ResourceManager;
+/** Enumerates the input modes a {@link FormItem} can operate in: native controls, expression text input, or mixed. */
+public enum FormItemInputMode {
 
-/** Generates stable HTML element IDs for form and view items based on attribute name and display state. */
-public interface ItemIdentifier {
+    NATIVE,
 
-    static String identifier(ResourceAttribute resourceAttribute, ResourceManager.State state) {
-        return Id.build(resourceAttribute.fqn, state.name());
-    }
+    EXPRESSION,
+
+    MIXED
 }

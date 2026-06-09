@@ -1,0 +1,29 @@
+/*
+ *  Copyright 2024 Red Hat
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.jboss.hal.ui.resource.form;
+import org.jboss.hal.ui.resource.ResourceAttribute;
+
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+
+/** Strategy interface for providing special-case {@link FormItem} implementations based on address template and attribute metadata. */
+interface FormItemProvider {
+
+    /** Tests must be cheap and fast! They're executed every time a form item is created. */
+    boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags);
+
+    FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags);
+}

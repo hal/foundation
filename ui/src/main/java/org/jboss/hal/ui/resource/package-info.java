@@ -15,25 +15,31 @@
  */
 
 /**
- * Resource management UI components for viewing and editing WildFly management resource attributes through forms,
- * dialogs, and read-only views.
+ * Shared abstractions and data types for WildFly management resource UI components.
  * <p>
- * This package provides components for CRUD operations on WildFly management resources. It includes form items for
- * editing attributes, view items for displaying read-only values, dialogs for common operations, and utilities for
- * building finder-style navigation.
- * <p>
- * Key components include:
+ * This package defines the core data types and interfaces used across the resource sub-packages for viewing and editing
+ * WildFly management resource attributes. Concrete UI components are organized in sub-packages by concern:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.ResourceForm}</dt>
- * <dd>Form for editing management resource attributes with validation and expression support.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ResourceView}</dt>
- * <dd>Read-only view of management resource attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ResourceDialogs}</dt>
- * <dd>Factory methods for creating resource management dialogs (add, reset, remove, execute operation).</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ViewItemFactory}</dt>
- * <dd>Creates read-only view items for displaying management attribute values.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.FinderSupport}</dt>
- * <dd>Utility for building finder-style navigation paths from management resource addresses.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form}</dt>
+ * <dd>Editable form items for resource attributes (boolean, numeric, string, capability references, etc.).</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view}</dt>
+ * <dd>Read-only display of resource attributes using description lists.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.manager}</dt>
+ * <dd>Resource management orchestration with toolbar and filtering.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.dialog}</dt>
+ * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>
+ * <dd>Finder navigation support and resource page routing.</dd>
+ * </dl>
+ * <p>
+ * Key types in this package:
+ * <dl>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceAttribute}</dt>
+ * <dd>Data holder for an attribute's fully-qualified name, value, description, and security context.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceItem}</dt>
+ * <dd>Shared interface for form and view items with component context and identifier support.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ItemIdentifier}</dt>
+ * <dd>Utility for generating stable HTML element IDs for form and view items.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource;
