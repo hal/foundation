@@ -22,7 +22,7 @@ import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;
-import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
+import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 
 @Dependent
 public class PathColumn implements ColumnProvider {

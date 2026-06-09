@@ -22,8 +22,8 @@ import org.patternfly.extension.finder.FinderSegment;
 
 import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
-import static org.jboss.hal.ui.BuildingBlocks.crudColumn;
-import static org.jboss.hal.ui.resource.FinderSupport.RESOURCE_NAME_KEY;
+import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.RESOURCE_NAME_KEY;
 
 class SocketBindingColumns {
 

@@ -65,8 +65,8 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WILDFLY_STATISTICS_ENA
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.op.task.statistics.NewExpressionModal.newExpressionModal;
 import static org.jboss.hal.op.task.statistics.StatisticsEnabledMultiSelect.statisticsEnabledMultiSelect;
-import static org.jboss.hal.ui.BuildingBlocks.emptyRow;
-import static org.jboss.hal.ui.BuildingBlocks.renderExpression;
+import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
+import static org.jboss.hal.ui.brick.FinderBricks.emptyRow;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.patternfly.component.Ordered.DATA_ORDER;

@@ -21,9 +21,6 @@
  * <p>
  * The package includes:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.BuildingBlocks}</dt>
- * <dd>Reusable UI fragments including status icons, stability badges, empty states, and helper components for consistent
- * visual patterns across the console.</dd>
  * <dt>{@link org.jboss.hal.ui.UIContext}</dt>
  * <dd>Central access point for shared UI services including environment configuration, user settings, dispatcher for DMR
  * operations, and metadata repository.</dd>
@@ -47,6 +44,7 @@
  * }
  *
  * @see org.jboss.hal.ui.filter
+ * @see org.jboss.hal.ui.brick
  * @see org.jboss.hal.ui.modelbrowser
  * @see org.jboss.hal.ui.resource
  */

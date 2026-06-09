@@ -31,7 +31,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
-import static org.jboss.hal.ui.BuildingBlocks.emptyRow;
+import static org.jboss.hal.ui.brick.FinderBricks.emptyRow;
 import static org.jboss.hal.ui.modelbrowser.AttributesToolbar.attributesToolbar;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.Tbody.tbody;

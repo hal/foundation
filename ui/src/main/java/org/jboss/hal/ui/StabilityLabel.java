@@ -27,8 +27,8 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
-import static org.jboss.hal.ui.BuildingBlocks.stabilityIcon;
-import static org.jboss.hal.ui.BuildingBlocks.stabilityStatus;
+import static org.jboss.hal.ui.brick.StabilityBricks.stabilityIcon;
+import static org.jboss.hal.ui.brick.StabilityBricks.stabilityStatus;
 import static org.patternfly.component.label.Label.label;
 
 /**

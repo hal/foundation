@@ -26,7 +26,7 @@ import org.jboss.hal.op.finder.ColumnProvider;
 import org.jboss.hal.op.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
 
-import static org.jboss.hal.ui.BuildingBlocks.stackPreview;
+import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;

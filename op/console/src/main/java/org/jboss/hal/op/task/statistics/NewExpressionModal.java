@@ -27,7 +27,7 @@ import org.patternfly.component.modal.Modal;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.EventType.keydown;
 import static org.jboss.elemento.Key.Enter;
-import static org.jboss.hal.ui.BuildingBlocks.renderExpression;
+import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormGroup.formGroup;
