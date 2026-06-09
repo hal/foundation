@@ -24,6 +24,7 @@ import org.kie.j2cl.tools.processors.annotations.TranslationKey;
 @TranslationBundle
 public interface L10nBundle {
 
+    /** Success message shown after a resource has been created. */
     @TranslationKey(defaultValue = "Resource added")
     String crudCreateSuccess();
 }

@@ -15,15 +15,28 @@
  */
 package org.jboss.hal.op.task.statistics;
 
+/** Possible filter values for the {@code statistics-enabled} attribute in the statistics task UI. */
 enum StatisticsEnabledValue {
 
+    /** The attribute value is {@code true}. */
     true_("True", "true"),
+
+    /** The attribute value is {@code false}. */
     false_("False", "false"),
+
+    /** The attribute value is a DMR expression. */
     expression("Expression", "expression"),
+
+    /** The attribute value is not a DMR expression. */
     noExpression("No expression", "no-expression");
 
+    /** Unique identifier used for menu item registration and filter matching. */
     final String identifier;
+
+    /** Display text shown in the multi-select dropdown. */
     final String text;
+
+    /** Internal filter value string. */
     final String value;
 
     StatisticsEnabledValue(String text, String value) {

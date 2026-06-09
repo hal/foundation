@@ -29,9 +29,14 @@ import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.icon.IconSets.far.clipboard;
 
+/**
+ * Task for configuring the logging subsystem, including changing log levels for the {@code ROOT} logger and other
+ * categories, and applying changes to handlers. Not yet implemented.
+ */
 @Dependent
 public class LoggingTask implements Task {
 
+    /** Unique identifier for this task. */
     public static final String TASK_ID = LoggingTask.class.getName();
 
     @Override

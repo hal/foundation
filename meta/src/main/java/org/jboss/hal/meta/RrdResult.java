@@ -22,6 +22,10 @@ import java.util.Set;
 import org.jboss.hal.meta.description.ResourceDescription;
 import org.jboss.hal.meta.security.SecurityContext;
 
+/**
+ * Accumulates the results of parsing {@code read-resource-description} responses: resource descriptions, security
+ * contexts, and processed address mappings.
+ */
 class RrdResult {
 
     final Map<String, ResourceDescription> resourceDescriptions;

@@ -41,31 +41,38 @@ public class StatementContext {
         this.placeholders = new HashMap<>();
     }
 
+    /** @return whether the console is connected to a standalone server */
     public boolean standalone() {
         return environment.standalone();
     }
 
+    /** @return whether the console is connected to a domain controller */
     public boolean domain() {
         return environment.domain();
     }
 
+    /** Assigns a value to the placeholder identified by its name. */
     public void assign(String placeholder, String value) {
         assign(new Placeholder(placeholder, null, false), value);
     }
 
+    /** Assigns a value to the given placeholder. */
     public void assign(Placeholder placeholder, String value) {
         values.put(placeholder, value);
         placeholders.put(placeholder.name, placeholder);
     }
 
+    /** @return the placeholder instance registered under the given name, or {@code null} */
     public Placeholder placeholder(String placeholder) {
         return placeholders.get(placeholder);
     }
 
+    /** @return the current value for the placeholder with the given name, or {@code null} */
     public String value(String placeholder) {
         return value(placeholder(placeholder));
     }
 
+    /** @return the current value for the given placeholder, or {@code null} */
     public String value(Placeholder placeholder) {
         if (placeholder != null) {
             return values.get(placeholder);

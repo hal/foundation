@@ -26,14 +26,21 @@ import static org.jboss.hal.meta.security.Target.OPERATION;
 /** A constraint for an attribute or operation of a DMR resource. */
 public class Constraint {
 
+    /** Creates a constraint requiring execute permission for the given operation on the specified resource. */
     public static Constraint executable(AddressTemplate template, String operation) {
         return new Constraint(template, operation, OPERATION, Permission.EXECUTABLE);
     }
 
+    /** Creates a constraint requiring write permission for the given attribute on the specified resource. */
     public static Constraint writable(AddressTemplate template, String attribute) {
         return new Constraint(template, attribute, ATTRIBUTE, Permission.WRITABLE);
     }
 
+    /**
+     * Parses a constraint from its string representation (e.g., {@code "writable(subsystem=datasources@enabled)"}).
+     *
+     * @throws IllegalArgumentException if the input does not match the expected format
+     */
     @SuppressWarnings("DuplicateStringLiteralInspection")
     public static Constraint parse(String input) throws IllegalArgumentException {
         if (!CONSTRAINT_REGEX.test(input)) {
@@ -50,9 +57,16 @@ public class Constraint {
     private static final JsRegExp CONSTRAINT_REGEX = new JsRegExp(
             "^(readable|writable|executable)\\(([\\w{}=*\\-\\/\\.]+)(:|@)([\\w\\-]+)\\)$"); //NON-NLS
 
+    /** The address template of the constrained resource. */
     public final AddressTemplate template;
+
+    /** Whether the constraint applies to an attribute or an operation. */
     public final Target target;
+
+    /** The name of the constrained attribute or operation. */
     public final String name;
+
+    /** The required permission level. */
     public final Permission permission;
 
     private Constraint(AddressTemplate template, String name, Target target, Permission permission) {
@@ -99,6 +113,7 @@ public class Constraint {
         return permission.name().toLowerCase() + "(" + template + target.symbol + name + ")";
     }
 
+    /** @return the string representation suitable for use in HTML {@code data-constraint} attributes */
     public String data() {
         return toString();
     }

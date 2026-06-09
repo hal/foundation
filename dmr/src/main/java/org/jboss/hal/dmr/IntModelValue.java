@@ -18,9 +18,7 @@ package org.jboss.hal.dmr;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding an {@code int}. */
 class IntModelValue extends ModelValue {
 
     private final int value;

@@ -16,9 +16,8 @@
 package org.jboss.hal.dmr;
 
 /**
- * Represents a DMR property.
- *
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
+ * A name/value pair in the DMR model. Properties are the building blocks of {@link ModelType#OBJECT} nodes and
+ * {@link ResourceAddress} segments.
  */
 public class Property implements Cloneable {
 
@@ -56,6 +55,7 @@ public class Property implements Cloneable {
         return value;
     }
 
+    /** Returns a deep copy of this property. */
     public Property clone() {
         return new Property(name, value.clone());
     }

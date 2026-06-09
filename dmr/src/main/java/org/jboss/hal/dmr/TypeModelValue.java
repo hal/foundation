@@ -15,9 +15,7 @@
  */
 package org.jboss.hal.dmr;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding a {@link ModelType} value (metatype). Uses flyweight instances for each type. */
 class TypeModelValue extends ModelValue {
 
     /** JSON Key used to identify TypeModelValue. */

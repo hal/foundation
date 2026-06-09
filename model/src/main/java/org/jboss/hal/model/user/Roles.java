@@ -27,7 +27,10 @@ import static java.util.Comparator.comparing;
 /** Provides access to all standard and scoped roles. */
 public class Roles implements Iterable<Role> {
 
+    /** Comparator that sorts standard roles before scoped roles. */
     public static final Comparator<Role> STANDARD_FIRST = comparing(Role::getType);
+
+    /** Comparator that sorts roles alphabetically by name. */
     public static final Comparator<Role> BY_NAME = comparing(Role::getName);
 
     private final Map<String, Role> lookup;
@@ -40,6 +43,7 @@ public class Roles implements Iterable<Role> {
         this.scopedRoles = new HashSet<>();
     }
 
+    /** Adds a role, categorizing it as either a standard or scoped role. */
     public void add(Role role) {
         if (role != null) {
             lookup.put(role.getId(), role);
@@ -51,10 +55,12 @@ public class Roles implements Iterable<Role> {
         }
     }
 
+    /** Adds all roles from the given iterable. */
     public void addAll(Iterable<Role> roles) {
         roles.forEach(this::add);
     }
 
+    /** Removes all roles. */
     public void clear() {
         lookup.clear();
         standardRoles.clear();
@@ -73,10 +79,12 @@ public class Roles implements Iterable<Role> {
         return null;
     }
 
+    /** Returns all standard (built-in) roles. */
     public Set<Role> standardRoles() {
         return standardRoles;
     }
 
+    /** Returns all scoped (host or server-group) roles. */
     public Set<Role> scopedRoles() {
         return scopedRoles;
     }

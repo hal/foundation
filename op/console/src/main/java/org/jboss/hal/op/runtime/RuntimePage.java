@@ -36,6 +36,7 @@ import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;
 
+/** Placeholder page for the {@code /runtime} route. Not yet implemented. */
 @Dependent
 @Route("/runtime")
 public class RuntimePage implements Page {

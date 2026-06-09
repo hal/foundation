@@ -49,18 +49,22 @@ public class OperationDescriptions implements Iterable<OperationDescription> {
         return operations.values().iterator();
     }
 
+    /** @return whether the resource supports an operation with the given name */
     public boolean supports(String name) {
         return operations.containsKey(name);
     }
 
+    /** @return the operation description with the given name, or an empty description if not found */
     public OperationDescription get(String name) {
         return operations.getOrDefault(name, new OperationDescription());
     }
 
+    /** @return whether this collection contains no operation descriptions */
     public boolean isEmpty() {
         return operations.isEmpty();
     }
 
+    /** @return the number of operation descriptions */
     public int size() {
         return operations.size();
     }

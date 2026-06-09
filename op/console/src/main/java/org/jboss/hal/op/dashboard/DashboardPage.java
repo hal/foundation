@@ -57,11 +57,19 @@ import static org.patternfly.layout.grid.Grid.grid;
 import static org.patternfly.layout.grid.GridItem.gridItem;
 import static org.patternfly.style.Size._3xl;
 
+/**
+ * The main dashboard page of the halOP console, routed to {@code /}. Displays a grid of dashboard cards showing server
+ * overview, status, runtime information, deployments, documentation links, log summaries, and (if available) MicroProfile
+ * Health checks.
+ */
 @Dependent
 @Route("/")
 public class DashboardPage implements Page {
 
-    // Use a loader to check whether the health subsystem is available
+    /**
+     * Returns a data loader that checks whether the MicroProfile Health subsystem is available. The result is used to
+     * conditionally show the {@link HealthCard}.
+     */
     public static LoadData<Boolean> checkHealth() {
         return (place, parameter) -> {
             ResourceAddress address = AddressTemplate.ofTrusted("/subsystem=microprofile-health-smallrye").resolve();

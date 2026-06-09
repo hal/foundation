@@ -24,8 +24,10 @@ import java.util.Objects;
 @FunctionalInterface
 public interface TemplateResolver {
 
+    /** Resolves placeholders and wildcards in the given template and returns the result. */
     AddressTemplate resolve(AddressTemplate template);
 
+    /** Chains this resolver with another, applying {@code after} to the result of this resolver. */
     default TemplateResolver andThen(TemplateResolver after) {
         Objects.requireNonNull(after);
         return template -> {

@@ -48,6 +48,7 @@ import static org.patternfly.component.Severity.danger;
 @ApplicationScoped
 public class Notifications {
 
+    /** Age threshold in milliseconds (1 hour) below which timestamps are displayed as relative time (e.g., "2 minutes ago"). */
     public static final double RELATIVE_TIME_THRESHOLD = 3_600_000;
     // TODO Add support for 2nd level cache!
     private static final int FIRST_LEVEL_CACHE_SIZE = 500;
@@ -58,6 +59,7 @@ public class Notifications {
     @Inject Event<NotificationModificationEvent> modificationEvent;
     private final LRUCache<String, Notification> cache;
 
+    /** Creates a new notification manager with a fixed-size LRU cache. */
     public Notifications() {
         cache = new LRUCache<>(FIRST_LEVEL_CACHE_SIZE);
         cache.addRemovalHandler((id, __) -> {

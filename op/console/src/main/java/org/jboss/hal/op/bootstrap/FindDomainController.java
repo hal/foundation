@@ -39,6 +39,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PRIMARY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 
+/**
+ * Bootstrap task that identifies the primary domain controller in domain mode. Reads host resources to find the primary host,
+ * then updates the environment and statement context with the domain controller name. Skipped in standalone mode.
+ */
 class FindDomainController implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(FindDomainController.class.getName());

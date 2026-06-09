@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.dmr.dispatch;
 
+/** HTTP response status codes and their user-facing messages, used for error reporting in the dispatcher. */
 enum ResponseStatus {
 
     _0(0, "The response for could not be processed."),

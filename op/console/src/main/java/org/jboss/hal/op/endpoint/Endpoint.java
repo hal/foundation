@@ -31,15 +31,22 @@ import jsinterop.annotations.JsType;
 import static elemental2.dom.DomGlobal.fetch;
 import static elemental2.dom.DomGlobal.location;
 
+/**
+ * Represents a WildFly management endpoint with a name and URL. Implemented as a native JavaScript object for JSON
+ * serialization to/from local storage. Provides factory methods and a {@link #ping(String)} method to verify that a URL
+ * points to a valid WildFly management interface.
+ */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class Endpoint {
 
+    /** URL parameter name used to specify which management interface to connect to. */
     @JsOverlay
     public static final String CONNECT_PARAMETER = "connect";
 
     @JsOverlay
     private static final Logger logger = Logger.getLogger(Endpoint.class.getName());
 
+    /** Creates an endpoint pointing to the current browser origin. */
     @JsOverlay
     public static Endpoint origin() {
         Endpoint endpoint = new Endpoint();
@@ -49,6 +56,7 @@ public class Endpoint {
         return endpoint;
     }
 
+    /** Creates an endpoint with the given name and URL. */
     @JsOverlay
     public static Endpoint endpoint(String name, String url) {
         Endpoint endpoint = new Endpoint();
@@ -58,6 +66,10 @@ public class Endpoint {
         return endpoint;
     }
 
+    /**
+     * Pings the given URL to verify it is a valid WildFly management interface. Sends a GET request to the management endpoint
+     * and checks that the response contains the {@code management-major-version} attribute.
+     */
     @JsOverlay
     public static Promise<Boolean> ping(String url) {
         String managementEndpoint = url + Urls.MANAGEMENT;
@@ -103,10 +115,14 @@ public class Endpoint {
         }
     }
 
+    /** Unique identifier for this endpoint. */
     public String id;
+    /** Display name of this endpoint. */
     public String name;
+    /** Management interface URL. */
     public String url;
 
+    /** Returns the URL with any trailing slash removed. */
     @JsOverlay
     public final String failSafeUrl() {
         return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;

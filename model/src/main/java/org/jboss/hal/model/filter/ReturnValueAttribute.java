@@ -23,8 +23,10 @@ import org.patternfly.filter.FilterAttribute;
  */
 public class ReturnValueAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "return-value";
 
+    /** Creates a new filter that matches operations based on whether they have a return value. */
     public ReturnValueAttribute() {
         super(NAME, (operation, hasReturnValue) -> hasReturnValue == operation.returnValue().isDefined());
     }

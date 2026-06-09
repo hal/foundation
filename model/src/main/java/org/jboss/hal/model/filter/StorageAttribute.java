@@ -27,8 +27,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STORAGE;
  */
 public class StorageAttribute<T> extends FilterAttribute<T, StorageValue> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "storage";
 
+    /** Creates a new filter using the given function to extract the attribute description. */
     public StorageAttribute(Function<T, AttributeDescription> adf) {
         super(NAME, (object, storage) -> storage.value.equals(adf.apply(object).find(STORAGE).asString()));
     }

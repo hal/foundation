@@ -20,6 +20,7 @@ import org.jboss.hal.event.ApplicationEvent;
 /** CDI event fired when a new {@link Notification} is sent via {@link Notifications#send(Notification)}. */
 public class NotificationAddEvent implements ApplicationEvent {
 
+    /** The notification that was added. */
     public final Notification notification;
 
     NotificationAddEvent(Notification notification) {

@@ -22,16 +22,23 @@ import java.util.List;
  */
 public class AccessTypeValue {
 
+    /** Returns all predefined access type filter values. */
     public static List<AccessTypeValue> accessTypeValues() {
         return List.of(new AccessTypeValue(AccessTypeAttribute.NAME, "Read-write", "read-write"),
                 new AccessTypeValue(AccessTypeAttribute.NAME, "Read-only", "read-only"),
                 new AccessTypeValue(AccessTypeAttribute.NAME, "Metric", "metric"));
     }
 
+    /** Unique identifier combining the filter attribute name and the value. */
     public final String identifier;
+
+    /** Human-readable display text. */
     public final String text;
+
+    /** DMR value used for matching. */
     public final String value;
 
+    /** Creates a new access type value for the given filter attribute. */
     public AccessTypeValue(String filterAttribute, String text, String value) {
         this.identifier = filterAttribute + "-" + value;
         this.text = text;

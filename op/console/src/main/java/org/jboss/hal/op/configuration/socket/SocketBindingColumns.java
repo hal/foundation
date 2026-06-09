@@ -46,7 +46,7 @@ class SocketBindingColumns {
                     }
                     return null;
                 },
-                item -> itemRoute("/configuration", item),
+                item -> itemRoute("/configuration/", item),
                 null);
     }
 }

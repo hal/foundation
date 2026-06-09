@@ -16,14 +16,17 @@
 package org.jboss.hal.dmr.dispatch;
 
 /**
- * Server state used to process state response headers. This duplicates {@code org.jboss.hal.core.runtime.RunningState} from
- * module {@code core} to a certain degree, but since module {@code ballroom} cannot have dependencies to {@code core} this code
- * duplication is necessary.
+ * Represents the state of a single WildFly server after a management operation. Each instance identifies a server by host
+ * and server name and records whether it requires a reload or restart.
  */
 public class ServerState {
 
+    /** The required action for a server after a configuration change. */
     public enum State {
-        RELOAD_REQUIRED, RESTART_REQUIRED
+        /** The server needs a reload to apply configuration changes. */
+        RELOAD_REQUIRED,
+        /** The server needs a full restart to apply configuration changes. */
+        RESTART_REQUIRED
     }
 
     private final String host;
@@ -74,14 +77,17 @@ public class ServerState {
         return builder.toString();
     }
 
+    /** Returns the server name. */
     public String getServer() {
         return server;
     }
 
+    /** Returns the host name, or {@code null} in standalone mode. */
     public String getHost() {
         return host;
     }
 
+    /** Returns the server's required action (reload or restart). */
     public State getState() {
         return state;
     }

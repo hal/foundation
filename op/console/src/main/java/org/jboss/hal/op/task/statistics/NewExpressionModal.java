@@ -42,10 +42,15 @@ import static org.patternfly.component.modal.ModalHeader.modalHeader;
 import static org.patternfly.component.modal.ModalHeaderDescription.modalHeaderDescription;
 import static org.patternfly.style.Size.md;
 
+/**
+ * Modal dialog that prompts the user to enter a new DMR expression in the format {@code ${expression:default}}. Validates
+ * the input and invokes a callback with the expression string on successful entry.
+ */
 class NewExpressionModal {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new expression modal with the given callback for accepted expressions. */
     static NewExpressionModal newExpressionModal(Consumer<String> callback) {
         return new NewExpressionModal(callback);
     }
@@ -71,6 +76,7 @@ class NewExpressionModal {
         setVisible(helperText, false);
     }
 
+    /** Opens the modal dialog and focuses the expression text input. */
     void open() {
         modal.addHeader(modalHeader()
                         .addTitle("New expression")

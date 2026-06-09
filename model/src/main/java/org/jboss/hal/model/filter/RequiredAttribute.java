@@ -27,8 +27,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRED;
  */
 public class RequiredAttribute<T> extends FilterAttribute<T, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "required";
 
+    /** Creates a new filter using the given function to extract the attribute description. */
     public RequiredAttribute(Function<T, AttributeDescription> adf) {
         super(NAME, (object, required) -> required == adf.apply(object).find(REQUIRED).asBoolean());
     }

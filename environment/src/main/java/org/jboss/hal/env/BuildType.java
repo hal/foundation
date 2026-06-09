@@ -20,12 +20,19 @@ package org.jboss.hal.env;
  */
 public enum BuildType {
 
+    /** Development build with unoptimized J2CL output and source maps. */
     DEVELOPMENT,
 
+    /** Production build with advanced J2CL optimizations. */
     PRODUCTION,
 
+    /** Test suite build used for integration testing in a container environment. */
     TEST_SUITE;
 
+    /**
+     * Parses a build type from its string name, returning the given default if the value is {@code null} or unrecognized.
+     * Hyphens in the input are replaced with underscores before matching.
+     */
     public static BuildType parse(String value, BuildType defaultValue) {
         BuildType build = defaultValue;
         if (value != null) {

@@ -20,8 +20,13 @@ import org.patternfly.filter.FilterAttribute;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 
+/**
+ * Filter attribute that matches {@link ResourceData} entries by their {@code statistics-enabled} value type: true,
+ * false, expression, or no-expression.
+ */
 class StatisticsEnabledAttribute extends FilterAttribute<ResourceData, StatisticsEnabledValue> {
 
+    /** Filter attribute name used as the key in the filter registry. */
     static final String NAME = STATISTICS_ENABLED + "-attribute";
 
     StatisticsEnabledAttribute() {

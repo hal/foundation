@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.meta;
 
+/** Thrown when the {@link RrdParser} encounters malformed read-resource-description results. */
 class ParserException extends RuntimeException {
 
     ParserException(String message) {

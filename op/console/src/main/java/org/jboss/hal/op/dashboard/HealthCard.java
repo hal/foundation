@@ -56,6 +56,10 @@ import static org.patternfly.style.Status.danger;
 import static org.patternfly.style.Status.success;
 import static org.patternfly.style.Status.warning;
 
+/**
+ * Dashboard card displaying MicroProfile Health check results. Shows the status (UP/DOWN) of each health check from the
+ * {@code /subsystem=microprofile-health-smallrye} resource. Only shown in standalone mode when the subsystem is available.
+ */
 class HealthCard implements DashboardCard {
 
     private final Dispatcher dispatcher;

@@ -20,13 +20,18 @@ package org.jboss.hal.meta.description;
  */
 public enum RestartMode {
 
+    /** Restart of all services is required. */
     ALL_SERVICES,
 
+    /** A full JVM restart is required. */
     JVM,
 
+    /** No service restart is required. */
     NO_SERVICES,
 
+    /** Only the resource's own services need to be restarted. */
     RESOURCE_SERVICES,
 
+    /** The restart requirement is unknown. */
     UNKNOWN
 }

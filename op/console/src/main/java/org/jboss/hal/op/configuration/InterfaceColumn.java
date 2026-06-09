@@ -81,7 +81,7 @@ public class InterfaceColumn implements ColumnProvider {
     public FinderColumn get() {
         return crudColumn(ID, "Interface", emptyList(),
                 __ -> TEMPLATE,
-                item -> itemRoute("/configuration", item),
+                item -> itemRoute("/configuration/", item),
                 null)
                 .onPreview(this::preview);
     }

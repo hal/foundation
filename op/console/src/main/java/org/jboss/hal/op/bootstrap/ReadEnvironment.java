@@ -51,6 +51,11 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VERBOSE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WHOAMI_OPERATION;
 import static org.jboss.hal.dmr.ModelNodeHelper.asEnumValue;
 
+/**
+ * Bootstrap task that reads core environment information from the management root resource and the current user's identity via
+ * {@code :whoami}. Populates the {@link Environment} with name, organisation, product name/version, management model version,
+ * and operation mode. Also sets up the authenticated {@link User} with username and mapped roles.
+ */
 class ReadEnvironment implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(ReadEnvironment.class.getName());

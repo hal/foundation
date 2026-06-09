@@ -20,5 +20,12 @@ package org.jboss.hal.meta.security;
  */
 public enum Permission {
 
-    READABLE, WRITABLE, EXECUTABLE
+    /** Read access to an attribute. */
+    READABLE,
+
+    /** Write access to an attribute. */
+    WRITABLE,
+
+    /** Execute access to an operation. */
+    EXECUTABLE
 }

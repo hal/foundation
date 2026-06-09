@@ -20,12 +20,16 @@ package org.jboss.hal.env;
  */
 public enum Stability {
 
+    /** Features that are part of the standard, supported API. */
     DEFAULT(0, "default"),
 
+    /** Community-contributed features that are not yet part of the supported API. */
     COMMUNITY(100, "community"),
 
+    /** Preview features available for evaluation that may change or be removed. */
     PREVIEW(200, "preview"),
 
+    /** Experimental features under active development; not recommended for production use. */
     EXPERIMENTAL(300, "experimental");
 
     /**
@@ -51,7 +55,10 @@ public enum Stability {
         return Stability.values()[(int) (Math.random() * Stability.values().length)];
     }
 
+    /** Numeric ordering value; higher values indicate less stability. */
     public final int order;
+
+    /** Human-readable label for display in the UI. */
     public final String label;
 
     Stability(int order, String label) {

@@ -27,10 +27,12 @@ public class TraverseContinuation {
         running = false;
     }
 
+    /** Signals the traversal to stop at the next opportunity. */
     public void stop() {
         running = false;
     }
 
+    /** @return whether the traversal is currently running */
     public boolean running() {
         return running;
     }

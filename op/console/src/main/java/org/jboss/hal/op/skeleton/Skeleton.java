@@ -63,10 +63,16 @@ import static org.patternfly.style.Classes.static_;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Height;
 
+/**
+ * Main application skeleton that assembles the full page layout: masthead with logo, navigation toolbar, notification
+ * badge and drawer, theme selector, optional endpoint selector, and main content area. When the server runs at a
+ * non-default stability level, a {@link StabilityBanner} is shown above the page.
+ */
 public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, Skeleton> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new skeleton with the given endpoint storage and navigation component. */
     public static Skeleton skeleton(EndpointStorage endpointStorage, Navigation navigation) {
         return new Skeleton(endpointStorage, navigation);
     }

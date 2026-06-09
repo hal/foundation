@@ -20,7 +20,12 @@ package org.jboss.hal.resources;
  */
 public interface LocalStorage {
 
+    /** Key for the list of persisted management endpoints. */
     String ENDPOINTS = "hal-endpoints";
+
+    /** Key for the saved model browser tree panel width in pixels. */
     String MODEL_BROWSER_TREE_WIDTH = "hal-model-browser-tree-width";
+
+    /** Key for the user's selected UI theme. */
     String HAL_THEME = "hal-theme";
 }

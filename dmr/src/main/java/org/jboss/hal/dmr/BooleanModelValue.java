@@ -18,9 +18,7 @@ package org.jboss.hal.dmr;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding a {@code boolean}. Uses a flyweight pattern with shared {@code TRUE} and {@code FALSE} instances. */
 class BooleanModelValue extends ModelValue {
 
     private static BooleanModelValue TRUE = new BooleanModelValue(true);

@@ -24,9 +24,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding an ordered map of named {@link ModelNode} values. */
 class ObjectModelValue extends ModelValue {
 
     private final Map<String, ModelNode> map;

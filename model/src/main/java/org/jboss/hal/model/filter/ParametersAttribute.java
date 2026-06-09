@@ -23,8 +23,10 @@ import org.patternfly.filter.FilterAttribute;
  */
 public class ParametersAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "parameters";
 
+    /** Creates a new filter that matches operations based on whether they have parameters. */
     public ParametersAttribute() {
         super(NAME, (operation, parameter) -> parameter == !operation.parameters().isEmpty());
     }

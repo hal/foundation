@@ -79,10 +79,12 @@ public class Host extends HasServersNode {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a host instance representing a host that failed to connect. */
     public static Host failed(String name) {
         return new Host(name, false, true, true, null, null);
     }
 
+    /** Creates a host instance representing a disconnected host with optional timestamps. */
     public static Host disconnected(String name, Date disconnected, Date lastConnected) {
         return new Host(name, false, false, false, disconnected, lastConnected);
     }
@@ -109,6 +111,7 @@ public class Host extends HasServersNode {
         this.managementVersion = Version.EMPTY_VERSION;
     }
 
+    /** Creates a connected host from a model node. */
     public Host(ModelNode node) {
         super(node.get(NAME).asString(), node);
         this.booting = false;
@@ -120,6 +123,7 @@ public class Host extends HasServersNode {
         this.managementVersion = ModelNodeHelper.parseVersion(node);
     }
 
+    /** Creates a connected host from a DMR property. The property name is used as the address name. */
     public Host(Property property) {
         super(property.getValue().get(NAME).asString(), property.getValue());
         this.booting = false;
@@ -131,26 +135,32 @@ public class Host extends HasServersNode {
         this.managementVersion = ModelNodeHelper.parseVersion(property.getValue());
     }
 
+    /** Returns the name used in the host's resource address. This may differ from {@link #name()} after a rename. */
     public String getAddressName() {
         return addressName;
     }
 
+    /** Returns the management model version of this host. */
     public Version getManagementVersion() {
         return managementVersion;
     }
 
+    /** Returns {@code true} if this host is connected to the domain controller. */
     public boolean isConnected() {
         return connected;
     }
 
+    /** Returns the time this host was disconnected, or {@code null} if connected. */
     public Date getDisconnected() {
         return disconnected;
     }
 
+    /** Returns the time this host was last connected, or {@code null} if unknown. */
     public Date getLastConnected() {
         return lastConnected;
     }
 
+    /** Returns {@code true} if this host is the domain controller (primary). */
     public boolean isDomainController() {
         return hasDefined(PRIMARY) && get(PRIMARY).asBoolean();
     }
@@ -161,6 +171,7 @@ public class Host extends HasServersNode {
                 RuntimeConfigurationState.UNDEFINED);
     }
 
+    /** Returns the host state as defined by {@code host-state}. */
     public RunningState getHostState() {
         return asEnumValue(this, HOST_STATE, RunningState::valueOf, RunningState.UNDEFINED);
     }
@@ -180,34 +191,42 @@ public class Host extends HasServersNode {
         return isConnected() && !isBooting();
     }
 
+    /** Returns {@code true} if this host is still booting. */
     public boolean isBooting() {
         return booting;
     }
 
+    /** Returns {@code true} if the host state is {@link RunningState#STARTING}. */
     public boolean isStarting() {
         return getHostState() == STARTING;
     }
 
+    /** Returns {@code true} if the host state is {@link RunningState#RUNNING}. */
     public boolean isRunning() {
         return getHostState() == RunningState.RUNNING;
     }
 
+    /** Returns {@code true} if this host runs in admin-only mode. */
     public boolean isAdminMode() {
         return getRunningMode() == ADMIN_ONLY;
     }
 
+    /** Returns {@code true} if this host failed to connect. */
     public boolean isFailed() {
         return failed;
     }
 
+    /** Returns {@code true} if the host requires a restart to apply configuration changes. */
     public boolean needsRestart() {
         return getHostState() == RESTART_REQUIRED;
     }
 
+    /** Returns {@code true} if the host requires a reload to apply configuration changes. */
     public boolean needsReload() {
         return getHostState() == RELOAD_REQUIRED;
     }
 
+    /** Returns the management resource address for this host. */
     public ResourceAddress getAddress() {
         return new ResourceAddress().add(HOST, getAddressName());
     }

@@ -43,19 +43,23 @@ public class User {
         return name;
     }
 
+    /** Sets the username. */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** Returns the roles assigned to this user. */
     public Set<Role> getRoles() {
         return roles;
     }
 
+    /** Replaces all roles with the given set. */
     public void refreshRoles(Set<Role> roles) {
         this.roles.clear();
         this.roles.addAll(roles);
     }
 
+    /** Adds a role to this user. */
     public void addRole(Role role) {
         roles.add(role);
     }
@@ -78,10 +82,12 @@ public class User {
         }
     }
 
+    /** Returns {@code true} if this user has been authenticated. */
     public boolean isAuthenticated() {
         return authenticated;
     }
 
+    /** Sets the authentication status. */
     public void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
     }

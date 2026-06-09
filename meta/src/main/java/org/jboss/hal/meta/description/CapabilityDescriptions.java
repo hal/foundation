@@ -49,10 +49,12 @@ public class CapabilityDescriptions implements Iterable<CapabilityDescription> {
         return capabilities.iterator();
     }
 
+    /** @return whether this collection contains no capability descriptions */
     public boolean isEmpty() {
         return capabilities.isEmpty();
     }
 
+    /** @return the number of capability descriptions */
     public int size() {
         return capabilities.size();
     }

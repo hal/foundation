@@ -18,14 +18,18 @@ package org.jboss.hal.op;
 import org.jboss.as.controller.ModelVersion;
 import org.jboss.as.controller.SubsystemModel;
 
+/** Management model versions for the HAL on premise subsystem. */
 enum HalOpSubsystemModel implements SubsystemModel {
 
+    /** Initial model version. */
     VERSION_1_0_0(1, 0, 0);
 
+    /** The current (latest) model version. */
     static final HalOpSubsystemModel CURRENT = VERSION_1_0_0;
 
     private final ModelVersion version;
 
+    /** Creates a model version from the given major, minor, and micro components. */
     HalOpSubsystemModel(int major, int minor, int micro) {
         this.version = ModelVersion.create(major, minor, micro);
     }

@@ -28,8 +28,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STABILITY;
  */
 public interface Description {
 
+    /** @return the underlying model node backing this description */
     ModelNode modelNode();
 
+    /** @return the human-readable description text */
     default String description() {
         return modelNode().get(DESCRIPTION).asString();
     }

@@ -33,6 +33,7 @@ import static org.jboss.hal.resources.OuiaIds.PAGE_MODEL_BROWSER;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowser.modelBrowser;
 import static org.patternfly.component.page.PageSection.pageSection;
 
+/** Page hosting the management model browser, routed to {@code /management-model}. Renders the full resource tree starting from the root address. */
 @Dependent
 @Route("/management-model")
 public class ModelBrowserPage implements Page {

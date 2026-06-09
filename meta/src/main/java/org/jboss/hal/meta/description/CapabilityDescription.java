@@ -34,10 +34,12 @@ public class CapabilityDescription extends NamedNode implements Description {
         super(modelNode);
     }
 
+    /** @return whether this capability is dynamic (i.e., one instance per resource) */
     public boolean dynamic() {
         return get(DYNAMIC).asBoolean(false);
     }
 
+    /** @return the address elements that make this capability dynamic, or an empty list */
     public List<String> dynamicElements() {
         return get(DYNAMIC_ELEMENTS).isDefined()
                 ? get(DYNAMIC_ELEMENTS).asList().stream().map(ModelNode::asString).collect(toList())

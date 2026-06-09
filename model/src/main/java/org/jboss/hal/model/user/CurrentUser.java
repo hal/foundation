@@ -25,6 +25,7 @@ import jakarta.enterprise.inject.Produces;
  */
 public class CurrentUser {
 
+    /** Produces the application-scoped current user instance. Updated during bootstrap with actual credentials. */
     @Produces
     @Current
     @ApplicationScoped

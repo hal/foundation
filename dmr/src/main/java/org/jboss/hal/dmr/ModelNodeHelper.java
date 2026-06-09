@@ -129,6 +129,11 @@ public final class ModelNodeHelper {
 
     // ------------------------------------------------------ version
 
+    /**
+     * Extracts the management model version from the given model node. Reads the {@code management-major-version},
+     * {@code management-minor-version}, and {@code management-micro-version} attributes. Returns
+     * {@link Version#EMPTY_VERSION} if any version attribute is missing.
+     */
     public static Version parseVersion(ModelNode modelNode) {
         if (modelNode.hasDefined(MANAGEMENT_MAJOR_VERSION) &&
                 modelNode.hasDefined(MANAGEMENT_MINOR_VERSION) &&

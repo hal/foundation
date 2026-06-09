@@ -52,6 +52,7 @@ public class AuthorisationDecision {
         this.securityContext = securityContext;
     }
 
+    /** Evaluates a set of constraints using the operator (AND/OR) to combine individual results. */
     public boolean allowed(Constraints constraints) {
         if (environment.accessControlProvider() == AccessControlProvider.SIMPLE || constraints.isEmpty()) {
             return true;
@@ -72,6 +73,7 @@ public class AuthorisationDecision {
         }
     }
 
+    /** Evaluates a single constraint against the security context. Returns {@code true} if the permission is granted. */
     public boolean allowed(Constraint constraint) {
         if (environment.accessControlProvider() == AccessControlProvider.SIMPLE) {
             return true;

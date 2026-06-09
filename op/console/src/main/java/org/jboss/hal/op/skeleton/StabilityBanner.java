@@ -45,10 +45,16 @@ import static org.patternfly.layout.flex.SpaceItems.none;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Orientation.vertical;
 
+/**
+ * A dismissible banner displayed at the top of the console when the WildFly server has been started with a non-default
+ * stability level (e.g., experimental or preview). Shows the current stability level and provides a link to the
+ * documentation.
+ */
 public class StabilityBanner implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, StabilityBanner> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new stability banner with the given dismiss callback. */
     public static StabilityBanner stabilityBanner(Callback gotIt) {
         return new StabilityBanner(gotIt);
     }

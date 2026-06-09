@@ -52,8 +52,14 @@ public class Role {
     /** Has all permissions. Equivalent to a JBoss AS 7 administrator. */
     public static final Role SUPER_USER = new Role("SuperUser");
 
+    /** The scope type of a role. */
     public enum Type {
-        STANDARD, HOST, SERVER_GROUP
+        /** A built-in standard role. */
+        STANDARD,
+        /** A scoped role restricted to specific hosts. */
+        HOST,
+        /** A scoped role restricted to specific server groups. */
+        SERVER_GROUP
     }
 
     // Lowercase name. Must only be used internally!
@@ -65,10 +71,12 @@ public class Role {
     private final SortedSet<String> scope;
     private boolean includeAll;
 
+    /** Creates a standard role with the given name. */
     public Role(String name) {
         this(name, null, Type.STANDARD, Collections.emptySet());
     }
 
+    /** Creates a scoped role with the given base role, type, and scope. */
     public Role(String name, Role baseRole, Type type,
             Iterable<String> scope) {
         this.identifier = name.toLowerCase();
@@ -139,18 +147,22 @@ public class Role {
         return baseRole;
     }
 
+    /** Returns the scope type of this role. */
     public Type getType() {
         return type;
     }
 
+    /** Returns the host or server group names this scoped role applies to. */
     public SortedSet<String> getScope() {
         return scope;
     }
 
+    /** Returns {@code true} if this role includes all users. */
     public boolean isIncludeAll() {
         return includeAll;
     }
 
+    /** Sets whether this role includes all users. */
     public void setIncludeAll(boolean includeAll) {
         this.includeAll = includeAll;
     }

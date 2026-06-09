@@ -32,6 +32,10 @@ import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
 import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
 
+/**
+ * Entry point of the halOP console application. Initializes CDI, runs the bootstrap sequence, and either sets up the main
+ * skeleton with navigation or shows an error page if the bootstrap fails.
+ */
 @Application(packages = {"org.jboss.hal"})
 public class Main {
 

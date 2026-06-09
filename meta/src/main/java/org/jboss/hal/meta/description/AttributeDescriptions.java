@@ -60,30 +60,37 @@ public class AttributeDescriptions implements Iterable<AttributeDescription> {
         return attributes.values().iterator();
     }
 
+    /** @return the attribute description with the given name, or an empty description if not found */
     public AttributeDescription get(String name) {
         return attributes.getOrDefault(name, new AttributeDescription());
     }
 
+    /** @return whether this collection contains no attribute descriptions */
     public boolean isEmpty() {
         return attributes.isEmpty();
     }
 
+    /** @return the number of attribute descriptions */
     public int size() {
         return attributes.size();
     }
 
+    /** @return a stream over the attribute descriptions */
     public Stream<AttributeDescription> stream() {
         return attributes.values().stream();
     }
 
+    /** @return whether these attribute descriptions are nested inside a parent attribute's value-type */
     public boolean nested() {
         return parent != null;
     }
 
+    /** @return the parent attribute description, or {@code null} if these are top-level attributes */
     public AttributeDescription parent() {
         return parent;
     }
 
+    /** @return whether any attribute in this collection belongs to an attribute group */
     public boolean hasGroups() {
         return attributes.values().stream().anyMatch(ad -> ad.group() != null);
     }

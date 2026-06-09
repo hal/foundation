@@ -23,6 +23,7 @@ import org.jboss.hal.dmr.Property;
  */
 public class Subsystem extends NamedNode {
 
+    /** Creates a new subsystem from a DMR property. */
     public Subsystem(Property property) {
         super(property);
     }

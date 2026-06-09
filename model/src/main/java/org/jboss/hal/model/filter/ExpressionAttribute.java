@@ -27,8 +27,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
  */
 public class ExpressionAttribute<T> extends FilterAttribute<T, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "expression";
 
+    /** Creates a new filter using the given function to extract the attribute description. */
     public ExpressionAttribute(Function<T, AttributeDescription> adf) {
         super(NAME, (object, expressionAllowed) -> expressionAllowed == adf.apply(object).find(EXPRESSIONS_ALLOWED).asBoolean());
     }

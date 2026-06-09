@@ -28,9 +28,11 @@ import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.icon.IconSets.fas.server;
 
+/** Task for creating and configuring a reverse proxy in the Undertow subsystem. Not yet implemented. */
 @Dependent
 public class ReverseProxyTask implements Task {
 
+    /** Unique identifier for this task. */
     public static final String TASK_ID = ReverseProxyTask.class.getName();
 
     @Override

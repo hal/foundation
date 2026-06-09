@@ -76,6 +76,10 @@ import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.utilVar;
 
+/**
+ * Dashboard card showing the server overview: product name/version, instance name, console version, stability level,
+ * operation mode, configuration file, and uptime. The uptime is auto-refreshed every 10 seconds.
+ */
 class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
 
     private static final String ROOT_KEY = "root";

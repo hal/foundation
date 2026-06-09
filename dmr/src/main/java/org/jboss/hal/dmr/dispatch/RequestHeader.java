@@ -37,6 +37,7 @@ public enum RequestHeader {
         this.header = header;
     }
 
+    /** Returns the HTTP header name string. */
     public String header() {
         return header;
     }

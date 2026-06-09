@@ -37,6 +37,7 @@ import static org.patternfly.style.Classes.util;
  */
 public class ElementGuard {
 
+    /** The {@code data-constraint} attribute name used to store constraint information on HTML elements. */
     public static final String constraint = "constraint";
 
     /**
@@ -59,10 +60,12 @@ public class ElementGuard {
         }
     }
 
+    /** Processes all elements matching the CSS selector, toggling visibility based on the authorisation decision. */
     public static void processElements(AuthorisationDecision authorisationDecision, String selector) {
         processElements(authorisationDecision, querySelectorAll(document, By.selector(selector)));
     }
 
+    /** Processes all children of the given element that have {@code data-constraint} attributes. */
     public static void processElements(AuthorisationDecision authorisationDecision, HTMLElement element) {
         processElements(authorisationDecision, querySelectorAll(element, By.data(constraint)));
     }

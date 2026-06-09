@@ -41,10 +41,15 @@ import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Height;
 import static org.patternfly.token.Token.globalBackgroundColor100;
 
+/**
+ * Minimal page skeleton used during bootstrap errors. Renders only a masthead with the HAL logo and a main content
+ * area for displaying the bootstrap error details.
+ */
 public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ErrorSkeleton> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new error skeleton. */
     public static ErrorSkeleton errorSkeleton() {
         return new ErrorSkeleton();
     }
@@ -85,6 +90,7 @@ public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLEl
 
     // ------------------------------------------------------ add
 
+    /** Adds the bootstrap error element to the main content area. */
     public ErrorSkeleton add(BootstrapErrorElement bootstrapError) {
         pageMain.add(pageSection().ouiaId(OuiaIds.PAGE_ERROR)
                 .limitWidth()

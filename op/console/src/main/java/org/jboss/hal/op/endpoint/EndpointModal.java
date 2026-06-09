@@ -41,10 +41,15 @@ import static org.patternfly.component.modal.ModalHeader.modalHeader;
 import static org.patternfly.component.modal.ModalHeaderDescription.modalHeaderDescription;
 import static org.patternfly.style.Size.md;
 
+/**
+ * Modal dialog for selecting, adding, editing, and removing management interface endpoints. The modal returns a promise that
+ * resolves with the selected {@link Endpoint} when the user connects.
+ */
 public class EndpointModal {
 
     private static final Logger logger = Logger.getLogger(EndpointModal.class.getName());
 
+    /** Creates a new endpoint modal. If {@code closable} is false, the user must select an endpoint to proceed. */
     public static EndpointModal endpointModal(EndpointStorage storage, boolean closable) {
         return new EndpointModal(storage, closable);
     }
@@ -114,6 +119,7 @@ public class EndpointModal {
         setVisible(table, false);
     }
 
+    /** Opens the modal and returns a promise that resolves with the selected endpoint on successful connection. */
     public Promise<Endpoint> open() {
         return new Promise<>((resolve, reject) -> {
             this.resolve = resolve;

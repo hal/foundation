@@ -20,6 +20,9 @@ package org.jboss.hal.resources;
  */
 public interface Dataset {
 
+    /** Data attribute storing the CRUD operation type (e.g. create, update, delete). */
     String crudMessageType = "halCmt";
+
+    /** Data attribute storing the resource name associated with the CRUD operation. */
     String crudMessageName = "halCmn";
 }

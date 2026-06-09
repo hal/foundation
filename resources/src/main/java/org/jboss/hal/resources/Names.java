@@ -20,8 +20,15 @@ package org.jboss.hal.resources;
  */
 public interface Names {
 
+    /** Default browser tab title pattern; {@code %n} is replaced with the instance name. */
     String BROWSER_DEFAULT_TITLE = "%n | Management Console";
+
+    /** Fallback browser tab title used when the instance name is unknown. */
     String BROWSER_FALLBACK_TITLE = "HAL Management Console";
+
+    /** Placeholder text for values that are not available. */
     String NOT_AVAILABLE = "n/a";
+
+    /** Display name for the standalone server in the navigation and UI. */
     String STANDALONE_SERVER = "Standalone Server";
 }

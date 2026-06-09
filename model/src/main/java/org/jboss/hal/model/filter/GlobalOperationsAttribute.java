@@ -23,8 +23,10 @@ import org.patternfly.filter.FilterAttribute;
  */
 public class GlobalOperationsAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "global-operations";
 
+    /** Creates a new filter that hides global operations when the filter value is {@code false}. */
     public GlobalOperationsAttribute() {
         super(NAME, (operation, value) -> value || !operation.global());
     }

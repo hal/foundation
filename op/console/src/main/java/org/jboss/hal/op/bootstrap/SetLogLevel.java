@@ -23,6 +23,7 @@ import elemental2.promise.Promise;
 
 import static elemental2.dom.DomGlobal.location;
 
+/** Bootstrap task that initializes the Elemento logger from the URL query parameters (e.g., {@code ?logLevel=debug}). */
 class SetLogLevel implements Task<FlowContext> {
 
     @Override

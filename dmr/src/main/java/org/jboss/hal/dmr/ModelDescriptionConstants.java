@@ -16,10 +16,9 @@
 package org.jboss.hal.dmr;
 
 /**
- * String constants frequently used in model descriptions and DMR operations.
- *
- * @author Brian Stansberry
- * @author Harald Pehl
+ * String constants for attribute names, operation names, and keys used throughout the WildFly management model and DMR
+ * operations. Constants are maintained in alphabetical order. Internal constants prefixed with {@code HAL_} are used by
+ * the console only and do not correspond to management model elements.
  */
 @SuppressWarnings({ "DuplicateStringLiteralInspection", "SpellCheckingInspection" })
 public interface ModelDescriptionConstants {

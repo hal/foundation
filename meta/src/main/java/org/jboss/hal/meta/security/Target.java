@@ -19,7 +19,11 @@ package org.jboss.hal.meta.security;
  * The target type of a security {@link Constraint}: either an {@link #ATTRIBUTE} or an {@link #OPERATION}.
  */
 public enum Target {
-    OPERATION(":"), ATTRIBUTE("@");
+    /** Constraint targets a management operation. Symbol: {@code ":"} */
+    OPERATION(":"),
+
+    /** Constraint targets a management attribute. Symbol: {@code "@"} */
+    ATTRIBUTE("@");
 
     static Target parse(String input) {
         if (OPERATION.symbol.equals(input)) {
@@ -31,6 +35,7 @@ public enum Target {
         }
     }
 
+    /** The single-character symbol used in the constraint's string representation. */
     public final String symbol;
 
     Target(final String symbol) {

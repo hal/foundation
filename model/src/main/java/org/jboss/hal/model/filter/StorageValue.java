@@ -22,15 +22,22 @@ import java.util.List;
  */
 public class StorageValue {
 
+    /** Returns all predefined storage type filter values. */
     public static List<StorageValue> storageValues() {
         return List.of(new StorageValue(StorageAttribute.NAME, "Configuration", "configuration"),
                 new StorageValue(StorageAttribute.NAME, "Runtime", "runtime"));
     }
 
+    /** Unique identifier combining the filter attribute name and the value. */
     public final String identifier;
+
+    /** Human-readable display text. */
     public final String text;
+
+    /** DMR value used for matching. */
     public final String value;
 
+    /** Creates a new storage value for the given filter attribute. */
     public StorageValue(String filterAttribute, String text, String value) {
         this.identifier = filterAttribute + "-" + value;
         this.text = text;

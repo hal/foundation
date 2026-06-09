@@ -25,8 +25,10 @@ import org.patternfly.filter.FilterAttribute;
  */
 public class DefinedAttribute<T> extends FilterAttribute<T, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "defined";
 
+    /** Creates a new filter using the given function to extract the model node. */
     public DefinedAttribute(Function<T, ModelNode> modelNodeFn) {
         super(NAME, (object, defined) -> defined == null || defined == modelNodeFn.apply(object).isDefined());
     }

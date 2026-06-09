@@ -33,6 +33,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.HOST;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
 
+/**
+ * Bootstrap task that reads the list of host names in domain mode and stores them in the flow context. Skipped in standalone
+ * mode. The host names are consumed by {@link FindDomainController} to locate the primary domain controller.
+ */
 class ReadHostNames implements Task<FlowContext> {
 
     private final Dispatcher dispatcher;

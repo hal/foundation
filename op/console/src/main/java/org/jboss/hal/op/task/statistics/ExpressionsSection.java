@@ -64,10 +64,16 @@ import static org.patternfly.style.Width.width40;
 import static org.patternfly.style.Width.width60;
 import static org.patternfly.token.Token.globalTextColorDisabled;
 
+/**
+ * UI section of the statistics task that displays expression-based {@code statistics-enabled} values. Shows a table of
+ * expressions found across resources, whether a corresponding system property is defined, and its current value. Provides
+ * buttons to add, remove, and toggle system property values.
+ */
 class ExpressionsSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new expressions section bound to the given statistics task, dispatcher, and CRUD operations. */
     static ExpressionsSection expressionsSection(StatisticsTask task, Dispatcher dispatcher, CrudOperations crud) {
         return new ExpressionsSection(task, dispatcher, crud);
     }
@@ -125,6 +131,7 @@ class ExpressionsSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ api
 
+    /** Adds a row for the given expression to the expressions table. */
     void addExpression(String expression) {
         String expressionId = Id.build(expression);
         Td spTd = td(SYSTEM_PROPERTY_COLUMN);

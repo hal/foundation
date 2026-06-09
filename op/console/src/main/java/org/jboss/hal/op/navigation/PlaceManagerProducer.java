@@ -27,12 +27,17 @@ import org.jboss.hal.resources.Ids;
 import org.kie.j2cl.tools.di.core.BeanManager;
 import org.patternfly.component.navigation.Navigation;
 
+/**
+ * CDI producer for the application-scoped {@link PlaceManager}. Configures the router with the base path, root element,
+ * title formatting, fallback pages, and navigation synchronization.
+ */
 public class PlaceManagerProducer {
 
     @Inject BeanManager beanManager;
     @Inject Environment environment;
     @Inject Navigation navigation;
 
+    /** Produces the application-scoped place manager configured with annotated routes and fallback pages. */
     @Produces
     @ApplicationScoped
     public PlaceManager placeManager() {

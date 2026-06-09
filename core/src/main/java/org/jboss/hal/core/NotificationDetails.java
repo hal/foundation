@@ -31,6 +31,8 @@ public class NotificationDetails {
         return notificationDetails;
     }
 
+    /** The detail text content. */
     public String details;
+    /** Whether the detail text should be rendered as preformatted (monospace) content. */
     public boolean preformatted;
 }

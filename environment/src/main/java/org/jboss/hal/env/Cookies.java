@@ -20,13 +20,20 @@ import jsinterop.annotations.JsType;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
 
+/**
+ * JsInterop binding for the <a href="https://github.com/js-cookie/js-cookie">js-cookie</a> library. Provides typed access to
+ * browser cookies from Java code compiled with J2CL.
+ */
 @JsType(isNative = true, namespace = GLOBAL, name = "Cookies")
 class Cookies {
 
+    /** Returns the value of the cookie with the given name, or {@code null} if not set. */
     static native String get(String name);
 
+    /** Sets a session cookie (cleared when the browser closes). */
     static native void set(String name, String value);
 
+    /** Sets a persistent cookie that expires after the given number of days. */
     @JsOverlay
     static void set(String name, String value, int expires) {
         CookieOptions options = new CookieOptions();
@@ -34,13 +41,17 @@ class Cookies {
         set(name, value, options);
     }
 
+    /** Sets a cookie with the given options. */
     static native void set(String name, String value, CookieOptions options);
 
+    /** Removes the cookie with the given name. */
     static native void remove(String name);
 
+    /** Native JavaScript object passed to {@code Cookies.set()} to configure cookie attributes. */
     @JsType(isNative = true, namespace = GLOBAL, name = "Object")
     static class CookieOptions {
 
+        /** Number of days until the cookie expires. */
         int expires;
     }
 }

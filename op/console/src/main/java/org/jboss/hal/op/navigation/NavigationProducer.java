@@ -26,10 +26,12 @@ import org.patternfly.component.navigation.NavigationType.Horizontal;
 
 import static org.patternfly.component.navigation.NavigationItem.navigationItem;
 
+/** CDI producer for the primary horizontal {@link Navigation} component used in the masthead. */
 public class NavigationProducer {
 
     @Inject PlaceManager placeManager;
 
+    /** Produces an application-scoped horizontal navigation bar with items for all top-level routes. */
     @Produces
     @ApplicationScoped
     public Navigation navigation() {

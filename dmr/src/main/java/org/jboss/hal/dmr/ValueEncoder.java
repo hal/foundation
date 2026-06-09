@@ -40,6 +40,10 @@ public class ValueEncoder {
             new String[]{"=", "\\="},
     };
 
+    /**
+     * Encodes special characters ({@code /}, {@code :}, {@code =}) in the given value by prefixing them with backslashes.
+     * Returns the original value unchanged if no special characters are present.
+     */
     public static String encode(String value) {
         String localValue = value;
         if (localValue != null && !localValue.isEmpty()) {
@@ -59,6 +63,10 @@ public class ValueEncoder {
         return localValue;
     }
 
+    /**
+     * Decodes escaped special characters ({@code \/}, {@code \:}, {@code \=}) in the given value back to their
+     * unescaped form. Returns the original value unchanged if no escaped characters are present.
+     */
     public static String decode(String value) {
         String localValue = value;
         if (localValue != null && !localValue.isEmpty()) {

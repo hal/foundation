@@ -15,7 +15,7 @@
  */
 package org.jboss.hal.model;
 
-/** Mode as defined by {@code host.running-mode}, {@code server.running-mode} */
+/** Runtime configuration state as defined by {@code host.runtime-configuration-state}, {@code server.runtime-configuration-state}. */
 public enum RuntimeConfigurationState {
     STARTING, OK, RELOAD_REQUIRED, RESTART_REQUIRED, STOPPING, STOPPED, UNDEFINED
 }

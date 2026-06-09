@@ -77,6 +77,10 @@ public interface HalClasses {
 
     // ------------------------------------------------------ internal
 
+    /**
+     * Internal helper that assembles a prefixed CSS class name from an abbreviation character, a type segment, and optional
+     * element segments joined with hyphens.
+     */
     static String compose(char abbreviation, String type, String... elements) {
         StringBuilder builder = new StringBuilder();
         if (type != null && !type.isEmpty()) {

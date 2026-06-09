@@ -40,7 +40,7 @@ public class PathColumn implements ColumnProvider {
     public FinderColumn get() {
         return crudColumn(ID, "Path", asList("path", "read-only", "relative-to"),
                 __ -> TEMPLATE,
-                item -> itemRoute("/configuration", item),
+                item -> itemRoute("/configuration/", item),
                 null);
     }
 }

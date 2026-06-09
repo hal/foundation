@@ -22,7 +22,9 @@ import org.jboss.hal.event.ApplicationEvent;
 /** CDI event fired when notifications are read, cleared, uncleared, or removed. */
 public class NotificationModificationEvent implements ApplicationEvent {
 
+    /** The type of modification applied to the notifications. */
     public final NotificationModification modification;
+    /** The IDs of the notifications affected by the modification. */
     public final List<String> ids;
 
     NotificationModificationEvent(NotificationModification modification, List<String> ids) {

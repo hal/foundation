@@ -167,18 +167,22 @@ public class Version implements Comparable<Version> {
         }
     }
 
+    /** Returns the major version component. */
     public int major() {
         return major;
     }
 
+    /** Returns the minor version component. */
     public int minor() {
         return minor;
     }
 
+    /** Returns the micro (patch) version component. */
     public int micro() {
         return micro;
     }
 
+    /** Returns the qualifier string (e.g. {@code "SNAPSHOT"} or {@code "Final"}), or an empty string if absent. */
     public String qualifier() {
         return qualifier;
     }

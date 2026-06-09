@@ -52,7 +52,7 @@ public class SocketBindingGroupColumn implements ColumnProvider {
                 asList("default-interface", "port-offset", "local-destination-outbound-socket-binding",
                         "remote-destination-outbound-socket-binding"),
                 __ -> TEMPLATE,
-                item -> itemRoute("/configuration", item),
+                item -> itemRoute("/configuration/", item),
                 registry.get().column(SocketBindingTypeColumn.ID));
     }
 }

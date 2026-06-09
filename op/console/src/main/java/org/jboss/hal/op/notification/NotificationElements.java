@@ -40,8 +40,14 @@ import static org.patternfly.component.notification.NotificationDrawerList.notif
 import static org.patternfly.icon.IconSets.fas.ellipsisVertical;
 import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 
+/**
+ * Creates and wires the notification badge and notification drawer components. The badge toggles the drawer visibility
+ * and reflects unread notification counts. The drawer displays notification items with actions for marking as read and
+ * clearing.
+ */
 public class NotificationElements {
 
+    /** Creates a new set of notification elements with a connected badge and drawer. */
     public static NotificationElements notificationElements() {
         return new NotificationElements();
     }
@@ -94,10 +100,12 @@ public class NotificationElements {
         });
     }
 
+    /** Returns the notification badge component. */
     public NotificationBadge badge() {
         return badge;
     }
 
+    /** Returns the notification drawer component. */
     public NotificationDrawer drawer() {
         return drawer;
     }

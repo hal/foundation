@@ -33,24 +33,30 @@ import static org.patternfly.component.list.DescriptionListGroup.descriptionList
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
 import static org.patternfly.style.Size.xs;
 
+/** Shared utility methods for building dashboard card content such as empty states and description list groups. */
 class Dashboard {
 
+    /** Creates an extra-small empty state for use in dashboard cards. */
     static EmptyState dashboardEmptyState() {
         return emptyState().size(xs);
     }
 
+    /** Creates a description list group for the given attribute, reading its value as a string from the model node. */
     static DescriptionListGroup dlg(AttributeDescriptions ad, ModelNode modelNode, String attribute) {
         return dlg(ad, attribute, null, dld -> dld.text(modelNode.get(attribute).asString()));
     }
 
+    /** Creates a description list group with an icon for the given attribute. */
     static DescriptionListGroup dlg(AttributeDescriptions ad, ModelNode modelNode, String attribute, PredefinedIcon icon) {
         return dlg(ad, attribute, icon, dld -> dld.text(modelNode.get(attribute).asString()));
     }
 
+    /** Creates a description list group with custom description content for the given attribute. */
     static DescriptionListGroup dlg(AttributeDescriptions ad, String attribute, Consumer<DescriptionListDescription> withDld) {
         return dlg(ad, attribute, null, withDld);
     }
 
+    /** Creates a description list group with an optional icon and custom description content. */
     static DescriptionListGroup dlg(AttributeDescriptions ad, String attribute, PredefinedIcon icon,
             Consumer<DescriptionListDescription> withDld) {
         String label = sentenceCase(attribute);

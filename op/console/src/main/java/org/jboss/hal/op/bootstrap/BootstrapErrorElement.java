@@ -35,10 +35,12 @@ import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateAc
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 
+/** Renders a {@link BootstrapError} as a PatternFly empty state with failure-specific header, details, and a recovery action. */
 public class BootstrapErrorElement implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new bootstrap error element for the given error. */
     public static BootstrapErrorElement bootstrapError(BootstrapError error) {
         return new BootstrapErrorElement(error);
     }

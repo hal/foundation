@@ -24,9 +24,16 @@ public interface Ids {
 
     // ------------------------------------------------------ static IDs (a-z)
 
+    /** Prefix used for cookie-backed setting IDs. */
     String COOKIE = "hal-cookie";
+
+    /** ID of the main content container element. */
     String MAIN_ID = "hal-main-id";
+
+    /** ID representing the implicit host in standalone mode. */
     String STANDALONE_HOST = "hal-standalone-host";
+
+    /** ID representing the implicit server in standalone mode. */
     String STANDALONE_SERVER = "hal-standalone-server";
 
     // ------------------------------------------------------ dynamic IDs (a-z)

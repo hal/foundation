@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding a single {@link Property} (name/value pair). */
 class PropertyModelValue extends ModelValue {
 
     /** JSON Key used to identify PropertyModelValue. */

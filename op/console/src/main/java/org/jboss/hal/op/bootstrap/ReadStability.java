@@ -38,6 +38,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STABILITY;
 import static org.jboss.hal.dmr.ModelNodeHelper.asEnumValue;
 
+/**
+ * Bootstrap task that reads the server's stability level and permissible stability levels from the server or host environment
+ * resource and updates the {@link Environment}.
+ */
 class ReadStability implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(ReadStability.class.getName());

@@ -53,13 +53,23 @@ import io.undertow.util.StatusCodes;
  */
 class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
 
+    /** Subsystem name used in the management model and XML configuration. */
     static final String NAME = "halop";
+
+    /** Subsystem resource registration descriptor. */
     static final SubsystemResourceRegistration REGISTRATION = SubsystemResourceRegistration.of(NAME);
+
+    /** Description resolver for the subsystem resource. */
     static final ParentResourceDescriptionResolver RESOLVER =
             new SubsystemResourceDescriptionResolver(NAME, HalOpSubsystemRegistrar.class);
 
+    /** JBoss Modules module name containing the console resources. */
     static final String CONSOLE_MODULE = "org.jboss.hal.op.console";
+
+    /** Context path under which the console is registered on the management HTTP interface. */
     static final String CONTEXT_NAME = "halop";
+
+    /** Classpath prefix for the console static resources inside the console module. */
     static final String RESOURCE_PREFIX = "console";
 
     private static final Logger log = Logger.getLogger(HalOpSubsystemRegistrar.class);
@@ -68,6 +78,7 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
             .addRequirements(EXTENSIBLE_HTTP_CAPABILITY)
             .build();
 
+    /** Registers the subsystem model, resource descriptor, and runtime service installer. */
     @Override
     public ManagementResourceRegistration register(SubsystemRegistration parent,
             ManagementResourceRegistrationContext context) {
@@ -90,6 +101,10 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
      */
     private static class HalOpServiceConfigurator implements ResourceServiceConfigurator {
 
+        /**
+         * Configures a service installer that adds the console static context to the management HTTP interface on
+         * start and removes it on stop.
+         */
         @Override
         public ResourceServiceInstaller configure(OperationContext context, ModelNode model) {
             ServiceDependency<ExtensibleHttpManagement> httpManagement =
@@ -114,6 +129,10 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
                     .build();
         }
 
+        /**
+         * Creates an Undertow handler that serves static resources and reroutes client-side paths to
+         * {@code index.html} for SPA deep-link support.
+         */
         private static HttpHandler spaHandler(ResourceManager resourceManager) {
             ResourceHandler resourceHandler = new ResourceHandler(resourceManager);
             return exchange -> {
@@ -133,6 +152,7 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
             };
         }
 
+        /** Returns {@code true} if the path is a client-side route (not root and not a static file). */
         private static boolean clientRoute(String path) {
             return !path.equals("/") && !path.contains(".");
         }

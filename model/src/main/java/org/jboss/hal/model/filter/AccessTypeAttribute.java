@@ -27,8 +27,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
  */
 public class AccessTypeAttribute<T> extends FilterAttribute<T, AccessTypeValue> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "access-type";
 
+    /** Creates a new filter using the given function to extract the attribute description. */
     public AccessTypeAttribute(Function<T, AttributeDescription> adf) {
         super(NAME, (object, accessType) -> accessType.value.equals(adf.apply(object).find(ACCESS_TYPE).asString()));
     }

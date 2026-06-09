@@ -53,6 +53,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERAT
  */
 public class OperationDescription extends NamedNode implements Description {
 
+    /** The names of global management operations that are present on every resource. */
     public static final Set<String> GLOBAL_OPERATIONS = new HashSet<>();
 
     static {
@@ -93,14 +94,17 @@ public class OperationDescription extends NamedNode implements Description {
         return asModelNode();
     }
 
+    /** @return whether this operation is a global management operation */
     public boolean global() {
         return GLOBAL_OPERATIONS.contains(name());
     }
 
+    /** @return the request properties (parameters) of this operation */
     public AttributeDescriptions parameters() {
         return new AttributeDescriptions(get(REQUEST_PROPERTIES));
     }
 
+    /** @return the description of the operation's return value, or an empty description if no return type is defined */
     public AttributeDescription returnValue() {
         if (hasDefined(REPLY_PROPERTIES) && get(REPLY_PROPERTIES).hasDefined(TYPE)) {
             return new AttributeDescription("return-value", get(REPLY_PROPERTIES));

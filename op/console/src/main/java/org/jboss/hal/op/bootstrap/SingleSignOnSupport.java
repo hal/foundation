@@ -21,6 +21,7 @@ import org.jboss.elemento.logger.Logger;
 
 import elemental2.promise.Promise;
 
+/** Bootstrap task placeholder for single sign-on support. Currently not implemented. */
 class SingleSignOnSupport implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(SingleSignOnSupport.class.getName());

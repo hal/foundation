@@ -34,9 +34,13 @@ import org.jboss.hal.dmr.ValueEncoder;
  */
 public class Segment {
 
+    /** Sentinel segment representing an empty or undefined segment. */
     public static final Segment EMPTY = new Segment(null, null);
 
+    /** The resource type (e.g., {@code "subsystem"}, {@code "deployment"}), or {@code null} for placeholder-only segments. */
     public final String key;
+
+    /** The resource name in decoded form, or a placeholder expression (e.g., {@code "{selected.server}"}). */
     public final String value;
 
     Segment(String value) {
@@ -48,14 +52,17 @@ public class Segment {
         this.value = value;
     }
 
+    /** @return whether this segment has a non-null key */
     public boolean hasKey() {
         return key != null;
     }
 
+    /** @return whether the value is a placeholder expression (enclosed in curly braces) */
     public boolean containsPlaceholder() {
         return value != null && value.startsWith("{") && value.endsWith("}") && value.length() > 2;
     }
 
+    /** @return the {@link Placeholder} represented by this segment's value, or {@code null} if the value is not a placeholder */
     public Placeholder placeholder() {
         if (value != null) {
             String name = value.substring(1, value.length() - 1);

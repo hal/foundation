@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.joining;
  */
 public class TypeValues {
 
+    /** Returns all predefined type filter values. */
     public static List<TypeValues> typeValues() {
         return List.of(
                 new TypeValues("Boolean", ModelType.BOOLEAN),
@@ -44,14 +45,21 @@ public class TypeValues {
                 new TypeValues("String", ModelType.STRING));
     }
 
+    /** Human-readable display name. */
     public final String name;
+
+    /** Unique identifier derived from the model type characters. */
     public final String identifier;
+
+    /** The DMR model types this entry matches. */
     public final List<ModelType> types;
 
+    /** Creates a new type value entry for a single model type. */
     public TypeValues(String name, ModelType type) {
         this(name, List.of(type));
     }
 
+    /** Creates a new type value entry for multiple model types (e.g., all numeric types). */
     public TypeValues(String name, List<ModelType> types) {
         this.name = name;
         this.types = types;

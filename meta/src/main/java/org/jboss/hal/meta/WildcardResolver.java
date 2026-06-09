@@ -27,8 +27,12 @@ import static org.jboss.hal.meta.WildcardResolver.Direction.RTL;
  */
 public class WildcardResolver implements TemplateResolver {
 
+    /** Direction in which wildcards are resolved: left-to-right or right-to-left. */
     public enum Direction {
-        LTR, RTL
+        /** Resolve wildcards from left to right. */
+        LTR,
+        /** Resolve wildcards from right to left. */
+        RTL
     }
 
     private final Direction direction;

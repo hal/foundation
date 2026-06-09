@@ -30,6 +30,10 @@ import elemental2.promise.Promise;
 
 import static elemental2.dom.DomGlobal.document;
 
+/**
+ * Bootstrap task that sets the browser document title. Supports placeholders in the title setting: {@code %n} for the
+ * instance name and {@code %o} for the organisation. Falls back to the built-in title if a placeholder cannot be resolved.
+ */
 class SetTitle implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(SetTitle.class.getName());

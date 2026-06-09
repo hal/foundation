@@ -45,6 +45,10 @@ import static org.patternfly.icon.IconSets.fas.penToSquare;
 import static org.patternfly.icon.IconSets.fas.trash;
 import static org.patternfly.layout.bullseye.Bullseye.bullseye;
 
+/**
+ * Table displaying management interface endpoints with single-row selection. Supports inline edit and remove actions per row,
+ * and shows an empty state with an add button when no endpoints exist.
+ */
 class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, EndpointTable> {
 
     private final Table table;

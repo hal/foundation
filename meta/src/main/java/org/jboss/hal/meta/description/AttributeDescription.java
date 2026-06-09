@@ -76,41 +76,50 @@ public class AttributeDescription extends NamedNode implements Description {
 
     // ------------------------------------------------------ properties
 
+    /** @return whether expressions are allowed for this attribute */
     public boolean expressionAllowed() {
         return failSafeBoolean(EXPRESSIONS_ALLOWED);
     }
 
+    /** @return whether this attribute can be set to {@code undefined} */
     public boolean nillable() {
         return failSafeBoolean(NILLABLE);
     }
 
+    /** @return whether this attribute has a defined default value */
     public boolean hasDefault() {
         return hasDefined(DEFAULT) && get(DEFAULT).isDefined();
     }
 
+    /** @return whether this attribute is read-only or a metric */
     public boolean readOnly() {
         return hasDefined(ACCESS_TYPE) &&
                 (READ_ONLY.equals(get(ACCESS_TYPE).asString()) || METRIC.equals(get(ACCESS_TYPE).asString()));
     }
 
+    /** @return whether this attribute is required */
     public boolean required() {
         return failSafeBoolean(REQUIRED);
     }
 
+    /** @return whether this attribute has a sensitive access constraint */
     public boolean sensitive() {
         return ModelNodeHelper.nested(this, String.join(".", ACCESS_CONSTRAINTS, SENSITIVE)).isDefined();
     }
 
+    /** @return the attribute group name, or {@code null} if the attribute does not belong to a group */
     public String group() {
         return hasDefined(ATTRIBUTE_GROUP) ? get(ATTRIBUTE_GROUP).asString() : null;
     }
 
+    /** @return the measurement unit of this attribute (e.g., {@code "MILLISECONDS"}), or {@code null} */
     public String unit() {
         return hasDefined(UNIT) ? get(UNIT).asString() : null;
     }
 
     // ------------------------------------------------------ nested
 
+    /** @return the dot-separated fully qualified name including all parent attribute names */
     public String fullyQualifiedName() {
         if (parent != null) {
             List<String> names = new ArrayList<>();
@@ -126,14 +135,17 @@ public class AttributeDescription extends NamedNode implements Description {
         return name();
     }
 
+    /** @return whether this attribute is nested inside a parent attribute's value-type */
     public boolean nested() {
         return parent != null;
     }
 
+    /** @return the parent attribute description, or {@code null} if this is a top-level attribute */
     public AttributeDescription parent() {
         return parent;
     }
 
+    /** @return the root attribute description by walking up the parent chain */
     public AttributeDescription root() {
         AttributeDescription current = this;
         while (current.parent != null) {
@@ -160,6 +172,7 @@ public class AttributeDescription extends NamedNode implements Description {
 
     // ------------------------------------------------------ type
 
+    /** @return a human-readable string representation of this attribute's type, including value-type if present */
     public String formatType() {
         StringBuilder builder = new StringBuilder();
         if (hasDefined(TYPE)) {

@@ -33,10 +33,12 @@ public class ResourceAddress extends ModelNode {
         return new ResourceAddress();
     }
 
+    /** Creates a new empty (root) resource address. */
     public ResourceAddress() {
         setEmptyList();
     }
 
+    /** Creates a resource address from the given model node (expected to be a list of property pairs). */
     public ResourceAddress(ModelNode address) {
         set(address);
     }

@@ -71,6 +71,14 @@ public class DmrHeader {
     private final String server;
     private final ModelNode header;
 
+    /**
+     * Creates a new DMR header.
+     *
+     * @param serverGroup the server group name, or {@code null} in standalone mode
+     * @param host        the host name, or {@code null} in standalone mode
+     * @param server      the server name
+     * @param header      the response header model node
+     */
     public DmrHeader(String serverGroup, String host, String server, ModelNode header) {
         this.serverGroup = serverGroup;
         this.host = host;
@@ -78,18 +86,22 @@ public class DmrHeader {
         this.header = header;
     }
 
+    /** Returns the server group name, or {@code null} in standalone mode. */
     public String getServerGroup() {
         return serverGroup;
     }
 
+    /** Returns the host name, or {@code null} in standalone mode. */
     public String getHost() {
         return host;
     }
 
+    /** Returns the server name. */
     public String getServer() {
         return server;
     }
 
+    /** Returns the response header model node containing the header payload. */
     public ModelNode getHeader() {
         return header;
     }

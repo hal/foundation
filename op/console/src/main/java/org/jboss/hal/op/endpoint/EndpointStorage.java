@@ -33,6 +33,10 @@ import static elemental2.core.Global.JSON;
 import static elemental2.dom.DomGlobal.window;
 import static java.util.Comparator.comparing;
 
+/**
+ * Manages the persistence and retrieval of management interface endpoints using browser local storage. Endpoints are stored
+ * as a JSON array and loaded on application startup.
+ */
 @ApplicationScoped
 public class EndpointStorage {
 
@@ -56,6 +60,7 @@ public class EndpointStorage {
         }
     }
 
+    /** Finds an endpoint by its display name, or returns {@code null} if not found. */
     public Endpoint findByName(String name) {
         for (Endpoint endpoint : endpoints.values()) {
             if (endpoint.name.equals(name)) {
@@ -65,14 +70,17 @@ public class EndpointStorage {
         return null;
     }
 
+    /** Sets the given endpoint as the currently connected endpoint. */
     public void connect(Endpoint endpoint) {
         this.current = endpoint;
     }
 
+    /** Returns the currently connected endpoint, or {@code null} if none is connected. */
     public Endpoint current() {
         return current;
     }
 
+    /** Adds an endpoint and persists the updated list to local storage. */
     public void add(Endpoint endpoint) {
         endpoints.put(endpoint.id, endpoint);
         save();

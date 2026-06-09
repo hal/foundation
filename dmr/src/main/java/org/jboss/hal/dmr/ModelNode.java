@@ -32,9 +32,13 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.OUTCOME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SUCCESS;
 
 /**
- * A dynamic model representation node object.
+ * A dynamic model representation node object, serving as the fundamental data structure for all WildFly management model
+ * values. A model node can hold any of the types defined in {@link ModelType}, including primitives, lists, objects
+ * (maps), and expressions.
  *
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
+ * <p>
+ * Model nodes are mutable by default but can be made immutable via {@link #protect()}. They support binary serialization
+ * (via {@link DataInput}/{@link DataOutput}), base64 encoding (for HTTP transport), and JSON formatting.
  */
 public class ModelNode implements Cloneable {
 
@@ -67,6 +71,7 @@ public class ModelNode implements Cloneable {
     private boolean protect = false;
     private ModelValue value;
 
+    /** Creates a new undefined model node. */
     public ModelNode() {
         this.value = ModelValue.UNDEFINED;
     }
@@ -436,6 +441,14 @@ public class ModelNode implements Cloneable {
         return this;
     }
 
+    /**
+     * Change this node's value to the given value, interpreting it according to the specified type.
+     *
+     * @param type      the model type to use for the conversion
+     * @param propValue the value to set
+     * @return this node
+     * @throws RuntimeException if the type conversion is not implemented
+     */
     public ModelNode set(ModelType type, Object propValue) {
         if (type.equals(ModelType.STRING)) {
             set((String) propValue);
@@ -1285,10 +1298,12 @@ public class ModelNode implements Cloneable {
         return value.toJSONString(compact);
     }
 
+    /** Returns a multi-line JSON string representation of this model node. */
     public String toJSONString() {
         return value.toJSONString(false);
     }
 
+    /** Returns a base64-encoded binary representation of this model node, suitable for HTTP transport. */
     public String toBase64String() {
         DataOutput out = new DataOutput();
         writeExternal(out);

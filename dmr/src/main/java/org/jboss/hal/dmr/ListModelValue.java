@@ -21,9 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding an ordered list of {@link ModelNode} values. */
 class ListModelValue extends ModelValue {
 
     public static final ModelNode[] NO_NODES = new ModelNode[0];

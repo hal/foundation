@@ -61,11 +61,22 @@ import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.icon.IconSets.fas.chartLine;
 
+/**
+ * Task for enabling or disabling statistics across all subsystems that have a {@code statistics-enabled} attribute. Traverses
+ * the management model tree, collects resources with that attribute, and presents them in a UI that supports bulk and
+ * individual updates using boolean values or DMR expressions.
+ *
+ * <p>
+ * The task also tracks expressions found in existing attribute values and allows users to manage the corresponding system
+ * properties.
+ */
 // TODO Support domain mode
 @Dependent
 public class StatisticsTask implements Task {
 
     private static final Logger logger = Logger.getLogger(StatisticsTask.class.getName());
+
+    /** Unique identifier for this task. */
     public static final String TASK_ID = StatisticsTask.class.getName();
 
     final Set<String> expressions;
@@ -186,6 +197,10 @@ public class StatisticsTask implements Task {
                 });
     }
 
+    /**
+     * Registers a new expression key. Adds it to the expressions section and optionally updates the expression
+     * dropdowns in the resources section.
+     */
     void addExpression(String expression, boolean updateDropdowns) {
         if (!expressions.contains(expression)) {
             expressions.add(expression);

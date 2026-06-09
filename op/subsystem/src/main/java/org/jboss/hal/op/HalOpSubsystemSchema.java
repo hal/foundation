@@ -27,23 +27,28 @@ import org.jboss.staxmapper.IntVersion;
  */
 public enum HalOpSubsystemSchema implements SubsystemResourceXMLSchema<HalOpSubsystemSchema> {
 
+    /** Initial schema version ({@code urn:jboss:domain:halop:1.0}). */
     VERSION_1_0(1, 0);
 
+    /** The current (latest) schema version. */
     static final HalOpSubsystemSchema CURRENT = VERSION_1_0;
 
     private final ResourceXMLParticleFactory factory = ResourceXMLParticleFactory.newInstance(this);
     private final VersionedNamespace<IntVersion, HalOpSubsystemSchema> namespace;
 
+    /** Creates a schema version and derives the legacy subsystem URN namespace. */
     HalOpSubsystemSchema(int major, int minor) {
         this.namespace = SubsystemSchema.createLegacySubsystemURN(
                 HalOpSubsystemRegistrar.NAME, new IntVersion(major, minor));
     }
 
+    /** Returns the versioned namespace URI for this schema version. */
     @Override
     public VersionedNamespace<IntVersion, HalOpSubsystemSchema> getNamespace() {
         return this.namespace;
     }
 
+    /** Returns the XML element definition used to parse and marshal the subsystem configuration. */
     @Override
     public SubsystemResourceRegistrationXMLElement getSubsystemXMLElement() {
         return this.factory.subsystemElement(HalOpSubsystemRegistrar.REGISTRATION).build();

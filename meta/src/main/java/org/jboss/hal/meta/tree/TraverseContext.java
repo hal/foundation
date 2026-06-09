@@ -36,14 +36,17 @@ public class TraverseContext {
         failed = new HashMap<>();
     }
 
+    /** @return the total number of child resources discovered during traversal */
     public int processed() {
         return processed;
     }
 
+    /** @return a map of resource addresses to their failed operations */
     public Map<String, Operation> failed() {
         return failed;
     }
 
+    /** @return the number of resources accepted by the traverse operation */
     public int accepted() {
         return accepted;
     }

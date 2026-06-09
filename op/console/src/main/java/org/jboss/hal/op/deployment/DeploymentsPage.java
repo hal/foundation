@@ -36,6 +36,7 @@ import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;
 
+/** Placeholder page for the deployments section, routed to {@code /deployments}. Not yet implemented. */
 @Dependent
 @Route("/deployments")
 public class DeploymentsPage implements Page {

@@ -47,6 +47,7 @@ public class Deployments {
         this.dispatcher = dispatcher;
     }
 
+    /** Reads all deployments from a standalone server, including subsystem and subdeployment information. */
     public Promise<List<Deployment>> readStandaloneDeployments() {
         Operation operation = new Operation.Builder(ResourceAddress.root(),
                 READ_CHILDREN_RESOURCES_OPERATION)

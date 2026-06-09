@@ -33,13 +33,21 @@ public class Placeholder {
 
     // ------------------------------------------------------ well-known placeholders
 
+    /** Placeholder for the domain controller host. */
     public static final Placeholder DOMAIN_CONTROLLER = new Placeholder("domain.controller", HOST, true);
+    /** Placeholder for the currently selected deployment. */
     public static final Placeholder SELECTED_DEPLOYMENT = new Placeholder("selected.deployment", DEPLOYMENT, false);
+    /** Placeholder for the currently selected host (domain mode only). */
     public static final Placeholder SELECTED_HOST = new Placeholder("selected.host", HOST, true);
+    /** Placeholder for the currently selected profile (domain mode only). */
     public static final Placeholder SELECTED_PROFILE = new Placeholder("selected.profile", PROFILE, true);
+    /** Placeholder for a dynamically selected resource (resolved at navigation time). */
     public static final Placeholder SELECTED_RESOURCE = new Placeholder("selected.resource", null, false);
+    /** Placeholder for the currently selected server (domain mode only). */
     public static final Placeholder SELECTED_SERVER = new Placeholder("selected.server", SERVER, true);
+    /** Placeholder for the currently selected server config (domain mode only). */
     public static final Placeholder SELECTED_SERVER_CONFIG = new Placeholder("selected.server-config", SERVER_CONFIG, true);
+    /** Placeholder for the currently selected server group (domain mode only). */
     public static final Placeholder SELECTED_SERVER_GROUP = new Placeholder("selected.server-group", SERVER_GROUP, true);
 
     static final Map<String, Placeholder> WELL_KNOWN_NAMES = new HashMap<>();
@@ -55,8 +63,13 @@ public class Placeholder {
         WELL_KNOWN_NAMES.put("selected.server-group", SELECTED_SERVER_GROUP);
     }
 
+    /** The placeholder name without curly braces (e.g., {@code "selected.server"}). */
     public final String name;
+
+    /** The DMR resource type this placeholder maps to (e.g., {@code "host"}, {@code "server"}), or {@code null}. */
     public final String resource;
+
+    /** Whether this placeholder is only meaningful in domain mode. */
     public final boolean domainOnly;
 
     Placeholder(String name, String resource, boolean domainOnly) {

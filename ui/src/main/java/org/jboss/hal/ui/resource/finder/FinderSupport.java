@@ -23,6 +23,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.WildcardResolver;
 import org.patternfly.component.AsyncItems;
 import org.patternfly.extension.finder.FinderColumn;
@@ -154,7 +155,8 @@ public class FinderSupport {
     public static String itemRoute(String base, FinderItem item) {
         AddressTemplate template = item.get(TEMPLATE_KEY);
         if (template != null) {
-            return base + AddressRouting.encode(template);
+            AddressTemplate resolved = new StatementContextResolver(uic().statementContext()).resolve(template);
+            return base + AddressRouting.encode(resolved);
         }
         return base;
     }

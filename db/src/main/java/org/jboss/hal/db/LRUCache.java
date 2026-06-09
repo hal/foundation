@@ -44,6 +44,11 @@ public class LRUCache<K, V> {
     private final HashMap<K, Node<K, V>> cacheMap;
     private final List<RemovalHandler<K, V>> removalHandlers;
 
+    /**
+     * Creates a new LRU cache with the given maximum capacity.
+     *
+     * @param capacity the maximum number of entries the cache can hold before eviction begins
+     */
     public LRUCache(int capacity) {
         this.capacity = capacity;
         this.cacheList = new LinkedList<>();
@@ -158,7 +163,9 @@ public class LRUCache<K, V> {
     /** A key-value pair stored in the cache. */
     public static class Node<K, V> {
 
+        /** The immutable key of this cache entry. */
         public final K key;
+        /** The mutable value of this cache entry. */
         public V value;
 
         private Node(K key, V value) {

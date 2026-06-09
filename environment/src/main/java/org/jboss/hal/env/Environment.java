@@ -64,6 +64,10 @@ public class Environment {
     private boolean sso;
     private String domainController;
 
+    /**
+     * Creates the environment with build-time properties read from J2CL system properties and sensible defaults for all
+     * runtime properties.
+     */
     public Environment() {
         // final instance variables must be passed to the
         // j2cl-maven-plugin as `<environment.x/>` closure defines (sse POM)
@@ -139,38 +143,47 @@ public class Environment {
 
     // ------------------------------------------------------ getter
 
+    /** Returns the unique application identifier (e.g. {@code "halop"}). */
     public String applicationId() {
         return applicationId;
     }
 
+    /** Returns the human-readable application name. */
     public String applicationName() {
         return applicationName;
     }
 
+    /** Returns the version of the HAL console application. */
     public Version applicationVersion() {
         return applicationVersion;
     }
 
+    /** Returns the base path of the console (e.g. {@code "/"} or {@code "/halop"}). */
     public String base() {
         return base;
     }
 
+    /** Returns the build type (development, production, or test suite). */
     public BuildType buildType() {
         return buildType;
     }
 
+    /** Returns the name of the connected WildFly server instance. */
     public String instanceName() {
         return instanceName;
     }
 
+    /** Returns the organization of the connected WildFly server instance. */
     public String instanceOrganization() {
         return instanceOrganization;
     }
 
+    /** Returns the product name reported by the management model (e.g. {@code "WildFly Full"} or {@code "JBoss EAP"}). */
     public String productName() {
         return productName;
     }
 
+    /** Returns the product version reported by the management model. */
     public Version productVersion() {
         return productVersion;
     }
@@ -191,18 +204,22 @@ public class Environment {
                 : productVersion().major() + "." + productVersion().minor();
     }
 
+    /** Returns the management model version of the connected WildFly instance. */
     public Version managementVersion() {
         return managementVersion;
     }
 
+    /** Returns the operation mode of the connected server (standalone or domain). */
     public OperationMode operationMode() {
         return operationMode;
     }
 
+    /** Returns the stability level configured on the connected server. */
     public Stability serverStability() {
         return serverStability;
     }
 
+    /** Returns the stability level the console was compiled with. */
     public Stability builtInStability() {
         return builtInStability;
     }
@@ -266,14 +283,17 @@ public class Environment {
         return operationMode == OperationMode.DOMAIN;
     }
 
+    /** Returns the access control provider configured on the management interface. */
     public AccessControlProvider accessControlProvider() {
         return accessControlProvider;
     }
 
+    /** Returns {@code true} if single sign-on is enabled on the management interface. */
     public boolean sso() {
         return sso;
     }
 
+    /** Returns the name of the domain controller host. Only meaningful in domain mode. */
     public String domainController() {
         return domainController;
     }

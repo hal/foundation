@@ -56,6 +56,7 @@ import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Orientation.vertical;
 import static org.patternfly.style.Size.xl;
 
+/** Dashboard card with links to WildFly documentation, community resources, and help channels. Content is static. */
 class DocumentationCard implements DashboardCard {
 
     private static final List<String[]> GENERAL_RESOURCES = asList(

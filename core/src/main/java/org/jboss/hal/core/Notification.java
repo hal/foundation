@@ -90,13 +90,21 @@ public class Notification {
 
     // ------------------------------------------------------ instance
 
+    /** Unique identifier for this notification. */
     public String id;
-    public String severity; // String instead of Severity to make this a native JavaScript object
+    /** Severity level stored as a string for native JavaScript compatibility. Use {@link #severity()} for the typed enum. */
+    public String severity;
+    /** Short headline displayed as the notification title. */
     public String title;
+    /** Detailed description displayed below the title. */
     public String description;
+    /** Additional detail entries attached to this notification. */
     public JsArray<NotificationDetails> details;
+    /** Creation timestamp in milliseconds since the epoch. */
     public double timestamp;
+    /** Whether this notification has been marked as read. */
     public boolean read;
+    /** Whether this notification has been cleared from the notification drawer. */
     public boolean cleared;
 
     // ------------------------------------------------------ builder

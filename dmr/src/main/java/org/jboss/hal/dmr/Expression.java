@@ -39,6 +39,7 @@ public class Expression {
     static final JsRegExp JS_REG_EXP = new JsRegExp(REG_EXP);
     static Predicate<String> PREDICATE = JS_REG_EXP::test; // replaced in JVM unit tests
 
+    /** Returns {@code true} if the given string is a complete expression in the format {@code ${name}} or {@code ${name:default}}. */
     public static boolean isExpression(String value) {
         if (value != null && value.length() > 3) {
             if (value.startsWith("${") && value.endsWith("}")) {
@@ -51,10 +52,15 @@ public class Expression {
         return false;
     }
 
+    /** Returns {@code true} if the given string contains an embedded expression. */
     public static boolean containsExpression(String value) {
         return startExpressionEnd(value) != null;
     }
 
+    /**
+     * Splits the given string around the first embedded expression. Returns a three-element array
+     * {@code [prefix, expression, suffix]}, or {@code null} if no expression is found.
+     */
     public static String[] startExpressionEnd(String value) {
         if (value != null && value.length() > 3) { // ${x}
             int startIndex = value.indexOf("${");
@@ -73,6 +79,10 @@ public class Expression {
         return null;
     }
 
+    /**
+     * Splits an expression into its name and default value. Returns a two-element array {@code [name, default]}, where
+     * the default is an empty string if not specified. Returns {@code null} if the input is not a valid expression.
+     */
     public static String[] splitExpression(String expression) {
         if (isExpression(expression)) {
             int colon = expression.indexOf(':');
@@ -90,6 +100,7 @@ public class Expression {
         }
     }
 
+    /** Extracts all expression names from a possibly nested expression string. Returns {@code null} if no expressions are found. */
     public static String[] extractExpressions(String expression) {
         List<String> expressions = new ArrayList<>();
         String current = expression;

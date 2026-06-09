@@ -96,10 +96,12 @@ public class Dispatcher {
 
     // ------------------------------------------------------ execute composite
 
+    /** Executes a composite operation and invokes the success callback with the result. Uses the default error handler. */
     public void execute(Composite operations, Consumer<CompositeResult> success) {
         execute(operations, success, defaultErrorHandler);
     }
 
+    /** Executes a composite operation and invokes the success callback with the result. Uses the given error handler. */
     public void execute(Composite operations, Consumer<CompositeResult> success, DispatcherErrorHandler errorHandler) {
         dmr(operations)
                 .then(payload -> {
@@ -114,16 +116,19 @@ public class Dispatcher {
                 });
     }
 
+    /** Executes a composite operation and returns a promise of the composite result. */
     public Promise<CompositeResult> execute(Composite operations) {
         return dmr(operations).then(payload -> Promise.resolve(compositeResult(payload)));
     }
 
     // ------------------------------------------------------ execute operation
 
+    /** Executes a single operation and invokes the success callback with the {@code "result"} payload. Uses the default error handler. */
     public void execute(Operation operation, Consumer<ModelNode> success) {
         execute(operation, success, defaultErrorHandler);
     }
 
+    /** Executes a single operation and invokes the success callback with the {@code "result"} payload. Uses the given error handler. */
     public void execute(Operation operation, Consumer<ModelNode> success, DispatcherErrorHandler errorHandler) {
         dmr(operation)
                 .then(payload -> {
@@ -138,10 +143,12 @@ public class Dispatcher {
                 });
     }
 
+    /** Executes a single operation and returns a promise of the {@code "result"} payload. */
     public Promise<ModelNode> execute(Operation operation) {
         return execute(operation, true);
     }
 
+    /** Executes a single operation and returns a promise of the {@code "result"} payload. Optionally logs errors. */
     public Promise<ModelNode> execute(Operation operation, boolean logError) {
         return dmr(operation, logError).then(payload -> Promise.resolve(operationResult(payload)));
     }

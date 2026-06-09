@@ -64,6 +64,7 @@ public class CrudOperations {
     private final StatementContext statementContext;
     private final Notifications notifications;
 
+    /** Creates a new CRUD operations instance with the required services. */
     @Inject
     public CrudOperations(Dispatcher dispatcher, MetadataRepository metadataRepository, StatementContext statementContext,
             Notifications notifications) {

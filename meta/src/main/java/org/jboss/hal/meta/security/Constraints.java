@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.joining;
 /** A set of {@linkplain Constraint constraints} with an operator. */
 public class Constraints implements Iterable<Constraint> {
 
+    /** The logical operator used to combine multiple constraints. */
     public enum Operator {
         AND("&"), OR("|");
 
@@ -44,12 +45,14 @@ public class Constraints implements Iterable<Constraint> {
 
     // ------------------------------------------------------ factory methods
 
+    /** Creates a constraints instance containing a single constraint. */
     public static Constraints single(Constraint constraint) {
         LinkedHashSet<Constraint> set = new LinkedHashSet<>();
         set.add(constraint);
         return new Constraints(set, Operator.AND);
     }
 
+    /** Creates a constraints instance combining the given constraints with the AND operator. */
     public static Constraints and(Constraint first, Constraint... rest) {
         LinkedHashSet<Constraint> set = new LinkedHashSet<>();
         set.add(first);
@@ -59,6 +62,7 @@ public class Constraints implements Iterable<Constraint> {
         return new Constraints(set, Operator.AND);
     }
 
+    /** Creates a constraints instance combining the given constraints with the AND operator. */
     public static Constraints and(Iterable<Constraint> constraints) {
         LinkedHashSet<Constraint> set = new LinkedHashSet<>();
         for (Constraint constraint : constraints) {
@@ -67,6 +71,7 @@ public class Constraints implements Iterable<Constraint> {
         return new Constraints(set, Operator.AND);
     }
 
+    /** Creates a constraints instance combining the given constraints with the OR operator. */
     public static Constraints or(Constraint first, Constraint... rest) {
         LinkedHashSet<Constraint> set = new LinkedHashSet<>();
         set.add(first);
@@ -76,6 +81,7 @@ public class Constraints implements Iterable<Constraint> {
         return new Constraints(set, Operator.OR);
     }
 
+    /** Creates a constraints instance combining the given constraints with the OR operator. */
     public static Constraints or(Iterable<Constraint> constraints) {
         LinkedHashSet<Constraint> set = new LinkedHashSet<>();
         for (Constraint constraint : constraints) {
@@ -91,6 +97,7 @@ public class Constraints implements Iterable<Constraint> {
 
     // ------------------------------------------------------ parse
 
+    /** Parses a constraints string, detecting the operator from the separator character ({@code &} or {@code |}). */
     public static Constraints parse(String input) {
         if (input != null && !input.isEmpty()) {
             Operator operator;
@@ -119,6 +126,7 @@ public class Constraints implements Iterable<Constraint> {
     // ------------------------------------------------------ instance
 
     private final LinkedHashSet<Constraint> constraints;
+    /** The operator used to combine the constraints in this set. */
     public final Operator operator;
 
     private Constraints(LinkedHashSet<Constraint> constraints, Operator operator) {
@@ -138,6 +146,7 @@ public class Constraints implements Iterable<Constraint> {
         return "";
     }
 
+    /** @return the string representation suitable for use in HTML {@code data-constraint} attributes */
     public String data() {
         return toString();
     }
@@ -147,18 +156,22 @@ public class Constraints implements Iterable<Constraint> {
         return constraints.iterator();
     }
 
+    /** @return the number of constraints in this set */
     public int size() {
         return constraints.size();
     }
 
+    /** @return whether this set contains no constraints */
     public boolean isEmpty() {
         return constraints.isEmpty();
     }
 
+    /** @return whether this set contains the specified constraint */
     public boolean contains(Object o) {
         return constraints.contains(o);
     }
 
+    /** @return an unmodifiable view of the underlying constraint set */
     public Set<Constraint> constraints() {
         return unmodifiableSet(constraints);
     }

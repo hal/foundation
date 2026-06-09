@@ -35,10 +35,12 @@ public class Deprecation extends ModelNode {
         set(modelNode);
     }
 
+    /** @return the management model version since which the element has been deprecated */
     public Version since() {
         return hasDefined(SINCE) ? Version.parseVersion(get(SINCE).asString()) : Version.EMPTY_VERSION;
     }
 
+    /** @return the reason for deprecation */
     public String reason() {
         return get(REASON).asString();
     }

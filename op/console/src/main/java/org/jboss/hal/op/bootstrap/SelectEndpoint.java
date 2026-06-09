@@ -37,6 +37,11 @@ import static org.jboss.hal.op.bootstrap.BootstrapError.Failure.UNKNOWN;
 import static org.jboss.hal.op.endpoint.Endpoint.CONNECT_PARAMETER;
 import static org.jboss.hal.op.endpoint.EndpointModal.endpointModal;
 
+/**
+ * Bootstrap task that selects and connects to a WildFly management endpoint. Evaluates the {@code connect} URL parameter to
+ * find an endpoint by URL or name. If no parameter is present, pings the current origin or opens the endpoint selection modal.
+ * The selected endpoint is verified via {@link Endpoint#ping(String)} before the bootstrap proceeds.
+ */
 class SelectEndpoint implements Task<FlowContext> {
 
     private static final Logger logger = Logger.getLogger(SelectEndpoint.class.getName());

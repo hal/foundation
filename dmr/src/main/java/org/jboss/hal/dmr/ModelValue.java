@@ -22,7 +22,13 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
+ * Abstract base class for all typed values held by a {@link ModelNode}. Each concrete subclass corresponds to a
+ * {@link ModelType} and provides type-specific conversion, formatting, serialization, and equality logic.
+ *
+ * <p>
+ * Subclasses override the {@code asXxx()} methods to support type coercion. Methods that are not applicable for a given
+ * type throw {@link IllegalArgumentException} by default. The {@link #UNDEFINED} singleton represents the absence of a
+ * value.
  */
 abstract class ModelValue {
 

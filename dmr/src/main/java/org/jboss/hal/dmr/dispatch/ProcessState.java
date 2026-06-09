@@ -39,6 +39,7 @@ public class ProcessState implements Iterable<ServerState> {
         serverStates = new HashSet<>();
     }
 
+    /** Adds a server state to this process state. */
     public void add(ServerState serverState) {
         serverStates.add(serverState);
     }
@@ -48,10 +49,12 @@ public class ProcessState implements Iterable<ServerState> {
         return serverStates.iterator();
     }
 
+    /** Returns {@code true} if no server states have been added. */
     public boolean isEmpty() {
         return serverStates.isEmpty();
     }
 
+    /** Returns the first server state, or {@code null} if empty. */
     public ServerState first() {
         if (!serverStates.isEmpty()) {
             return serverStates.iterator().next();
@@ -59,6 +62,7 @@ public class ProcessState implements Iterable<ServerState> {
         return null;
     }
 
+    /** Returns the number of server states. */
     public int size() {
         return serverStates.size();
     }

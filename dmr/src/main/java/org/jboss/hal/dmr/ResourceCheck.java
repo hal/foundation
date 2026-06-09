@@ -32,6 +32,12 @@ public final class ResourceCheck implements Task<FlowContext> {
     private final Dispatcher dispatcher;
     private final ResourceAddress address;
 
+    /**
+     * Creates a new resource check for the given address.
+     *
+     * @param dispatcher the dispatcher to execute the read-resource operation
+     * @param address    the resource address to check
+     */
     public ResourceCheck(Dispatcher dispatcher, ResourceAddress address) {
         this.dispatcher = dispatcher;
         this.address = address;

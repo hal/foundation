@@ -28,6 +28,7 @@ public class ServerGroupDeployment extends Content {
     private final String serverGroup;
     private Deployment deployment; // might be null if there's no reference server available
 
+    /** Creates a new server group deployment for the given server group. */
     public ServerGroupDeployment(String serverGroup, ModelNode node) {
         super(node);
         this.serverGroup = serverGroup;
@@ -68,18 +69,22 @@ public class ServerGroupDeployment extends Content {
 
     // ------------------------------------------------------ api
 
+    /** Returns the name of the server group this deployment belongs to. */
     public String serverGroup() {
         return serverGroup;
     }
 
+    /** Returns the runtime deployment, or {@code null} if no reference server is available. */
     public Deployment deployment() {
         return deployment;
     }
 
+    /** Sets the runtime deployment for this server group deployment. */
     public void deployment(Deployment deployment) {
         this.deployment = deployment;
     }
 
+    /** Returns {@code true} if this deployment is running OK and has a reference server available. */
     public boolean runningWithReferenceServer() {
         return deployment != null && deployment.status() == DeploymentStatus.OK && deployment.referenceServer() != null;
     }

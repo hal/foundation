@@ -25,8 +25,10 @@ import org.patternfly.filter.FilterAttribute;
  */
 public class DeprecatedAttribute<T> extends FilterAttribute<T, Boolean> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "deprecated";
 
+    /** Creates a new filter using the given function to extract the description. */
     public DeprecatedAttribute(Function<T, Description> descriptionFn) {
         super(NAME, (object, deprecated) -> deprecated == descriptionFn.apply(object).deprecation().isDefined());
     }

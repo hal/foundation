@@ -26,10 +26,19 @@ import static java.util.Collections.emptyList;
 import static org.jboss.hal.dmr.Expression.extractExpressions;
 import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 
+/**
+ * Holds the {@code statistics-enabled} attribute value for a single WildFly management resource. Tracks the resource's
+ * address template, current attribute value, and whether the attribute supports expressions.
+ */
 class ResourceData {
 
+    /** The address template of the resource. */
     final AddressTemplate template;
+
+    /** The current value of the {@code statistics-enabled} attribute. */
     final ModelNode value;
+
+    /** Whether the {@code statistics-enabled} attribute allows expression values. */
     boolean expressionsAllowed;
 
     ResourceData(AddressTemplate template, ModelNode value) {
@@ -44,14 +53,17 @@ class ResourceData {
         this.expressionsAllowed = expressionsAllowed;
     }
 
+    /** Returns a copy of this resource data with the given updated value. */
     ResourceData copy(ModelNode value) {
         return new ResourceData(template, value, expressionsAllowed);
     }
 
+    /** Returns {@code true} if the current value is a DMR expression. */
     boolean isExpression() {
         return value.isDefined() && value.getType() == EXPRESSION;
     }
 
+    /** Extracts and returns the expression keys from the value, or an empty list if the value is not an expression. */
     List<String> expressions() {
         if (isExpression()) {
             String[] expressions = extractExpressions(value.asString());

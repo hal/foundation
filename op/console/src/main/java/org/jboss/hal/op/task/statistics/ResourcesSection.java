@@ -112,10 +112,17 @@ import static org.patternfly.style.Size._2xl;
 import static org.patternfly.style.Width.width40;
 import static org.patternfly.style.Width.width60;
 
+/**
+ * UI section of the statistics task that lists all WildFly resources with a {@code statistics-enabled} attribute. Provides
+ * filtering, bulk selection, and bulk update capabilities. Individual resources can be toggled to {@code true},
+ * {@code false}, or set to an expression value. Resources that support expressions offer additional dropdown menus for
+ * expression assignment.
+ */
 class ResourcesSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new resources section bound to the given statistics task, dispatcher, and notifications. */
     static ResourcesSection resourcesSection(StatisticsTask task, Dispatcher dispatcher, Notifications notifications) {
         return new ResourcesSection(task, dispatcher, notifications);
     }
@@ -253,15 +260,18 @@ class ResourcesSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ api
 
+    /** Adds a row for the given resource data to the resources table. */
     void addResource(ResourceData sed) {
         resourcesTBody.addItem(resourceRow(sed));
     }
 
+    /** Updates the visible and total resource counts in the toolbar. */
     void count(int resources) {
         visible.set(resources);
         total.set(resources);
     }
 
+    /** Populates the bulk expression dropdown with the collected expression keys. */
     void updateBulkExpressionDropdown(Set<String> expressions) {
         for (String expression : expressions) {
             if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
@@ -271,6 +281,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         }
     }
 
+    /** Adds an expression dropdown to the table row of the given resource data. */
     void addExpressionDropdown(ResourceData rd, Set<String> expressions) {
         HTMLElement td = resourcesTBody.querySelector(By.data(EXPRESSION_DROPDOWN_DATA, rd.template.toString()));
         if (td != null) {
@@ -288,6 +299,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         }
     }
 
+    /** Adds a new expression to all existing expression dropdowns (bulk and per-resource). */
     void updateExpressionDropdowns(String expression) {
         if (!WILDFLY_STATISTICS_ENABLED.equals(expression)) {
             bulkExpressionMenuList.addItem(expressionItem(null, expression));

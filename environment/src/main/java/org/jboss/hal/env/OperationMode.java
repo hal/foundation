@@ -20,12 +20,19 @@ package org.jboss.hal.env;
  */
 public enum OperationMode {
 
+    /** The server is running as a standalone instance. */
     STANDALONE,
 
+    /** The server is part of a managed domain. */
     DOMAIN,
 
+    /** The operation mode has not been determined yet. */
     UNDEFINED;
 
+    /**
+     * Parses an operation mode from its string name, defaulting to {@link #STANDALONE} if the value is {@code null} or
+     * unrecognized.
+     */
     public static OperationMode parse(final String value) {
         OperationMode operationMode = STANDALONE;
         if (value != null) {

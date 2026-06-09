@@ -19,11 +19,14 @@ import org.kie.j2cl.tools.processors.annotations.GWT3Resource;
 import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
 import org.kie.j2cl.tools.processors.common.resources.TextResource;
 
+/** Client bundle providing static resources such as the HAL logo for the halOP console. */
 @GWT3Resource
 public interface Resources extends ClientBundle {
 
+    /** Singleton instance of the resources bundle. */
     Resources INSTANCE = ResourcesImpl.INSTANCE;
 
+    /** Returns the HAL logo as an SVG text resource. */
     @Source("hal-logo.svg")
     TextResource logo();
 }

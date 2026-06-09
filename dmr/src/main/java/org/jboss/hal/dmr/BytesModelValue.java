@@ -19,9 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-/**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
- */
+/** {@link ModelValue} implementation holding a raw byte array. */
 class BytesModelValue extends ModelValue {
 
     /** JSON Key used to identify BytesModelValue. */

@@ -30,6 +30,7 @@ import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;
 
+/** Fallback page displayed when data for a routed page could not be loaded. */
 public class NoData implements Page {
 
     @Override

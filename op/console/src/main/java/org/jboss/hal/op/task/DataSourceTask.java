@@ -28,9 +28,11 @@ import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.icon.IconSets.fas.database;
 
+/** Task for creating and configuring XA and non-XA data sources. Not yet implemented. */
 @Dependent
 public class DataSourceTask implements Task {
 
+    /** Unique identifier for this task. */
     public static final String TASK_ID = DataSourceTask.class.getName();
 
     @Override

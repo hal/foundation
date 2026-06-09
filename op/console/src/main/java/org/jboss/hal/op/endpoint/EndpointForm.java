@@ -46,6 +46,10 @@ import static org.patternfly.component.switch_.Switch.switch_;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.link;
 
+/**
+ * Form for creating or editing a management interface endpoint. Contains fields for name, protocol (HTTP/HTTPS), host, port,
+ * and a computed read-only URL field with a ping button to verify the endpoint.
+ */
 class EndpointForm implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, EndpointForm> {
 
     private static final String DEFAULT_HOST = "localhost";

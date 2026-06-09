@@ -33,32 +33,39 @@ public abstract class HasServersNode extends NamedNode {
 
     private final List<Server> servers;
 
+    /** Creates a new instance from the given name and model node. */
     public HasServersNode(String name, ModelNode node) {
         super(name, node);
         this.servers = new ArrayList<>();
     }
 
+    /** Creates a new instance from the given DMR property. */
     public HasServersNode(Property property) {
         super(property);
         this.servers = new ArrayList<>();
     }
 
+    /** Returns {@code true} if this node has at least one server. */
     public boolean hasServers() {
         return !servers.isEmpty();
     }
 
+    /** Returns {@code true} if any server matches the given predicate. */
     public boolean hasServers(Predicate<Server> predicate) {
         return servers.stream().anyMatch(predicate);
     }
 
+    /** Adds a server to this node. */
     public void addServer(Server server) {
         servers.add(server);
     }
 
+    /** Returns all servers associated with this node. */
     public List<Server> getServers() {
         return servers;
     }
 
+    /** Returns servers matching the given predicate. */
     public List<Server> getServers(Predicate<Server> predicate) {
         return servers.stream().filter(predicate).collect(toList());
     }

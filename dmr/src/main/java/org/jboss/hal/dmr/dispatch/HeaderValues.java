@@ -15,8 +15,12 @@
  */
 package org.jboss.hal.dmr.dispatch;
 
+/** Constants for HTTP header values used in DMR endpoint communication. */
 interface HeaderValues {
 
+    /** MIME type for base64-encoded DMR payloads. */
     String APPLICATION_DMR_ENCODED = "application/dmr-encoded";
+
+    /** Value sent in the {@code X-Management-Client-Name} header to identify the HAL console. */
     String HEADER_MANAGEMENT_CLIENT_VALUE = "HAL";
 }

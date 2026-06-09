@@ -35,6 +35,10 @@ import static org.patternfly.component.expandable.ExpandableSectionToggle.expand
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.style.Classes.helpText;
 
+/**
+ * Informational element explaining that HAL runs in standalone mode and needs a management interface connection. Displays
+ * instructions for adding an allowed CORS origin and CLI commands for both standalone and domain modes.
+ */
 class EndpointDescription implements IsElement<HTMLElement> {
 
     private final HTMLElement root;

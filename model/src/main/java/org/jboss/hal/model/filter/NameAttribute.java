@@ -24,8 +24,10 @@ import org.patternfly.filter.FilterAttribute;
  */
 public class NameAttribute<T> extends FilterAttribute<T, String> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "name";
 
+    /** Creates a new filter using the given function to extract the entry name. Matching is case-insensitive. */
     public NameAttribute(Function<T, String> nameFn) {
         super(NAME, (object, name) -> nameFn.apply(object).toLowerCase().contains(name.toLowerCase()));
     }

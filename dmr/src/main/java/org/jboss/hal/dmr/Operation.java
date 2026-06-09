@@ -93,14 +93,17 @@ public class Operation extends ModelNode {
         return header;
     }
 
+    /** Returns {@code true} if this operation has at least one parameter defined. */
     public boolean hasParameter() {
         return parameter.isDefined() && !parameter.asList().isEmpty();
     }
 
+    /** Returns the RBAC roles associated with this operation. */
     public Set<String> getRoles() {
         return roles;
     }
 
+    /** Returns a copy of this operation configured to run with the specified RBAC roles. */
     public Operation runAs(Set<String> runAs) {
         return new Operation(name, address, parameter, header, new HashSet<>(runAs));
     }
@@ -148,7 +151,7 @@ public class Operation extends ModelNode {
     }
 
     /**
-     * A builder for operations.
+     * Fluent builder for constructing {@link Operation} instances with address, parameters, headers, and RBAC roles.
      */
     public static class Builder {
 
@@ -158,10 +161,14 @@ public class Operation extends ModelNode {
         private final ModelNode header;
         private final Set<String> roles;
 
+        /** Creates a builder for an operation with the given address and name. */
         public Builder(ResourceAddress address, String name) {
             this(address, name, false);
         }
 
+        /**
+         * Creates a builder for an operation with the given address and name, optionally enabling expression resolution.
+         */
         public Builder(ResourceAddress address, String name, boolean resolveExpression) {
             this.address = address;
             this.name = name;
@@ -173,31 +180,37 @@ public class Operation extends ModelNode {
             }
         }
 
+        /** Adds a boolean parameter. */
         public Builder param(String name, boolean value) {
             parameter.get(name).set(value);
             return this;
         }
 
+        /** Adds an integer parameter. */
         public Builder param(String name, int value) {
             parameter.get(name).set(value);
             return this;
         }
 
+        /** Adds a long parameter. */
         public Builder param(String name, long value) {
             parameter.get(name).set(value);
             return this;
         }
 
+        /** Adds a double parameter. */
         public Builder param(String name, double value) {
             parameter.get(name).set(value);
             return this;
         }
 
+        /** Adds a string parameter. */
         public Builder param(String name, String value) {
             parameter.get(name).set(value);
             return this;
         }
 
+        /** Adds a string array parameter (added as a list). */
         public Builder param(String name, String[] values) {
             for (String value : values) {
                 parameter.get(name).add(value);
@@ -205,21 +218,25 @@ public class Operation extends ModelNode {
             return this;
         }
 
+        /** Adds a model node parameter. */
         public Builder param(String name, ModelNode value) {
             parameter.get(name).set(value);
             return this;
         }
 
+        /** Adds a string operation header. */
         public Builder header(String name, String value) {
             header.get(name).set(value);
             return this;
         }
 
+        /** Adds an integer operation header. */
         public Builder header(String name, int value) {
             header.get(name).set(value);
             return this;
         }
 
+        /** Adds a boolean operation header. */
         public Builder header(String name, boolean value) {
             header.get(name).set(value);
             return this;

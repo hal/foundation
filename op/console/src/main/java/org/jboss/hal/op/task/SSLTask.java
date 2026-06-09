@@ -29,9 +29,14 @@ import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.icon.IconSets.fas.shieldHalved;
 
+/**
+ * Task for enabling or disabling HTTPS on an Undertow HTTP server. Defaults to the {@code default-server} but can
+ * target other server names. Not yet implemented.
+ */
 @Dependent
 public class SSLTask implements Task {
 
+    /** Unique identifier for this task. */
     public static final String TASK_ID = SSLTask.class.getName();
 
     @Override

@@ -27,7 +27,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.COMPOSITE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.OPERATION_HEADERS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STEPS;
 
-/** Represents a composite operation consisting of n {@link Operation}s. */
+/**
+ * A composite (batch) operation consisting of multiple {@link Operation}s that are executed atomically against the WildFly
+ * management endpoint. Steps are added sequentially and referenced by index in the {@link CompositeResult}.
+ */
 public class Composite extends Operation implements Iterable<Operation> {
 
     private final List<Operation> operations;
@@ -37,11 +40,13 @@ public class Composite extends Operation implements Iterable<Operation> {
         this(ResourceAddress.root());
     }
 
+    /** Creates a new empty composite with the given address. */
     public Composite(ResourceAddress address) {
         super(COMPOSITE, address, new ModelNode(), new ModelNode(), emptySet());
         this.operations = new ArrayList<>();
     }
 
+    /** Creates a new composite from the given operations. */
     public Composite(Operation first, Operation... rest) {
         this(ResourceAddress.root()); // required by JsInterop
         add(first);
@@ -52,6 +57,7 @@ public class Composite extends Operation implements Iterable<Operation> {
         }
     }
 
+    /** Creates a new composite from the given list of operations. */
     public Composite(List<Operation> operations) {
         this(ResourceAddress.root());
         operations.forEach(this::add);
@@ -70,16 +76,19 @@ public class Composite extends Operation implements Iterable<Operation> {
         return this;
     }
 
+    /** Adds a string operation header to this composite. */
     public Composite addHeader(String name, String value) {
         get(OPERATION_HEADERS).get(name).set(value);
         return this;
     }
 
+    /** Adds an integer operation header to this composite. */
     public Composite addHeader(String name, int value) {
         get(OPERATION_HEADERS).get(name).set(value);
         return this;
     }
 
+    /** Adds a boolean operation header to this composite. */
     public Composite addHeader(String name, boolean value) {
         get(OPERATION_HEADERS).get(name).set(value);
         return this;
@@ -100,6 +109,7 @@ public class Composite extends Operation implements Iterable<Operation> {
         return operations.size();
     }
 
+    /** Returns a new composite with all operations configured to run with the specified RBAC roles. */
     public Composite runAs(Set<String> runAs) {
         List<Operation> runAsOperations = operations.stream()
                 .map(operation -> operation.runAs(runAs))

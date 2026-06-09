@@ -80,6 +80,10 @@ import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.layout.flex.JustifyContent.center;
 import static org.patternfly.style.Size.xl;
 
+/**
+ * Dashboard card showing runtime information: host details (OS, architecture, cores), JVM details (name, version, vendor),
+ * and live charts for heap memory utilization and thread counts. Memory and thread data are auto-refreshed every 1.5 seconds.
+ */
 class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
 
     private static final String METADATA_KEY = "metadata";

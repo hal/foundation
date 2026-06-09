@@ -38,6 +38,7 @@ import static java.util.stream.Collectors.joining;
 @ApplicationScoped
 public class Settings {
 
+    /** The default locale used when no locale preference is stored. */
     public static final String DEFAULT_LOCALE = "en";
     private static final int EXPIRES = 365; // days
 
@@ -111,16 +112,22 @@ public class Settings {
      * Setting keys with their cookie identifier and persistence flag.
      */
     public enum Key {
+        /** The browser tab title pattern. */
         TITLE("title", true),
 
+        /** The user's preferred locale. */
         LOCALE("locale", true),
 
+        /** Whether to show global operations in the model browser. */
         SHOW_GLOBAL_OPERATIONS("show-global-operations", true),
 
-        RUN_AS("run-as", false), // can contain multiple roles separated by ","
+        /** Roles to impersonate (session-scoped); multiple roles are separated by commas. */
+        RUN_AS("run-as", false),
 
+        /** Fallback key for unrecognized setting names. */
         UNDEFINED("undefined", false);
 
+        /** Looks up a {@link Key} by its cookie identifier string, returning {@link #UNDEFINED} if not found. */
         public static Key from(String key) {
             return switch (key) {
                 case "title" -> TITLE;
@@ -139,6 +146,7 @@ public class Settings {
             this.persistent = persistent;
         }
 
+        /** Returns the cookie identifier for this key. */
         public String key() {
             return key;
         }
@@ -158,10 +166,12 @@ public class Settings {
             this.value = value;
         }
 
+        /** Returns the value as a boolean. */
         public boolean asBoolean() {
             return Boolean.parseBoolean(value);
         }
 
+        /** Returns the value as an integer, falling back to the given default on parse errors. */
         public int asInt(int defaultValue) {
             if (value != null) {
                 try {
@@ -173,6 +183,7 @@ public class Settings {
             return defaultValue;
         }
 
+        /** Splits the value on the pipe character ({@code |}) and returns the parts as a set. */
         public Set<String> asSet() {
             if (value != null) {
                 String[] values = value.split(SEPARATOR_REGEX);
@@ -181,10 +192,12 @@ public class Settings {
             return Collections.emptySet();
         }
 
+        /** Returns the raw string value. */
         public String value() {
             return value;
         }
 
+        /** Returns {@code true} if the value is not the {@code "undefined"} sentinel. */
         public boolean defined() {
             return !"undefined".equals(value);
         }

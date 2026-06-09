@@ -27,6 +27,7 @@ import elemental2.promise.Promise;
 
 import static org.jboss.hal.meta.Metadata.metadata;
 
+/** Task that transfers parsed {@link RrdResult} data (resource descriptions and security contexts) into the {@link MetadataRepository}. */
 class UpdateTask implements Task<ProcessingContext> {
 
     private static final Logger logger = Logger.getLogger(UpdateTask.class.getName());

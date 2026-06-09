@@ -29,9 +29,14 @@ import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.icon.IconSets.fas.shieldHalved;
 
+/**
+ * Task for enabling or disabling SSL on a management interface. Defaults to the {@code http-interface} but can target
+ * other management interfaces. Not yet implemented.
+ */
 @Dependent
 public class ManagementSSLTask implements Task {
 
+    /** Unique identifier for this task. */
     public static final String TASK_ID = ManagementSSLTask.class.getName();
 
     @Override

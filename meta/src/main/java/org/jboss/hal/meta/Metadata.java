@@ -30,6 +30,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SECURITY_CONTEXT;
  */
 public class Metadata extends ModelNode {
 
+    /** Creates an empty, undefined metadata instance with no resource description or security context. */
     public static Metadata undefined() {
         return new Metadata();
     }
@@ -60,18 +61,22 @@ public class Metadata extends ModelNode {
         get(SECURITY_CONTEXT).set(securityContext);
     }
 
+    /** @return the string representation of the management resource address */
     public String address() {
         return address;
     }
 
+    /** @return the resolved resource address for this metadata */
     public ResourceAddress resourceAddress() {
         return AddressTemplate.ofTrusted(address).resolve();
     }
 
+    /** @return the resource description containing attribute, operation, and capability metadata */
     public ResourceDescription resourceDescription() {
         return resourceDescription;
     }
 
+    /** @return the RBAC security context for this resource */
     public SecurityContext securityContext() {
         return securityContext;
     }

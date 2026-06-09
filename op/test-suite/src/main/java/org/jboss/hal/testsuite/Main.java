@@ -21,9 +21,14 @@ import jakarta.enterprise.event.Observes;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
 
+/**
+ * Quarkus application bean for the HAL test suite server. Configures the Vert.x router to serve the HAL management
+ * console as a single-page application for integration and end-to-end testing.
+ */
 @ApplicationScoped
 public class Main {
 
+    /** Initializes the Vert.x router with static file serving and SPA deep-link support. */
     public void init(@Observes Router router) {
         router.get().order(0).handler(StaticHandler.create());
         // Make SPA deep linking work.
@@ -37,6 +42,7 @@ public class Main {
         });
     }
 
+    /** Returns {@code true} if the path is a client-side route (not root and not a static file). */
     private boolean clientRoute(String path) {
         return !path.equals("/") && !path.contains(".");
     }

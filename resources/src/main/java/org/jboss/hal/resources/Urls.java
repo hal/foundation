@@ -20,19 +20,46 @@ package org.jboss.hal.resources;
  */
 public interface Urls {
 
+    /** WildFly issue tracker. */
     String BROWSE_ISSUES = "https://redhat.atlassian.net/jira/software/c/projects/WFLY/summary";
+
+    /** WildFly developer mailing list archive. */
     String DEVELOPER_MAILING_LIST = "https://lists.jboss.org/archives/list/wildfly-dev@lists.jboss.org/";
+
+    /** WildFly community forum. */
     String FORUM = "https://groups.google.com/forum/#!forum/wildfly";
+
+    /** WildFly getting started guide. */
     String GETTING_STARTED = "https://www.wildfly.org/get-started/";
+
+    /** WildFly latest news page. */
     String LATEST_NEWS = "https://www.wildfly.org/news/";
+
+    /** Relative path to the management interface logout endpoint. */
     String LOGOUT = "/logout";
+
+    /** Relative path to the management interface DMR endpoint. */
     String MANAGEMENT = "/management";
+
+    /** Documentation link for stability levels; contains the {@code %v} version placeholder. */
     String STABILITY_LEVELS = "https://docs.wildfly.org/%v/Admin_Guide.html#Feature_stability_levels";
+
+    /** Relative path to the management interface upload endpoint. */
     String UPLOAD = "/management-upload";
+
+    /** WildFly catalog link; contains the {@code %v} version placeholder. */
     String WILDFLY_CATALOG = "https://docs.wildfly.org/wildfly-catalog/%v.0.0.Final/default/index.html";
+
+    /** WildFly documentation root; contains the {@code %v} version placeholder. */
     String WILDFLY_DOCUMENTATION = "https://docs.wildfly.org/%v/";
+
+    /** WildFly guides page. */
     String WILDFLY_GUIDES = "https://www.wildfly.org/guides/";
+
+    /** WildFly project homepage. */
     String WILDFLY_HOMEPAGE = "https://www.wildfly.org";
+
+    /** WildFly Zulip chat. */
     String ZULIP_CHAT = "https://wildfly.zulipchat.com/";
 
     /**

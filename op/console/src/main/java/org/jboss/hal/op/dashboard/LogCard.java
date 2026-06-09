@@ -72,6 +72,10 @@ import static org.patternfly.token.Token.chartGlobalDangerColor100;
 import static org.patternfly.token.Token.chartGlobalWarningColor100;
 import static org.patternfly.token.Token.globalColorStatusSuccess100;
 
+/**
+ * Dashboard card that reads the last 100 lines of {@code server.log} and displays a summary of errors and warnings. Provides
+ * a link to show the full log file.
+ */
 // TODO Include boot errors
 class LogCard implements DashboardCard {
 

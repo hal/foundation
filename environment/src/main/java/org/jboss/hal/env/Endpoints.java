@@ -34,11 +34,15 @@ public class Endpoints {
     private String upload;
     private boolean sameOrigin;
 
+    /** Creates endpoints derived from the current browser origin. */
     public Endpoints() {
         init(location.origin);
     }
 
-    // init properties as part of the bootstrap process
+    /**
+     * Re-initializes all endpoint URLs from the given base URL. Called during bootstrap and when connecting to a different
+     * WildFly instance.
+     */
     public void init(String url) {
         dmr = url + MANAGEMENT;
         logout = url + LOGOUT;

@@ -40,6 +40,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STEPS;
 
+/**
+ * Parses the results of {@code read-resource-description} operations, extracting resource descriptions and security
+ * contexts into an {@link RrdResult}.
+ */
 class RrdParser {
 
     private static final Logger logger = Logger.getLogger(RrdParser.class.getName());

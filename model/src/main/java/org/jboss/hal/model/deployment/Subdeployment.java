@@ -48,14 +48,17 @@ public class Subdeployment extends NamedNode {
         return "Subdeployment{" + name + "}";
     }
 
+    /** Returns the parent deployment that contains this subdeployment. */
     public Deployment parent() {
         return parent;
     }
 
+    /** Returns the subsystems within this subdeployment. */
     public List<Subsystem> subsystems() {
         return subsystems;
     }
 
+    /** Returns {@code true} if this subdeployment contains a subsystem with the given name. */
     public boolean hasSubsystem(String name) {
         return subsystems.stream().anyMatch(subsystem -> name.equals(subsystem.name()));
     }

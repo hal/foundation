@@ -24,10 +24,13 @@ import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.card.CardActions.cardActions;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 
+/** Base interface for dashboard cards. Each card renders as an HTML element and supports manual refresh. */
 interface DashboardCard extends IsElement<HTMLElement> {
 
+    /** Refreshes the card content by fetching current data from the management interface. */
     void refresh();
 
+    /** Returns card actions containing a refresh button. */
     default CardActions refreshActions() {
         return cardActions()
                 .add(button().plain().icon(rotateRight()).onClick((e, c) -> refresh()));

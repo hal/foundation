@@ -30,8 +30,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
  */
 public class TypesAttribute<T> extends FilterAttribute<T, List<TypeValues>> {
 
+    /** Filter attribute name constant. */
     public static final String NAME = "types";
 
+    /** Creates a new filter using the given function to extract the model node containing the type. */
     public TypesAttribute(Function<T, ModelNode> modelNodeFn) {
         super(NAME, (object, types) -> {
             ModelType attributeType = modelNodeFn.apply(object).get(TYPE).asType();

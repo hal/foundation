@@ -19,5 +19,10 @@ package org.jboss.hal.env;
  * The access control provider configured on the WildFly management interface: {@link #SIMPLE} or {@link #RBAC}.
  */
 public enum AccessControlProvider {
-    SIMPLE, RBAC
+
+    /** Simple access control — every authenticated user has full administrative privileges. */
+    SIMPLE,
+
+    /** Role-based access control — permissions are determined by the roles assigned to the user. */
+    RBAC
 }

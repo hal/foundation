@@ -20,6 +20,10 @@ import elemental2.core.DataView;
 import elemental2.core.Int8Array;
 import elemental2.core.JsArray;
 
+/**
+ * Reads primitive values and UTF-8 strings from a byte array in big-endian format. Used to deserialize DMR binary data
+ * received from the management endpoint. Backed by a JavaScript {@code JsArray<Byte>} for J2CL compatibility.
+ */
 class DataInput {
 
     private final JsArray<Byte> bytes;

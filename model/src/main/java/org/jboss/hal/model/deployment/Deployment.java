@@ -55,6 +55,7 @@ public class Deployment extends Content {
     private final List<Subdeployment> subdeployments;
     private final List<Subsystem> subsystems;
 
+    /** Creates a new deployment on the given reference server. Parses subsystems and subdeployments from the model node. */
     public Deployment(Server referenceServer, ModelNode node) {
         super(node);
         this.referenceServer = referenceServer;
@@ -117,18 +118,22 @@ public class Deployment extends Content {
 
     // ------------------------------------------------------ api
 
+    /** Returns {@code true} if this deployment is on a standalone server. */
     public boolean standalone() {
         return referenceServer.isStandalone();
     }
 
+    /** Returns the server on which this deployment was read. */
     public Server referenceServer() {
         return referenceServer;
     }
 
+    /** Returns the runtime status of this deployment. */
     public DeploymentStatus status() {
         return ModelNodeHelper.asEnumValue(this, STATUS, DeploymentStatus::valueOf, DeploymentStatus.UNDEFINED);
     }
 
+    /** Returns the time this deployment was enabled, or {@code null} if not available. */
     public JsDate enabledTime() {
         ModelNode node = get(ENABLED_TIME);
         if (node.isDefined()) {
@@ -137,6 +142,7 @@ public class Deployment extends Content {
         return null;
     }
 
+    /** Returns the time this deployment was disabled, or {@code null} if not available. */
     public JsDate disabledTime() {
         ModelNode node = get(DISABLED_TIME);
         if (node.isDefined()) {
@@ -145,18 +151,22 @@ public class Deployment extends Content {
         return null;
     }
 
+    /** Returns {@code true} if this deployment contains subdeployments. */
     public boolean hasSubdeployments() {
         return !subdeployments.isEmpty();
     }
 
+    /** Returns the subdeployments within this deployment. */
     public List<Subdeployment> subdeployments() {
         return subdeployments;
     }
 
+    /** Returns {@code true} if this deployment contains a subsystem with the given name. */
     public boolean hasSubsystem(String name) {
         return subsystems.stream().anyMatch(subsystem -> name.equals(subsystem.name()));
     }
 
+    /** Returns {@code true} if any subdeployment contains a subsystem with the given name. */
     public boolean hasNestedSubsystem(String name) {
         for (Subdeployment subdeployment : subdeployments) {
             for (Subsystem subsystem : subdeployment.subsystems()) {

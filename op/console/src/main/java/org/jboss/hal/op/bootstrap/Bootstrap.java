@@ -32,6 +32,11 @@ import org.jboss.hal.op.endpoint.EndpointStorage;
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.flow.Flow.sequential;
 
+/**
+ * Orchestrates the sequential bootstrap process for the halOP console. The bootstrap runs a series of tasks in order:
+ * SetLogLevel, SelectEndpoint, SingleSignOnSupport, ReadEnvironment, ReadHostNames, FindDomainController, ReadStability,
+ * LoadSettings, and SetTitle. Fails fast on the first error.
+ */
 @ApplicationScoped
 @SuppressWarnings("CdiUnproxyableBeanTypesInspection")
 public class Bootstrap {
@@ -44,6 +49,7 @@ public class Bootstrap {
     @Inject @Current User user;
     @Inject Settings settings;
 
+    /** Starts the bootstrap flow and returns a subscription to observe the result. */
     public Subscription<FlowContext> run() {
         return sequential(new FlowContext(), asList(
                 new SetLogLevel(),

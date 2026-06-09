@@ -16,7 +16,8 @@
 package org.jboss.hal.dmr;
 
 /**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
+ * {@link ModelValue} implementation holding a WildFly expression string (e.g., {@code ${env.JAVA_HOME:default}}).
+ * Supports resolution of system property expressions via {@link #resolve()}.
  */
 class ExpressionValue extends ModelValue {
 

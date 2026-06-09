@@ -59,6 +59,7 @@ import static org.patternfly.token.Token.globalColorStatusDanger100;
 import static org.patternfly.token.Token.globalColorStatusSuccess100;
 import static org.patternfly.token.Token.globalColorStatusWarning100;
 
+/** Dashboard card showing the number and status of deployments on the server. Only standalone mode is currently supported. */
 class DeploymentCard implements DashboardCard {
 
     private final Environment environment;

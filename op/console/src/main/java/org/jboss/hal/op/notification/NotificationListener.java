@@ -51,11 +51,16 @@ import static org.patternfly.component.notification.NotificationDrawerItem.notif
 import static org.patternfly.component.notification.NotificationDrawerItemBody.notificationDrawerItemBody;
 import static org.patternfly.icon.IconSets.fas.ellipsisVertical;
 
+/**
+ * CDI observer that reacts to notification events and updates the UI accordingly. Handles adding notifications as toast
+ * alerts and drawer items, as well as modifications such as read, clear, and unclear operations.
+ */
 @ApplicationScoped
 public class NotificationListener {
 
     @Inject Notifications notifications;
 
+    /** Handles a newly added notification by showing a toast alert and adding a drawer item. */
     public void onNotificationAdded(@Observes NotificationAddEvent event) {
         toastAlertGroup().addItem(alert(event.notification.severity(), event.notification.id, event.notification.title)
                 .addDescription(AlertDescription.alertDescription(event.notification.description)));
@@ -79,6 +84,7 @@ public class NotificationListener {
         updateState();
     }
 
+    /** Handles notification modifications such as read, clear, remove, and unclear operations. */
     public void onNotificationModification(@Observes NotificationModificationEvent event) {
         NotificationDrawerList drawerList = lookupNotificationDrawerList();
         if (drawerList != null) {

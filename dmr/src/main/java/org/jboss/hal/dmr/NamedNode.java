@@ -18,7 +18,11 @@ package org.jboss.hal.dmr;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
 
-/** A model node with a name. */
+/**
+ * A {@link ModelNode} with an associated name. Typically created from a {@link Property} in a resource listing, where the
+ * property name becomes the node name and the property value becomes the node content. The name is stored both as a field
+ * and as the {@code "name"} attribute inside the model node.
+ */
 public class NamedNode extends ModelNode {
 
     // ------------------------------------------------------ instance
@@ -26,10 +30,15 @@ public class NamedNode extends ModelNode {
     private final String name;
     private final ModelNode node;
 
+    /** Creates a new named node wrapping an undefined model node. */
     public NamedNode() {
         this(new ModelNode());
     }
 
+    /**
+     * Creates a new named node from the given model node. If the node contains a {@code "name"} attribute, that value is
+     * used as the name. Otherwise, a generated undefined name is assigned.
+     */
     public NamedNode(ModelNode node) {
         if (node.isDefined()) {
             if (node.hasDefined(NAME)) {
@@ -51,10 +60,12 @@ public class NamedNode extends ModelNode {
         }
     }
 
+    /** Creates a new named node from the given property (name becomes the node name, value becomes the content). */
     public NamedNode(Property property) {
         this(property.getName(), property.getValue());
     }
 
+    /** Creates a new named node with the given name and content. */
     public NamedNode(String name, ModelNode node) {
         this.name = name;
         this.node = node;
@@ -107,6 +118,7 @@ public class NamedNode extends ModelNode {
         return name;
     }
 
+    /** Sets the {@code "name"} attribute inside the model node to the given name. */
     public void assignName(String name) {
         get(NAME).set(name);
     }
@@ -118,6 +130,7 @@ public class NamedNode extends ModelNode {
         return node;
     }
 
+    /** Updates this node's content with the given model node, preserving the original name. */
     public void update(ModelNode node) {
         set(node);
         assignName(name); // restore name!

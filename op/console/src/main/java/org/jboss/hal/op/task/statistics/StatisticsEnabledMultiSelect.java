@@ -38,10 +38,15 @@ import static org.patternfly.component.menu.MenuToggle.menuToggle;
 import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectGroupMenu;
 
+/**
+ * Multi-select dropdown for filtering resources by their {@code statistics-enabled} value type. Allows the user to filter
+ * the resources table by true, false, expression, or no-expression values.
+ */
 class StatisticsEnabledMultiSelect implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new multi-select filter component bound to the given filter. */
     static StatisticsEnabledMultiSelect statisticsEnabledMultiSelect(Filter<ResourceData> filter) {
         return new StatisticsEnabledMultiSelect(filter);
     }

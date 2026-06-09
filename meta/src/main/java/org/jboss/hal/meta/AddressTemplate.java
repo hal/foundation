@@ -333,6 +333,7 @@ public final class AddressTemplate implements Iterable<Segment> {
         }
     }
 
+    /** Returns a copy of this template with the last segment's value replaced by {@code *}, or this template if already anonymous. */
     public AddressTemplate anonymiseLast() {
         if (isEmpty()) {
             return root();
@@ -386,6 +387,7 @@ public final class AddressTemplate implements Iterable<Segment> {
         return segments.size();
     }
 
+    /** @return an unmodifiable list of segments in this address template */
     public List<Segment> segments() {
         return unmodifiableList(segments);
     }
@@ -395,6 +397,7 @@ public final class AddressTemplate implements Iterable<Segment> {
         return segments.iterator();
     }
 
+    /** @return a sanitized, DOM-safe identifier derived from this template, suitable for use as an HTML element ID */
     public String identifier() {
         if (isEmpty()) {
             return "root";

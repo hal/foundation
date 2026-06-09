@@ -63,6 +63,7 @@ public class CapabilityRegistry {
         this.statementContext = statementContext;
     }
 
+    /** Suggests capabilities matching the given name that are reachable from the specified resource address. */
     public Promise<List<String>> suggestCapabilities(AddressTemplate address, String capability) {
         ResourceAddress resourceAddress = address.resolve(statementContext);
         Operation operation = new Operation.Builder(TEMPLATE.resolve(statementContext), SUGGEST_CAPABILITIES)
@@ -81,6 +82,7 @@ public class CapabilityRegistry {
                 });
     }
 
+    /** Returns the provider points (addresses of resources that provide the capability) for the given capability name. */
     public Promise<List<String>> providerPoints(String capability) {
         Operation operation = new Operation.Builder(TEMPLATE.resolve(statementContext), GET_PROVIDER_POINTS)
                 .param(NAME, capability)
@@ -96,6 +98,10 @@ public class CapabilityRegistry {
                 });
     }
 
+    /**
+     * Finds the address templates of resources that provide the given capability and match the specified value. Resolves
+     * provider points in parallel and filters the results.
+     */
     public Promise<List<AddressTemplate>> findResources(String capability, String value) {
         List<Task<FlowContext>> tasks = List.of(
                 context -> providerPoints(capability).then(pps -> context.resolve(Keys.PROVIDER_POINTS, pps)),

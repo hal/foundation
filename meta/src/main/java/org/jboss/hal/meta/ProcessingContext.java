@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.jboss.elemento.flow.FlowContext;
 
+/** Flow context carrying the addresses to process and the accumulated {@link RrdResult} during metadata retrieval. */
 class ProcessingContext extends FlowContext {
 
     final Set<String> addresses;

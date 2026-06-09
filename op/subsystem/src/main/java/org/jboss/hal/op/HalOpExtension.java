@@ -25,6 +25,7 @@ import org.wildfly.subsystem.SubsystemPersistence;
  */
 public class HalOpExtension extends SubsystemExtension<HalOpSubsystemSchema> {
 
+    /** Creates the extension with the HAL on premise subsystem configuration and XML persistence. */
     public HalOpExtension() {
         super(SubsystemConfiguration.of(
                         HalOpSubsystemRegistrar.NAME,
@@ -33,6 +34,7 @@ public class HalOpExtension extends SubsystemExtension<HalOpSubsystemSchema> {
                 SubsystemPersistence.of(HalOpSubsystemSchema.CURRENT));
     }
 
+    /** Returns {@link Stability#EXPERIMENTAL} as the stability level of this extension. */
     @Override
     public Stability getStability() {
         return Stability.EXPERIMENTAL;

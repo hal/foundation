@@ -20,11 +20,15 @@ import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-/** Represents the result of a composite operation. */
+/**
+ * Holds the results of a {@link Composite} operation, providing access to individual step results by zero-based index or
+ * by the WildFly step key (e.g., {@code "step-1"}).
+ */
 public class CompositeResult implements Iterable<ModelNode> {
 
     private final LinkedHashMap<String, ModelNode> steps;
 
+    /** Creates a composite result from the steps node in a composite operation response. */
     public CompositeResult(ModelNode steps) {
         this.steps = new LinkedHashMap<>();
         if (steps.isDefined()) {
@@ -70,10 +74,12 @@ public class CompositeResult implements Iterable<ModelNode> {
         return steps.isEmpty();
     }
 
+    /** Returns {@code true} if none of the steps reported a failure. */
     public boolean isFailure() {
         return stream().noneMatch(ModelNode::isFailure);
     }
 
+    /** Returns a sequential stream over the step results. */
     public Stream<ModelNode> stream() {
         return StreamSupport.stream(spliterator(), false);
     }

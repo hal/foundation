@@ -17,5 +17,12 @@ package org.jboss.hal.core;
 
 /** Enumerates the types of modifications that can be applied to notifications. */
 public enum NotificationModification {
-    READ, CLEAR, REMOVE, UNCLEAR
+    /** Marks notifications as read. */
+    READ,
+    /** Clears notifications from the notification drawer. */
+    CLEAR,
+    /** Permanently removes notifications from the cache. */
+    REMOVE,
+    /** Reverses a previous {@link #CLEAR} operation, restoring notifications to the drawer. */
+    UNCLEAR
 }

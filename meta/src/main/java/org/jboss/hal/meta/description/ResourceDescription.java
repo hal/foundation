@@ -47,14 +47,17 @@ public class ResourceDescription extends ModelNode implements Description {
         return this;
     }
 
+    /** @return the attribute descriptions of this resource */
     public AttributeDescriptions attributes() {
         return attributeDescriptions;
     }
 
+    /** @return the operation descriptions of this resource */
     public OperationDescriptions operations() {
         return operationDescriptions;
     }
 
+    /** @return the capability descriptions of this resource */
     public CapabilityDescriptions capabilities() {
         return capabilityDescriptions;
     }

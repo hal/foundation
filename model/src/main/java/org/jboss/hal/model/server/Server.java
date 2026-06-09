@@ -49,6 +49,7 @@ public class Server extends NamedNode {
     /** Use this constant to reference the standalone server. */
     private static final Server STANDALONE = new Server(Ids.STANDALONE_HOST, Ids.STANDALONE_SERVER, new ModelNode(), true);
 
+    /** Returns the singleton standalone server instance. */
     public static Server standalone() {
         return STANDALONE;
     }
@@ -58,10 +59,12 @@ public class Server extends NamedNode {
     private boolean bootErrors;
     private String operationFailure;
 
+    /** Creates a new domain server instance on the given host. */
     public Server(String host, ModelNode node) {
         this(host, node.get(NAME).asString(), node, false);
     }
 
+    /** Creates a new domain server instance on the given host from a DMR property. */
     public Server(String host, Property property) {
         this(host, property.getName(), property.getValue(), false);
     }
@@ -84,30 +87,37 @@ public class Server extends NamedNode {
         return Ids.hostServer(getHost(), name());
     }
 
+    /** Returns {@code true} if this is the standalone server. */
     public boolean isStandalone() {
         return standalone;
     }
 
+    /** Returns the management model version of this server. */
     public Version getManagementVersion() {
         return managementVersion;
     }
 
+    /** Returns {@code true} if this server has boot errors. */
     public boolean hasBootErrors() {
         return bootErrors;
     }
 
+    /** Sets whether this server has boot errors. */
     public void setBootErrors(boolean bootErrors) {
         this.bootErrors = bootErrors;
     }
 
+    /** Returns {@code true} if reading the server configuration resulted in an operation failure. */
     public boolean hasOperationFailure() {
         return operationFailure != null;
     }
 
+    /** Sets the operation failure message. */
     public void setOperationFailure(String operationFailure) {
         this.operationFailure = operationFailure;
     }
 
+    /** Returns the server group name, checking both {@code group} (server-config) and {@code server-group} (server). */
     public String getServerGroup() {
         if (hasDefined(GROUP)) { // first try to read from server-config
             return get(GROUP).asString();
@@ -117,6 +127,7 @@ public class Server extends NamedNode {
         return null;
     }
 
+    /** Returns the host name this server belongs to, or {@code null} if not defined. */
     public String getHost() {
         return hasDefined(HOST) ? get(HOST).asString() : null;
     }
@@ -155,6 +166,7 @@ public class Server extends NamedNode {
         return getServerConfigStatus() == ServerConfigStatus.STARTED || getServerState() == RunningState.RUNNING;
     }
 
+    /** Returns {@code true} if the server state is {@link RunningState#STARTING}. */
     public boolean isStarting() {
         return getServerState() == RunningState.STARTING;
     }
@@ -167,14 +179,17 @@ public class Server extends NamedNode {
         return getServerState() == RunningState.RUNNING && !isSuspended();
     }
 
+    /** Returns {@code true} if this server runs in admin-only mode. */
     public boolean isAdminMode() {
         return getRunningMode() == RunningMode.ADMIN_ONLY;
     }
 
+    /** Returns {@code true} if this server is suspended. */
     public boolean isSuspended() {
         return getSuspendState() == SuspendState.SUSPENDED;
     }
 
+    /** Returns {@code true} if this server is stopped or disabled. */
     public boolean isStopped() {
         return getServerConfigStatus() == ServerConfigStatus.STOPPED || getServerConfigStatus() == ServerConfigStatus.DISABLED;
     }
@@ -187,10 +202,12 @@ public class Server extends NamedNode {
         return getServerConfigStatus() == ServerConfigStatus.FAILED;
     }
 
+    /** Returns {@code true} if the server requires a restart. */
     public boolean needsRestart() {
         return getServerState() == RunningState.RESTART_REQUIRED;
     }
 
+    /** Returns {@code true} if the server requires a reload. */
     public boolean needsReload() {
         return getServerState() == RunningState.RELOAD_REQUIRED;
     }

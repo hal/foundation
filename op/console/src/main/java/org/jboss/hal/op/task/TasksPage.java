@@ -62,6 +62,11 @@ import static org.patternfly.layout.gallery.GalleryItem.galleryItem;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Size._3xl;
 
+/**
+ * Router page for the {@code /tasks} route. Displays all available {@link Task} implementations as a card gallery,
+ * sorted alphabetically by title. Each card shows the task's icon, title, summary, and a launch button. Launching a
+ * task replaces the gallery with the task's own UI elements and a breadcrumb for navigation back.
+ */
 @Dependent
 @Route("/tasks")
 public class TasksPage implements Page {

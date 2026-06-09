@@ -65,6 +65,10 @@ import static org.patternfly.component.list.DescriptionListDescription.descripti
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
 
+/**
+ * Dashboard card showing the server's runtime status: configuration state, running mode, server/host state, and suspend
+ * state. Status labels are auto-refreshed every 5 seconds.
+ */
 class StatusCard implements Attachable, AutoRefresh, DashboardCard {
 
     private static final String METADATA_KEY = "metadata";

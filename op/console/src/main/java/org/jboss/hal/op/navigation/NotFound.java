@@ -30,10 +30,12 @@ import static org.patternfly.component.page.PageSection.pageSection;
 import static org.patternfly.component.title.Title.title;
 import static org.patternfly.style.Size._3xl;
 
+/** Fallback page displayed when a requested route does not match any registered place. */
 public class NotFound implements Page {
 
     private final Place notFound;
 
+    /** Creates a not-found page for the given unresolved place. */
     public NotFound(Place notFound) {
         this.notFound = notFound;
     }
