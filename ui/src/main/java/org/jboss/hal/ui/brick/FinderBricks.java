@@ -33,7 +33,6 @@ import org.patternfly.extension.finder.FinderPreview;
 import org.patternfly.filter.Filter;
 import org.patternfly.layout.stack.Stack;
 
-import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.deleteResourceModal;
@@ -58,9 +57,20 @@ import static org.patternfly.icon.IconSets.fas.upRightFromSquare;
 import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
-/** Finder column construction, preview helpers, and empty states. */
+/**
+ * Factory methods for constructing finder columns, preview layouts, and empty states used in the HAL console's finder-based
+ * navigation.
+ */
 public final class FinderBricks {
 
+    /**
+     * Creates an empty state shown when no finder items match the current filter. Displays a "No results found" message with a
+     * "Clear all filters" action that resets the filter.
+     *
+     * @param filter the active filter whose state will be reset when the user clicks "Clear all filters"
+     * @param <T>    the type of items being filtered
+     * @return an empty state component
+     */
     public static <T> EmptyState emptyRow(Filter<T> filter) {
         return emptyState()
                 .icon(magnifyingGlass())
@@ -74,8 +84,23 @@ public final class FinderBricks {
                                         .onClick((event, component) -> filter.resetAll()))));
     }
 
+    /**
+     * Creates a finder column with full CRUD support: an "add" button that opens an add-resource dialog, a "refresh" button,
+     * per-item "open" and "delete" actions, a search bar (shown when there are 5+ items), and an optional preview panel
+     * displaying selected resource attributes.
+     *
+     * @param id                a unique identifier for the column and its OUIA test IDs
+     * @param header            the column header text
+     * @param previewAttributes attribute names to display in the preview panel; if empty, no preview is shown
+     * @param templateFn        resolves the current finder path to an {@link AddressTemplate} for the resource
+     * @param itemRoute         function for resolving the route to navigate to when opening an item
+     * @param nextColumn        supplier for the next column to navigate into, or {@code null} for leaf items
+     * @return a fully configured finder column with CRUD capabilities
+     */
     public static FinderColumn crudColumn(String id, String header, List<String> previewAttributes,
-            Function<FinderPath, AddressTemplate> templateFn, Supplier<FinderColumn> nextColumn) {
+            Function<FinderPath, AddressTemplate> templateFn,
+            Function<FinderItem, String> itemRoute,
+            Supplier<FinderColumn> nextColumn) {
         FinderColumn column = finderColumn(id);
         column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
                         .addButton(button(plus()).plain().small()
@@ -92,18 +117,18 @@ public final class FinderBricks {
                     FinderItem item = finderItem(Id.build(node.asString()));
                     item.text(node.asString()).addActions(finderItemActions()
                             .addButton(button(upRightFromSquare()).plain().small().onClick((e, b) ->
-                                    uic().notifications().send(nyi())))
+                                    uic().placeManager().goTo(itemRoute.apply(item))))
                             .addButton(button(trash()).plain().small()
                                     .ouiaId(OuiaIds.ouia(id, "delete", "btn"))
                                     .onClick((e, b) -> {
-                                AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
-                                deleteResourceModal(template).then(n -> {
-                                    if (n.isDefined()) {
-                                        item.column().reload();
-                                    }
-                                    return null;
-                                });
-                            })));
+                                        AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                                        deleteResourceModal(template).then(n -> {
+                                            if (n.isDefined()) {
+                                                item.column().reload();
+                                            }
+                                            return null;
+                                        });
+                                    })));
                     if (nextColumn != null) {
                         item.nextColumn(nextColumn);
                     }
@@ -124,10 +149,24 @@ public final class FinderBricks {
         return column;
     }
 
+    /**
+     * Populates a finder preview with a stack layout. The consumer receives the stack to add content items to.
+     *
+     * @param preview the finder preview to populate
+     * @param stack   a consumer that adds content to the stack layout
+     */
     public static void stackPreview(FinderPreview preview, Consumer<Stack> stack) {
         stackPreview(preview, null, stack);
     }
 
+    /**
+     * Populates a finder preview with a stack layout and an optional heading. When {@code h1} is non-null, it is rendered as an
+     * {@code h1} content element at the top of the stack.
+     *
+     * @param preview the finder preview to populate
+     * @param h1      the heading text, or {@code null} for no heading
+     * @param stack   a consumer that adds content to the stack layout
+     */
     public static void stackPreview(FinderPreview preview, String h1, Consumer<Stack> stack) {
         preview.add(stack().gutter().run(s -> {
             if (h1 != null) {

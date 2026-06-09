@@ -34,10 +34,12 @@ public interface ModelBrowserEvents {
 
     // ------------------------------------------------------ add
 
+    /** Event dispatched to add a new child resource to a parent resource in the model browser. */
     interface AddResource extends UIEvent {
 
         String TYPE = UIEvent.type("model-browser", "add");
 
+        /** Event payload carrying the parent template, child name, and whether it is a singleton. */
         class Details {
 
             AddressTemplate parent;
@@ -66,6 +68,7 @@ public interface ModelBrowserEvents {
             source.dispatchEvent(event);
         }
 
+        /** Registers a listener for add resource events on the given element. */
         @SuppressWarnings("unchecked")
         static void listen(HTMLElement element, Consumer<Details> listener) {
             element.addEventListener(TYPE, event -> {
@@ -75,10 +78,12 @@ public interface ModelBrowserEvents {
         }
     }
 
+    /** Event dispatched to delete a resource from the management model. */
     interface DeleteResource extends UIEvent {
 
         String TYPE = UIEvent.type("model-browser", "delete");
 
+        /** Event payload carrying the address template of the resource to delete. */
         class Details {
 
             AddressTemplate template;
@@ -102,6 +107,7 @@ public interface ModelBrowserEvents {
             source.dispatchEvent(event);
         }
 
+        /** Registers a listener for delete resource events on the given element. */
         @SuppressWarnings("unchecked")
         static void listen(HTMLElement element, Consumer<Details> listener) {
             element.addEventListener(TYPE, event -> {
@@ -113,10 +119,15 @@ public interface ModelBrowserEvents {
 
     // ------------------------------------------------------ select
 
+    /**
+     * Event dispatched to select a resource in the tree. Can target a resource by address template, by tree view item
+     * identifier, or by parent/child identifier pair.
+     */
     interface SelectInTree extends UIEvent {
 
         String TYPE = UIEvent.type("model-browser", "select-in-tree");
 
+        /** Event payload carrying optional identifier, parent identifier, and/or address template. */
         class Details {
 
             String identifier;
@@ -124,18 +135,21 @@ public interface ModelBrowserEvents {
             AddressTemplate template;
         }
 
+        /** Dispatches a select-in-tree event targeting the given address template. */
         static void dispatch(HTMLElement source, AddressTemplate template) {
             Details details = new Details();
             details.template = template;
             dispatch(source, details);
         }
 
+        /** Dispatches a select-in-tree event targeting the given tree view item identifier. */
         static void dispatch(HTMLElement source, String identifier) {
             Details details = new Details();
             details.identifier = identifier;
             dispatch(source, details);
         }
 
+        /** Dispatches a select-in-tree event targeting a child under the given parent identifier. */
         static void dispatch(HTMLElement source, String parentIdentifier, String childIdentifier) {
             Details details = new Details();
             details.parentIdentifier = parentIdentifier;
@@ -153,6 +167,7 @@ public interface ModelBrowserEvents {
             source.dispatchEvent(event);
         }
 
+        /** Registers a listener for select-in-tree events on the given element. */
         @SuppressWarnings("unchecked")
         static void listen(HTMLElement element, Consumer<Details> listener) {
             element.addEventListener(TYPE, event -> {

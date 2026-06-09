@@ -21,6 +21,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.logger.Logger;
+import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
@@ -46,6 +47,7 @@ public class UIContext {
 
     private static UIContext instance;
 
+    /** Returns the singleton instance of the UI context. Must only be called after CDI initialization. */
     public static UIContext uic() {
         if (instance == null) {
             logger.error("UIContext has not yet been initialized. Static access is not possible!");
@@ -65,9 +67,11 @@ public class UIContext {
     private final MetadataRepository metadataRepository;
     private final ModelTree modelTree;
     private final Notifications notifications;
+    private final PlaceManager placeManager;
     private final Settings settings;
     private final StatementContext statementContext;
 
+    /** Creates a new UI context. All parameters are injected by the CDI container. */
     @Inject
     public UIContext(
             CapabilityRegistry capabilityRegistry,
@@ -78,6 +82,7 @@ public class UIContext {
             MetadataRepository metadataRepository,
             ModelTree modelTree,
             Notifications notifications,
+            PlaceManager placeManager,
             Settings settings,
             StatementContext statementContext
     ) {
@@ -89,6 +94,7 @@ public class UIContext {
         this.metadataRepository = metadataRepository;
         this.modelTree = modelTree;
         this.notifications = notifications;
+        this.placeManager = placeManager;
         this.settings = settings;
         this.statementContext = statementContext;
     }
@@ -98,42 +104,57 @@ public class UIContext {
         UIContext.instance = this;
     }
 
+    /** Returns the capability registry for resolving WildFly capabilities. */
     public CapabilityRegistry capabilityRegistry() {
         return capabilityRegistry;
     }
 
+    /** Returns the CRUD operations facade for creating, reading, updating, and deleting management resources. */
     public CrudOperations crud() {
         return crud;
     }
 
+    /** Returns the dispatcher for executing DMR operations against WildFly. */
     public Dispatcher dispatcher() {
         return dispatcher;
     }
 
+    /** Returns the endpoint configuration for the management interface. */
     public Endpoints endpoints() {
         return endpoints;
     }
 
+    /** Returns the runtime environment with server and console metadata. */
     public Environment environment() {
         return environment;
     }
 
+    /** Returns the metadata repository for accessing WildFly management model metadata. */
     public MetadataRepository metadataRepository() {
         return metadataRepository;
     }
 
+    /** Returns the model tree representing the WildFly management resource hierarchy. */
     public ModelTree modelTree() {
         return modelTree;
     }
 
+    /** Returns the place manager for navigating the application. */
+    public PlaceManager placeManager() {
+        return placeManager;
+    }
+
+    /** Returns the notification service for displaying messages to the user. */
     public Notifications notifications() {
         return notifications;
     }
 
+    /** Returns the user settings such as locale, page size, and other preferences. */
     public Settings settings() {
         return settings;
     }
 
+    /** Returns the statement context for resolving placeholders in resource addresses. */
     public StatementContext statementContext() {
         return statementContext;
     }

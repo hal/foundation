@@ -25,6 +25,7 @@ import elemental2.dom.HTMLElement;
 public interface ResourceItem<I extends ResourceItem<I>> extends ComponentContext<HTMLElement, I>,
         HasIdentifier<HTMLElement, I> {
 
+    /** Retrieves the {@link ResourceAttribute} stored in the component context under {@link Keys#RESOURCE_ATTRIBUTE}. */
     default ResourceAttribute resourceAttribute() {
         return get(Keys.RESOURCE_ATTRIBUTE);
     }

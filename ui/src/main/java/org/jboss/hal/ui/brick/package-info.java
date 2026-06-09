@@ -21,19 +21,26 @@
  * Key classes include:
  * <dl>
  * <dt>{@link org.jboss.hal.ui.brick.AttributeBricks}</dt>
- * <dd>Attribute name, description, and popover rendering.</dd>
+ * <dd>Attribute name rendering (with stability labels and deprecation indicators), detailed metadata descriptions, and
+ * description popovers.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.OperationBricks}</dt>
- * <dd>Operation description rendering.</dd>
+ * <dd>Operation description rendering with deprecation notices.</dd>
+ * <dt>{@link org.jboss.hal.ui.brick.DescriptionBricks}</dt>
+ * <dd>Shared description and deprecation rendering foundation used by {@code AttributeBricks} and
+ * {@code OperationBricks}. Also defines {@link org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent}
+ * to control the level of detail in attribute descriptions.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.CodeBricks}</dt>
- * <dd>Code block rendering for errors and model nodes.</dd>
+ * <dd>Truncatable code blocks for error messages and {@code ModelNode} JSON output.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.ExpressionBricks}</dt>
- * <dd>Expression rendering and expression-related icons.</dd>
+ * <dd>Colour-coded rendering of WildFly expressions ({@code ${name:default}}) with nested expression support, and icon
+ * suppliers for expression-related toggle buttons.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.ServerStateBricks}</dt>
- * <dd>Server and host runtime state labels.</dd>
+ * <dd>Colour-coded PatternFly labels for server runtime states: configuration state, running mode, running state, and
+ * suspend state.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.StabilityBricks}</dt>
- * <dd>Stability-related UI helpers.</dd>
+ * <dd>Maps stability levels (experimental, preview, community, default) to PatternFly statuses and icons.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.FinderBricks}</dt>
- * <dd>Finder column construction, preview helpers, and empty states.</dd>
+ * <dd>Finder column construction with CRUD actions, preview panel layouts, and filter-aware empty states.</dd>
  * </dl>
  *
  * @see org.jboss.hal.ui

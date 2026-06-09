@@ -32,11 +32,18 @@ import org.jboss.hal.meta.security.SecurityContext;
 
 import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 
-/** Simple record for an attribute name/value/description triple. */
+/**
+ * Data holder for a WildFly management attribute. Combines the attribute's value, description metadata, and security
+ * context into a single object used by both form and view components.
+ * <p>
+ * Attributes can be nested inside record-type (simple record) attributes. In that case, the fully qualified name contains
+ * the parent attribute name as a prefix separated by a dot.
+ */
 public class ResourceAttribute {
 
     // ------------------------------------------------------ predicates
 
+    /** Returns a predicate that accepts only attributes whose fully qualified name is in the given list. An empty list accepts all. */
     public static Predicate<AttributeDescription> includes(List<String> attributes) {
         return ad -> {
             if (attributes.isEmpty()) {
@@ -46,6 +53,7 @@ public class ResourceAttribute {
         };
     }
 
+    /** Returns a predicate that rejects deprecated attributes. */
     public static Predicate<AttributeDescription> notDeprecated() {
         return ad -> !ad.deprecation().isDefined();
     }
@@ -109,6 +117,10 @@ public class ResourceAttribute {
         return resourceAttributes;
     }
 
+    /**
+     * Groups attributes by their attribute group name. Ungrouped attributes are placed under the key {@code "ungrouped"} as
+     * the last entry. Groups are sorted alphabetically.
+     */
     // TODO Make use of attribute groups and turn them into form field groups
     //  https://www.patternfly.org/components/forms/form/design-guidelines#field-groups
     public static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
@@ -134,15 +146,31 @@ public class ResourceAttribute {
 
     // ------------------------------------------------------ instance
 
+    /** Fully qualified attribute name (includes parent prefix for nested attributes). */
     public final String fqn;
+
+    /** Simple attribute name. */
     public final String name;
+
+    /** Attribute group name, or {@code null} if the attribute is ungrouped. */
     public final String group;
+
+    /** Current attribute value from the resource. */
     public final ModelNode value;
+
+    /** Management model description for this attribute. */
     public final AttributeDescription description;
+
+    /** Whether the current security context allows reading this attribute. */
     public final boolean readable;
+
+    /** Whether the current security context allows writing this attribute. */
     public final boolean writable;
+
+    /** Whether the current value is a DMR expression. */
     public final boolean expression;
 
+    /** Creates a new resource attribute from the given value, description, and security context. */
     public ResourceAttribute(ModelNode value, AttributeDescription description, SecurityContext securityContext) {
         this.fqn = description.fullyQualifiedName();
         this.name = description.name();

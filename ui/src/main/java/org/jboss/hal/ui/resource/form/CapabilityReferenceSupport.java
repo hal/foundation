@@ -51,6 +51,10 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
  */
 public class CapabilityReferenceSupport {
 
+    /**
+     * Returns an async item loader that queries the capability registry for suggestions matching the given capability name
+     * and template, returning them as sorted menu items.
+     */
     static AsyncItems<MenuList, MenuItem> capabilityItems(AddressTemplate template, String capability) {
         return menuList -> uic().capabilityRegistry().suggestCapabilities(template, capability)
                 .then(capabilities -> resolve(capabilities.stream()
@@ -61,6 +65,10 @@ public class CapabilityReferenceSupport {
                         .collect(toList())));
     }
 
+    /**
+     * Creates a new capability provider resource via a modal dialog or wizard, then returns the new resource as a menu item.
+     * Resolves wildcard segments in provider point addresses before presenting the dialog.
+     */
     static Promise<MenuItem> newItem(String value, String capability) {
         Task<FlowContext> providerPointsTask = context -> uic().capabilityRegistry().providerPoints(capability)
                 .then(context::resolve);

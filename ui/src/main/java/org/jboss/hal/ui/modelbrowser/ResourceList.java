@@ -105,6 +105,13 @@ import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.componentVar;
 
+/**
+ * Displays a filterable list of child resources for a folder or singleton folder node in the model browser.
+ * <p>
+ * For singleton folders, each child is shown with its description and stability label. The list provides "View" and "Remove"
+ * actions for each child and supports adding new resources via the toolbar. Non-existing singleton resources can be added
+ * through a dropdown or single "Add" button. The list is refreshable and filterable by name.
+ */
 class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceList> {
 
     private static final Logger logger = Logger.getLogger(ResourceList.class.getName());

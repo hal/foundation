@@ -27,6 +27,7 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class MarkedOptions {
 
+    /** Creates a new set of marked options with default settings. */
     @JsOverlay
     public static MarkedOptions markedOptions() {
         return new MarkedOptions();
@@ -83,60 +84,70 @@ public class MarkedOptions {
      */
     public boolean smartypants;
 
+    /** Sets whether to enable asynchronous parsing. */
     @JsOverlay
     public final MarkedOptions async(boolean async) {
         this.async = async;
         return this;
     }
 
+    /** Sets a prefix URL for any relative link. */
     @JsOverlay
     public final MarkedOptions baseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
         return this;
     }
 
+    /** Sets whether to add {@code <br>} on a single line break. Requires GFM to be enabled. */
     @JsOverlay
     public final MarkedOptions breaks(boolean breaks) {
         this.breaks = breaks;
         return this;
     }
 
+    /** Sets whether to enable GitHub Flavored Markdown. */
     @JsOverlay
     public final MarkedOptions gfm(boolean gfm) {
         this.gfm = gfm;
         return this;
     }
 
+    /** Sets whether to include an id attribute when emitting headings. */
     @JsOverlay
     public final MarkedOptions headerIds(boolean headerIds) {
         this.headerIds = headerIds;
         return this;
     }
 
+    /** Sets a prefix string for heading id attributes. */
     @JsOverlay
     public final MarkedOptions headerPrefix(String headerPrefix) {
         this.headerPrefix = headerPrefix;
         return this;
     }
 
+    /** Sets a prefix for code block class attributes. */
     @JsOverlay
     public final MarkedOptions langPrefix(String langPrefix) {
         this.langPrefix = langPrefix;
         return this;
     }
 
+    /** Sets whether to conform to original markdown.pl behavior. Overrides GFM when enabled. */
     @JsOverlay
     public final MarkedOptions pedantic(boolean pedantic) {
         this.pedantic = pedantic;
         return this;
     }
 
+    /** Sets whether to suppress exceptions from the parser. */
     @JsOverlay
     public final MarkedOptions silent(boolean silent) {
         this.silent = silent;
         return this;
     }
 
+    /** Sets whether to use smart typographic punctuation for quotes and dashes. */
     @JsOverlay
     public final MarkedOptions smartypants(boolean smartypants) {
         this.smartypants = smartypants;

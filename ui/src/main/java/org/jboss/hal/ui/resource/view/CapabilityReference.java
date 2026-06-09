@@ -82,7 +82,11 @@ import static org.patternfly.style.Classes.menu;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.overflow;
 
-/** Displays an attribute value that references a WildFly capability, with interactive navigation to the providing resource(s). */
+/**
+ * Displays an attribute value that references a WildFly capability, with interactive navigation to the providing
+ * resource(s). When a single provider exists, clicking the label navigates directly. When multiple providers exist, a
+ * popper menu lists all providing resources ranked by proximity to the current resource.
+ */
 class CapabilityReference implements IsElement<HTMLElement>, Attachable {
 
     // ------------------------------------------------------ factory

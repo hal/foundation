@@ -49,6 +49,20 @@
  * <dd>Configuration flags controlling scope and placeholder behavior.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.form.FormItemInputMode}</dt>
  * <dd>Enumeration of input modes: native, expression, or mixed.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.FormItemProvider}</dt>
+ * <dd>Strategy interface for custom form item creation based on address template and attribute metadata.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.FormItemProviders}</dt>
+ * <dd>Registry of special-case form item providers consulted before default creation.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.RestrictedFormItem}</dt>
+ * <dd>Locked form item shown when the user lacks read permission for the attribute.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.UnsupportedFormItem}</dt>
+ * <dd>Read-only fallback for attribute types not yet supported.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.HelperTexts}</dt>
+ * <dd>Factory methods for validation helper text messages.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.CapabilityReferenceSupport}</dt>
+ * <dd>Shared helpers for loading capability suggestions and creating new provider resources.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.StringListSupport}</dt>
+ * <dd>Shared helpers for modification detection and model node conversion for string list attributes.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.form;

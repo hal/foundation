@@ -53,6 +53,12 @@ import static org.patternfly.icon.IconSets.patternfly.trendUp;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.utilVar;
 
+/**
+ * Function that maps an {@link AttributeDescription} to a table row ({@link Tr}) for the attributes table.
+ * <p>
+ * Each row displays the attribute name, type, storage (configuration vs. runtime), and access type (read-write, read-only,
+ * metric). Complex attributes (LIST/OBJECT) are rendered as expandable tree table rows with nested child attributes.
+ */
 class AttributeRow implements Function<AttributeDescription, Tr> {
 
     private final ResourceDescription resource;

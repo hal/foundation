@@ -97,6 +97,13 @@ public class FormItemFactory {
 
     private static final Logger logger = Logger.getLogger(FormItemFactory.class.getName());
 
+    /**
+     * Creates a form item for the {@code name} attribute used when adding a new resource. If the metadata does not contain a
+     * name description, a default one is created with type STRING.
+     *
+     * @param metadata the resource metadata
+     * @param value    the initial value, or {@code null}
+     */
     public static FormItem nameFormItem(Metadata metadata, String value) {
         AttributeDescription nameDescription = metadata.resourceDescription().attributes().get(NAME);
         if (!nameDescription.isDefined()) {
@@ -121,6 +128,16 @@ public class FormItemFactory {
         return stringFormItem;
     }
 
+    /**
+     * Creates the appropriate {@link FormItem} subclass for the given resource attribute. First consults the
+     * {@link FormItemProviders#specialFormItems} registry for custom overrides, then falls back to default creation based on
+     * the attribute's type, allowed values, and capability references.
+     *
+     * @param template the address template of the resource
+     * @param metadata the resource metadata
+     * @param ra       the resource attribute to create a form item for
+     * @param flags    configuration flags controlling scope and placeholder behavior
+     */
     public static FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
         FormItem formItem = null;
         for (FormItemProvider fip : specialFormItems) {

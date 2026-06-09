@@ -34,6 +34,7 @@ class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new filter reload input with the given identifier. */
     static FilterReloadInput filterReloadInput(String id) {
         return new FilterReloadInput(id);
     }
@@ -73,6 +74,7 @@ class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
 
     // ------------------------------------------------------ events
 
+    /** Registers a handler to be called when the reload button is clicked. */
     public FilterReloadInput onReload(ComponentHandler<FilterReloadInput> handler) {
         onReload.add(handler);
         return this;

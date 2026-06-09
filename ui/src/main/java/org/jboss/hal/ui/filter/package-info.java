@@ -25,11 +25,23 @@
  * Key components include:
  * <dl>
  * <dt>{@link org.jboss.hal.ui.filter.NameSearchInput}</dt>
- * <dd>Search input for filtering entries by name with autocomplete support.</dd>
- * <dt>{@link org.jboss.hal.ui.filter.MultiSelects}</dt>
- * <dd>Factory methods for creating standard filter multi-select components.</dd>
+ * <dd>Search input for filtering entries by name.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.DeprecatedMultiSelect}</dt>
+ * <dd>Multi-select filter for deprecation status.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.DeReDeExMultiSelect}</dt>
+ * <dd>Multi-select combining defined, required, deprecated, and expression filters.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.ReDeExMultiSelect}</dt>
+ * <dd>Multi-select combining required, deprecated, and expression filters.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.StorageAccessTypeMultiSelect}</dt>
+ * <dd>Multi-select filter for storage type and access type.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.TypesMultiSelect}</dt>
+ * <dd>Multi-select filter for management model value types.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.ParametersReturnValueMultiSelect}</dt>
+ * <dd>Multi-select filter for operation parameters and return values.</dd>
  * <dt>{@link org.jboss.hal.ui.filter.FilterLabels}</dt>
  * <dd>Displays active filter selections as removable PatternFly labels.</dd>
+ * <dt>{@link org.jboss.hal.ui.filter.MultiSelects}</dt>
+ * <dd>Utility methods for synchronizing filters with multi-select menu items.</dd>
  * <dt>{@link org.jboss.hal.ui.filter.ItemCount}</dt>
  * <dd>Displays the count of visible items relative to the total.</dd>
  * </dl>

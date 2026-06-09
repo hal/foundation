@@ -51,7 +51,11 @@ import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormAlert.formAlert;
 
-/** Form to modify an existing resource */
+/**
+ * Horizontal form container for editing a WildFly management resource. Manages a collection of {@link FormItem} instances,
+ * provides validation with alert display, and generates DMR {@code write-attribute} / {@code undefine-attribute} operations
+ * for modified attributes.
+ */
 public class ResourceForm implements
         TypedBuilder<HTMLElement, ResourceForm>,
         IsElement<HTMLElement>,
@@ -62,6 +66,7 @@ public class ResourceForm implements
     private final AurHandler<ResourceForm, FormItem> aur;
     private final Form form;
 
+    /** Creates a new resource form bound to the given address template. */
     public ResourceForm(AddressTemplate template) {
         this.template = template;
         this.items = new LinkedHashMap<>();
@@ -161,11 +166,18 @@ public class ResourceForm implements
 
     // ------------------------------------------------------ validation
 
+    /** Clears all form-level alerts and resets validation state on every form item. */
     public void resetValidation() {
         form.clearAlerts();
         items.values().forEach(FormItem::resetValidation);
     }
 
+    /**
+     * Validates all writable form items. Validation runs on every item even if an earlier one fails, so that all errors are
+     * reported at once.
+     *
+     * @return {@code true} if all form items pass validation
+     */
     public boolean validate() {
         boolean valid = true;
         for (FormItem formItem : items.values()) {
@@ -178,17 +190,23 @@ public class ResourceForm implements
         return valid;
     }
 
+    /** Displays a danger alert with the given title indicating that validation errors exist. */
     public void validationAlert(String title) {
         addAlert(alert(danger, title).inline()
                 .addDescription("There are validation errors. Please fix them and try again."));
     }
 
+    /** Adds an alert to the form's alert area. */
     public void addAlert(Alert alert) {
         form.addAlert(formAlert().addAlert(alert));
     }
 
     // ------------------------------------------------------ data
 
+    /**
+     * Returns a composite model node containing only the modified attributes with their current values. Nested attribute names
+     * are resolved to their fully qualified paths.
+     */
     public ModelNode modelNode() {
         ModelNode modelNode = new ModelNode();
         items.values().stream()
@@ -198,6 +216,10 @@ public class ResourceForm implements
         return modelNode;
     }
 
+    /**
+     * Returns a list of DMR operations for each modified attribute. Uses {@code write-attribute} for defined values and
+     * {@code undefine-attribute} for undefined values.
+     */
     public List<Operation> attributeOperations() {
         return items.values().stream()
                 .filter(FormItem::isModified)

@@ -34,6 +34,7 @@ class SearchReloadInput extends BaseSearchInput<SearchReloadInput> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new search reload input with the given identifier. */
     static SearchReloadInput searchReloadInput(String id) {
         return new SearchReloadInput(id);
     }
@@ -70,6 +71,7 @@ class SearchReloadInput extends BaseSearchInput<SearchReloadInput> {
 
     // ------------------------------------------------------ events
 
+    /** Registers a handler to be called when the reload button is clicked. */
     public SearchReloadInput onReload(ComponentHandler<SearchReloadInput> handler) {
         onReload.add(handler);
         return this;

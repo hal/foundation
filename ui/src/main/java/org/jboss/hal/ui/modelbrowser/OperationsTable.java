@@ -85,6 +85,13 @@ import static org.patternfly.style.Width.width20;
 import static org.patternfly.style.Width.width35;
 import static org.patternfly.style.Width.width45;
 
+/**
+ * Displays a filterable table of management operations in the model browser detail panel.
+ * <p>
+ * Each row shows the operation name, parameters with types, return value, and an "Execute" button for executable operations.
+ * The {@code :add} and {@code :remove} operations are excluded from direct execution. Global operations can be shown or hidden
+ * via a toggle. A toolbar with filter controls is displayed above the table.
+ */
 class OperationsTable implements IsElement<HTMLElement> {
 
     private static final Logger logger = Logger.getLogger(OperationsTable.class.getName());

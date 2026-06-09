@@ -20,9 +20,19 @@ import org.jboss.hal.meta.description.OperationDescription;
 
 import elemental2.dom.HTMLDivElement;
 
-/** Operation description rendering. */
+/**
+ * Factory methods for rendering management model operation descriptions as PatternFly UI elements.
+ */
 public final class OperationBricks {
 
+    /**
+     * Renders an operation description including its text and optional deprecation notice. Delegates to
+     * {@link DescriptionBricks#description(org.jboss.hal.meta.description.Description)} for the shared rendering
+     * logic.
+     *
+     * @param operation the operation description from the management model
+     * @return a div element containing the formatted description
+     */
     public static HTMLContainerBuilder<HTMLDivElement> operationDescription(OperationDescription operation) {
         return DescriptionBricks.description(operation);
     }

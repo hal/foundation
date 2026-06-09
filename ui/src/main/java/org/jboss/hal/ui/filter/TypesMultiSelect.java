@@ -48,6 +48,7 @@ public class TypesMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new types multi-select filter. */
     public static <T> TypesMultiSelect<T> typesFilterMultiSelect(Filter<T> filter) {
         return new TypesMultiSelect<>(filter);
     }

@@ -67,11 +67,16 @@ import static org.patternfly.icon.IconSets.fas.powerOff;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.style.Classes.modifier;
 
-/** Action toolbar with attribute filters and context-aware buttons for view and edit modes. */
+/**
+ * Action toolbar for the {@link ResourceManager}. Provides attribute filters (name, type, status, storage, access type) and
+ * context-aware action buttons that change between view mode (refresh, reset, edit) and edit mode (save, cancel). Filter
+ * chips and a clear-all action are shown when filter criteria are active.
+ */
 public class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceToolbar> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new toolbar bound to the given resource manager, filter, and item counters. */
     public static ResourceToolbar resourceToolbar(ResourceManager resourceManager,
             Filter<ResourceAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         return new ResourceToolbar(resourceManager, filter, visible, total);

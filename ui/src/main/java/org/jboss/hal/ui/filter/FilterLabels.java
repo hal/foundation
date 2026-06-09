@@ -45,6 +45,7 @@ import static org.patternfly.filter.FilterAttributeModifier.collectionRemove;
  */
 public class FilterLabels {
 
+    /** Creates labels for defined, required, deprecated, and expression filter attributes. */
     public static <T> List<Label> deReDeExLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         labels.addAll(booleanLabels(filter, DefinedAttribute.NAME, "Defined", "Undefined"));
@@ -54,6 +55,7 @@ public class FilterLabels {
         return labels;
     }
 
+    /** Creates labels for required, deprecated, and expression filter attributes. */
     public static <T> List<Label> reDeExLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         labels.addAll(requiredLabels(filter));
@@ -62,18 +64,22 @@ public class FilterLabels {
         return labels;
     }
 
+    /** Creates labels for the required/optional filter attribute. */
     public static <T> List<Label> requiredLabels(Filter<T> filter) {
         return booleanLabels(filter, RequiredAttribute.NAME, "Required", "Optional");
     }
 
+    /** Creates labels for the deprecated/not deprecated filter attribute. */
     public static <T> List<Label> deprecatedLabels(Filter<T> filter) {
         return booleanLabels(filter, DeprecatedAttribute.NAME, "Deprecated", "Not deprecated");
     }
 
+    /** Creates labels for the expression allowed/not allowed filter attribute. */
     public static <T> List<Label> expressionLabels(Filter<T> filter) {
         return booleanLabels(filter, ExpressionAttribute.NAME, "Expressions allowed", "No expressions allowed");
     }
 
+    /** Creates labels for the storage and access type filter attributes. */
     public static <T> List<Label> storageAccessTypeLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         labels.addAll(storageLabels(filter));
@@ -81,6 +87,7 @@ public class FilterLabels {
         return labels;
     }
 
+    /** Creates labels for the storage (configuration/runtime) filter attribute. */
     public static <T> List<Label> storageLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         if (filter.defined(StorageAttribute.NAME)) {
@@ -91,6 +98,7 @@ public class FilterLabels {
         return labels;
     }
 
+    /** Creates labels for the access type (read-write/read-only/metric) filter attribute. */
     public static <T> List<Label> accessTypeLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         if (filter.defined(AccessTypeAttribute.NAME)) {
@@ -101,6 +109,7 @@ public class FilterLabels {
         return labels;
     }
 
+    /** Creates labels for the selected value type filter attributes. */
     public static <T> List<Label> typeLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         if (filter.defined(TypesAttribute.NAME)) {
@@ -113,6 +122,7 @@ public class FilterLabels {
         return labels;
     }
 
+    /** Creates labels for the parameters and return value filter attributes. */
     public static <T> List<Label> parametersReturnValueLabels(Filter<T> filter) {
         List<Label> labels = new ArrayList<>();
         labels.addAll(booleanLabels(filter, ParametersAttribute.NAME, "Parameters", "No parameters"));

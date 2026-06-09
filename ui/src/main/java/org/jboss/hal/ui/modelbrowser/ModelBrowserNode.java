@@ -31,15 +31,24 @@ import org.patternfly.icon.PredefinedIcon;
  */
 class ModelBrowserNode {
 
+    /** Identifier used for the root node of the tree. */
     static final String ROOT_ID = "root";
 
+    /**
+     * Classifies a node in the management model tree. Each type determines the icon, expandable behavior, and how child
+     * resources are loaded.
+     */
     enum Type {
+        /** A folder containing singleton child resources (e.g. subsystem=datasources has singleton data-source children). */
         SINGLETON_FOLDER(IconSets.fas::listUl, null),
 
+        /** A folder containing non-singleton child resources of the same type. */
         FOLDER(IconSets.fas::folder, IconSets.fas::folderOpen),
 
+        /** A singleton resource instance (e.g. data-source=ExampleDS under a singleton folder). */
         SINGLETON_RESOURCE(IconSets.fas::fileLines, null),
 
+        /** A regular (non-singleton) resource instance. */
         RESOURCE(IconSets.fas::fileLines, null);
 
         final Supplier<PredefinedIcon> icon;
@@ -67,6 +76,7 @@ class ModelBrowserNode {
         this.exists = true;
     }
 
+    /** Creates a shallow copy of this node and applies the given modifier to the copy before returning it. */
     ModelBrowserNode copy(Consumer<ModelBrowserNode> modifyCopy) {
         ModelBrowserNode copy = new ModelBrowserNode(template, name, type);
         modifyCopy.accept(copy);

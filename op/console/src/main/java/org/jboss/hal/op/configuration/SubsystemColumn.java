@@ -22,14 +22,12 @@ import org.jboss.elemento.Id;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.op.finder.ColumnProvider;
-import org.jboss.hal.ui.resource.finder.FinderSupport;
 import org.patternfly.extension.finder.FinderColumn;
-import org.patternfly.extension.finder.FinderItem;
 
-import static elemental2.core.Global.encodeURIComponent;
 import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.itemRoute;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.metadataPreview;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
@@ -43,9 +41,15 @@ import static org.patternfly.icon.IconSets.fas.arrowUpRightFromSquare;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
+/**
+ * Finder column that lists all WildFly subsystems. Each item displays the subsystem name in capital case, provides a "view"
+ * action that navigates to the {@link ConfigurationResourcePage}, and shows the subsystem's resource description in the preview
+ * panel.
+ */
 @Dependent
 public class SubsystemColumn implements ColumnProvider {
 
+    /** Column identifier used for registration and OUIA test IDs. */
     public static final String ID = "subsystem-column";
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("subsystem=*");
     private final PlaceManager placeManager;
@@ -68,15 +72,10 @@ public class SubsystemColumn implements ColumnProvider {
                 .addItems(childResources(__ -> TEMPLATE, node -> finderItem(Id.build(node.asString()))
                         .text(capitalCase(node.asString()))
                         .run(item -> item.addActions(finderItemActions()
-                                .addButton(button(arrowUpRightFromSquare()).plain().small().onClick((e, b) -> view(item)))))))
+                                .addButton(button(arrowUpRightFromSquare()).plain().small().onClick((e, b) ->
+                                        placeManager.goTo(itemRoute("/configuration/", item))))))))
                 .onPreview(metadataPreview((name, metadata, preview) ->
                         stackPreview(preview, capitalCase(name), stack -> stack.addItem(stackItem()
                                 .add(content(p).editorial().text(metadata.resourceDescription().description()))))));
-    }
-
-    private void view(FinderItem item) {
-        AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
-        String address = encodeURIComponent(template.toString());
-        placeManager.goTo("/configuration/" + address);
     }
 }

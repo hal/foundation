@@ -49,10 +49,17 @@ import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.style.Classes.modifier;
 
+/**
+ * Toolbar component for the operations table providing filter controls and a global operations toggle.
+ * <p>
+ * Includes a name search input, multi-select filters for parameters/return value and deprecation status, and a switch to show
+ * or hide global operations. The global operations preference is persisted in settings.
+ */
 class OperationsToolbar implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new operations toolbar bound to the given filter and observable counts. */
     static OperationsToolbar operationsToolbar(Filter<OperationDescription> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         return new OperationsToolbar(filter, visible, total);

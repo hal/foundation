@@ -32,6 +32,10 @@ import static java.util.stream.Collectors.toList;
  */
 public class MultiSelects {
 
+    /**
+     * Updates a boolean filter attribute based on the currently selected menu items. Resets the filter attribute if no
+     * matching items are selected.
+     */
     public static <T> void setBooleanFilter(Filter<T> filter, String filterAttribute, List<MenuItem> menuItems, String origin) {
         String prefix = filterAttribute + "-";
         List<MenuItem> selected = menuItems.stream()
@@ -47,6 +51,10 @@ public class MultiSelects {
         }
     }
 
+    /**
+     * Collects menu item identifiers from a defined filter attribute. If the filter attribute is defined, its value is
+     * converted to an identifier string and added to the list.
+     */
     public static <T, V> void collectIdentifiers(List<String> identifiers, Filter<T> filter, String filterAttribute,
             Function<V, String> valueToIdentifier) {
         if (filter.defined(filterAttribute)) {

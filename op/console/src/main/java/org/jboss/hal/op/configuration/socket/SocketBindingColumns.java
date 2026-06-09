@@ -24,6 +24,7 @@ import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.RESOURCE_NAME_KEY;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.itemRoute;
 
 class SocketBindingColumns {
 
@@ -44,6 +45,8 @@ class SocketBindingColumns {
                         }
                     }
                     return null;
-                }, null);
+                },
+                item -> itemRoute("/configuration", item),
+                null);
     }
 }

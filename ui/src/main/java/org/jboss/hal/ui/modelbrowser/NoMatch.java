@@ -52,6 +52,7 @@ public class NoMatch<T> implements IsElement<HTMLElement> {
         return emptyState.element();
     }
 
+    /** Shows or hides the empty state within the given container element. Appends the element if not already present. */
     public void toggle(HTMLElement container, boolean show) {
         if (show) {
             if (container.contains(element())) {

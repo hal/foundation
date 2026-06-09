@@ -95,6 +95,10 @@ public class ViewItemFactory {
 
     private static final Logger logger = Logger.getLogger(ViewItemFactory.class.getName());
 
+    /**
+     * Creates a {@link ViewItem} for the given attribute. First consults {@link ViewItemProviders#specialViewItems} for a
+     * custom provider; if none matches, builds a default view item with a type-appropriate value representation.
+     */
     public static ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
         ViewItem viewItem = null;
         for (ViewItemProvider vip : specialViewItems) {

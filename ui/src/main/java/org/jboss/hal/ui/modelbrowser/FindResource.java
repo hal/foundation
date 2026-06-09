@@ -102,6 +102,13 @@ import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Size.lg;
 import static org.patternfly.token.Token.globalTextColorDisabled;
 
+/**
+ * Modal dialog to search for resources in the management model tree.
+ * <p>
+ * Users can search by name within a configurable scope (address, type, or name) using either contains or equals comparison.
+ * The search traverses the model tree starting from an optional root address and can exclude specified subtrees. Matching
+ * resources are displayed as clickable links that navigate to the resource in the tree.
+ */
 class FindResource {
 
     private final HTMLElement trigger;

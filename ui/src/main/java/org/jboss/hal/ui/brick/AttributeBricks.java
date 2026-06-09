@@ -60,14 +60,36 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
-/** Attribute name, description, and popover rendering. */
+/**
+ * Factory methods for rendering management model attribute names, descriptions, and popovers as PatternFly UI elements.
+ * <p>
+ * Attribute names can optionally display a stability label and a deprecation indicator. Descriptions render the full
+ * attribute metadata including read-only status, required flag, capability references, expression support, unit, default
+ * value, requires/alternatives relationships, and restart requirements.
+ */
 public final class AttributeBricks {
 
+    /**
+     * Renders an attribute name with an optional stability label using default (non-compact) sizing.
+     *
+     * @param attribute      the attribute description from the management model
+     * @param stabilityCheck returns {@code true} if the stability label should be shown
+     * @return a flex layout containing the attribute name and optional stability label
+     */
     public static org.patternfly.layout.flex.Flex attributeName(AttributeDescription attribute,
             Supplier<Boolean> stabilityCheck) {
         return attributeName(attribute, false, stabilityCheck);
     }
 
+    /**
+     * Renders an attribute name with an optional stability label. The name is rendered in bold and receives a
+     * {@code deprecated} CSS modifier when the attribute is deprecated.
+     *
+     * @param attribute      the attribute description from the management model
+     * @param compact        whether to render a compact stability label
+     * @param stabilityCheck returns {@code true} if the stability label should be shown
+     * @return a flex layout containing the attribute name and optional stability label
+     */
     public static org.patternfly.layout.flex.Flex attributeName(AttributeDescription attribute, boolean compact,
             Supplier<Boolean> stabilityCheck) {
         HTMLContainerBuilder<HTMLElement> name = strong()
@@ -86,6 +108,19 @@ public final class AttributeBricks {
         }
     }
 
+    /**
+     * Renders a detailed attribute description including deprecation info and a metadata list. The metadata list is
+     * controlled by the {@code content} parameter:
+     * <ul>
+     *     <li>{@link AttributeDescriptionContent#all} — includes read-only status and all metadata</li>
+     *     <li>{@link AttributeDescriptionContent#allButReadOnly} — all metadata except the read-only indicator</li>
+     *     <li>{@link AttributeDescriptionContent#descriptionOnly} — only the description text and deprecation</li>
+     * </ul>
+     *
+     * @param attribute the attribute description from the management model
+     * @param content   controls which metadata items are included in the rendered output
+     * @return a div element containing the formatted description and metadata list
+     */
     public static HTMLContainerBuilder<HTMLDivElement> attributeDescription(AttributeDescription attribute,
             AttributeDescriptionContent content) {
         Variable marginTop = componentVar(component(list), "li", "MarginTop");
@@ -159,6 +194,15 @@ public final class AttributeBricks {
         });
     }
 
+    /**
+     * Creates a popover that displays the full attribute description. The popover uses a minimum width of 40 characters
+     * to ensure readable formatting of the metadata list.
+     *
+     * @param header    the popover header text
+     * @param attribute the attribute description from the management model
+     * @param content   controls which metadata items are included
+     * @return a configured popover component
+     */
     public static Popover attributeDescriptionPopover(String header, AttributeDescription attribute,
             AttributeDescriptionContent content) {
         return popover()
@@ -169,6 +213,7 @@ public final class AttributeBricks {
                         .add(attributeDescription(attribute, content)));
     }
 
+    /** Returns a "/" separator element with horizontal margins, used between segments of nested attribute paths. */
     public static HTMLElement nestedElementSeparator() {
         return span().css(util("mx-sm")).text("/").element();
     }

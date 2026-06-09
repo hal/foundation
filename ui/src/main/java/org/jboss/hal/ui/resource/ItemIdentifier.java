@@ -21,6 +21,7 @@ import org.jboss.hal.ui.resource.manager.ResourceManager;
 /** Generates stable HTML element IDs for form and view items based on attribute name and display state. */
 public interface ItemIdentifier {
 
+    /** Builds a unique HTML element ID from the attribute's fully qualified name and the given display state. */
     static String identifier(ResourceAttribute resourceAttribute, ResourceManager.State state) {
         return Id.build(resourceAttribute.fqn, state.name());
     }

@@ -28,6 +28,10 @@
  * <dd>Locale-aware formatters for file sizes, durations, and percentages using the Internationalization API.</dd>
  * <dt>{@link org.jboss.hal.ui.StabilityLabel}</dt>
  * <dd>PatternFly label component displaying WildFly stability levels with appropriate icons and colors.</dd>
+ * <dt>{@link org.jboss.hal.ui.DOMPurify} / {@link org.jboss.hal.ui.DOMPurifyConfig}</dt>
+ * <dd>J2CL bindings for the DOMPurify HTML sanitizer library.</dd>
+ * <dt>{@link org.jboss.hal.ui.Marked} / {@link org.jboss.hal.ui.MarkedOptions}</dt>
+ * <dd>J2CL bindings for the marked Markdown parser, with built-in sanitization via DOMPurify.</dd>
  * </dl>
  *
  * <h2>Example Usage</h2>

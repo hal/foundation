@@ -27,6 +27,13 @@ import static org.patternfly.component.tabs.TabContent.tabContent;
 import static org.patternfly.component.tabs.Tabs.tabs;
 import static org.patternfly.style.Classes.util;
 
+/**
+ * Tabbed detail view for a resource node in the model browser.
+ * <p>
+ * Displays four tabs: "Data" (resource manager for reading/writing attributes), "Attributes" (read-only metadata table),
+ * "Operations" (filterable operations table with execute buttons), and "Capabilities". The last selected tab is remembered
+ * across resource selections.
+ */
 class ResourceDetails implements IsElement<HTMLElement> {
 
     private final HTMLElement root;

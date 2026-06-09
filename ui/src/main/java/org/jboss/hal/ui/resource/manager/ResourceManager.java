@@ -85,20 +85,35 @@ import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
 
 /**
- * Combines a {@link ResourceFilter} and {@link ResourceToolbar} with a {@link ResourceView} and {@link ResourceForm}.
+ * Central state machine that orchestrates viewing and editing of WildFly management resource attributes. Combines a
+ * {@link ResourceFilter} and {@link ResourceToolbar} with a {@link ResourceView} and
+ * {@link org.jboss.hal.ui.resource.form.ResourceForm}.
+ * <p>
+ * Manages transitions between {@link State#VIEW}, {@link State#EDIT}, {@link State#NO_ATTRIBUTES}, and
+ * {@link State#ERROR} states. On attach, it loads the resource from the management endpoint and populates either a
+ * read-only view or an editable form depending on the requested state.
  */
 public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManager>, IsElement<HTMLElement>, Attachable {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new resource manager for the given address template and metadata. */
     public static ResourceManager resourceManager(AddressTemplate template, Metadata metadata) {
         return new ResourceManager(template, metadata);
     }
 
     // ------------------------------------------------------ instance
 
+    /** The lifecycle states of the resource manager. */
     public enum State {
-        VIEW, EDIT, NO_ATTRIBUTES, ERROR
+        /** Read-only display of resource attributes. */
+        VIEW,
+        /** Editable form for modifying resource attributes. */
+        EDIT,
+        /** The resource has no attributes to display. */
+        NO_ATTRIBUTES,
+        /** An error occurred while loading the resource or its metadata. */
+        ERROR
     }
 
     private static final Logger logger = Logger.getLogger(ResourceManager.class.getName());
@@ -154,15 +169,18 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
 
     // ------------------------------------------------------ builder
 
+    /** Enables inline editing for this resource manager. */
     public ResourceManager inlineEdit() {
         return inlineEdit(true);
     }
 
+    /** Controls whether inline editing is enabled. */
     public ResourceManager inlineEdit(boolean inlineEdit) {
         this.inlineEdit = inlineEdit;
         return this;
     }
 
+    /** Overrides the default {@code read-resource} operation used to load the resource. */
     public ResourceManager operation(Operation operation) {
         if (operation != null) {
             this.operation = operation;
@@ -172,6 +190,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
         return this;
     }
 
+    /** Restricts the displayed attributes to the given fully qualified names. An empty iterable shows all attributes. */
     public ResourceManager attributes(Iterable<String> attributes) {
         for (String attribute : attributes) {
             this.attributes.add(attribute);

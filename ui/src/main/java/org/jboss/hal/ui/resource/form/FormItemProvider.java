@@ -25,5 +25,6 @@ interface FormItemProvider {
     /** Tests must be cheap and fast! They're executed every time a form item is created. */
     boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags);
 
+    /** Creates and returns a custom form item for the given attribute. Only called when {@link #test} returns {@code true}. */
     FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags);
 }

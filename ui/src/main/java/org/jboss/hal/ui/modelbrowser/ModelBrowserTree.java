@@ -66,6 +66,12 @@ import static org.patternfly.style.Placement.bottomStart;
 import static org.patternfly.style.Size.sm;
 import static org.patternfly.style.Sticky.top;
 
+/**
+ * Left-side tree view panel of the model browser displaying the WildFly management resource hierarchy.
+ * <p>
+ * The tree supports lazy loading of child resources, back/forward navigation history, searching, direct address navigation,
+ * and collapsing. A toolbar above the tree provides buttons for all navigation actions.
+ */
 class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserTree> {
 
     // ------------------------------------------------------ instance

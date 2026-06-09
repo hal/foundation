@@ -41,23 +41,28 @@ import static org.patternfly.style.Classes.start;
 /** Factory methods for validation helper texts displayed below form items when validation fails. */
 public class HelperTexts {
 
+    /** Returns a warning helper text indicating that the attribute type is not yet supported. */
     static HelperText unsupportedType(String type) {
         return helperText("The type of this attribute is not yet supported: " + type, warning);
     }
 
+    /** Returns an error helper text indicating that the required attribute must not be empty. */
     static HelperText required(ResourceAttribute ra) {
         String label = sentenceCase(ra.name);
         return helperText(label + " is a required attribute.", error);
     }
 
+    /** Returns an error helper text indicating that the value is not a valid number for the given type. */
     static HelperText notNumeric(ModelType type) {
         return helperText("The value is not a number. Only values of type " + type.name() + " are allowed.", error);
     }
 
+    /** Returns an error helper text indicating that the value is outside the allowed range. */
     static HelperText notInRange(String min, String max) {
         return helperText("The value is out of range. The value must be >= " + min + " and <= " + max + ".", error);
     }
 
+    /** Returns an error helper text with a pattern hint indicating that the value is not a valid expression. */
     static HelperText noExpression() {
         return helperText()
                 .addItem(helperTextItem("The value is not a valid expression.", error))

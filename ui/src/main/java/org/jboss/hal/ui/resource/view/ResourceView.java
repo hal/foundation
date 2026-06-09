@@ -55,7 +55,10 @@ import static org.patternfly.style.Breakpoints.breakpoints;
 import static org.patternfly.style.Orientation.horizontal;
 import static org.patternfly.style.Orientation.vertical;
 
-/** Element to view an existing resource */
+/**
+ * Read-only display of WildFly management resource attributes as a responsive PatternFly description list. Each attribute
+ * is rendered as a {@link ViewItem}. Supports add, update, and remove operations on items.
+ */
 public class ResourceView implements
         TypedBuilder<HTMLElement, ResourceView>,
         IsElement<HTMLElement>,
@@ -64,19 +67,23 @@ public class ResourceView implements
 
     // ------------------------------------------------------ factory
 
+    /** Creates an empty resource view. */
     public static ResourceView resourceView() {
         return new ResourceView();
     }
 
+    /** Creates a resource view populated with all attributes from the given resource. */
     public static ResourceView resourceView(AddressTemplate template, ModelNode resource, Metadata metadata) {
         return resourceView(template, resource, metadata, __ -> true);
     }
 
+    /** Creates a resource view restricted to the named attributes. */
     public static ResourceView resourceView(AddressTemplate template, ModelNode resource, Metadata metadata,
             List<String> attributes) {
         return resourceView(template, resource, metadata, includes(attributes));
     }
 
+    /** Creates a resource view filtered by the given predicate. */
     public static ResourceView resourceView(AddressTemplate template, ModelNode resource, Metadata metadata,
             Predicate<AttributeDescription> predicate) {
         ResourceView resourceView = new ResourceView();

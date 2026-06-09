@@ -28,9 +28,23 @@ import static org.patternfly.component.label.Label.label;
 import static org.patternfly.style.Color.blue;
 import static org.patternfly.style.Color.grey;
 
-/** Server and host runtime state labels. */
+/**
+ * Factory methods for rendering WildFly server and host runtime state values as colour-coded PatternFly labels. Each
+ * method maps the possible enum values to appropriate colours and statuses:
+ * <ul>
+ *     <li>Green / success — healthy states ({@code OK}, {@code RUNNING}, {@code NORMAL})</li>
+ *     <li>Blue — transitional states ({@code STARTING}, {@code STOPPING}, {@code PRE_SUSPEND}, {@code SUSPENDING})</li>
+ *     <li>Yellow / warning — attention states ({@code RELOAD_REQUIRED}, {@code RESTART_REQUIRED})</li>
+ *     <li>Grey — inactive states ({@code STOPPED}, {@code ADMIN_ONLY})</li>
+ *     <li>Red / danger — undefined or error states</li>
+ * </ul>
+ */
 public final class ServerStateBricks {
 
+    /**
+     * Creates a label for a {@link RuntimeConfigurationState} value using the colour scheme described in
+     * {@link ServerStateBricks}.
+     */
     public static Label runtimeConfigurationStateLabel(RuntimeConfigurationState value) {
         return switch (value) {
             case STARTING, STOPPING -> label(value.name(), blue);
@@ -41,6 +55,7 @@ public final class ServerStateBricks {
         };
     }
 
+    /** Creates a label for a {@link RunningMode} value ({@code NORMAL} → green, {@code ADMIN_ONLY} → grey). */
     public static Label runningModeLabel(RunningMode value) {
         return switch (value) {
             case NORMAL -> label(value.name()).status(success);
@@ -49,6 +64,7 @@ public final class ServerStateBricks {
         };
     }
 
+    /** Creates a label for a {@link RunningState} value. */
     public static Label runningStateLabel(RunningState value) {
         return switch (value) {
             case STARTING -> label(value.name(), blue);
@@ -59,6 +75,7 @@ public final class ServerStateBricks {
         };
     }
 
+    /** Creates a label for a {@link SuspendState} value. */
     public static Label suspendStateLabel(SuspendState value) {
         return switch (value) {
             case RUNNING -> label(value.name()).status(success);

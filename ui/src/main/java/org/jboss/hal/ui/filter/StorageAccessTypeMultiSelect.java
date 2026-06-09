@@ -51,6 +51,7 @@ public class StorageAccessTypeMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new storage/access type multi-select filter. */
     public static <T> StorageAccessTypeMultiSelect<T> storageAccessTypeMultiSelect(Filter<T> filter) {
         return new StorageAccessTypeMultiSelect<>(filter);
     }

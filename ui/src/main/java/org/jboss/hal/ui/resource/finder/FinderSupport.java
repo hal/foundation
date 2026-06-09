@@ -43,17 +43,30 @@ import static org.jboss.hal.ui.UIContext.uic;
 /**
  * Utility for building finder-style navigation paths from management resource addresses.
  * <p>
- * Provides helper methods for loading child resources asynchronously and creating metadata-based previews for finder
- * columns. Integrates with PatternFly's finder extension to provide consistent navigation patterns.
+ * Provides helper methods for loading child resources asynchronously and creating metadata-based previews for finder columns.
+ * Integrates with PatternFly's finder extension to provide consistent navigation patterns.
  */
 public class FinderSupport {
 
+    /** Component context key under which the resource name ({@link String}) is stored in each finder item. */
     public static final String RESOURCE_NAME_KEY = "resource-name";
+
+    /** Component context key under which the resolved {@link AddressTemplate} is stored in each finder item. */
     public static final String TEMPLATE_KEY = "template";
 
+    /**
+     * Callback for building a metadata-driven preview panel for a finder item.
+     */
     @FunctionalInterface
     public interface MetadataPreviewBuilder {
 
+        /**
+         * Populates the preview panel with content derived from the resource metadata.
+         *
+         * @param name     the resource name of the selected finder item
+         * @param metadata the resolved management model metadata for the resource
+         * @param preview  the empty preview panel to populate
+         */
         void onPreview(String name, Metadata metadata, FinderPreview preview);
     }
 
@@ -126,5 +139,23 @@ public class FinderSupport {
                 return null;
             });
         };
+    }
+
+    /**
+     * Constructs a route string based on the provided base route and the FinderItem's address template. If the FinderItem
+     * contains an address template (retrieved using the {@code TEMPLATE_KEY}), the method combines the base route with the
+     * encoded address template. Otherwise, it returns the base route unchanged.
+     *
+     * @param base The base route used as the starting point for the route (must start and end with a forward slash).
+     * @param item The FinderItem containing metadata, including the address template used for constructing the route.
+     * @return A string representing the constructed route. If the FinderItem has a valid address template, the base route is
+     * combined with the encoded template. Otherwise, just the base route is returned.
+     */
+    public static String itemRoute(String base, FinderItem item) {
+        AddressTemplate template = item.get(TEMPLATE_KEY);
+        if (template != null) {
+            return base + AddressRouting.encode(template);
+        }
+        return base;
     }
 }

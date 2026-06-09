@@ -22,6 +22,7 @@ import java.util.List;
 /** Registry of special-case {@link FormItemProvider} instances consulted by {@link FormItemFactory} before falling back to default form item creation. */
 public class FormItemProviders {
 
+    /** Ordered list of special-case providers. The first matching provider wins. */
     public static final List<FormItemProvider> specialFormItems = new ArrayList<>();
 
     static {

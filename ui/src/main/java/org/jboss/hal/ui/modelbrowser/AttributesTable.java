@@ -46,6 +46,12 @@ import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width20;
 import static org.patternfly.style.Width.width60;
 
+/**
+ * Displays a filterable table of resource attributes in the model browser detail panel.
+ * <p>
+ * The table shows attribute name, type, storage, and access type columns. Complex attributes (LIST/OBJECT) are rendered as
+ * expandable tree table rows. A toolbar with filter controls is displayed above the table.
+ */
 class AttributesTable implements IsElement<HTMLElement> {
 
     private static final Logger logger = Logger.getLogger(AttributesTable.class.getName());

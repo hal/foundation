@@ -36,9 +36,23 @@ import static org.jboss.hal.resources.HalClasses.name;
 import static org.patternfly.style.Classes.end;
 import static org.patternfly.style.Classes.start;
 
-/** Expression rendering and expression-related icons. */
+/**
+ * Factory methods for rendering WildFly management model expressions ({@code ${name:default}}) as colour-coded HTML
+ * elements, and for providing icon suppliers used by expression-related toggle buttons.
+ * <p>
+ * Expression rendering supports nested expressions (an expression whose default value is itself an expression) and
+ * applies distinct CSS classes to each part: the {@code $} sigil, the curly braces, the expression name, the colon
+ * separator, and the default value.
+ */
 public final class ExpressionBricks {
 
+    /**
+     * Renders a string value as a colour-coded expression element if it contains an expression, or as plain text
+     * otherwise. Nested expressions are rendered recursively.
+     *
+     * @param value the string that may contain an expression
+     * @return a span element with the rendered content
+     */
     public static HTMLElement renderExpression(String value) {
         if (Expression.containsExpression(value)) {
             HTMLContainerBuilder<HTMLElement> span = span().css(halComponent(expression));
@@ -75,14 +89,17 @@ public final class ExpressionBricks {
         }
     }
 
+    /** Returns a dollar-sign icon supplier, used to indicate expression editing mode. */
     public static Supplier<PredefinedIcon> expressionModeIcon() {
         return IconSets.fas::dollarSign;
     }
 
+    /** Returns a terminal icon supplier, used to indicate normal (non-expression) editing mode. */
     public static Supplier<PredefinedIcon> normalModeIcon() {
         return IconSets.fas::terminal;
     }
 
+    /** Returns a link icon supplier, used for the "resolve expression" action. */
     public static Supplier<PredefinedIcon> resolveExpressionIcon() {
         return IconSets.fas::link;
     }

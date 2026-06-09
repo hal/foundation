@@ -34,6 +34,14 @@ public class ItemCount implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /**
+     * Creates a new item count display.
+     *
+     * @param visible  observable value for the number of currently visible items
+     * @param total    observable value for the total number of items
+     * @param singular singular form of the item noun (e.g., "attribute")
+     * @param plural   plural form of the item noun (e.g., "attributes")
+     */
     public static ItemCount itemCount(ObservableValue<Integer> visible, ObservableValue<Integer> total, String singular,
             String plural) {
         return new ItemCount(visible, total, singular, plural);

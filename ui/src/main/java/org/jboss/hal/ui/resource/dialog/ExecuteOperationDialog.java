@@ -26,12 +26,13 @@ import elemental2.promise.Promise;
  * Opens a modal dialog that dynamically generates form inputs based on the operation's parameter metadata. After the user
  * fills in the parameters and executes the operation, the dialog displays the result or error.
  *
- * @see org.jboss.hal.ui.resource.ResourceDialogs#executeOperationModal(AddressTemplate, String)
+ * @see ResourceDialogs#executeOperationModal(AddressTemplate, String)
  */
 public class ExecuteOperationDialog {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new dialog for executing the given operation on the resource identified by the template. */
     public static ExecuteOperationDialog executeOperation(AddressTemplate template, String operation) {
         return new ExecuteOperationDialog(template, operation);
     }
@@ -48,6 +49,10 @@ public class ExecuteOperationDialog {
 
     // ------------------------------------------------------ api
 
+    /**
+     * Opens the dialog, collects parameter inputs, executes the operation, and returns a promise that resolves to the
+     * operation result.
+     */
     public Promise<ModelNode> execute() {
         return new Promise<ModelNode>((resolve, reject) -> {
 

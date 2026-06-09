@@ -27,9 +27,18 @@ import static org.patternfly.icon.IconSets.fas.circleInfo;
 import static org.patternfly.icon.IconSets.fas.flask;
 import static org.patternfly.icon.IconSets.fas.triangleExclamation;
 
-/** Stability-related UI helpers. */
+/**
+ * Factory methods for mapping WildFly {@link Stability} levels to PatternFly statuses and icons. Used by the stability
+ * label component to render consistent visual indicators across the console.
+ * <ul>
+ *     <li>{@link Stability#EXPERIMENTAL} — danger status, flask icon</li>
+ *     <li>{@link Stability#PREVIEW} — warning status, triangle-exclamation icon</li>
+ *     <li>All other levels — info status, circle-info icon</li>
+ * </ul>
+ */
 public final class StabilityBricks {
 
+    /** Maps a stability level to a PatternFly {@link Status} for colour-coding labels and badges. */
     public static Status stabilityStatus(Stability stability) {
         if (stability == EXPERIMENTAL) {
             return Status.danger;
@@ -39,6 +48,7 @@ public final class StabilityBricks {
         return Status.info;
     }
 
+    /** Returns an icon representing the given stability level. */
     public static PredefinedIcon stabilityIcon(Stability stability) {
         if (stability == EXPERIMENTAL) {
             return flask();
@@ -48,6 +58,7 @@ public final class StabilityBricks {
         return circleInfo();
     }
 
+    /** Returns a supplier that creates an icon for the given stability level. */
     public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
         return () -> stabilityIcon(stability);
     }

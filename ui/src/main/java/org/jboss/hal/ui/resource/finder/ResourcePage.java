@@ -19,10 +19,8 @@ import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
-import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowser;
 
-import elemental2.core.Global;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Collections.singletonList;
@@ -40,17 +38,24 @@ public class ResourcePage implements Page {
 
     private final String parameterName;
 
+    /**
+     * Creates a resource page that extracts the encoded address from the given route parameter name.
+     *
+     * @param parameterName the route parameter name containing the URI-encoded address template
+     */
     protected ResourcePage(String parameterName) {
         this.parameterName = parameterName;
     }
 
+    /**
+     * Decodes the address template from the route parameter and renders a {@link ModelBrowser} for it. If the parameter
+     * is missing, an error empty state is shown instead.
+     */
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         String address = parameter.get(parameterName);
         if (address != null) {
-            String decoded = Global.decodeURIComponent(address);
-            AddressTemplate template = AddressTemplate.ofTrusted(decoded);
-            ModelBrowser browser = modelBrowser(template);
+            ModelBrowser browser = modelBrowser(AddressRouting.decode(address));
             return singletonList(pageSection().ouiaId(PAGE_MODEL_BROWSER)
                     .add(browser)
                     .element());

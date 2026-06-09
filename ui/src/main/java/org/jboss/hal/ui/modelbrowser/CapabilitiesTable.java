@@ -48,6 +48,12 @@ import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width30;
 import static org.patternfly.style.Width.width60;
 
+/**
+ * Displays a table of capabilities provided by a resource in the model browser detail panel.
+ * <p>
+ * Each row shows the capability name, whether it is dynamic, and its dynamic elements. When no capabilities are available, an
+ * empty state is displayed.
+ */
 class CapabilitiesTable implements IsElement<HTMLElement> {
 
     private final Table table;

@@ -30,6 +30,10 @@
  * <dd>Creates type-appropriate view items based on attribute metadata.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.view.CapabilityReference}</dt>
  * <dd>Interactive capability reference display with navigation to the providing resource(s).</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemProvider}</dt>
+ * <dd>Strategy interface for creating specialised view items for specific attributes.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemProviders}</dt>
+ * <dd>Registry of special view item providers consulted before the default rendering.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.view;

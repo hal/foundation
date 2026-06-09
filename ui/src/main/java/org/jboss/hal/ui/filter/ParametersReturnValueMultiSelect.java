@@ -45,6 +45,7 @@ public class ParametersReturnValueMultiSelect<T> implements IsElement<HTMLElemen
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new parameters/return value multi-select filter. */
     public static <T> ParametersReturnValueMultiSelect<T> parametersReturnValueMultiSelect(Filter<T> filter) {
         return new ParametersReturnValueMultiSelect<>(filter);
     }

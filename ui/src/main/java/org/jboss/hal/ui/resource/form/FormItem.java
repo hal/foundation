@@ -197,6 +197,7 @@ public abstract class FormItem implements
         return true;
     }
 
+    /** Returns {@code true} if the text control is empty or {@code null}. */
     boolean emptyTextControl() {
         return textControlValue().isEmpty();
     }
@@ -256,6 +257,7 @@ public abstract class FormItem implements
      */
     abstract boolean isModified();
 
+    /** Checks whether the text control value differs from the original value in expression or mixed mode. */
     boolean isExpressionModified() {
         if (flags.scope == NEW_RESOURCE) {
             return !textControlValue().isEmpty();
@@ -273,6 +275,7 @@ public abstract class FormItem implements
         return false;
     }
 
+    /** Logs an error for an unrecognized scope value. */
     void unknownScope() {
         logger.error("Unknown scope '%s' in form item %s: %o", flags.scope, identifier, this.element());
     }
@@ -282,10 +285,12 @@ public abstract class FormItem implements
      */
     abstract ModelNode modelNode();
 
+    /** Returns a model node with the text control value set as an expression. */
     ModelNode expressionModelNode() {
         return new ModelNode().setExpression(textControlValue());
     }
 
+    /** Returns the current text control value, or an empty string if the text control is {@code null}. */
     String textControlValue() {
         return textControl != null ? textControl.value() : "";
     }
@@ -382,16 +387,19 @@ public abstract class FormItem implements
         return expressionContainer;
     }
 
+    /** Creates a button that switches this form item to expression mode when clicked. */
     Button switchToExpressionModeButton() {
         return button().id(switchToExpressionModeId).control().icon(expressionModeIcon().get())
                 .onClick((e, b) -> switchToExpressionMode());
     }
 
+    /** Creates a button that switches this form item back to native mode when clicked. */
     Button switchToNormalModeButton() {
         return button().id(switchToNativeModeId).control().icon(normalModeIcon().get())
                 .onClick((e, b) -> switchToNativeMode());
     }
 
+    /** Creates a button that resolves the current expression value when clicked. */
     Button resolveExpressionButton() {
         return button().id(resolveExpressionId).control().icon(resolveExpressionIcon().get())
                 .onClick((e, b) -> {
@@ -403,6 +411,7 @@ public abstract class FormItem implements
                 });
     }
 
+    /** Applies placeholder text to the given input element based on the configured {@link FormItemFlags.Placeholder} policy. */
     void applyPlaceholder(HTMLInputElementBuilder<HTMLInputElement> textInput) {
         if (flags.placeholder == Placeholder.UNDEFINED) {
             textInput.placeholder(UNDEFINED);
@@ -460,6 +469,7 @@ public abstract class FormItem implements
         return textControl;
     }
 
+    /** Creates an input group text element displaying the attribute's unit label (e.g., "ms", "bytes"). */
     final InputGroupText unitInputGroupText() {
         return inputGroupText().plain().add(small().text(ra.description.unit()));
     }

@@ -19,11 +19,17 @@ import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 
-/** Strategy interface for creating specialised {@link ViewItem} instances based on attribute template and metadata. */
+/**
+ * Strategy interface for creating specialised {@link ViewItem} instances based on attribute template and metadata.
+ * Implementations are registered in {@link ViewItemProviders#specialViewItems} and consulted by
+ * {@link ViewItemFactory#viewItem(AddressTemplate, Metadata, ResourceAttribute)} before falling back to the default
+ * rendering.
+ */
 interface ViewItemProvider {
 
-    /** Tests must be cheap and fast! They're executed every time a view item is created. */
+    /** Tests whether this provider handles the given attribute. Must be cheap and fast -- executed for every view item. */
     boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
 
+    /** Creates a specialised view item for the given attribute. Only called when {@link #test} returns {@code true}. */
     ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
 }

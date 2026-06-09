@@ -23,6 +23,7 @@ import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.itemRoute;
 
 @Dependent
 public class SystemPropertyColumn implements ColumnProvider {
@@ -37,6 +38,9 @@ public class SystemPropertyColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return crudColumn(ID, "System Property", singletonList("value"), __ -> TEMPLATE, null);
+        return crudColumn(ID, "System Property", singletonList("value"),
+                __ -> TEMPLATE,
+                item -> itemRoute("/configuration", item),
+                null);
     }
 }

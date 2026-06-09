@@ -17,6 +17,14 @@ package org.jboss.hal.ui.modelbrowser;
 
 import java.util.Stack;
 
+/**
+ * Stack-based navigation history supporting back, forward, and current item tracking.
+ * <p>
+ * Used by the model browser tree to enable browser-like back/forward navigation between previously visited tree view items.
+ * Navigating to a new item clears the forward stack.
+ *
+ * @param <T> the type of items tracked in the history
+ */
 class History<T> {
 
     private final Stack<T> backStack;
@@ -33,6 +41,7 @@ class History<T> {
         current = null;
     }
 
+    /** Records a new navigation, pushing the current item onto the back stack and clearing the forward stack. */
     void navigate(T item) {
         if (current != null) {
             backStack.push(current);
@@ -43,10 +52,12 @@ class History<T> {
         forward = false;
     }
 
+    /** Returns {@code true} if there are items in the back stack. */
     boolean canGoBack() {
         return back;
     }
 
+    /** Moves back one step, pushing the current item onto the forward stack. Returns the new current item. */
     T back() {
         if (!backStack.isEmpty()) {
             if (current != null) {
@@ -62,6 +73,7 @@ class History<T> {
         return current;
     }
 
+    /** Returns the top of the back stack without modifying the history, or the current item if the stack is empty. */
     T peekBack() {
         if (!backStack.isEmpty()) {
             return backStack.peek();
@@ -69,10 +81,12 @@ class History<T> {
         return current;
     }
 
+    /** Returns {@code true} if there are items in the forward stack. */
     boolean canGoForward() {
         return forward;
     }
 
+    /** Moves forward one step, pushing the current item onto the back stack. Returns the new current item. */
     T forward() {
         if (!forwardStack.isEmpty()) {
             if (current != null) {
@@ -88,6 +102,7 @@ class History<T> {
         return current;
     }
 
+    /** Returns the top of the forward stack without modifying the history, or the current item if the stack is empty. */
     T peekForward() {
         if (!forwardStack.isEmpty()) {
             return forwardStack.peek();
@@ -95,6 +110,7 @@ class History<T> {
         return current;
     }
 
+    /** Returns the current item, or {@code null} if nothing has been navigated to yet. */
     T current() {
         return current;
     }

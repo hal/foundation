@@ -78,6 +78,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new model browser rooted at the given address template. */
     public static ModelBrowser modelBrowser(AddressTemplate template) {
         return new ModelBrowser(template);
     }

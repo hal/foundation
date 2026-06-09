@@ -19,9 +19,14 @@ import org.jboss.hal.ui.resource.ResourceAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Registry of {@link ViewItemProvider} instances that supply specialised {@link ViewItem} components for specific attributes. */
+/**
+ * Registry of {@link ViewItemProvider} instances that supply specialised {@link ViewItem} components for specific
+ * attributes. Providers are evaluated in order; the first matching provider wins. If no provider matches, the default
+ * rendering in {@link ViewItemFactory} is used.
+ */
 public class ViewItemProviders {
 
+    /** Ordered list of special view item providers. The first matching provider wins. */
     public static final List<ViewItemProvider> specialViewItems = new ArrayList<>();
 
     static {

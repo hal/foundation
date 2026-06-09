@@ -45,6 +45,7 @@ public class StabilityLabel implements
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new stability label for the given stability level. */
     public static StabilityLabel stabilityLabel(Stability stability) {
         return new StabilityLabel(stability);
     }
@@ -53,6 +54,7 @@ public class StabilityLabel implements
 
     private final Label label;
 
+    /** Creates a new stability label displaying the given stability level with appropriate icon and color. */
     StabilityLabel(Stability stability) {
         label = label(stability.label)
                 .css(halComponent(stabilityLevel), stabilityStatus(stability).modifier())
@@ -77,10 +79,12 @@ public class StabilityLabel implements
 
     // ------------------------------------------------------ modifier
 
+    /** Makes the label compact by removing the icon and reducing its size. */
     public StabilityLabel compact() {
         return compact(false);
     }
 
+    /** Conditionally makes the label compact. When compact, the icon is removed and the label size is reduced. */
     public StabilityLabel compact(boolean compact) {
         if (compact) {
             label.compact().removeIcon();

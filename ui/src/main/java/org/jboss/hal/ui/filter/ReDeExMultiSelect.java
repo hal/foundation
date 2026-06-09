@@ -37,12 +37,17 @@ import static org.patternfly.component.menu.MultiSelect.multiSelect;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectGroupMenu;
 
 /**
- * (Re)quired, (De)precated, (Ex)pression multi select.
+ * Multi-select filter combining required, deprecated, and expression status filters.
+ * <p>
+ * Provides three filter groups under a single "Status" toggle: required/optional, deprecated/not deprecated, and
+ * expressions allowed/not allowed. Used in contexts where the defined status is not relevant, such as operation
+ * parameter views.
  */
 public class ReDeExMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new required/deprecated/expression multi-select filter. */
     public static <T> ReDeExMultiSelect<T> reDeExMultiSelect(Filter<T> filter) {
         return new ReDeExMultiSelect<>(filter);
     }

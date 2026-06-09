@@ -47,10 +47,18 @@ import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.style.Classes.modifier;
 
+/**
+ * Toolbar component for the attributes table providing filter controls.
+ * <p>
+ * Includes a name search input and multi-select filters for attribute types, required/deprecated/expression status, and
+ * storage/access type. Active filter labels are displayed below the toolbar with a "Clear all filters" button. An item count
+ * showing visible vs. total attributes is aligned to the right.
+ */
 class AttributesToolbar implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new attributes toolbar bound to the given filter and observable counts. */
     static AttributesToolbar attributesToolbar(Filter<AttributeDescription> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         return new AttributesToolbar(filter, visible, total);

@@ -86,6 +86,14 @@ public class Format {
                 .format(d);
     }
 
+    /**
+     * Formats a decimal value as a locale-aware percentage string. Values greater than 1 are treated as whole
+     * percentages (e.g., 75 becomes "75%"), while values between 0 and 1 are treated as fractions (e.g., 0.75
+     * becomes "75%").
+     *
+     * @param value the value to format as a percentage
+     * @return the formatted percentage string
+     */
     public static String percent(double value) {
         NumberFormat numberFormat = numberFormat(uic().settings().locale(), numberFormatOptions()
                 .style(percent));

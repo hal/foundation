@@ -35,10 +35,12 @@ public class NameSearchInput<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a name search input with the default placeholder "Filter by name". */
     public static <T> NameSearchInput<T> nameSearchInput(Filter<T> filter) {
         return new NameSearchInput<>(filter, "Filter by name");
     }
 
+    /** Creates a name search input with a custom placeholder text. */
     public static <T> NameSearchInput<T> nameSearchInput(Filter<T> filter, String placeholder) {
         return new NameSearchInput<>(filter, placeholder);
     }
@@ -59,6 +61,7 @@ public class NameSearchInput<T> implements IsElement<HTMLElement> {
         });
     }
 
+    /** Sets the OUIA component ID for testing purposes. */
     public NameSearchInput<T> ouiaId(String id) {
         searchInput.ouiaId(id);
         return this;

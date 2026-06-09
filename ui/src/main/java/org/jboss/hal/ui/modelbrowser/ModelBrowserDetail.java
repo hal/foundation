@@ -71,8 +71,16 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.style.Size._3xl;
 import static org.patternfly.style.Sticky.top;
 
+/**
+ * Right-side detail panel of the model browser showing information about the selected resource.
+ * <p>
+ * For folder nodes, displays a {@link ResourceList} of child resources. For resource nodes, displays a tabbed view with data,
+ * attributes, operations, and capabilities tabs via {@link ResourceDetails}. The panel includes a breadcrumb trail for
+ * navigation and a copy-to-clipboard button for the resource address.
+ */
 class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserDetail> {
 
+    /** Tracks the last selected tab ID so it can be restored when switching between resources. */
     static String lastTab = null;
     private final ModelBrowser modelBrowser;
     private final HTMLElement root;

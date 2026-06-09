@@ -32,6 +32,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
  */
 public class StringListSupport {
 
+    /** Returns {@code true} if the values differ from the attribute's default for a new resource. */
     static boolean isNewModified(ResourceAttribute ra, List<String> values) {
         if (ra.description.hasDefault()) {
             return differentValues(defaultValues(ra), values);
@@ -40,6 +41,7 @@ public class StringListSupport {
         }
     }
 
+    /** Returns {@code true} if the values differ from the original persisted values for an existing resource. */
     static boolean isExistingModified(ResourceAttribute ra, List<String> values, boolean wasDefined) {
         if (wasDefined) {
             // modified if the original value was an expression or is different from the current user input
@@ -49,6 +51,7 @@ public class StringListSupport {
         }
     }
 
+    /** Converts a list of string values to a DMR list model node, or returns an undefined node if the list is empty. */
     static ModelNode valuesModelNode(List<String> values) {
         if (values.isEmpty()) {
             return new ModelNode();
@@ -61,6 +64,7 @@ public class StringListSupport {
         }
     }
 
+    /** Extracts the current list values from the resource attribute's model node. */
     static List<String> modelValues(ResourceAttribute ra) {
         if (ra.value.isDefined()) {
             return ra.value.asList().stream()
@@ -70,6 +74,7 @@ public class StringListSupport {
         return emptyList();
     }
 
+    /** Extracts the default list values from the attribute description, or returns an empty list. */
     static List<String> defaultValues(ResourceAttribute ra) {
         if (ra.description.hasDefined(ModelDescriptionConstants.DEFAULT)) {
             return ra.description.get(DEFAULT).asList().stream()
@@ -79,6 +84,7 @@ public class StringListSupport {
         return emptyList();
     }
 
+    /** Returns {@code true} if the two lists contain different elements (order-independent comparison). */
     static boolean differentValues(List<String> a, List<String> b) {
         if (a.isEmpty() && b.isEmpty()) {
             return false;

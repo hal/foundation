@@ -21,11 +21,19 @@
  * detail panel on the right displaying attributes, operations, and capabilities for the selected resource. Users can
  * navigate through the management model, filter resources, and inspect resource metadata.
  * <p>
- * The main entry point is {@link org.jboss.hal.ui.modelbrowser.ModelBrowser}, which coordinates the tree view, detail
- * panels, and filtering components.
+ * Key classes:
+ * <ul>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowser} - main entry point and split-pane layout</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowserTree} - left-side tree view with navigation toolbar</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowserDetail} - right-side detail panel with breadcrumb</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowserEngine} - tree node creation and child resource loading</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowserNode} - data model for tree nodes</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowserEvents} - custom DOM events for tree interaction</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.AttributesFilter} - filter for the attributes table</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.OperationsFilter} - filter for the operations table</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.FindResource} - modal dialog for searching resources</li>
+ * </ul>
  *
  * @see org.jboss.hal.ui.modelbrowser.ModelBrowser
- * @see org.jboss.hal.ui.modelbrowser.AttributesFilter
- * @see org.jboss.hal.ui.modelbrowser.OperationsFilter
  */
 package org.jboss.hal.ui.modelbrowser;

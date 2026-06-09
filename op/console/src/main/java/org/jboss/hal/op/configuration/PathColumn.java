@@ -23,6 +23,7 @@ import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.itemRoute;
 
 @Dependent
 public class PathColumn implements ColumnProvider {
@@ -37,6 +38,9 @@ public class PathColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return crudColumn(ID, "Path", asList("path", "read-only", "relative-to"), __ -> TEMPLATE, null);
+        return crudColumn(ID, "Path", asList("path", "read-only", "relative-to"),
+                __ -> TEMPLATE,
+                item -> itemRoute("/configuration", item),
+                null);
     }
 }

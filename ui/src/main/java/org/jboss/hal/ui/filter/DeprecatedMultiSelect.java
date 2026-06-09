@@ -43,6 +43,7 @@ public class DeprecatedMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new deprecated multi-select filter with the given toggle text. */
     public static <T> DeprecatedMultiSelect<T> deprecatedMultiSelect(Filter<T> filter, String text) {
         return new DeprecatedMultiSelect<>(filter, text);
     }

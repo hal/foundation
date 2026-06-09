@@ -31,7 +31,11 @@ import elemental2.dom.HTMLElement;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 
-/** An item for a {@link ResourceView} based on a {@link DescriptionListGroup} */
+/**
+ * A single read-only entry in a {@link ResourceView}, backed by a PatternFly {@link DescriptionListGroup}. Each view item
+ * displays an attribute label (term) and its formatted value (description). Carries a {@link org.jboss.hal.ui.resource.ResourceAttribute}
+ * via the component context.
+ */
 public class ViewItem implements
         ResourceItem<ViewItem>,
         TypedBuilder<HTMLElement, ViewItem>,
@@ -41,6 +45,7 @@ public class ViewItem implements
 
     // ------------------------------------------------------ factory
 
+    /** Creates a new view item with the given identifier, label term, and value element. */
     public static ViewItem viewItem(String identifier, DescriptionListTerm descriptionListTerm, HTMLElement valueElement) {
         return new ViewItem(identifier, descriptionListTerm, valueElement);
     }

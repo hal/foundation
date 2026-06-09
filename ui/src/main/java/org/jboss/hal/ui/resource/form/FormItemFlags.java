@@ -18,17 +18,28 @@ package org.jboss.hal.ui.resource.form;
 /** Configuration flags passed to {@link FormItem} instances, controlling scope (new vs. existing resource) and placeholder behavior. */
 public class FormItemFlags {
 
+    /** Whether the form item is editing a new resource or an existing one. */
     public enum Scope {
-        NEW_RESOURCE, EXISTING_RESOURCE
+        /** The form is creating a new resource. */
+        NEW_RESOURCE,
+        /** The form is editing an already persisted resource. */
+        EXISTING_RESOURCE
     }
 
+    /** Controls what placeholder text appears in the input when no value is set. */
     public enum Placeholder {
-        NONE, UNDEFINED, DEFAULT_VALUE
+        /** No placeholder text. */
+        NONE,
+        /** Show "undefined" as placeholder. */
+        UNDEFINED,
+        /** Show the attribute's default value as placeholder. */
+        DEFAULT_VALUE
     }
 
     final Scope scope;
     final Placeholder placeholder;
 
+    /** Creates new flags with the given scope and placeholder policy. */
     public FormItemFlags(Scope scope, Placeholder placeholder) {
         this.scope = scope;
         this.placeholder = placeholder;

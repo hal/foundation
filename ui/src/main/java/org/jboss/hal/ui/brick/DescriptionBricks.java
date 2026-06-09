@@ -30,13 +30,29 @@ import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.patternfly.style.Classes.util;
 
-/** Shared description rendering foundation used by {@link AttributeBricks} and {@link OperationBricks}. */
+/**
+ * Shared description rendering foundation used by {@link AttributeBricks} and {@link OperationBricks}. Provides the
+ * common logic for rendering description text and deprecation notices from the management model metadata.
+ */
 public final class DescriptionBricks {
 
+    /** Controls the level of detail included when rendering an attribute description. */
     public enum AttributeDescriptionContent {
-        all, allButReadOnly, descriptionOnly;
+
+        /** Include all metadata: read-only flag, required, capability reference, expressions, unit, default, requires, alternatives, and restart mode. */
+        all,
+
+        /** Same as {@link #all} but without the read-only indicator. Used when the read-only state is shown elsewhere. */
+        allButReadOnly,
+
+        /** Only the description text and deprecation notice — no metadata list. */
+        descriptionOnly;
     }
 
+    /**
+     * Renders a description with its text and optional deprecation notice. The deprecation notice includes the version
+     * it was deprecated since and the reason.
+     */
     static HTMLContainerBuilder<HTMLDivElement> description(Description description) {
         HTMLContainerBuilder<HTMLDivElement> div = div();
         div.add(div().text(description.description()));
@@ -50,6 +66,7 @@ public final class DescriptionBricks {
         return div;
     }
 
+    /** Appends a comma-separated list of {@code code}-formatted values to the given list item. */
     static void enumerate(ListItem listItem, java.util.List<ModelNode> values) {
         for (Iterator<ModelNode> iterator = values.iterator(); iterator.hasNext(); ) {
             ModelNode value = iterator.next();

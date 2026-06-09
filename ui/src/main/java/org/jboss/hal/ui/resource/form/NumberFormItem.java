@@ -88,6 +88,7 @@ class NumberFormItem extends FormItem {
      */
     private static final double MAX_SAFE_DOUBLE = 1.7976931348623157e+308;
 
+    /** Holds the result of parsing a string to a numeric value (INT, LONG, or DOUBLE). */
     static class NumericValidation {
 
         static NumericValidation valid(int intValue) {
@@ -121,6 +122,7 @@ class NumberFormItem extends FormItem {
         }
     }
 
+    /** Holds the result of checking whether a numeric value falls within the attribute's allowed range. */
     static class RangeValidation {
 
         boolean valid;
