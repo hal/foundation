@@ -9,6 +9,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add subsystem configuration page with resource-level detail view for individual subsystem resources
+- Add `FinderPage` base class to synchronize finder path with URL route parameters
+- Add `ConfigurationRoutes` and `ConfigurationDescriptions` to centralize route constants and descriptions for the configuration finder
+- Add comprehensive Javadoc across core, dmr, environment, meta, model, resources, op, and ui modules
 - Add Maven profile documentation to CLAUDE.md and README.md covering edition, packaging, and modifier profiles with combination rules
 - Add OUIA IDs to model browser components (tree, tabs, breadcrumb, heading, filters, global ops switch)
 - Add OUIA IDs to dashboard cards (Overview, Deployment, Documentation, Health, Log, Status)
@@ -17,6 +21,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Remove `AddressRouting` utility — address resolution is now handled directly in `FinderSupport.itemAddress()`
 - Remove `@halconsole/ouia` NPM package (`op/ouia` module) — OUIA IDs are now synced directly by dave's `sync:ouia` command
 - Remove NPM publish job from release workflow
 - Remove `OUIA.md` documentation (superseded by dave's own OUIA docs)
@@ -26,6 +31,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Refactor `ConfigurationPage` to extend `FinderPage`, using route parameters (`:finderPath?`) instead of manual URL management
+- Split `BuildingBlocks` into focused classes under the `brick` package for better cohesion
+- Split UI `resource` package into `dialog`, `finder`, `form`, `manager`, and `view` subpackages
+- Rename `SubsystemPage` to `ConfigurationResourcePage` to reflect its broader scope
+- Replace `FinderPath` with `ResolvedFinderPath` in `FinderSupport` API for type-safe path resolution
 - Move formatting and validation plugins (enforcer, checkstyle, editorconfig, impsort, license) to opt-in `format` and `check` Maven profiles — normal builds no longer run linting
 - Rename `validate.sh` to `check.sh` to match the `check` Maven profile; refactor both scripts to use profiles instead of direct plugin goal invocations
 - Simplify `quick-build` profile to only skip tests and npm (plugin skip properties removed since plugins are now opt-in)
@@ -42,10 +52,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Upgrades
 
+- Bump Elemento to 2.5.2
+- Bump PatternFly Java to 0.9.2-SNAPSHOT
+- Bump Quarkus platform to 3.36.1
+- Bump J2CL Maven Plugin
 - Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
 - Bump WildFly BOM and Galleon feature pack dependencies
-- Bump Quarkus platform to 3.36.0
-- Bump PatternFly Java to 0.9.0
 - Bump PatternFly to 6.5.2, DOMPurify to 3.4.6, and cdxgen to 12.4.4
 - Bump Galleon Maven plugin to 8.1.6.Final
 
