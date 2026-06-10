@@ -9,46 +9,35 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add subsystem configuration page with resource-level detail view for individual subsystem resources
+- Add subsystem configuration page with resource-level detail view
 - Add `FinderPage` base class to synchronize finder path with URL route parameters
-- Add `ConfigurationRoutes` and `ConfigurationDescriptions` to centralize route constants and descriptions for the configuration finder
-- Add comprehensive Javadoc across core, dmr, environment, meta, model, resources, op, and ui modules
-- Add Maven profile documentation to CLAUDE.md and README.md covering edition, packaging, and modifier profiles with combination rules
-- Add OUIA IDs to model browser components (tree, tabs, breadcrumb, heading, filters, global ops switch)
-- Add OUIA IDs to dashboard cards (Overview, Deployment, Documentation, Health, Log, Status)
-- Add dynamic OUIA IDs to task cards
-- Add `ouiaId()` method to `NameSearchInput` for per-caller OUIA IDs
+- Add `ConfigurationRoutes` and `ConfigurationDescriptions` for centralized route constants
+- Add comprehensive Javadoc across all code modules
+- Add OUIA IDs to model browser, dashboard, and task components
 
 ### Removed
 
-- Remove `AddressRouting` utility — address resolution is now handled directly in `FinderSupport.itemAddress()`
-- Remove `@halconsole/ouia` NPM package (`op/ouia` module) — OUIA IDs are now synced directly by dave's `sync:ouia` command
-- Remove NPM publish job from release workflow
-- Remove `OUIA.md` documentation (superseded by dave's own OUIA docs)
-- Remove Parcel and its dependencies (concurrently, express proxy, wait-on, parcel-resolver-ignore)
-- Remove custom `server.js` proxy and `.parcelrc` configuration
-- Remove inline `console.js` script tag from HTML — J2CL output is now loaded dynamically via `main.js`
+- Remove `AddressRouting` utility — address resolution moved to `FinderSupport.itemAddress()`
+- Remove `@halconsole/ouia` NPM package — OUIA IDs now synced directly by dave's `sync:ouia` command
+- Remove Parcel and its dependencies — replaced by Vite
 
 ### Changed
 
-- Refactor `ConfigurationPage` to extend `FinderPage`, using route parameters (`:finderPath?`) instead of manual URL management
-- Split `BuildingBlocks` into focused classes under the `brick` package for better cohesion
+- Refactor `ConfigurationPage` to extend `FinderPage`, using route parameters instead of manual URL management
+- Split `BuildingBlocks` into focused classes under the `brick` package
 - Split UI `resource` package into `dialog`, `finder`, `form`, `manager`, and `view` subpackages
-- Rename `SubsystemPage` to `ConfigurationResourcePage` to reflect its broader scope
-- Replace `FinderPath` with `ResolvedFinderPath` in `FinderSupport` API for type-safe path resolution
-- Move formatting and validation plugins (enforcer, checkstyle, editorconfig, impsort, license) to opt-in `format` and `check` Maven profiles — normal builds no longer run linting
-- Rename `validate.sh` to `check.sh` to match the `check` Maven profile; refactor both scripts to use profiles instead of direct plugin goal invocations
-- Simplify `quick-build` profile to only skip tests and npm (plugin skip properties removed since plugins are now opt-in)
-- Migrate frontend bundler from Parcel to Vite, simplifying the dev server and removing CSS container query workarounds
-- Consolidate all OUIA IDs into a single `OuiaIds` interface for consistent, centralized management
+- Rename `SubsystemPage` to `ConfigurationResourcePage`
+- Replace `FinderPath` with `ResolvedFinderPath` in `FinderSupport` API
+- Move formatting and validation plugins to opt-in `format` and `check` Maven profiles
+- Rename `validate.sh` to `check.sh` to match the `check` Maven profile
+- Migrate frontend bundler from Parcel to Vite
+- Consolidate all OUIA IDs into a single `OuiaIds` interface
 
 ### Fixed
 
-- Fix compilation errors from PatternFly Java 0.9.0 icon renames (FontAwesome 5 → 7) and removed `ThemeSelector.withContrast()` API
-- Fix icon name references in ui module for PatternFly Java 0.9.0 (FontAwesome v6 naming: search→magnifyingGlass, edit→penToSquare, home→house, redo→rotateRight, times→xmark, etc.)
-- Fix `PlaceManagerProducer` to use generated `AnnotatedPlaces` subclass instead of no-arg base `Places` class
-- Fix intermittent test-suite CI failure caused by missing BOM install step
-- Fix duplicate test-suite workflow runs by adding concurrency group
+- Fix icon names and API for PatternFly Java 0.9.x (FontAwesome 5 → 7 migration)
+- Fix `PlaceManagerProducer` to use generated `AnnotatedPlaces` subclass
+- Fix intermittent test-suite CI failures
 
 ### Upgrades
 
@@ -56,10 +45,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Bump PatternFly Java to 0.9.2
 - Bump Quarkus platform to 3.36.1
 - Bump J2CL Maven Plugin
-- Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
-- Bump WildFly BOM and Galleon feature pack dependencies
 - Bump PatternFly to 6.5.2, DOMPurify to 3.4.6, and cdxgen to 12.4.4
-- Bump Galleon Maven plugin to 8.1.6.Final
+- Bump WildFly BOM, Galleon feature pack, and Galleon Maven plugin
+- Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
 
 ## [0.3.8] - 2026-05-20
 
@@ -309,7 +297,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fix standalone image build
 
-### ### Upgrades
+### Upgrades
 
 - Bump PatternFly Java to 0.4.1
 
@@ -322,7 +310,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Endpoint selector
 - Notification system (badge and drawer)
 
-### ### Upgrades
+### Upgrades
 
 - Bump Elemento to 2.4.1
 - Bump PatternFly Java to 0.3.1
