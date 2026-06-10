@@ -26,9 +26,10 @@ import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.finder.FinderSupport;
 import org.patternfly.component.content.ContentType;
 import org.patternfly.component.emptystate.EmptyState;
+import org.patternfly.extension.finder.Finder;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
-import org.patternfly.extension.finder.FinderPath;
+import org.patternfly.extension.finder.ResolvedFinderPath;
 import org.patternfly.extension.finder.FinderPreview;
 import org.patternfly.filter.Filter;
 import org.patternfly.layout.stack.Stack;
@@ -37,6 +38,7 @@ import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.deleteResourceModal;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.itemAddress;
 import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
@@ -62,6 +64,10 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
  * navigation.
  */
 public final class FinderBricks {
+
+    public static Finder topLevelFinder() {
+        return Finder.finder();
+    }
 
     /**
      * Creates an empty state shown when no finder items match the current filter. Displays a "No results found" message with a
@@ -91,16 +97,14 @@ public final class FinderBricks {
      *
      * @param id                a unique identifier for the column and its OUIA test IDs
      * @param header            the column header text
+     * @param resourceRoute     route template for the resource page (e.g. {@code "/configuration/resource/:address"})
      * @param previewAttributes attribute names to display in the preview panel; if empty, no preview is shown
      * @param templateFn        resolves the current finder path to an {@link AddressTemplate} for the resource
-     * @param itemRoute         function for resolving the route to navigate to when opening an item
      * @param nextColumn        supplier for the next column to navigate into, or {@code null} for leaf items
      * @return a fully configured finder column with CRUD capabilities
      */
-    public static FinderColumn crudColumn(String id, String header, List<String> previewAttributes,
-            Function<FinderPath, AddressTemplate> templateFn,
-            Function<FinderItem, String> itemRoute,
-            Supplier<FinderColumn> nextColumn) {
+    public static FinderColumn crudColumn(String id, String header, String resourceRoute, List<String> previewAttributes,
+            Function<ResolvedFinderPath, AddressTemplate> templateFn, Supplier<FinderColumn> nextColumn) {
         FinderColumn column = finderColumn(id);
         column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
                         .addButton(button(plus()).plain().small()
@@ -116,8 +120,12 @@ public final class FinderBricks {
                 .addItems(childResources(templateFn, node -> {
                     FinderItem item = finderItem(Id.build(node.asString()));
                     item.text(node.asString()).addActions(finderItemActions()
-                            .addButton(button(upRightFromSquare()).plain().small().onClick((e, b) ->
-                                    uic().placeManager().goTo(itemRoute.apply(item))))
+                            .addButton(button(upRightFromSquare()).plain().small().onClick((e, b) -> {
+                                    String address = itemAddress(item);
+                                    if (address != null) {
+                                        uic().placeManager().goTo(resourceRoute, address);
+                                    }
+                            }))
                             .addButton(button(trash()).plain().small()
                                     .ouiaId(OuiaIds.ouia(id, "delete", "btn"))
                                     .onClick((e, b) -> {

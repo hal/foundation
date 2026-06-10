@@ -47,9 +47,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SELECT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WHERE;
+import static org.jboss.hal.op.configuration.ConfigurationRoutes.RESOURCE_ROUTE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.itemRoute;
 import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
 import static org.jboss.hal.ui.resource.view.ViewItem.viewItem;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
@@ -79,11 +79,8 @@ public class InterfaceColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return crudColumn(ID, "Interface", emptyList(),
-                __ -> TEMPLATE,
-                item -> itemRoute("/configuration/", item),
-                null)
-                .onPreview(this::preview);
+        return crudColumn(ID, "Interface", RESOURCE_ROUTE, emptyList(),
+                __ -> TEMPLATE, null).onPreview(this::preview);
     }
 
     private void preview(FinderItem item, FinderPreview preview) {

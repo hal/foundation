@@ -45,7 +45,7 @@ public class NotFound implements Page {
         return singletonList(pageSection().ouiaId(PAGE_NOT_FOUND)
                 .add(content()
                         .add(title(1, _3xl, "Not found"))
-                        .add(p().text("Page " + notFound.route + " not found")))
+                        .add(p().text("Page " + notFound.route() + " not found")))
                 .element());
     }
 }

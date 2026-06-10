@@ -28,7 +28,7 @@ import org.jboss.hal.meta.WildcardResolver;
 import org.patternfly.component.AsyncItems;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
-import org.patternfly.extension.finder.FinderPath;
+import org.patternfly.extension.finder.ResolvedFinderPath;
 import org.patternfly.extension.finder.FinderPreview;
 import org.patternfly.extension.finder.PreviewHandler;
 
@@ -75,7 +75,7 @@ public class FinderSupport {
      * Retrieves child resources using a {@value ModelDescriptionConstants#READ_CHILDREN_NAMES_OPERATION} operation and maps
      * them into finder items.
      * <p>
-     * The {@code templateFn} gets the current {@link FinderPath} as parameter and must return a wildcard address template like
+     * The {@code templateFn} gets the current {@link ResolvedFinderPath} as parameter and must return a wildcard address template like
      * {@code subsystem=datasources/data-source=*}. This address template is used for the
      * {@value ModelDescriptionConstants#READ_CHILDREN_NAMES_OPERATION} operation to read the child resources.
      * <p>
@@ -86,7 +86,7 @@ public class FinderSupport {
      *     <li>{@link #TEMPLATE_KEY}: The address template of the item ({@link AddressTemplate})</li>
      * </ul>
      *
-     * @param templateFn A function that takes a {@link FinderPath} as input and produces an {@link AddressTemplate}. The
+     * @param templateFn A function that takes a {@link ResolvedFinderPath} as input and produces an {@link AddressTemplate}. The
      *                   template is used to determine the address of the resource whose children are being retrieved.
      * @param itemFn     A function that takes a {@link ModelNode} representing a resource and maps it into a
      *                   {@link FinderItem}. This function is used to customize the properties of the items displayed in the
@@ -95,7 +95,7 @@ public class FinderSupport {
      * loading the child resources. The items are populated and returned as a collection of {@link FinderItem}.
      */
     public static AsyncItems<FinderColumn, FinderItem> childResources(
-            Function<FinderPath, AddressTemplate> templateFn,
+            Function<ResolvedFinderPath, AddressTemplate> templateFn,
             Function<ModelNode, FinderItem> itemFn) {
         return column -> {
             AddressTemplate template = templateFn.apply(column.finder().path());
@@ -143,21 +143,18 @@ public class FinderSupport {
     }
 
     /**
-     * Constructs a route string based on the provided base route and the FinderItem's address template. If the FinderItem
-     * contains an address template (retrieved using the {@code TEMPLATE_KEY}), the method combines the base route with the
-     * encoded address template. Otherwise, it returns the base route unchanged.
+     * Resolves the address template stored in a finder item's component context and returns the raw (unencoded) address string.
+     * The returned value is suitable for passing to {@link org.jboss.elemento.router.PlaceManager#goTo(String, String...)} which
+     * handles URI encoding automatically.
      *
-     * @param base The base route used as the starting point for the route (must start and end with a forward slash).
-     * @param item The FinderItem containing metadata, including the address template used for constructing the route.
-     * @return A string representing the constructed route. If the FinderItem has a valid address template, the base route is
-     * combined with the encoded template. Otherwise, just the base route is returned.
+     * @param item the finder item containing the address template (stored under {@link #TEMPLATE_KEY})
+     * @return the resolved address string, or {@code null} if no template is stored in the item
      */
-    public static String itemRoute(String base, FinderItem item) {
+    public static String itemAddress(FinderItem item) {
         AddressTemplate template = item.get(TEMPLATE_KEY);
         if (template != null) {
-            AddressTemplate resolved = new StatementContextResolver(uic().statementContext()).resolve(template);
-            return base + AddressRouting.encode(resolved);
+            return new StatementContextResolver(uic().statementContext()).resolve(template).toString();
         }
-        return base;
+        return null;
     }
 }

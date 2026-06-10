@@ -19,6 +19,7 @@ import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
+import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowser;
 
 import elemental2.dom.HTMLElement;
@@ -55,7 +56,7 @@ public class ResourcePage implements Page {
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         String address = parameter.get(parameterName);
         if (address != null) {
-            ModelBrowser browser = modelBrowser(AddressRouting.decode(address));
+            ModelBrowser browser = modelBrowser(AddressTemplate.ofTrusted(address));
             return singletonList(pageSection().ouiaId(PAGE_MODEL_BROWSER)
                     .add(browser)
                     .element());

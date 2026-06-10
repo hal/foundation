@@ -21,13 +21,11 @@ import org.jboss.elemento.router.Route;
 import org.jboss.hal.ui.resource.finder.ResourcePage;
 
 /**
- * Router page for the {@code /configuration/:address} route. Decodes the URI-encoded {@code address} parameter and
+ * Router page for the {@code /configuration/resource/:address} route. Decodes the URI-encoded {@code address} parameter and
  * displays a {@link org.jboss.hal.ui.modelbrowser.ModelBrowser} for the corresponding WildFly management resource.
- *
- * @see org.jboss.hal.ui.resource.finder.AddressRouting
  */
 @Dependent
-@Route("/configuration/:address")
+@Route("/configuration/resource/:address")
 public class ConfigurationResourcePage extends ResourcePage {
 
     /** Creates a configuration resource page bound to the {@code address} route parameter. */

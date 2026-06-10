@@ -38,7 +38,7 @@ public class NoData implements Page {
         return singletonList(pageSection().ouiaId(PAGE_NO_DATA)
                 .add(content()
                         .add(title(1, _3xl, "No data"))
-                        .add(p().text("The data for the page " + place.route + " could not be loaded.")))
+                        .add(p().text("The data for the page " + place.path() + " could not be loaded.")))
                 .element());
     }
 }

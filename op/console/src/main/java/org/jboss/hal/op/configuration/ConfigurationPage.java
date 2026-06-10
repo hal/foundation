@@ -18,76 +18,45 @@ package org.jboss.hal.op.configuration;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
-import org.gwtproject.safehtml.shared.SafeHtml;
-import org.gwtproject.safehtml.shared.SafeHtmlUtils;
-import org.jboss.elemento.router.LoadedData;
-import org.jboss.elemento.router.Page;
-import org.jboss.elemento.router.Parameter;
-import org.jboss.elemento.router.Place;
+import org.jboss.elemento.router.PlaceManager;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.op.finder.ColumnRegistry;
+import org.jboss.hal.ui.resource.finder.FinderPage;
 import org.patternfly.extension.finder.Finder;
 
-import elemental2.dom.HTMLElement;
-
-import static java.util.Collections.singletonList;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.OuiaIds.PAGE_CONFIGURATION;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.h1;
 import static org.patternfly.component.content.ContentType.p;
-import static org.patternfly.extension.finder.Finder.finder;
 import static org.patternfly.extension.finder.FinderPreview.finderPreview;
 import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
-import static org.patternfly.style.Classes.util;
 
 /**
- * Represents the configuration page of halOP, responsible for displaying and managing configurations for subsystems and global
- * resources. It provides an interface to view, modify, and interact with configuration options such as interfaces, socket
- * bindings, paths, and system properties.
- * <p>
- * The page creates a {@link Finder} component to display the configuration columns. The finder instance is registered with the
- * {@link ColumnRegistry}. An instance to the configuration finder can be obtained with
- * <p>
- * {@snippet :
- * Finder finder = componentRegistry().lookupComponent(ComponentType.Finder);
- *}
+ * Configuration finder page for halOP. Displays subsystems and global resources (interfaces, socket bindings, paths, system
+ * properties) using a {@link Finder} with columns registered via the {@link ColumnRegistry}.
  */
 @Dependent
-@Route("/configuration")
-public class ConfigurationPage implements Page {
-
-    // language=html
-    private static final SafeHtml DESCRIPTION_1 = SafeHtmlUtils.fromSafeConstant(
-            "Configure subsystems and global resources such as interfaces, socket bindings, paths and system properties.");
-    // language=html
-    private static final SafeHtml DESCRIPTION_2 = SafeHtmlUtils.fromSafeConstant(
-            "View and modify the configuration for each available subsystem. For example, add a data source, configure a messaging provider, or set up application security.");
+@Route("/configuration/:finderPath?")
+public class ConfigurationPage extends FinderPage {
 
     private final ColumnRegistry columnRegistry;
 
     @Inject
-    public ConfigurationPage(ColumnRegistry columnRegistry) {
+    public ConfigurationPage(ColumnRegistry columnRegistry, PlaceManager placeManager) {
+        super(placeManager, PAGE_CONFIGURATION);
         this.columnRegistry = columnRegistry;
     }
 
     @Override
-    public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        // The finder is registered with the component registry.
-        // Although there are different finders (configuration, runtime, ...),
-        // only one finder is in the DOM at a time. So the singleton pattern
-        // of the component registry is still satisfied.
-        // If necessary, an instance to the finder can be obtained with
-        // Finder finder = componentRegistry().lookupComponent(ComponentType.Finder);
-        return singletonList(finder().ouiaId(PAGE_CONFIGURATION).registerComponent().css(util("h-100"))
-                .addItem(columnRegistry.column(ConfigurationColumn.ID).get())
+    protected void configureFinder(Finder finder) {
+        finder.addItem(columnRegistry.column(ConfigurationColumn.ID).get())
                 .addPreview(finderPreview().css(halComponent("finder", "preview"))
                         .add(stack().gutter()
                                 .addItem(stackItem().add(content(h1).text("Configuration")))
                                 .addItem(stackItem()
-                                        .add(content(p).editorial().html(DESCRIPTION_1))
-                                        .add(content(p).editorial().html(DESCRIPTION_2)))))
-                .element());
+                                        .add(content(p).editorial().html(ConfigurationDescriptions.CONFIGURATION_DESCRIPTION_1))
+                                        .add(content(p).editorial().html(ConfigurationDescriptions.CONFIGURATION_DESCRIPTION_2)))));
     }
 }

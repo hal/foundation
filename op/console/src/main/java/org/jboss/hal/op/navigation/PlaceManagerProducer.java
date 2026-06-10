@@ -48,6 +48,6 @@ public class PlaceManagerProducer {
                 .notFound(NotFound::new)
                 .noData(NoData::new)
                 .register(new AnnotatedPlaces(beanManager))
-                .afterPlace((placeManager, place) -> navigation.select(place.route));
+                .afterPlace((placeManager, place) -> navigation.select(place.path()));
     }
 }

@@ -22,8 +22,8 @@
  * <p>
  * Key components:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.finder.AddressRouting}</dt>
- * <dd>Encodes and decodes {@link org.jboss.hal.meta.AddressTemplate}s for use as URL route parameters.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.finder.FinderPage}</dt>
+ * <dd>Base page for top-level finder-based navigation with URL synchronisation and path restoration.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder.FinderSupport}</dt>
  * <dd>Helpers for child resource loading and metadata-based preview generation in finder columns.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder.ResourcePage}</dt>
