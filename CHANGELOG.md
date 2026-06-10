@@ -53,7 +53,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Upgrades
 
 - Bump Elemento to 2.5.2
-- Bump PatternFly Java to 0.9.2-SNAPSHOT
+- Bump PatternFly Java to 0.9.2
 - Bump Quarkus platform to 3.36.1
 - Bump J2CL Maven Plugin
 - Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
