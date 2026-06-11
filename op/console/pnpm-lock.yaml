@@ -7,14 +7,14 @@ settings:
 catalogs:
   pfj:
     '@patternfly-java/charts':
-      specifier: ^0.9.1
-      version: 0.9.1
+      specifier: ^0.9.2
+      version: 0.9.2
     '@patternfly-java/core':
-      specifier: ^0.9.1
-      version: 0.9.1
+      specifier: ^0.9.2
+      version: 0.9.2
     '@patternfly-java/finder':
-      specifier: ^0.9.1
-      version: 0.9.1
+      specifier: ^0.9.2
+      version: 0.9.2
 
 importers:
 
@@ -22,13 +22,13 @@ importers:
     dependencies:
       '@patternfly-java/charts':
         specifier: catalog:pfj
-        version: 0.9.1
+        version: 0.9.2
       '@patternfly-java/core':
         specifier: catalog:pfj
-        version: 0.9.1(@patternfly/patternfly@6.5.2)
+        version: 0.9.2(@patternfly/patternfly@6.5.2)
       '@patternfly-java/finder':
         specifier: catalog:pfj
-        version: 0.9.1(@patternfly/patternfly@6.5.2)
+        version: 0.9.2(@patternfly/patternfly@6.5.2)
       '@patternfly/patternfly':
         specifier: ^6.5.2
         version: 6.5.2
@@ -381,8 +381,8 @@ packages:
   '@lit/reactive-element@2.1.2':
     resolution: {integrity: sha512-pbCDiVMnne1lYUIaYNN5wrwQXDtHaYtg7YEFPeW+hws6U47WeFvISGUWekPGKWOP1ygrs0ef0o1VJMk1exos5A==}
 
-  '@napi-rs/wasm-runtime@1.1.4':
-    resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
+  '@napi-rs/wasm-runtime@1.1.5':
+    resolution: {integrity: sha512-AWPoBRJ9tsnVhor4sjO7rkni+7p+2IAEFj6cx06UgP10jkQHqay/36uRV/bFkgrh18D9vb4cr8Q0Pthskgzy+Q==}
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
@@ -414,16 +414,16 @@ packages:
   '@oxc-project/types@0.133.0':
     resolution: {integrity: sha512-KzkdCd6Uxqnf6l3HOw1xfatAlUURA0g14cvBYFyJ5SaNOQbOUvBr9PKArcPcrNIeRsBdgcUzOGrhKveVpvOIGA==}
 
-  '@patternfly-java/charts@0.9.1':
-    resolution: {integrity: sha512-AWbrNmOxIIDbdXl+HQRmQzXfqWTlx1weepRttP7hCPchtVxf9tXZNuTEgu6aHEIRfU3FsaunHheBE/V+72rhNw==}
+  '@patternfly-java/charts@0.9.2':
+    resolution: {integrity: sha512-Fii1TQ3FKyOtD6EQFqzVSUaTzqR48pkn3HYRPKtj3FCyRCH/tjN21DsIZWoaC5cOl/U0nAbOjZAiSIoCCPmTOg==}
 
-  '@patternfly-java/core@0.9.1':
-    resolution: {integrity: sha512-mb1VbCxJTqEm40sXTNx5i0zqcyvaAsrYqanAtTbukli/FLboglQtG5iEuAOOrAhD+UEVCuvzBhx6uVIPLDnE5Q==}
+  '@patternfly-java/core@0.9.2':
+    resolution: {integrity: sha512-+ynJnK551Bz8zusu5NT75UlPP2E8D5FxM2iITrEEC7IiWhNEwt4TzkciO2jwqUZiUd3ObMafPD0QQk6CfBoPYA==}
     peerDependencies:
       '@patternfly/patternfly': ^6.5.2
 
-  '@patternfly-java/finder@0.9.1':
-    resolution: {integrity: sha512-KlyIdvBmA/fJaXP0tl0kiOSwYiT70p41DYyNAzMGJswlqpyofYNk9KsIgA4ELS3zzK/Aj0PWAeS5othx3QnVQA==}
+  '@patternfly-java/finder@0.9.2':
+    resolution: {integrity: sha512-+6qyysXIvEQ+RAwOv8IuAV9hHANrUO+UwK1ENx2dkz9wXCEskCHSpsPi6fMAj4/YoRlXkyCDYb1O097AQtaVYw==}
     peerDependencies:
       '@patternfly/patternfly': ^6.5.2
 
@@ -1712,7 +1712,7 @@ snapshots:
   '@appthreat/atom-parsetools@1.2.2':
     dependencies:
       '@appthreat/atom-common': 1.1.0
-      '@babel/parser': 7.29.3
+      '@babel/parser': 7.29.7
       hermes-parser: 0.36.1
       typescript: 6.0.3
     optional: true
@@ -1766,7 +1766,7 @@ snapshots:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.7
       '@babel/helper-globals': 7.29.7
-      '@babel/parser': 7.29.3
+      '@babel/parser': 7.29.7
       '@babel/template': 7.29.7
       '@babel/types': 7.29.7
       debug: 4.4.3
@@ -2010,7 +2010,7 @@ snapshots:
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.6.0
 
-  '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
+  '@napi-rs/wasm-runtime@1.1.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
@@ -2057,7 +2057,7 @@ snapshots:
 
   '@oxc-project/types@0.133.0': {}
 
-  '@patternfly-java/charts@0.9.1':
+  '@patternfly-java/charts@0.9.2':
     dependencies:
       '@patternfly/react-charts': 8.5.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(victory-area@37.3.6(react@19.2.7))(victory-axis@37.3.6(react@19.2.7))(victory-bar@37.3.6(react@19.2.7))(victory-box-plot@37.3.6(react@19.2.7))(victory-chart@37.3.6(react@19.2.7))(victory-core@37.3.6(react@19.2.7))(victory-create-container@37.3.6(react@19.2.7))(victory-cursor-container@37.3.6(react@19.2.7))(victory-group@37.3.6(react@19.2.7))(victory-legend@37.3.6(react@19.2.7))(victory-line@37.3.6(react@19.2.7))(victory-pie@37.3.6(react@19.2.7))(victory-scatter@37.3.6(react@19.2.7))(victory-stack@37.3.6(react@19.2.7))(victory-tooltip@37.3.6(react@19.2.7))(victory-voronoi-container@37.3.6(react@19.2.7))(victory-zoom-container@37.3.6(react@19.2.7))
       '@patternfly/react-styles': 6.5.1
@@ -2088,11 +2088,11 @@ snapshots:
     transitivePeerDependencies:
       - echarts
 
-  '@patternfly-java/core@0.9.1(@patternfly/patternfly@6.5.2)':
+  '@patternfly-java/core@0.9.2(@patternfly/patternfly@6.5.2)':
     dependencies:
       '@patternfly/patternfly': 6.5.2
 
-  '@patternfly-java/finder@0.9.1(@patternfly/patternfly@6.5.2)':
+  '@patternfly-java/finder@0.9.2(@patternfly/patternfly@6.5.2)':
     dependencies:
       '@patternfly/patternfly': 6.5.2
 
@@ -2170,7 +2170,7 @@ snapshots:
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@napi-rs/wasm-runtime': 1.1.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.3':
