@@ -94,7 +94,7 @@
         <version.patternfly.java>0.9.2</version.patternfly.java>
 
         <!-- Plugin versions -->
-        <version.central.publishing.plugin>0.10.0</version.central.publishing.plugin>
+        <version.central.publishing.plugin>0.11.0</version.central.publishing.plugin>
         <version.editorconfig.plugin>0.2.0</version.editorconfig.plugin>
         <version.enforcer.plugin>3.3.0</version.enforcer.plugin>
         <version.frontend.plugin>2.0.1</version.frontend.plugin>
