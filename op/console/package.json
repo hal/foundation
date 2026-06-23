@@ -4,7 +4,7 @@
     "@patternfly-java/core": "catalog:pfj",
     "@patternfly-java/finder": "catalog:pfj",
     "@patternfly/patternfly": "^6.5.2",
-    "dompurify": "^3.4.10"
+    "dompurify": "^3.4.11"
   },
   "devDependencies": {
     "@cyclonedx/cdxgen": "^12.6.0",
