@@ -78,9 +78,9 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    /** Creates a new model browser rooted at the given address template. */
-    public static ModelBrowser modelBrowser(AddressTemplate template) {
-        return new ModelBrowser(template);
+    /** Creates a new model browser rooted at the given address template with the given navigation context. */
+    public static ModelBrowser modelBrowser(AddressTemplate template, ModelBrowserContext context) {
+        return new ModelBrowser(template, context);
     }
 
     // ------------------------------------------------------ instance
@@ -94,6 +94,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     final ModelBrowserTree tree;
     final ModelBrowserDetail detail;
+    final ModelBrowserContext context;
     private final AddressTemplate template;
     private final HTMLElement root;
     private final HTMLElement splitter;
@@ -105,8 +106,12 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     private HandlerRegistration touchStartHandler;
     private HandlerRegistration touchMoveHandler;
 
-    public ModelBrowser(AddressTemplate template) {
+    public ModelBrowser(AddressTemplate template, ModelBrowserContext context) {
         this.template = template;
+        this.context = context;
+        if (context instanceof FullModelBrowserContext full) {
+            full.init(this);
+        }
         this.dragging = false;
         this.containerLeft = 0;
         this.tree = new ModelBrowserTree(this);
@@ -240,6 +245,8 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
         if (rootMbn != null) {
             if (details.template != null) {
                 // select by address template
+                // TODO [Finding 1] Use context.inScope(details.template) to check scope,
+                //  and context.navigate(details.template) for out-of-scope targets
                 if (details.template.template.startsWith(rootMbn.template.template)) {
                     tree.select(details.template);
                 } else {

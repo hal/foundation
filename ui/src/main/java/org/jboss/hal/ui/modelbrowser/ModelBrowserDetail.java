@@ -151,6 +151,8 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
                         event.stopPropagation();
                         modelBrowser.home();
                     }));
+            // TODO [Finding 6] Start breadcrumb at the model browser's root template
+            //  instead of AddressTemplate.root(). Only render segments at or below the scope root.
             AddressTemplate current = AddressTemplate.root();
             for (Segment segment : mbn.template) {
                 current = current.append(segment.key, segment.value);

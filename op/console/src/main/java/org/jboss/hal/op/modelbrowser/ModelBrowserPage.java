@@ -24,6 +24,7 @@ import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.ui.modelbrowser.FullModelBrowserContext;
 import org.jboss.hal.ui.modelbrowser.ModelBrowser;
 
 import elemental2.dom.HTMLElement;
@@ -42,7 +43,7 @@ public class ModelBrowserPage implements Page {
 
     @Inject
     public ModelBrowserPage() {
-        this.modelBrowser = modelBrowser(AddressTemplate.root());
+        this.modelBrowser = modelBrowser(AddressTemplate.root(), new FullModelBrowserContext());
     }
 
     @Override

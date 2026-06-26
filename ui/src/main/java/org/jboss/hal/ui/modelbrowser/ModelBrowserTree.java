@@ -271,6 +271,8 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
          s-core-service-e-management-s-access-e-authorization-s-constraint-e-application-classification-s-type-e-core-s-classification-e-w
          s-core-service-e-management-s-access-e-authorization-s-constraint-e-application-classification-s-type-e-core-s-classification-e-deployment
          */
+        // TODO [Finding 5] Start path construction from the model browser's root template
+        //  instead of AddressTemplate.root()
         List<Task<FlowContext>> tasks = new ArrayList<>();
         AddressTemplate current = AddressTemplate.root();
         for (Segment segment : template) {

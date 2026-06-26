@@ -368,6 +368,9 @@ class FindResource {
                                             ? argument.toLowerCase().contains(name.toLowerCase())
                                             : argument.equalsIgnoreCase(name);
                                     if (match) {
+                                        // TODO [Finding 3] Use ModelBrowserContext.inScope() to visually distinguish
+                                        //  in-scope vs out-of-scope results, and context.navigate() instead of
+                                        //  SelectInTree.dispatch()
                                         ListItem listItem = listItem()
                                                 .add(button().link().inline().text(template.toString())
                                                         .onClick((e, b) -> {

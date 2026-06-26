@@ -135,6 +135,8 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
                                             .plain()
                                             .addItems(templates, fullyQualified -> listItem()
                                                     .add(button().link().inline().text(fullyQualified.toString())
+                                                            // TODO [Finding 4] Use ModelBrowserContext.navigate()
+                                                            //  instead of SelectInTree.dispatch()
                                                             .onClick((e, b) -> {
                                                                 SelectInTree.dispatch(button, fullyQualified);
                                                                 close(event);
@@ -144,6 +146,7 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
                     return null;
                 });
             } else {
+                // TODO [Finding 4] Use ModelBrowserContext.navigate() instead of SelectInTree.dispatch()
                 SelectInTree.dispatch(button, template);
                 close(event);
             }
