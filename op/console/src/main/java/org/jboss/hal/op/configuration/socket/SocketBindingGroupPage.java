@@ -24,6 +24,7 @@ import org.jboss.hal.ui.navigation.RouteRegistry;
 
 import static org.jboss.hal.op.navigation.KnownRoutes.SOCKET_BINDING_GROUP_ROUTE;
 
+/** Detail page for a socket binding group. Displays the group's attributes such as default interface and port offset. */
 @Dependent
 @Route("/configuration/socket-binding-group/:name")
 public class SocketBindingGroupPage extends RouteBindingPage {

@@ -148,7 +148,7 @@ public class UIContext {
         return placeManager;
     }
 
-    /** Returns the route registry for navigating to resources by address template. */
+    /** Returns the route registry for navigating to routes by address template. */
     public RouteRegistry routeRegistry() {
         return routeRegistry;
     }

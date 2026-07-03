@@ -41,6 +41,7 @@ import static org.patternfly.icon.IconSets.fas.arrowUpRightFromSquare;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
+/** Finder column listing the subsystems defined in the WildFly configuration. */
 @Dependent
 public class SubsystemColumn implements ColumnProvider {
 

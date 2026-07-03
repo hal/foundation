@@ -24,9 +24,11 @@ import org.patternfly.extension.finder.FinderColumn;
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 
+/** Finder column listing the system properties defined in the WildFly configuration. */
 @Dependent
 public class SystemPropertyColumn implements ColumnProvider {
 
+    /** Column identifier used for registration and OUIA test IDs. */
     public static final String ID = "system-property-column";
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("system-property=*");
 

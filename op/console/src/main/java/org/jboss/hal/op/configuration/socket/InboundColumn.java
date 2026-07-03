@@ -24,6 +24,7 @@ import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketBindingColumn;
 
+/** Finder column that lists inbound socket bindings within a socket binding group. */
 @Dependent
 public class InboundColumn implements ColumnProvider {
 

@@ -43,6 +43,7 @@ public class Subdeployment extends NamedNode {
         }
     }
 
+    /** Returns a string like {@code Subdeployment{name}}. */
     @Override
     public String toString() {
         return "Subdeployment{" + name + "}";

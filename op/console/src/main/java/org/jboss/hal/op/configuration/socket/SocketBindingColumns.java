@@ -24,8 +24,17 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.RESOURCE_NAME_KEY;
 
+/** Shared factory for socket binding finder columns. Builds a CRUD column that resolves its address template from the selected socket binding group and binding type in the finder path. */
 class SocketBindingColumns {
 
+    /**
+     * Creates a finder column for socket bindings. The column resolves its {@link AddressTemplate} by reading the
+     * selected socket binding group and binding type from the current finder path.
+     *
+     * @param id     the column identifier
+     * @param header the column header text
+     * @return a configured {@link FinderColumn} for the given socket binding type
+     */
     static FinderColumn socketBindingColumn(String id, String header) {
         return crudColumn(id, header, asList("bound", "bound-address", "bound-port", "fixed-port", "interface",
                         "multicast-address", "multicast-port", "port"),

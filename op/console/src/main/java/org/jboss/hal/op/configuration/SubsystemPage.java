@@ -24,6 +24,7 @@ import org.jboss.hal.ui.navigation.RouteRegistry;
 
 import static org.jboss.hal.op.navigation.KnownRoutes.SUBSYSTEM_ROUTE;
 
+/** Detail page for viewing and editing a single subsystem resource. */
 @Dependent
 @Route("/configuration/subsystem/:name/:selection?")
 public class SubsystemPage extends RouteBindingPage {

@@ -24,6 +24,7 @@ import org.jboss.hal.ui.navigation.RouteRegistry;
 
 import static org.jboss.hal.op.navigation.KnownRoutes.SYSTEM_PROPERTY_ROUTE;
 
+/** Detail page for viewing and editing a single system property resource. */
 @Dependent
 @Route("/configuration/system-property/:name")
 public class SystemPropertyPage extends RouteBindingPage {

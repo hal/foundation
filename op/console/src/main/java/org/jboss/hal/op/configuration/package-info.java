@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+/**
+ * Configuration section of the halOP console. Provides finder columns and detail pages for managing WildFly standalone and
+ * domain configuration resources such as subsystems, interfaces, paths, and system properties. Socket binding configuration
+ * is in the {@link org.jboss.hal.op.configuration.socket} subpackage.
+ */
 package org.jboss.hal.op.configuration;
-
-/** Route constants for the configuration section. */
-public interface ConfigurationRoutes {
-
-    /** Route for displaying a generic configuration resource, parameterised by its management model address. */
-    String RESOURCE_ROUTE = "/configuration/resource/:address";
-}

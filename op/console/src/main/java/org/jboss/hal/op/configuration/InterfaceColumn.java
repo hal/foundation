@@ -54,9 +54,11 @@ import static org.jboss.hal.ui.resource.view.ViewItem.viewItem;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
+/** Finder column listing the network interfaces defined in the WildFly configuration. */
 @Dependent
 public class InterfaceColumn implements ColumnProvider {
 
+    /** Column identifier used for registration and OUIA test IDs. */
     public static final String ID = "interface-column";
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("interface=*");
 

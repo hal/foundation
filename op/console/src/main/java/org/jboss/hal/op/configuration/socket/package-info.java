@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.configuration;
 
-/** Route constants for the configuration section. */
-public interface ConfigurationRoutes {
-
-    /** Route for displaying a generic configuration resource, parameterised by its management model address. */
-    String RESOURCE_ROUTE = "/configuration/resource/:address";
-}
+/**
+ * UI for managing WildFly socket binding groups and their bindings (inbound, outbound-local, outbound-remote). Provides
+ * finder columns for navigating the socket binding hierarchy and detail pages for viewing and editing individual
+ * bindings.
+ */
+package org.jboss.hal.op.configuration.socket;
