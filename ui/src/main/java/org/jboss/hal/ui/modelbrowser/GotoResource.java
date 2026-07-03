@@ -59,7 +59,7 @@ import static org.patternfly.style.Classes.util;
 /**
  * Popper-based input that allows direct navigation to a resource by entering its address template.
  * <p>
- * When the entered address contains wildcards, the component resolves them and presents a list of matching fully-qualified
+ * When the entered address contains wildcards, the component resolves them and presents a list of matching fully qualified
  * addresses for the user to choose from. Triggered by a compass icon button in the tree toolbar.
  */
 class GotoResource implements IsElement<HTMLElement>, Attachable {
@@ -135,8 +135,6 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
                                             .plain()
                                             .addItems(templates, fullyQualified -> listItem()
                                                     .add(button().link().inline().text(fullyQualified.toString())
-                                                            // TODO [Finding 4] Use ModelBrowserContext.navigate()
-                                                            //  instead of SelectInTree.dispatch()
                                                             .onClick((e, b) -> {
                                                                 SelectInTree.dispatch(button, fullyQualified);
                                                                 close(event);
@@ -146,7 +144,6 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
                     return null;
                 });
             } else {
-                // TODO [Finding 4] Use ModelBrowserContext.navigate() instead of SelectInTree.dispatch()
                 SelectInTree.dispatch(button, template);
                 close(event);
             }

@@ -24,7 +24,6 @@ import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.ui.modelbrowser.FullModelBrowserContext;
 import org.jboss.hal.ui.modelbrowser.ModelBrowser;
 
 import elemental2.dom.HTMLElement;
@@ -36,14 +35,14 @@ import static org.patternfly.component.page.PageSection.pageSection;
 
 /** Page hosting the management model browser, routed to {@code /management-model}. Renders the full resource tree starting from the root address. */
 @Dependent
-@Route("/management-model")
+@Route("/management-model/:selection?")
 public class ModelBrowserPage implements Page {
 
     private final ModelBrowser modelBrowser;
 
     @Inject
     public ModelBrowserPage() {
-        this.modelBrowser = modelBrowser(AddressTemplate.root(), new FullModelBrowserContext());
+        this.modelBrowser = modelBrowser(AddressTemplate.root());
     }
 
     @Override

@@ -69,8 +69,8 @@ import static org.patternfly.style.Sticky.top;
 /**
  * Left-side tree view panel of the model browser displaying the WildFly management resource hierarchy.
  * <p>
- * The tree supports lazy loading of child resources, back/forward navigation history, searching, direct address navigation,
- * and collapsing. A toolbar above the tree provides buttons for all navigation actions.
+ * The tree supports lazy loading of child resources, back/forward navigation history, searching, direct address navigation, and
+ * collapsing. A toolbar above the tree provides buttons for all navigation actions.
  */
 class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserTree> {
 
@@ -208,12 +208,12 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
             if (item != null) {
                 treeView.select(item);
             } else {
-                sequential(new FlowContext(), selectTasks(template)).subscribe(context -> {
+                sequential(new FlowContext(), loadItems(template)).subscribe(context -> {
                     if (context.isSuccessful()) {
                         // The template might contain invalid segments or no longer exist.
                         // Build a template up to the last valid segment.
-                        AddressTemplate current = AddressTemplate.root();
-                        for (Segment segment : template) {
+                        AddressTemplate current = modelBrowser.root;
+                        for (Segment segment : relativeSegments(current, template)) {
                             if (treeView.findItem(current.append(segment.key, segment.value).identifier()) == null) {
                                 break;
                             }
@@ -245,7 +245,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
         return "";
     }
 
-    private List<Task<FlowContext>> selectTasks(AddressTemplate template) {
+    private List<Task<FlowContext>> loadItems(AddressTemplate template) {
         /*
          Relation between the template and the tree view item IDs:
 
@@ -271,11 +271,9 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
          s-core-service-e-management-s-access-e-authorization-s-constraint-e-application-classification-s-type-e-core-s-classification-e-w
          s-core-service-e-management-s-access-e-authorization-s-constraint-e-application-classification-s-type-e-core-s-classification-e-deployment
          */
-        // TODO [Finding 5] Start path construction from the model browser's root template
-        //  instead of AddressTemplate.root()
         List<Task<FlowContext>> tasks = new ArrayList<>();
-        AddressTemplate current = AddressTemplate.root();
-        for (Segment segment : template) {
+        AddressTemplate current = modelBrowser.root;
+        for (Segment segment : relativeSegments(current, template)) {
             String wildcardItemId = current.append(segment.key, "*").identifier();
             String valueItemId = current.append(segment.key, segment.value).identifier();
             tasks.add(context -> treeView.load(wildcardItemId).then(items -> context.resolve()));
@@ -283,6 +281,10 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
             current = current.append(segment.key, segment.value);
         }
         return tasks;
+    }
+
+    private Iterable<Segment> relativeSegments(AddressTemplate root, AddressTemplate template) {
+        return template.subTemplate(root.size(), template.size());
     }
 
     // ------------------------------------------------------ navigation

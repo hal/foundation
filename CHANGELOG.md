@@ -9,24 +9,32 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add subsystem configuration page with resource-level detail view
+- Add route binding system (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to co-locate bidirectional mappings between routes and address templates
+- Add dedicated resource pages for interface, path, system-property, socket-binding-group, and socket-binding
 - Add `FinderPage` base class to synchronize finder path with URL route parameters
-- Add `ConfigurationRoutes` and `ConfigurationDescriptions` for centralized route constants
+- Add `RouteRegistry` to `UIContext` for static access from non-CDI code
 - Add comprehensive Javadoc across all code modules
 - Add OUIA IDs to model browser, dashboard, and task components
 
 ### Removed
 
+- Remove `OutOfScopeNavigation` — model browser now uses `RouteRegistry` via `UIContext` directly
+- Remove `ViewFinderItem` — `crudColumn()` now navigates via `RouteRegistry` automatically
+- Remove `ResourceRoutes`, `ResourceRoutesParameter`, `ResourceRoutesProducer` — replaced by `RouteRegistry`
+- Remove `NamedResourcePage`, `ConfigurationResourcePage` — replaced by `RouteBindingPage`
+- Remove `ModelBrowserContext` and implementations — replaced by `RouteRegistry`
 - Remove `AddressRouting` utility — address resolution moved to `FinderSupport.itemAddress()`
 - Remove `@halconsole/ouia` NPM package — OUIA IDs now synced directly by dave's `sync:ouia` command
 - Remove Parcel and its dependencies — replaced by Vite
 
 ### Changed
 
+- Move route binding infrastructure (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to `ui/navigation` package for app-agnostic reuse; app-specific routes (`KnownRoutes`) and CDI producer stay in `op/navigation`
+- Simplify `ModelBrowser` factory methods — remove `OutOfScopeNavigation` parameter, use `RouteRegistry` via `UIContext`
+- Simplify `crudColumn()` — remove `ViewFinderItem` parameter, navigate via `RouteRegistry` automatically
 - Refactor `ConfigurationPage` to extend `FinderPage`, using route parameters instead of manual URL management
 - Split `BuildingBlocks` into focused classes under the `brick` package
 - Split UI `resource` package into `dialog`, `finder`, `form`, `manager`, and `view` subpackages
-- Rename `SubsystemPage` to `ConfigurationResourcePage`
 - Replace `FinderPath` with `ResolvedFinderPath` in `FinderSupport` API
 - Move formatting and validation plugins to opt-in `format` and `check` Maven profiles
 - Rename `validate.sh` to `check.sh` to match the `check` Maven profile

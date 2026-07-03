@@ -42,6 +42,6 @@ public class OutboundLocalColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return socketBindingColumn(crud, ID, "Outbound Local");
+        return socketBindingColumn(ID, "Outbound Local");
     }
 }

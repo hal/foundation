@@ -13,35 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.configuration.socket;
+package org.jboss.hal.op.configuration;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
-import org.jboss.hal.core.CrudOperations;
-import org.jboss.hal.op.finder.ColumnProvider;
-import org.patternfly.extension.finder.FinderColumn;
+import org.jboss.elemento.router.Route;
+import org.jboss.hal.ui.navigation.RouteBindingPage;
+import org.jboss.hal.ui.navigation.RouteRegistry;
 
-import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketBindingColumn;
+import static org.jboss.hal.op.navigation.KnownRoutes.SUBSYSTEM_ROUTE;
 
 @Dependent
-public class InboundColumn implements ColumnProvider {
-
-    public static final String ID = "socket-binding-inbound";
-    private final CrudOperations crud;
+@Route("/configuration/subsystem/:name/:selection?")
+public class SubsystemPage extends RouteBindingPage {
 
     @Inject
-    public InboundColumn(CrudOperations crud) {
-        this.crud = crud;
-    }
-
-    @Override
-    public String identifier() {
-        return ID;
-    }
-
-    @Override
-    public FinderColumn get() {
-        return socketBindingColumn(ID, "Inbound");
+    public SubsystemPage(RouteRegistry registry) {
+        super(registry, SUBSYSTEM_ROUTE);
     }
 }

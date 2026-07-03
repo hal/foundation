@@ -23,7 +23,7 @@ import org.kie.j2cl.tools.processors.common.resources.TextResource;
 @GWT3Resource
 public interface Resources extends ClientBundle {
 
-    /** Singleton instance of the resources bundle. */
+    /** Singleton instance of the resource bundle. */
     Resources INSTANCE = ResourcesImpl.INSTANCE;
 
     /** Returns the HAL logo as an SVG text resource. */

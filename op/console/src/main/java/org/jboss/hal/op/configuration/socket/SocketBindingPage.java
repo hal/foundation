@@ -13,23 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.configuration;
+package org.jboss.hal.op.configuration.socket;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.Route;
-import org.jboss.hal.ui.resource.finder.ResourcePage;
+import org.jboss.hal.ui.navigation.RouteBindingPage;
+import org.jboss.hal.ui.navigation.RouteRegistry;
 
-/**
- * Router page for the {@code /configuration/resource/:address} route. Decodes the URI-encoded {@code address} parameter and
- * displays a {@link org.jboss.hal.ui.modelbrowser.ModelBrowser} for the corresponding WildFly management resource.
- */
+import static org.jboss.hal.op.navigation.KnownRoutes.SOCKET_BINDING_ROUTE;
+
 @Dependent
-@Route("/configuration/resource/:address")
-public class ConfigurationResourcePage extends ResourcePage {
+@Route("/configuration/socket-binding-group/:group/socket-binding/:name")
+public class SocketBindingPage extends RouteBindingPage {
 
-    /** Creates a configuration resource page bound to the {@code address} route parameter. */
-    public ConfigurationResourcePage() {
-        super("address");
+    @Inject
+    public SocketBindingPage(RouteRegistry registry) {
+        super(registry, SOCKET_BINDING_ROUTE);
     }
 }

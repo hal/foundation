@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.ui.modelbrowser;
 
+import java.util.function.Consumer;
+
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.Attachable;
 import org.jboss.elemento.EventType;
@@ -66,11 +68,11 @@ import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.resizing;
 
 /**
- * The main model browser component, providing a tree view of the WildFly management resource hierarchy with detail panels
- * for attributes, operations, and capabilities.
+ * The main model browser component, providing a tree view of the WildFly management resource hierarchy with detail panels for
+ * attributes, operations, and capabilities.
  * <p>
- * The model browser uses a split-pane layout with a resizable splitter. The left pane displays the resource tree, and the
- * right pane shows details for the selected resource including filterable tables of attributes and operations.
+ * The model browser uses a split-pane layout with a resizable splitter. The left pane displays the resource tree, and the right
+ * pane shows details for the selected resource, including filterable tables of attributes and operations.
  * <p>
  * The tree width can be adjusted by dragging the splitter and is persisted to local storage.
  */
@@ -78,9 +80,14 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     // ------------------------------------------------------ factory
 
-    /** Creates a new model browser rooted at the given address template with the given navigation context. */
-    public static ModelBrowser modelBrowser(AddressTemplate template, ModelBrowserContext context) {
-        return new ModelBrowser(template, context);
+    /** Creates a new model browser rooted at the given template. */
+    public static ModelBrowser modelBrowser(AddressTemplate template) {
+        return new ModelBrowser(template, null);
+    }
+
+    /** Creates a new model browser rooted at the given template with an initial selection. */
+    public static ModelBrowser modelBrowser(AddressTemplate template, AddressTemplate initialSelection) {
+        return new ModelBrowser(template, initialSelection);
     }
 
     // ------------------------------------------------------ instance
@@ -92,31 +99,28 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     private static final String TREE_MAX_WIDTH = "--hal-c-model-browser-tree-max-width";
     private static final Logger logger = Logger.getLogger(ModelBrowser.class.getName());
 
+    final AddressTemplate root;
     final ModelBrowserTree tree;
     final ModelBrowserDetail detail;
-    final ModelBrowserContext context;
-    private final AddressTemplate template;
-    private final HTMLElement root;
+    private final HTMLElement rootElement;
     private final HTMLElement splitter;
     private boolean dragging;
     private double containerLeft;
     private ModelBrowserNode rootMbn;
+    private AddressTemplate initialSelection;
     private HandlerRegistration mouseDownHandler;
     private HandlerRegistration mouseMoveHandler;
     private HandlerRegistration touchStartHandler;
     private HandlerRegistration touchMoveHandler;
 
-    public ModelBrowser(AddressTemplate template, ModelBrowserContext context) {
-        this.template = template;
-        this.context = context;
-        if (context instanceof FullModelBrowserContext full) {
-            full.init(this);
-        }
+    ModelBrowser(AddressTemplate root, AddressTemplate initialSelection) {
+        this.root = root;
+        this.initialSelection = initialSelection;
         this.dragging = false;
         this.containerLeft = 0;
         this.tree = new ModelBrowserTree(this);
         this.detail = new ModelBrowserDetail(this);
-        this.root = div().css(halComponent(modelBrowser))
+        this.rootElement = div().css(halComponent(modelBrowser))
                 .add(tree)
                 .add(splitter = div().css(halComponent(modelBrowser, Classes.splitter))
                         .role(separator)
@@ -128,9 +132,9 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 .add(detail)
                 .element();
 
-        AddResource.listen(root, this::add);
-        DeleteResource.listen(root, this::delete);
-        SelectInTree.listen(root, this::select);
+        AddResource.listen(rootElement, this::add);
+        DeleteResource.listen(rootElement, this::delete);
+        SelectInTree.listen(rootElement, this::select);
         Attachable.register(this, this);
         load();
     }
@@ -142,7 +146,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
             if (savedWidth != null) {
                 double savedPx = parseCSSLength(trimOrEmpty(savedWidth), TREE_DEFAULT_WIDTH);
                 double normalized = clampWidth(snapToStep(savedPx));
-                root.style.setProperty(TREE_WIDTH, normalized + "px");
+                rootElement.style.setProperty(TREE_WIDTH, normalized + "px");
             }
         } catch (Exception e) {
             logger.error("Failed to read saved model tree width: %s", e.getMessage());
@@ -186,10 +190,14 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     @Override
     public HTMLElement element() {
-        return root;
+        return rootElement;
     }
 
     // ------------------------------------------------------ internal
+
+    boolean inScope(AddressTemplate target) {
+        return target.template.startsWith(root.template);
+    }
 
     void home() {
         if (rootMbn != null) {
@@ -199,22 +207,27 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     }
 
     void load() {
-        if (template.fullyQualified()) {
-            uic().metadataRepository().lookup(template, metadata -> {
-                ResourceAddress address = template.resolve(uic().statementContext());
+        if (root.fullyQualified()) {
+            uic().metadataRepository().lookup(root, metadata -> {
+                ResourceAddress address = root.resolve(uic().statementContext());
                 Operation operation = new Operation.Builder(address, READ_CHILDREN_TYPES_OPERATION)
                         .param(INCLUDE_SINGLETONS, true)
                         .build();
                 uic().dispatcher().execute(operation, result -> {
-                    String name = template.isEmpty() ? "Management Model" : template.last().value;
-                    rootMbn = new ModelBrowserNode(template, name, RESOURCE);
+                    String name = root.isEmpty() ? "Management Model" : root.last().value;
+                    rootMbn = new ModelBrowserNode(root, name, RESOURCE);
                     tree.load(parseChildren(rootMbn, result, true));
-                    detail.show(rootMbn);
+                    if (initialSelection != null) {
+                        tree.select(initialSelection);
+                        initialSelection = null;
+                    } else {
+                        detail.show(rootMbn);
+                    }
                 });
             });
         } else {
             // TODO Add error empty state
-            logger.error("Illegal address: %s. Please specify a fully qualified address not ending with '*'", template);
+            logger.error("Illegal address: %s. Please specify a fully qualified address not ending with '*'", root);
         }
     }
 
@@ -245,13 +258,12 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
         if (rootMbn != null) {
             if (details.template != null) {
                 // select by address template
-                // TODO [Finding 1] Use context.inScope(details.template) to check scope,
-                //  and context.navigate(details.template) for out-of-scope targets
-                if (details.template.template.startsWith(rootMbn.template.template)) {
+                if (inScope(details.template)) {
                     tree.select(details.template);
                 } else {
-                    logger.error("Unable to select %s: %s is not a sub-template of %s",
-                            details.template, details.template, rootMbn.template);
+                    logger.debug("Out of scope navigation for %s (not a sub-template of %s)",
+                            details.template, root);
+                    uic().routeRegistry().goTo(details.template);
                 }
             } else if (details.identifier != null) {
                 if (details.parentIdentifier != null) {
@@ -263,23 +275,23 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 }
             }
         } else {
-            logger.error("Unable to select %s: Root template is null!", template);
+            logger.error("Unable to select %s: Root template is null!", root);
         }
     }
 
     // ------------------------------------------------------ splitter
 
     private void startDrag() {
-        DOMRect rect = root.getBoundingClientRect();
+        DOMRect rect = rootElement.getBoundingClientRect();
         containerLeft = rect.left;
         dragging = true;
-        root.classList.add(modifier(resizing));
+        rootElement.classList.add(modifier(resizing));
     }
 
     private void endDrag() {
         if (!dragging) {return;}
         dragging = false;
-        root.classList.remove(modifier(resizing));
+        rootElement.classList.remove(modifier(resizing));
     }
 
     private void mouseMove(MouseEvent event) {
@@ -314,7 +326,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
         double clamped = clampWidth(raw);
         double snapped = clampWidth(snapToStep(clamped));
         String value = snapped + "px";
-        root.style.setProperty(TREE_WIDTH, value);
+        rootElement.style.setProperty(TREE_WIDTH, value);
         try {
             WebStorageWindow.of(window).localStorage.setItem(MODEL_BROWSER_TREE_WIDTH, value);
         } catch (Exception ignored) {}
@@ -325,7 +337,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     }
 
     private double clampWidth(double px) {
-        CSSStyleDeclaration styles = org.jboss.elemento.DomGlobal.window.getComputedStyle(root);
+        CSSStyleDeclaration styles = org.jboss.elemento.DomGlobal.window.getComputedStyle(rootElement);
         double minPx = parseCSSLength(trimOrEmpty(styles.getPropertyValue(TREE_MIN_WIDTH)), 0);
         double maxPx = parseCSSLength(trimOrEmpty(styles.getPropertyValue(TREE_MAX_WIDTH)),
                 Math.round(window.innerWidth * 0.7));

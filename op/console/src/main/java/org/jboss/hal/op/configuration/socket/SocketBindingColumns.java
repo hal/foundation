@@ -15,22 +15,19 @@
  */
 package org.jboss.hal.op.configuration.socket;
 
-import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.ResolvedFinderSegment;
 
 import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
-import static org.jboss.hal.op.configuration.ConfigurationRoutes.RESOURCE_ROUTE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.RESOURCE_NAME_KEY;
 
 class SocketBindingColumns {
 
-    static FinderColumn socketBindingColumn(CrudOperations crud, String id, String header) {
-        return crudColumn(id, header, RESOURCE_ROUTE,
-                asList("bound", "bound-address", "bound-port", "fixed-port", "interface",
+    static FinderColumn socketBindingColumn(String id, String header) {
+        return crudColumn(id, header, asList("bound", "bound-address", "bound-port", "fixed-port", "interface",
                         "multicast-address", "multicast-port", "port"),
                 path -> {
                     ResolvedFinderSegment groupSegment = path.findColumn(SocketBindingGroupColumn.ID);

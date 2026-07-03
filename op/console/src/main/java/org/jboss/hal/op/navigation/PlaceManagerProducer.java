@@ -26,10 +26,11 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.resources.Ids;
 import org.kie.j2cl.tools.di.core.BeanManager;
 import org.patternfly.component.navigation.Navigation;
+import org.patternfly.component.navigation.NavigationItem;
 
 /**
- * CDI producer for the application-scoped {@link PlaceManager}. Configures the router with the base path, root element,
- * title formatting, fallback pages, and navigation synchronization.
+ * CDI producer for the application-scoped {@link PlaceManager}. Configures the router with the base path, root element, title
+ * formatting, fallback pages, and navigation synchronization.
  */
 public class PlaceManagerProducer {
 
@@ -48,6 +49,13 @@ public class PlaceManagerProducer {
                 .notFound(NotFound::new)
                 .noData(NoData::new)
                 .register(new AnnotatedPlaces(beanManager))
-                .afterPlace((placeManager, place) -> navigation.select(place.path()));
+                .afterPlace((placeManager, place) -> {
+                    for (NavigationItem ni : navigation) {
+                        if (ni.identifier().startsWith(place.path())) {
+                            navigation.select(ni.identifier());
+                            break;
+                        }
+                    }
+                });
     }
 }

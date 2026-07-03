@@ -28,7 +28,6 @@ import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.op.finder.ColumnProvider;
-import org.jboss.hal.ui.resource.finder.FinderSupport;
 import org.jboss.hal.ui.resource.view.ResourceView;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
@@ -47,9 +46,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SELECT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WHERE;
-import static org.jboss.hal.op.configuration.ConfigurationRoutes.RESOURCE_ROUTE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
+import static org.jboss.hal.ui.resource.finder.FinderSupport.TEMPLATE_KEY;
 import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
 import static org.jboss.hal.ui.resource.view.ViewItem.viewItem;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
@@ -79,14 +78,14 @@ public class InterfaceColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return crudColumn(ID, "Interface", RESOURCE_ROUTE, emptyList(),
+        return crudColumn(ID, "Interface", emptyList(),
                 __ -> TEMPLATE, null).onPreview(this::preview);
     }
 
     private void preview(FinderItem item, FinderPreview preview) {
         String name = item.text();
         stackPreview(preview, name, stack -> {
-            AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+            AddressTemplate template = item.get(TEMPLATE_KEY);
             crud.readWithMetadata(template).then(tuple -> {
                 ResourceView resourceView = resourceView(template, tuple.key, tuple.value,
                         asList("inet-address", "loopback", "loopback-address", "multicast", "nic", "nic-match",

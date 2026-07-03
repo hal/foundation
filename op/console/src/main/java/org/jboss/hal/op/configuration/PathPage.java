@@ -13,19 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.modelbrowser;
+package org.jboss.hal.op.configuration;
 
-import org.jboss.hal.meta.AddressTemplate;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
-/**
- * Strategy interface that governs scope checking and navigation for a {@link ModelBrowser}. Implementations decide
- * whether a given address template is within the browser's navigable scope and how to navigate to out-of-scope targets.
- */
-public interface ModelBrowserContext {
+import org.jboss.elemento.router.Route;
+import org.jboss.hal.ui.navigation.RouteBindingPage;
+import org.jboss.hal.ui.navigation.RouteRegistry;
 
-    /** Whether the given template is within this browser's navigable scope. */
-    boolean inScope(AddressTemplate template);
+import static org.jboss.hal.op.navigation.KnownRoutes.PATH_ROUTE;
 
-    /** Navigate to the given template. */
-    void navigate(AddressTemplate template);
+@Dependent
+@Route("/configuration/path/:name")
+public class PathPage extends RouteBindingPage {
+
+    @Inject
+    public PathPage(RouteRegistry registry) {
+        super(registry, PATH_ROUTE);
+    }
 }

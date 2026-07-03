@@ -18,30 +18,18 @@ package org.jboss.hal.op.configuration.socket;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
-import org.jboss.hal.core.CrudOperations;
-import org.jboss.hal.op.finder.ColumnProvider;
-import org.patternfly.extension.finder.FinderColumn;
+import org.jboss.elemento.router.Route;
+import org.jboss.hal.ui.navigation.RouteBindingPage;
+import org.jboss.hal.ui.navigation.RouteRegistry;
 
-import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketBindingColumn;
+import static org.jboss.hal.op.navigation.KnownRoutes.SOCKET_BINDING_GROUP_ROUTE;
 
 @Dependent
-public class OutboundRemoteColumn implements ColumnProvider {
-
-    public static final String ID = "socket-binding-outbound-remote";
-    private final CrudOperations crud;
+@Route("/configuration/socket-binding-group/:name")
+public class SocketBindingGroupPage extends RouteBindingPage {
 
     @Inject
-    public OutboundRemoteColumn(CrudOperations crud) {
-        this.crud = crud;
-    }
-
-    @Override
-    public String identifier() {
-        return ID;
-    }
-
-    @Override
-    public FinderColumn get() {
-        return socketBindingColumn(ID, "Outbound Remote");
+    public SocketBindingGroupPage(RouteRegistry registry) {
+        super(registry, SOCKET_BINDING_GROUP_ROUTE);
     }
 }

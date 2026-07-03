@@ -51,6 +51,7 @@
 
 .hal-c-model-browser__copy {
     align-self: center;
+    cursor: pointer;
     margin-left: var(--pf-t--global--spacer--sm);
 }
 

@@ -25,7 +25,6 @@ import org.jboss.hal.op.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;
-import static org.jboss.hal.op.configuration.ConfigurationRoutes.RESOURCE_ROUTE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 
 @Dependent
@@ -49,7 +48,6 @@ public class SocketBindingGroupColumn implements ColumnProvider {
     @Override
     public FinderColumn get() {
         return crudColumn(ID, "Socket Binding Group",
-                RESOURCE_ROUTE,
                 asList("default-interface", "port-offset", "local-destination-outbound-socket-binding",
                         "remote-destination-outbound-socket-binding"),
                 __ -> TEMPLATE,

@@ -32,14 +32,12 @@ import static org.patternfly.style.Classes.util;
 
 /**
  * Base page for top-level finder-based navigation. Handles the common setup shared by all finder pages: creating the
- * {@link Finder}, parsing the optional {@code :finderPath?} route parameter, synchronising selection changes with the browser
- * URL via {@code pushState}, and restoring the selection on initial load.
+ * {@link Finder}, parsing the optional {@code :finderPath?} route parameter, synchronizing selection changes with the browser
+ * URL via {@code pushState}, and restoring the selection on an initial load.
  * <p>
  * Subclasses provide the {@link org.jboss.elemento.router.Route @Route} annotation with a route ending in
  * {@code /:finderPath?}, CDI annotations, and an implementation of {@link #configureFinder(Finder)} that adds the root column
  * and initial preview.
- *
- * @see ResourcePage
  */
 public abstract class FinderPage implements Page {
 
@@ -60,10 +58,10 @@ public abstract class FinderPage implements Page {
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         Finder finder = finder().ouiaId(ouiaId).registerComponent().css(util("h-100"))
-                .onAdd((theFinder, column) ->
+                .onAdd((fndr, column) ->
                         column.onSelect((event, item, selected) -> {
                             if (selected) {
-                                FinderPath fp = theFinder.activePath().toFinderPath();
+                                FinderPath fp = fndr.activePath().toFinderPath();
                                 String url;
                                 if (fp.isEmpty()) {
                                     url = placeManager.href(place.path());
