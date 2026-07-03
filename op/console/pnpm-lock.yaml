@@ -13,13 +13,13 @@ importers:
         version: 0.9.2
       '@patternfly-java/core':
         specifier: 0.9.2
-        version: 0.9.2(@patternfly/patternfly@6.5.2)
+        version: 0.9.2(@patternfly/patternfly@6.6.0)
       '@patternfly-java/finder':
         specifier: 0.9.2
-        version: 0.9.2(@patternfly/patternfly@6.5.2)
+        version: 0.9.2(@patternfly/patternfly@6.6.0)
       '@patternfly/patternfly':
-        specifier: ^6.5.2
-        version: 6.5.2
+        specifier: ^6.6.0
+        version: 6.6.0
       dompurify:
         specifier: ^3.4.11
         version: 3.4.11
@@ -436,8 +436,8 @@ packages:
     peerDependencies:
       '@patternfly/patternfly': ^6.5.2
 
-  '@patternfly/patternfly@6.5.2':
-    resolution: {integrity: sha512-yZ71+1gt1VGzUN5amjDNd9NvttTnSOm9M0JeBL0YX1KaWXW1bmDPzTWEM+vQXuC4LVK0msHmR5hKB7KVpamAkA==}
+  '@patternfly/patternfly@6.6.0':
+    resolution: {integrity: sha512-drZ4wYFQdhYY+VxLIl8PqbYnJoEa0UrNhiUkMCKkgMVNPxmCfNa1d2eEA97tnp2aYew15jQp+MaZcQIQIG8wVg==}
 
   '@patternfly/react-charts@8.5.1':
     resolution: {integrity: sha512-3PUeicoG1dAcAP0TW425H0rPML3MP3DHkWH4WkguOLQgmpgRfDdRWa+ePKc2K7U1cOLl8hpQm1CVMhyamePBQw==}
@@ -2115,15 +2115,15 @@ snapshots:
     transitivePeerDependencies:
       - echarts
 
-  '@patternfly-java/core@0.9.2(@patternfly/patternfly@6.5.2)':
+  '@patternfly-java/core@0.9.2(@patternfly/patternfly@6.6.0)':
     dependencies:
-      '@patternfly/patternfly': 6.5.2
+      '@patternfly/patternfly': 6.6.0
 
-  '@patternfly-java/finder@0.9.2(@patternfly/patternfly@6.5.2)':
+  '@patternfly-java/finder@0.9.2(@patternfly/patternfly@6.6.0)':
     dependencies:
-      '@patternfly/patternfly': 6.5.2
+      '@patternfly/patternfly': 6.6.0
 
-  '@patternfly/patternfly@6.5.2': {}
+  '@patternfly/patternfly@6.6.0': {}
 
   '@patternfly/react-charts@8.5.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(victory-area@37.3.6(react@19.2.7))(victory-axis@37.3.6(react@19.2.7))(victory-bar@37.3.6(react@19.2.7))(victory-box-plot@37.3.6(react@19.2.7))(victory-chart@37.3.6(react@19.2.7))(victory-core@37.3.6(react@19.2.7))(victory-create-container@37.3.6(react@19.2.7))(victory-cursor-container@37.3.6(react@19.2.7))(victory-group@37.3.6(react@19.2.7))(victory-legend@37.3.6(react@19.2.7))(victory-line@37.3.6(react@19.2.7))(victory-pie@37.3.6(react@19.2.7))(victory-scatter@37.3.6(react@19.2.7))(victory-stack@37.3.6(react@19.2.7))(victory-tooltip@37.3.6(react@19.2.7))(victory-voronoi-container@37.3.6(react@19.2.7))(victory-zoom-container@37.3.6(react@19.2.7))':
     dependencies:
