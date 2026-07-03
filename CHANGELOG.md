@@ -9,6 +9,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add flat resource mode to model browser — hide tree pane and splitter for resources with no child types (e.g., `/subsystem=jaxrs`), letting the detail panel fill the full width
 - Add route binding system (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to co-locate bidirectional mappings between routes and address templates
 - Add dedicated resource pages for interface, path, system-property, socket-binding-group, and socket-binding
 - Add `FinderPage` base class to synchronize finder path with URL route parameters

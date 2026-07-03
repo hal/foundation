@@ -15,7 +15,7 @@
  */
 package org.jboss.hal.ui.modelbrowser;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.Attachable;
@@ -63,6 +63,7 @@ import static org.patternfly.core.Aria.hidden;
 import static org.patternfly.core.Aria.label;
 import static org.patternfly.core.Aria.orientation;
 import static org.patternfly.core.Roles.separator;
+import static org.patternfly.style.Classes.flat;
 import static org.patternfly.style.Classes.handle;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.resizing;
@@ -216,7 +217,13 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 uic().dispatcher().execute(operation, result -> {
                     String name = root.isEmpty() ? "Management Model" : root.last().value;
                     rootMbn = new ModelBrowserNode(root, name, RESOURCE);
-                    tree.load(parseChildren(rootMbn, result, true));
+                    List<ModelBrowserNode> children = parseChildren(rootMbn, result, true);
+                    if (children.isEmpty()) {
+                        rootElement.classList.add(modifier(flat));
+                    } else {
+                        rootElement.classList.remove(modifier(flat));
+                    }
+                    tree.load(children);
                     if (initialSelection != null) {
                         tree.select(initialSelection);
                         initialSelection = null;
