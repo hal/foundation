@@ -108,7 +108,11 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
         Button findResource = button().plain()
                 .icon(magnifyingGlass())
                 .ouiaId(OuiaIds.MODEL_BROWSER_FIND_BTN)
-                .onClick((e, b) -> new FindResource(b.element(), selectedAddress()).open());
+                .onClick((e, b) -> {
+                    boolean scoped = !modelBrowser.root.isEmpty();
+                    String rootAddress = scoped ? modelBrowser.root.toString() : selectedAddress();
+                    new FindResource(b.element(), rootAddress, scoped).open();
+                });
         GotoResource gotoResource = new GotoResource();
         Button collapseButton = button().plain().icon(squareMinus())
                 .ouiaId(OuiaIds.MODEL_BROWSER_COLLAPSE_BTN)
