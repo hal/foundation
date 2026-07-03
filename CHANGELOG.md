@@ -9,6 +9,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add navigation item sync to `FinderPage` — clicking a top-level nav item (e.g., "Configuration") now restores the last finder selection instead of resetting to the bare route
+- Add `RouteRegistryTest` with 21 unit tests covering prefix matching, wildcard vs exact value tiebreaking, re-registration, and edge cases
 - Add flat resource mode to model browser — hide tree pane and splitter for resources with no child types (e.g., `/subsystem=jaxrs`), letting the detail panel fill the full width
 - Add route binding system (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to co-locate bidirectional mappings between routes and address templates
 - Add dedicated resource pages for interface, path, system-property, socket-binding-group, and socket-binding
@@ -30,10 +32,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Improve scoped model browser breadcrumbs — show the full address with clickable segments scoped to the model browser root
+- Improve scoped model browser find — use read-only root input and scoped helper text
+- Rename `ConfigurationPage` to `ConfigurationFinderPage` for clarity
 - Move route binding infrastructure (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to `ui/navigation` package for app-agnostic reuse; app-specific routes (`KnownRoutes`) and CDI producer stay in `op/navigation`
 - Simplify `ModelBrowser` factory methods — remove `OutOfScopeNavigation` parameter, use `RouteRegistry` via `UIContext`
 - Simplify `crudColumn()` — remove `ViewFinderItem` parameter, navigate via `RouteRegistry` automatically
-- Refactor `ConfigurationPage` to extend `FinderPage`, using route parameters instead of manual URL management
+- Refactor `ConfigurationFinderPage` to extend `FinderPage`, using route parameters instead of manual URL management
 - Split `BuildingBlocks` into focused classes under the `brick` package
 - Split UI `resource` package into `dialog`, `finder`, `form`, `manager`, and `view` subpackages
 - Replace `FinderPath` with `ResolvedFinderPath` in `FinderSupport` API
@@ -42,8 +47,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Migrate frontend bundler from Parcel to Vite
 - Consolidate all OUIA IDs into a single `OuiaIds` interface
 
+### Removed
+
+- Remove `ConfigurationRoutes` — unused route constants superseded by `RouteRegistry`
+
 ### Fixed
 
+- Fix navigation item selection on browser back/forward — use longest-match instead of reversed prefix check in `PlaceManagerProducer`
+- Fix duplicate history entries in finder pages — skip `pushState` during `finder.select()` restoration to prevent broken back/forward navigation
 - Fix icon names and API for PatternFly Java 0.9.x (FontAwesome 5 → 7 migration)
 - Fix `PlaceManagerProducer` to use generated `AnnotatedPlaces` subclass
 - Fix intermittent test-suite CI failures

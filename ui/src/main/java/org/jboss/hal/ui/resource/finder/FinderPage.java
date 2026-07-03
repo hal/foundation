@@ -20,6 +20,8 @@ import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.PlaceManager;
+import org.patternfly.component.navigation.Navigation;
+import org.patternfly.component.navigation.NavigationItem;
 import org.patternfly.extension.finder.Finder;
 import org.patternfly.extension.finder.FinderPath;
 
@@ -42,25 +44,33 @@ import static org.patternfly.style.Classes.util;
 public abstract class FinderPage implements Page {
 
     private final PlaceManager placeManager;
+    private final Navigation navigation;
     private final String ouiaId;
 
     /**
      * Creates a finder page.
      *
      * @param placeManager the place manager used for URL generation
+     * @param navigation   the top-level navigation whose item href is kept in sync with finder selections
      * @param ouiaId       the OUIA component ID applied to the finder element
      */
-    protected FinderPage(PlaceManager placeManager, String ouiaId) {
+    protected FinderPage(PlaceManager placeManager, Navigation navigation, String ouiaId) {
         this.placeManager = placeManager;
+        this.navigation = navigation;
         this.ouiaId = ouiaId;
     }
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
+        // Tracks whether the finder is restoring a previous selection from the URL.
+        // During restoration, onSelect fires for each intermediate column — those must
+        // not push history entries or browser back/forward breaks with duplicates.
+        boolean[] restoring = {false};
+
         Finder finder = finder().ouiaId(ouiaId).registerComponent().css(util("h-100"))
                 .onAdd((fndr, column) ->
                         column.onSelect((event, item, selected) -> {
-                            if (selected) {
+                            if (selected && !restoring[0]) {
                                 FinderPath fp = fndr.activePath().toFinderPath();
                                 String url;
                                 if (fp.isEmpty()) {
@@ -69,6 +79,7 @@ public abstract class FinderPage implements Page {
                                     url = placeManager.href(place.route(), fp.toString());
                                 }
                                 history.pushState(url, "", url);
+                                syncNavigationItem(place, url);
                             }
                         }))
                 .run(this::configureFinder);
@@ -77,7 +88,12 @@ public abstract class FinderPage implements Page {
                 ? FinderPath.parse(parameter.get("finderPath"))
                 : null;
         if (finderPath != null && !finderPath.isEmpty()) {
-            finder.select(finderPath);
+            restoring[0] = true;
+            finder.select(finderPath).then(__ -> {
+                restoring[0] = false;
+                syncNavigationItem(place, placeManager.href(place.route(), finderPath.toString()));
+                return null;
+            });
         }
         return singletonList(finder.element());
     }
@@ -89,4 +105,14 @@ public abstract class FinderPage implements Page {
      * @param finder the finder to configure
      */
     protected abstract void configureFinder(Finder finder);
+
+    // Keeps the top-level navigation item in sync with the current finder selection.
+    // Without this, clicking the nav item (e.g., "Configuration") would always navigate
+    // to the bare route without a finderPath, losing the user's last selection.
+    private void syncNavigationItem(Place place, String url) {
+        NavigationItem ni = navigation.item(place.path());
+        if (ni != null) {
+            ni.href(url);
+        }
+    }
 }
