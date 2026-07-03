@@ -5,39 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0] - 2026-07-03
 
 ### Added
 
-- Add navigation item sync to `FinderPage` — clicking a top-level nav item (e.g., "Configuration") now restores the last finder selection instead of resetting to the bare route
-- Add `RouteRegistryTest` with 21 unit tests covering prefix matching, wildcard vs exact value tiebreaking, re-registration, and edge cases
-- Add flat resource mode to model browser — hide tree pane and splitter for resources with no child types (e.g., `/subsystem=jaxrs`), letting the detail panel fill the full width
-- Add route binding system (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to co-locate bidirectional mappings between routes and address templates
+- Add route binding system (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) for bidirectional mapping between routes and address templates
 - Add dedicated resource pages for interface, path, system-property, socket-binding-group, and socket-binding
 - Add `FinderPage` base class to synchronize finder path with URL route parameters
+- Add navigation item sync to `FinderPage` — clicking a top-level nav item now restores the last finder selection
+- Add flat resource mode to model browser — hide tree pane for resources with no child types
 - Add `RouteRegistry` to `UIContext` for static access from non-CDI code
+- Add `RouteRegistryTest` with 21 unit tests covering prefix matching, wildcard vs exact value tiebreaking, and edge cases
 - Add comprehensive Javadoc across all code modules
 - Add OUIA IDs to model browser, dashboard, and task components
-
-### Removed
-
-- Remove `OutOfScopeNavigation` — model browser now uses `RouteRegistry` via `UIContext` directly
-- Remove `ViewFinderItem` — `crudColumn()` now navigates via `RouteRegistry` automatically
-- Remove `ResourceRoutes`, `ResourceRoutesParameter`, `ResourceRoutesProducer` — replaced by `RouteRegistry`
-- Remove `NamedResourcePage`, `ConfigurationResourcePage` — replaced by `RouteBindingPage`
-- Remove `ModelBrowserContext` and implementations — replaced by `RouteRegistry`
-- Remove `AddressRouting` utility — address resolution moved to `FinderSupport.itemAddress()`
-- Remove `@halconsole/ouia` NPM package — OUIA IDs now synced directly by dave's `sync:ouia` command
-- Remove Parcel and its dependencies — replaced by Vite
 
 ### Changed
 
 - Improve scoped model browser breadcrumbs — show the full address with clickable segments scoped to the model browser root
 - Improve scoped model browser find — use read-only root input and scoped helper text
-- Rename `ConfigurationPage` to `ConfigurationFinderPage` for clarity
-- Move route binding infrastructure (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) to `ui/navigation` package for app-agnostic reuse; app-specific routes (`KnownRoutes`) and CDI producer stay in `op/navigation`
-- Simplify `ModelBrowser` factory methods — remove `OutOfScopeNavigation` parameter, use `RouteRegistry` via `UIContext`
-- Simplify `crudColumn()` — remove `ViewFinderItem` parameter, navigate via `RouteRegistry` automatically
+- Move route binding infrastructure to `ui/navigation` package for app-agnostic reuse
+- Simplify `ModelBrowser` factory methods — use `RouteRegistry` via `UIContext` instead of `OutOfScopeNavigation`
+- Simplify `crudColumn()` — navigate via `RouteRegistry` automatically instead of `ViewFinderItem`
 - Refactor `ConfigurationFinderPage` to extend `FinderPage`, using route parameters instead of manual URL management
 - Split `BuildingBlocks` into focused classes under the `brick` package
 - Split UI `resource` package into `dialog`, `finder`, `form`, `manager`, and `view` subpackages
@@ -49,12 +37,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Remove `ConfigurationRoutes` — unused route constants superseded by `RouteRegistry`
+- Remove `OutOfScopeNavigation`, `ViewFinderItem`, `ResourceRoutes`, `ResourceRoutesParameter`, `ResourceRoutesProducer`, `NamedResourcePage`, `ConfigurationResourcePage`, `ModelBrowserContext`, `AddressRouting`, `ConfigurationRoutes` — replaced by `RouteRegistry` and `RouteBindingPage`
+- Remove `@halconsole/ouia` NPM package — OUIA IDs now synced directly by `sync:ouia` command
+- Remove Parcel and its dependencies — replaced by Vite
 
 ### Fixed
 
-- Fix navigation item selection on browser back/forward — use longest-match instead of reversed prefix check in `PlaceManagerProducer`
-- Fix duplicate history entries in finder pages — skip `pushState` during `finder.select()` restoration to prevent broken back/forward navigation
+- Fix navigation item selection on browser back/forward — use longest-match in `PlaceManagerProducer`
+- Fix duplicate history entries in finder pages — skip `pushState` during `finder.select()` restoration
 - Fix icon names and API for PatternFly Java 0.9.x (FontAwesome 5 → 7 migration)
 - Fix `PlaceManagerProducer` to use generated `AnnotatedPlaces` subclass
 - Fix intermittent test-suite CI failures
@@ -396,7 +386,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.3.8...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/hal/foundation/compare/v0.3.8...v0.4.0
 [0.3.8]: https://github.com/hal/foundation/compare/v0.3.7...v0.3.8
 [0.3.7]: https://github.com/hal/foundation/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/hal/foundation/compare/v0.3.5...v0.3.6
