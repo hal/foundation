@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>51</version>
+        <version>53</version>
         <relativePath/>
     </parent>
 
@@ -83,7 +83,7 @@
     <properties>
         <github.org>hal</github.org>
         <github.name>foundation</github.name>
-        <version.central.publishing.plugin>0.9.0</version.central.publishing.plugin>
+        <version.central.publishing.plugin>0.11.0</version.central.publishing.plugin>
     </properties>
 
     <dependencyManagement>
