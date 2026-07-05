@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] - 2026-07-03
+## [0.4.0] - 2026-07-05
 
 ### Added
 
@@ -51,13 +51,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Upgrades
 
-- Bump Elemento to 2.5.2
-- Bump PatternFly Java to 0.9.2
+- Bump Elemento to 2.5.4
+- Bump PatternFly Java to 0.9.3
 - Bump Quarkus platform to 3.36.3
 - Bump J2CL Maven Plugin and J2CL BOM to 0.6
-- Bump PatternFly to 6.5.2, DOMPurify to 3.4.6, and cdxgen to 12.4.4
+- Bump PatternFly to 6.6.0, DOMPurify to 3.4.11, and cdxgen to 12.7.0
 - Bump WildFly BOM, Galleon feature pack, and Galleon Maven plugin
-- Update pnpm to 11.4.0, Node.js to v24.16.0, and corepack to v0.35.0
+- Update pnpm to 11.9.0, Node.js to v26.3.0, and corepack to v0.35.0
+- Wire `package.json` PFJ versions to pnpm workspace catalog
 
 ## [0.3.8] - 2026-05-20
 
