@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 import org.jboss.hal.dmr.ModelDescriptionConstants;
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.resources.Keys;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
@@ -49,12 +50,6 @@ import static org.jboss.hal.ui.UIContext.uic;
  */
 public class FinderSupport {
 
-    /** Component context key under which the resource name ({@link String}) is stored in each finder item. */
-    public static final String RESOURCE_NAME_KEY = "resource-name";
-
-    /** Component context key under which the resolved {@link AddressTemplate} is stored in each finder item. */
-    public static final String TEMPLATE_KEY = "template";
-
     /**
      * Callback for building a metadata-driven preview panel for a finder item.
      */
@@ -82,8 +77,8 @@ public class FinderSupport {
      * The items are built using {@code itemFn}. In addition, the following key/values are stored in the finder item's
      * {@linkplain org.patternfly.core.ComponentContext component context}:
      * <ul>
-     *     <li>{@link #RESOURCE_NAME_KEY}: The resource name ({@link String})</li>
-     *     <li>{@link #TEMPLATE_KEY}: The address template of the item ({@link AddressTemplate})</li>
+     *     <li>{@link Keys#RESOURCE_NAME}: The resource name ({@link String})</li>
+     *     <li>{@link Keys#FINDER_TEMPLATE}: The address template of the item ({@link AddressTemplate})</li>
      * </ul>
      *
      * @param templateFn A function that takes a {@link ResolvedFinderPath} as input and produces an {@link AddressTemplate}. The
@@ -111,8 +106,8 @@ public class FinderSupport {
                     return uic().dispatcher().execute(operation).then(result ->
                             Promise.resolve(result.asList().stream()
                                     .map(node -> itemFn.apply(node)
-                                            .store(RESOURCE_NAME_KEY, node.asString())
-                                            .store(TEMPLATE_KEY, new WildcardResolver(LTR, node.asString()).resolve(template)))
+                                            .store(Keys.RESOURCE_NAME, node.asString())
+                                            .store(Keys.FINDER_TEMPLATE, new WildcardResolver(LTR, node.asString()).resolve(template)))
                                     .collect(toList())));
                 } else {
                     return Promise.reject("Unable to read child resources: No wildcard in " + template);
@@ -133,8 +128,8 @@ public class FinderSupport {
      */
     public static PreviewHandler metadataPreview(MetadataPreviewBuilder previewBuilder) {
         return (item, preview) -> {
-            String name = item.get(RESOURCE_NAME_KEY);
-            AddressTemplate template = item.get(TEMPLATE_KEY);
+            String name = item.get(Keys.RESOURCE_NAME);
+            AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
             uic().metadataRepository().lookup(template).then(metadata -> {
                 previewBuilder.onPreview(name, metadata, preview);
                 return null;
@@ -147,11 +142,11 @@ public class FinderSupport {
      * The returned value is suitable for passing to {@link org.jboss.elemento.router.PlaceManager#goTo(String, String...)} which
      * handles URI encoding automatically.
      *
-     * @param item the finder item containing the address template (stored under {@link #TEMPLATE_KEY})
+     * @param item the finder item containing the address template (stored under {@link Keys#FINDER_TEMPLATE})
      * @return the resolved address string, or {@code null} if no template is stored in the item
      */
     public static String itemAddress(FinderItem item) {
-        AddressTemplate template = item.get(TEMPLATE_KEY);
+        AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
         if (template != null) {
             return new StatementContextResolver(uic().statementContext()).resolve(template).toString();
         }

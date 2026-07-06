@@ -48,7 +48,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WHERE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.TEMPLATE_KEY;
+import static org.jboss.hal.resources.Keys.FINDER_TEMPLATE;
 import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
 import static org.jboss.hal.ui.resource.view.ViewItem.viewItem;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
@@ -87,7 +87,7 @@ public class InterfaceColumn implements ColumnProvider {
     private void preview(FinderItem item, FinderPreview preview) {
         String name = item.text();
         stackPreview(preview, name, stack -> {
-            AddressTemplate template = item.get(TEMPLATE_KEY);
+            AddressTemplate template = item.get(FINDER_TEMPLATE);
             crud.readWithMetadata(template).then(tuple -> {
                 ResourceView resourceView = resourceView(template, tuple.key, tuple.value,
                         asList("inet-address", "loopback", "loopback-address", "multicast", "nic", "nic-match",

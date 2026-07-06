@@ -28,7 +28,7 @@ import org.patternfly.icon.IconSets.fas;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.RESOURCE_NAME_KEY;
+import static org.jboss.hal.resources.Keys.RESOURCE_NAME;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;
@@ -59,14 +59,14 @@ public class SocketBindingTypeColumn implements ColumnProvider {
                 .addHeader(finderColumnHeader("Type"))
                 .addItem(finderItem("inbound", "Inbound")
                         .icon(far.circleLeft())
-                        .store(RESOURCE_NAME_KEY, SOCKET_BINDING)
+                        .store(RESOURCE_NAME, SOCKET_BINDING)
                         .nextColumn(registry.get().column(InboundColumn.ID)))
                 .addItem(finderItem("outbound-local", "Outbound Local")
-                        .store(RESOURCE_NAME_KEY, LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING)
+                        .store(RESOURCE_NAME, LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING)
                         .icon(far.circleRight())
                         .nextColumn(registry.get().column(OutboundLocalColumn.ID)))
                 .addItem(finderItem("outbound-remote", "Outbound Remote")
-                        .store(RESOURCE_NAME_KEY, REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING)
+                        .store(RESOURCE_NAME, REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING)
                         .icon(fas.circleArrowRight())
                         .nextColumn(registry.get().column(OutboundRemoteColumn.ID)));
     }

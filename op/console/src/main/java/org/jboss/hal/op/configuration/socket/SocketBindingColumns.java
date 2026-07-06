@@ -22,7 +22,7 @@ import org.patternfly.extension.finder.ResolvedFinderSegment;
 import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.RESOURCE_NAME_KEY;
+import static org.jboss.hal.resources.Keys.RESOURCE_NAME;
 
 /**
  * Shared factory for socket binding finder columns. Builds a CRUD column that resolves its address template from the selected
@@ -45,8 +45,8 @@ class SocketBindingColumns {
                     ResolvedFinderSegment groupSegment = path.findColumn(SocketBindingGroupColumn.ID);
                     ResolvedFinderSegment typeSegment = path.findColumn(SocketBindingTypeColumn.ID);
                     if (groupSegment != null && typeSegment != null) {
-                        String group = groupSegment.item.get(RESOURCE_NAME_KEY);
-                        String type = typeSegment.item.get(RESOURCE_NAME_KEY);
+                        String group = groupSegment.item.get(RESOURCE_NAME);
+                        String type = typeSegment.item.get(RESOURCE_NAME);
                         if (group != null && type != null) {
                             return AddressTemplate.of(SOCKET_BINDING_GROUP, group).append(type, "*");
                         }
