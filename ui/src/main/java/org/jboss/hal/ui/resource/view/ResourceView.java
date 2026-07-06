@@ -112,6 +112,12 @@ public class ResourceView implements
                         _2xl, horizontal));
     }
 
+    ResourceView(DescriptionList dl) {
+        this.items = new LinkedHashMap<>();
+        this.aur = new AurHandler<>(this);
+        this.dl = dl;
+    }
+
     @Override
     public HTMLElement element() {
         return dl.element();
