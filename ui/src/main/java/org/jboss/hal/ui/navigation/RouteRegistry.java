@@ -29,7 +29,7 @@ import org.jboss.hal.meta.StatementContextResolver;
 /**
  * Central registry that holds all {@link RouteBinding}s and provides lookup in both directions:
  * <ul>
- *     <li>{@link #byRoute(String)} — exact match by route string (used by {@link RouteBindingPage} on load)</li>
+ *     <li>{@link #byRoute(String)} — exact match by route string (used by {@link RouteBindingPage})</li>
  *     <li>{@link #byTemplate(AddressTemplate)} — best-prefix match by address template (used for navigation)</li>
  * </ul>
  * The {@link #goTo(AddressTemplate)} convenience method combines a template lookup with navigation, falling back to the

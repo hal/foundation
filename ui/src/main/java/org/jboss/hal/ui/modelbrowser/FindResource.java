@@ -131,7 +131,7 @@ class FindResource {
 
     // ------------------------------------------------------ ui
 
-    FindResource(HTMLElement trigger, String rootAddress) {
+    FindResource(HTMLElement trigger, String rootAddress, boolean scoped) {
         this.trigger = trigger;
         this.continuation = new TraverseContinuation();
 
@@ -233,16 +233,22 @@ class FindResource {
                                     }
                                 })));
 
+        rootInput = textInput(rootId).value(rootAddress);
+        if (scoped) {
+            rootInput.readonly();
+        }
+        rootInput.on(keydown, e -> {
+            if (Key.Enter.match(e)) {
+                search();
+            }
+        });
         FormGroup rootFormGroup = formGroup(rootId)
                 .addLabel(formGroupLabel("Root"))
                 .addControl(formGroupControl()
-                        .addControl(rootInput = textInput(rootId).value(rootAddress)
-                                .on(keydown, e -> {
-                                    if (Key.Enter.match(e)) {
-                                        search();
-                                    }
-                                }))
-                        .addHelperText(helperText("Leave empty to search the whole model.")));
+                        .addControl(rootInput)
+                        .addHelperText(helperText(scoped
+                                ? "Search is limited to this resource and its children."
+                                : "Leave empty to search the whole model.")));
 
         FormGroup excludeFormGroup = formGroup(excludeId)
                 .addLabel(formGroupLabel("Exclude"))
@@ -368,8 +374,6 @@ class FindResource {
                                             ? argument.toLowerCase().contains(name.toLowerCase())
                                             : argument.equalsIgnoreCase(name);
                                     if (match) {
-                                        // TODO [Finding 3] Use ModelBrowser.inScope() to visually distinguish
-                                        //  in-scope vs out-of-scope results
                                         ListItem listItem = listItem()
                                                 .add(button().link().inline().text(template.toString())
                                                         .onClick((e, b) -> {
