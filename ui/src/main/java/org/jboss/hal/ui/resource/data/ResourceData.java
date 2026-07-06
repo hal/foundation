@@ -91,14 +91,14 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     // ------------------------------------------------------ factory
 
-    /** Creates a new resource manager for the given address template and metadata. */
+    /** Creates a new resource data component for the given address template and metadata. */
     public static ResourceData resourceData(AddressTemplate template, Metadata metadata) {
         return new ResourceData(template, metadata);
     }
 
     // ------------------------------------------------------ instance
 
-    /** The lifecycle states of the resource manager. */
+    /** The lifecycle states of the resource data component. */
     public enum State {
         /** Read-only display of resource attributes. */
         VIEW,
@@ -163,7 +163,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     // ------------------------------------------------------ builder
 
-    /** Enables inline editing for this resource manager. */
+    /** Enables inline editing for this resource data component. */
     public ResourceData inlineEdit() {
         return inlineEdit(true);
     }

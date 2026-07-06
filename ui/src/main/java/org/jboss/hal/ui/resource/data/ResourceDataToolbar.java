@@ -76,7 +76,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
 
     // ------------------------------------------------------ factory
 
-    /** Creates a new toolbar bound to the given resource manager, filter, and item counters. */
+    /** Creates a new toolbar bound to the given resource data component, filter, and item counters. */
     public static ResourceDataToolbar resourceDataToolbar(ResourceData resourceData,
             Filter<ResourceAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         return new ResourceDataToolbar(resourceData, filter, visible, total);

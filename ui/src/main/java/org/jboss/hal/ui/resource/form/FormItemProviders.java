@@ -36,7 +36,7 @@ public class FormItemProviders {
         // Another example is the 'credential-reference' complex attribute used all over the place.
 
         // The first provider wins!
-        // specialViewItems.add(new FormItemProvider() {
+        // specialFormItems.add(new FormItemProvider() {
         //     @Override
         //     public boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
         //         return ...;
