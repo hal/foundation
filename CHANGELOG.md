@@ -7,6 +7,27 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add attribute group layout toggle for resource views and forms — groups attributes by their WildFly management model attribute group with expandable/collapsible sections (ExpandableSection in view mode, FormFieldGroup in edit mode), with ungrouped attributes first and named groups sorted a-z
+- Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
+
+### Changed
+
+- Improve resource package architecture — rename manager subpackage to data, consolidate context keys into Keys interface, make table classes public for reuse
+
+### Fixed
+
+- Fix toolbar action group duplication when toggling grouped layout in the same view/edit state
+- Fix grouped DescriptionList missing HAL CSS class causing different spacing compared to flat layout
+- Fix duplicate resource view rendering caused by double rootContainer.add(items) in flat VIEW path
+
+### Upgrades
+
+- Bump Quarkus platform to 3.37.1
+- Bump Maven managed dependencies and plugins
+- Bump npm dependencies, dev dependencies, and packageManager versions
+
 ## [0.4.0] - 2026-07-06
 
 ### Added
