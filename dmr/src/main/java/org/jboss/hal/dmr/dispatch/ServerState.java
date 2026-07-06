@@ -39,6 +39,7 @@ public class ServerState {
         this.state = state;
     }
 
+    /** Two server states are equal if they share the same host, server, and state. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -58,6 +59,7 @@ public class ServerState {
         return state == that.state;
     }
 
+    /** Returns a hash code based on host, server, and state. */
     @Override
     public int hashCode() {
         int result = host != null ? host.hashCode() : 0;
@@ -66,6 +68,7 @@ public class ServerState {
         return result;
     }
 
+    /** Returns a string like {@code ServerState(host / server: STATE)}. */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

@@ -39,9 +39,11 @@ import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHea
 import static org.patternfly.extension.finder.FinderItem.finderItem;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
+/** Top-level finder column listing the configuration categories (subsystems, interfaces, paths, etc.). */
 @Dependent
 public class ConfigurationColumn implements ColumnProvider {
 
+    /** Column identifier used for registration and OUIA test IDs. */
     public static final String ID = "configuration-column";
 
     private final Instance<ColumnRegistry> registry;

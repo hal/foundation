@@ -17,8 +17,8 @@
 /**
  * Shared abstractions and data types for WildFly management resource UI components.
  * <p>
- * This package defines the core data types and interfaces used across the resource sub-packages for viewing and editing
- * WildFly management resource attributes. Concrete UI components are organized in sub-packages by concern:
+ * This package defines the core data types and interfaces used across the resource sub-packages for viewing and editing WildFly
+ * management resource attributes. Concrete UI components are organized in sub-packages by concern:
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.form}</dt>
  * <dd>Editable form items for resource attributes (boolean, numeric, string, capability references, etc.).</dd>
@@ -29,17 +29,17 @@
  * <dt>{@link org.jboss.hal.ui.resource.dialog}</dt>
  * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>
- * <dd>Finder navigation support and resource page routing.</dd>
+ * <dd>Finder navigation support.</dd>
  * </dl>
  * <p>
  * Key types in this package:
  * <dl>
+ * <dt>{@link org.jboss.hal.ui.resource.ItemIdentifier}</dt>
+ * <dd>Utility for generating stable HTML element IDs for form and view items.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.ResourceAttribute}</dt>
  * <dd>Data holder for an attribute's fully-qualified name, value, description, and security context.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.ResourceItem}</dt>
  * <dd>Shared interface for form and view items with component context and identifier support.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ItemIdentifier}</dt>
- * <dd>Utility for generating stable HTML element IDs for form and view items.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource;

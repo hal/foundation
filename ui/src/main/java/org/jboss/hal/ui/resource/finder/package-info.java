@@ -26,8 +26,6 @@
  * <dd>Base page for top-level finder-based navigation with URL synchronisation and path restoration.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder.FinderSupport}</dt>
  * <dd>Helpers for child resource loading and metadata-based preview generation in finder columns.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.finder.ResourcePage}</dt>
- * <dd>Base router page component that extracts resource addresses from route parameters and displays a model browser.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.finder;

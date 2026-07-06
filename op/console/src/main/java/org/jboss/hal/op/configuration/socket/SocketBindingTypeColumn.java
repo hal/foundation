@@ -33,6 +33,10 @@ import static org.patternfly.extension.finder.FinderColumn.finderColumn;
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;
 
+/**
+ * Finder column that lists the socket binding types (inbound, outbound-local, outbound-remote). Selecting a type
+ * navigates to the corresponding binding column.
+ */
 @Dependent
 public class SocketBindingTypeColumn implements ColumnProvider {
 

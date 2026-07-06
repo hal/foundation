@@ -22,6 +22,7 @@ import org.jboss.elemento.router.PlaceManager;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.op.finder.ColumnRegistry;
 import org.jboss.hal.ui.resource.finder.FinderPage;
+import org.patternfly.component.navigation.Navigation;
 import org.patternfly.extension.finder.Finder;
 
 import static org.jboss.hal.resources.HalClasses.halComponent;
@@ -39,13 +40,13 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
  */
 @Dependent
 @Route("/configuration/:finderPath?")
-public class ConfigurationPage extends FinderPage {
+public class ConfigurationFinderPage extends FinderPage {
 
     private final ColumnRegistry columnRegistry;
 
     @Inject
-    public ConfigurationPage(ColumnRegistry columnRegistry, PlaceManager placeManager) {
-        super(placeManager, PAGE_CONFIGURATION);
+    public ConfigurationFinderPage(ColumnRegistry columnRegistry, PlaceManager placeManager, Navigation navigation) {
+        super(placeManager, navigation, PAGE_CONFIGURATION);
         this.columnRegistry = columnRegistry;
     }
 

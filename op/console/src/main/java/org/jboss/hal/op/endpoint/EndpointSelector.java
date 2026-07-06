@@ -21,6 +21,7 @@ import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleSelect;
 import org.patternfly.core.OuiaSupport;
+import org.patternfly.style.Placement;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.URL;
@@ -35,6 +36,7 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.SingleSelect.singleSelect;
 import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
+import static org.patternfly.style.Placement.bottomEnd;
 
 /**
  * The EndpointSelector class is responsible for managing and presenting a list of available endpoints in the user interface. It
@@ -61,6 +63,7 @@ public class EndpointSelector implements IsElement<HTMLElement>, OuiaSupport<HTM
     EndpointSelector(EndpointStorage storage) {
         this.storage = storage;
         this.singleSelect = singleSelect(storage.current().name)
+                .placement(bottomEnd)
                 .add(singleSelectMenu()
                         .onSingleSelect((event, component, selected) -> {
                             Endpoint endpoint = component.get(Keys.ENDPOINT);

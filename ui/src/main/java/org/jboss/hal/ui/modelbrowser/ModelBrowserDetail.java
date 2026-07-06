@@ -26,6 +26,7 @@ import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.breadcrumb.Breadcrumb;
+import org.patternfly.component.breadcrumb.BreadcrumbItem;
 import org.patternfly.component.icon.Icon;
 import org.patternfly.component.icon.IconSize;
 import org.patternfly.component.page.PageBreadcrumb;
@@ -145,30 +146,41 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
         if (mbn.template.isEmpty()) {
             breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/"));
         } else {
-            breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/")
-                    .onClick((event, breadcrumbItem) -> {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        modelBrowser.home();
-                    }));
+            int rootSize = modelBrowser.root.size();
+            if (rootSize == 0) {
+                breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/")
+                        .onClick((event, breadcrumbItem) -> {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            modelBrowser.home();
+                        }));
+            } else {
+                breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/"));
+            }
             AddressTemplate current = AddressTemplate.root();
             for (Segment segment : mbn.template) {
                 current = current.append(segment.key, segment.value);
                 final AddressTemplate finalTemplate = current;
                 boolean last = current.last().equals(mbn.template.last());
-                breadcrumb.addItem(breadcrumbItem(current.identifier(), segment.key + "=" + segment.value)
-                        .active(last)
-                        .run(bci -> {
-                            if (!last) {
-                                bci.onClick((event, breadcrumbItem) -> {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                    modelBrowser.tree.select(breadcrumbItem.identifier());
-                                });
-                            } else {
-                                bci.add(copyToClipboard(finalTemplate));
-                            }
-                        }));
+                BreadcrumbItem item = breadcrumbItem(current.identifier(),
+                        segment.key + "=" + segment.value);
+                if (last) {
+                    item.active(true);
+                    item.add(copyToClipboard(finalTemplate));
+                } else if (current.size() == rootSize) {
+                    item.onClick((event, breadcrumbItem) -> {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        modelBrowser.home();
+                    });
+                } else if (current.size() > rootSize) {
+                    item.onClick((event, breadcrumbItem) -> {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        modelBrowser.tree.select(breadcrumbItem.identifier());
+                    });
+                }
+                breadcrumb.addItem(item);
             }
         }
         pageBreadcrumb.addBreadcrumb(breadcrumb);

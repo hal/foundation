@@ -42,6 +42,15 @@
     background-color: unset !important;
 }
 
+.hal-c-model-browser.pf-m-flat {
+    grid-template-columns: 1fr;
+}
+
+.hal-c-model-browser.pf-m-flat .hal-c-model-browser__tree,
+.hal-c-model-browser.pf-m-flat .hal-c-model-browser__splitter {
+    display: none;
+}
+
 .hal-c-model-browser__detail, .hal-c-model-browser__tree {
     height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px);
     max-height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px);
@@ -51,6 +60,7 @@
 
 .hal-c-model-browser__copy {
     align-self: center;
+    cursor: pointer;
     margin-left: var(--pf-t--global--spacer--sm);
 }
 

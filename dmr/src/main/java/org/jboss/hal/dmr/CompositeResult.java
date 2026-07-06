@@ -59,6 +59,7 @@ public class CompositeResult implements Iterable<ModelNode> {
         return new ModelNode();
     }
 
+    /** Returns an iterator over the step results. */
     @Override
     public Iterator<ModelNode> iterator() {
         return steps.values().iterator();

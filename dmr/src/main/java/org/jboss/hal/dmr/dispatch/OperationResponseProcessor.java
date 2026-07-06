@@ -39,6 +39,7 @@ import static org.jboss.hal.dmr.dispatch.HttpMethod.GET;
  */
 public class OperationResponseProcessor implements DmrResponseProcessor {
 
+    /** Decodes a base64-encoded DMR response, repackaging GET results into the standard outcome/result envelope. */
     @Override
     public ModelNode processPayload(final HttpMethod method, final String contentType, final String payload) {
         ModelNode node;

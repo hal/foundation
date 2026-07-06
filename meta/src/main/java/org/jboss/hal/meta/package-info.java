@@ -23,7 +23,10 @@
  *
  * <dl>
  * <dt>{@link org.jboss.hal.meta.AddressTemplate AddressTemplate}</dt>
- * <dd>Parameterized DMR addresses with placeholder support</dd>
+ * <dd>Parameterized DMR addresses with placeholder support. Provides trusted factories for compile-time literals
+ * ({@link org.jboss.hal.meta.AddressTemplate#ofTrusted(String) ofTrusted}), safe factories for structured input
+ * ({@link org.jboss.hal.meta.AddressTemplate#of(String, String) of}), and validated parsing for untrusted input such as
+ * URL parameters ({@link org.jboss.hal.meta.AddressTemplate#ofUntrusted(String) ofUntrusted}).</dd>
  * <dt>{@link org.jboss.hal.meta.MetadataRepository MetadataRepository}</dt>
  * <dd>Two-level cache for resource descriptions and security contexts</dd>
  * <dt>{@link org.jboss.hal.meta.StatementContext StatementContext}</dt>
@@ -36,6 +39,14 @@
  * {@snippet :
  *     // Create an address template
  *     AddressTemplate template = AddressTemplate.ofTrusted("subsystem=datasources/data-source=*");
+ *
+ *     // Chain resolvers fluently using apply()
+ *     AddressTemplate qualified = template
+ *         .apply(new StatementContextResolver(statementContext))
+ *         .apply(new WildcardResolver(WildcardResolver.Direction.LTR, "ExampleDS"));
+ *
+ *     // Terminal: resolve to a ResourceAddress for DMR operations
+ *     ResourceAddress address = qualified.resolve();
  *
  *     // Look up metadata
  *     metadataRepository.lookup(template, metadata -> {

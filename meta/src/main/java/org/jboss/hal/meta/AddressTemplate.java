@@ -18,6 +18,7 @@ package org.jboss.hal.meta;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.jboss.elemento.Id;
@@ -55,8 +56,7 @@ import static org.jboss.hal.dmr.ValueEncoder.ENCODED_SLASH;
  * </pre>
  *
  * <h2>Creating and Appending</h2>
- * There are two families of methods, following the naming convention of
- * <a href="https://www.gwtproject.org/javadoc/latest/com/google/gwt/safehtml/shared/SafeHtmlUtils.html">SafeHtmlUtils</a>:
+ * There are three families of factory methods:
  * <dl>
  *     <dt><strong>{@code of(...)} / {@code append(...)}</strong> — safe, encoding handled for you</dt>
  *     <dd>Accept <em>decoded</em> (raw) values. Special characters ({@code /}, {@code :}, {@code =}) in the value are encoded
@@ -79,12 +79,30 @@ import static org.jboss.hal.dmr.ValueEncoder.ENCODED_SLASH;
  *         <li>{@link #appendTrusted(String)} — append a trusted template string</li>
  *     </ul>
  *     </dd>
+ *     <dt><strong>{@link #ofUntrusted(String)}</strong> — untrusted input, all-or-nothing validation</dt>
+ *     <dd>Parses an untrusted string (e.g., from a URL parameter or user input) into an address template. Accepts both
+ *     backslash-encoded and plain strings. Returns {@link java.util.Optional#of(Object) Optional.of(template)} if
+ *     <strong>all</strong> segments are valid, or {@link java.util.Optional#empty() Optional.empty()} if any segment is
+ *     malformed. Unlike {@code ofTrusted}, which silently drops invalid segments and returns a partial result, this method
+ *     rejects the entire input when it contains invalid segments.</dd>
  * </dl>
  *
  * <h2>Resolving</h2>
- * To get a fully qualified {@link ResourceAddress} from an address template use one of the <code>resolve()</code> methods and a
- * {@link TemplateResolver}. In general, you should prefer address templates over
- * {@linkplain ResourceAddress resource addresses}.
+ * There are two ways to resolve an address template:
+ * <dl>
+ *     <dt><strong>{@link #apply(TemplateResolver)}</strong> — intermediate, returns {@code AddressTemplate}</dt>
+ *     <dd>Applies a {@link TemplateResolver} and returns the resolved template. Multiple resolvers can be chained fluently:
+ *     <pre>
+ * AddressTemplate qualified = template
+ *     .apply(new StatementContextResolver(statementContext))
+ *     .apply(new WildcardResolver(LTR, name));
+ *     </pre>
+ *     </dd>
+ *     <dt><strong>{@code resolve(...)}</strong> — terminal, returns {@link ResourceAddress}</dt>
+ *     <dd>Resolves the template to a fully qualified {@link ResourceAddress} ready for DMR operations. Use this as the final
+ *     step after any intermediate {@code apply()} calls.</dd>
+ * </dl>
+ * In general, you should prefer address templates over {@linkplain ResourceAddress resource addresses}.
  *
  * <h2>Encoding</h2>
  * Internally, segment values are stored in <em>decoded</em> form. Encoding only happens at serialization time (in
@@ -114,6 +132,37 @@ public final class AddressTemplate implements Iterable<Segment> {
      */
     public static AddressTemplate ofTrusted(String template) {
         return new AddressTemplate(parseSegments(template));
+    }
+
+    // ------------------------------------------------------ untrusted factory (parsing + validation)
+
+    /**
+     * Parses an <strong>untrusted</strong> string into an address template with all-or-nothing validation.
+     * <p>
+     * Use this method for strings from untrusted sources such as URL parameters, user input, or external data. The method
+     * accepts both backslash-encoded strings (as produced by {@link #toString()}) and raw unencoded strings with simple values.
+     * <p>
+     * Unlike {@link #ofTrusted(String)}, which silently drops invalid segments and returns a partial result, this method
+     * validates that <strong>all</strong> segments in the input were parsed successfully. If any segment is invalid (e.g.,
+     * missing {@code =} or placeholder syntax), the entire input is rejected and {@link Optional#empty()} is returned.
+     * <p>
+     * {@code null}, empty, blank, or {@code "/"} inputs are considered valid and return {@link Optional#of(Object)
+     * Optional.of(root())}.
+     *
+     * @param input the untrusted string to parse
+     * @return an {@link Optional} containing the parsed address template if all segments are valid, or
+     * {@link Optional#empty()} if any segment is invalid
+     */
+    public static Optional<AddressTemplate> ofUntrusted(String input) {
+        if (input == null || input.trim().isEmpty() || "/".equals(input.trim())) {
+            return Optional.of(root());
+        }
+        int expectedCount = countRawSegments(input);
+        LinkedList<Segment> segments = parseSegments(input);
+        if (segments.size() == expectedCount) {
+            return Optional.of(new AddressTemplate(segments));
+        }
+        return Optional.empty();
     }
 
     // ------------------------------------------------------ safe factories (encoding handled)
@@ -311,11 +360,11 @@ public final class AddressTemplate implements Iterable<Segment> {
     // ------------------------------------------------------ sub and parent
 
     /**
-     * Works like {@link List#subList(int, int)} over the tokens of this template and throws the same exceptions.
+     * Works like {@link List#subList(int, int)} over the segments of this template and throws the same exceptions.
      *
      * @param fromIndex low endpoint (inclusive) of the sub template
      * @param toIndex   high endpoint (exclusive) of the sub template
-     * @return a new address template containing the specified tokens.
+     * @return a new address template containing the specified segments.
      * @throws IndexOutOfBoundsException for an illegal endpoint index value (<tt>fromIndex &lt; 0 || toIndex &gt; size ||
      *                                   fromIndex &gt; toIndex</tt>)
      */
@@ -413,6 +462,23 @@ public final class AddressTemplate implements Iterable<Segment> {
 
     // ------------------------------------------------------ resolve
 
+    /**
+     * Applies a {@link TemplateResolver} to this template and returns the resolved template. Unlike the {@code resolve()}
+     * methods that return a terminal {@link ResourceAddress}, this method returns an {@code AddressTemplate}, enabling fluent
+     * chaining of multiple resolvers:
+     * <pre>
+     * AddressTemplate qualified = template
+     *     .apply(new StatementContextResolver(statementContext))
+     *     .apply(new WildcardResolver(LTR, name));
+     * </pre>
+     *
+     * @param resolver the resolver to apply
+     * @return the resolved address template
+     */
+    public AddressTemplate apply(TemplateResolver resolver) {
+        return resolver.resolve(this);
+    }
+
     /** Resolve this template using the {@link NoopResolver} */
     public ResourceAddress resolve() {
         return resolve(new NoopResolver());
@@ -449,6 +515,39 @@ public final class AddressTemplate implements Iterable<Segment> {
     }
 
     // ------------------------------------------------------ internal
+
+    private static int countRawSegments(String template) {
+        if (template == null || template.trim().isEmpty()) {
+            return 0;
+        }
+        String trimmed = template.trim();
+        if (trimmed.equals("/")) {
+            return 0;
+        }
+        trimmed = trimmed.startsWith("/") && !trimmed.startsWith(ENCODED_SLASH)
+                ? trimmed.substring(1)
+                : trimmed;
+        trimmed = trimmed.endsWith("/") && !trimmed.endsWith(ENCODED_SLASH)
+                ? trimmed.substring(0, trimmed.length() - 1)
+                : trimmed;
+
+        int count = 1;
+        boolean backslash = false;
+        for (int i = 0; i < trimmed.length(); i++) {
+            char c = trimmed.charAt(i);
+            if (c == '\\') {
+                backslash = true;
+            } else if (c == '/') {
+                if (!backslash) {
+                    count++;
+                }
+                backslash = false;
+            } else {
+                backslash = false;
+            }
+        }
+        return count;
+    }
 
     private static LinkedList<Segment> parseSegments(String template) {
         LinkedList<Segment> segments = new LinkedList<>();
