@@ -33,6 +33,7 @@ public class User {
         this.authenticated = authenticated;
     }
 
+    /** Returns a string like {@code User(name, roles=[...])}. */
     @Override
     public String toString() {
         return "User(" + name + ", roles=" + roles + ')';

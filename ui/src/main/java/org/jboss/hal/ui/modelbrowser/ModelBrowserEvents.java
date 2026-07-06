@@ -127,7 +127,7 @@ public interface ModelBrowserEvents {
 
         String TYPE = UIEvent.type("model-browser", "select-in-tree");
 
-        /** Event payload carrying optional identifier, parent identifier, and/or address template. */
+        /** Event payload carrying an optional identifier, parent identifier, and/or address template. */
         class Details {
 
             String identifier;

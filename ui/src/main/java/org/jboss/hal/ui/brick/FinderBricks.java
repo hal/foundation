@@ -29,8 +29,8 @@ import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.extension.finder.Finder;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
-import org.patternfly.extension.finder.ResolvedFinderPath;
 import org.patternfly.extension.finder.FinderPreview;
+import org.patternfly.extension.finder.ResolvedFinderPath;
 import org.patternfly.filter.Filter;
 import org.patternfly.layout.stack.Stack;
 
@@ -38,7 +38,6 @@ import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.deleteResourceModal;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.itemAddress;
 import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
@@ -92,19 +91,22 @@ public final class FinderBricks {
 
     /**
      * Creates a finder column with full CRUD support: an "add" button that opens an add-resource dialog, a "refresh" button,
-     * per-item "open" and "delete" actions, a search bar (shown when there are 5+ items), and an optional preview panel
+     * per-item "view" and "delete" actions, a search bar (shown when there are 5+ items), and an optional preview panel
      * displaying selected resource attributes.
+     * <p>
+     * The "view" action navigates to the resource page using the {@link org.jboss.hal.ui.navigation.RouteRegistry RouteRegistry}
+     * to find the best matching route for the item's address template.
      *
      * @param id                a unique identifier for the column and its OUIA test IDs
      * @param header            the column header text
-     * @param resourceRoute     route template for the resource page (e.g. {@code "/configuration/resource/:address"})
      * @param previewAttributes attribute names to display in the preview panel; if empty, no preview is shown
      * @param templateFn        resolves the current finder path to an {@link AddressTemplate} for the resource
      * @param nextColumn        supplier for the next column to navigate into, or {@code null} for leaf items
      * @return a fully configured finder column with CRUD capabilities
      */
-    public static FinderColumn crudColumn(String id, String header, String resourceRoute, List<String> previewAttributes,
-            Function<ResolvedFinderPath, AddressTemplate> templateFn, Supplier<FinderColumn> nextColumn) {
+    public static FinderColumn crudColumn(String id, String header, List<String> previewAttributes,
+            Function<ResolvedFinderPath, AddressTemplate> templateFn,
+            Supplier<FinderColumn> nextColumn) {
         FinderColumn column = finderColumn(id);
         column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
                         .addButton(button(plus()).plain().small()
@@ -120,12 +122,15 @@ public final class FinderBricks {
                 .addItems(childResources(templateFn, node -> {
                     FinderItem item = finderItem(Id.build(node.asString()));
                     item.text(node.asString()).addActions(finderItemActions()
-                            .addButton(button(upRightFromSquare()).plain().small().onClick((e, b) -> {
-                                    String address = itemAddress(item);
-                                    if (address != null) {
-                                        uic().placeManager().goTo(resourceRoute, address);
-                                    }
-                            }))
+                            .addButton(button(upRightFromSquare())
+                                    .plain()
+                                    .small()
+                                    .onClick((e, b) -> {
+                                        AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                                        if (template != null) {
+                                            uic().routeRegistry().goTo(template);
+                                        }
+                                    }))
                             .addButton(button(trash()).plain().small()
                                     .ouiaId(OuiaIds.ouia(id, "delete", "btn"))
                                     .onClick((e, b) -> {

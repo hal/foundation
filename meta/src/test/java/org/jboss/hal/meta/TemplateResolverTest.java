@@ -25,6 +25,46 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TemplateResolverTest {
 
     @Test
+    void applySingle() {
+        AddressTemplate template = AddressTemplate.ofTrusted("{a}/b=c");
+        TemplateResolver a = resolver("a");
+        AddressTemplate result = template.apply(a);
+        assertEquals("/a=a/b=c", result.template);
+    }
+
+    @Test
+    void applyChain() {
+        AddressTemplate template = AddressTemplate.ofTrusted("{a}/{b}/{c}");
+        AddressTemplate result = template
+                .apply(resolver("a"))
+                .apply(resolver("b"))
+                .apply(resolver("c"));
+        assertEquals("/a=a/b=b/c=c", result.template);
+    }
+
+    @Test
+    void applyPartialChain() {
+        AddressTemplate template = AddressTemplate.ofTrusted("{a}/{b}/{c}");
+        AddressTemplate result = template
+                .apply(resolver("a"))
+                .apply(resolver("c"));
+        assertEquals("/a=a/{b}/c=c", result.template);
+    }
+
+    @Test
+    void applyOnRoot() {
+        AddressTemplate result = AddressTemplate.root().apply(resolver("a"));
+        assertEquals("/", result.template);
+    }
+
+    @Test
+    void applyDoesNotMutate() {
+        AddressTemplate template = AddressTemplate.ofTrusted("{a}/b=c");
+        template.apply(resolver("a"));
+        assertEquals("/{a}/b=c", template.template);
+    }
+
+    @Test
     void resolve() {
         AddressTemplate template = AddressTemplate.ofTrusted("{a}/{b}/{c}");
 

@@ -59,7 +59,7 @@ import static org.patternfly.style.Classes.util;
 /**
  * Popper-based input that allows direct navigation to a resource by entering its address template.
  * <p>
- * When the entered address contains wildcards, the component resolves them and presents a list of matching fully-qualified
+ * When the entered address contains wildcards, the component resolves them and presents a list of matching fully qualified
  * addresses for the user to choose from. Triggered by a compass icon button in the tree toolbar.
  */
 class GotoResource implements IsElement<HTMLElement>, Attachable {

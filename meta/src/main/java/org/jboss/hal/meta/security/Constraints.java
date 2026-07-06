@@ -29,7 +29,12 @@ public class Constraints implements Iterable<Constraint> {
 
     /** The logical operator used to combine multiple constraints. */
     public enum Operator {
-        AND("&"), OR("|");
+
+        /** All constraints must be satisfied. */
+        AND("&"),
+
+        /** At least one constraint must be satisfied. */
+        OR("|");
 
         private final String operator;
 
@@ -37,6 +42,7 @@ public class Constraints implements Iterable<Constraint> {
             this.operator = operator;
         }
 
+        /** Returns the string representation of this operator ({@code "&"} or {@code "|"}). */
         public String operator() {
             return operator;
         }
