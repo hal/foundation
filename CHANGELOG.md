@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-06
+
 ### Added
 
 - Add route binding system (`RouteBinding`, `RouteRegistry`, `RouteBindingPage`) for bidirectional mapping between routes and address templates
@@ -387,7 +389,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.3.8...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/hal/foundation/compare/v0.3.8...v0.4.0
 [0.3.8]: https://github.com/hal/foundation/compare/v0.3.7...v0.3.8
 [0.3.7]: https://github.com/hal/foundation/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/hal/foundation/compare/v0.3.5...v0.3.6
