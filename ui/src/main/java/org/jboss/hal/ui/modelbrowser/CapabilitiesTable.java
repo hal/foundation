@@ -54,11 +54,11 @@ import static org.patternfly.style.Width.width60;
  * Each row shows the capability name, whether it is dynamic, and its dynamic elements. When no capabilities are available, an
  * empty state is displayed.
  */
-class CapabilitiesTable implements IsElement<HTMLElement> {
+public class CapabilitiesTable implements IsElement<HTMLElement> {
 
     private final Table table;
 
-    CapabilitiesTable(Metadata metadata) {
+    public CapabilitiesTable(Metadata metadata) {
         this.table = table()
                 .addHead(thead().css(util("mt-sm"))
                         .addRow(tr("capabilities-head")

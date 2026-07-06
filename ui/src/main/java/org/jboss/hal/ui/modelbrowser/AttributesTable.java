@@ -52,7 +52,7 @@ import static org.patternfly.style.Width.width60;
  * The table shows attribute name, type, storage, and access type columns. Complex attributes (LIST/OBJECT) are rendered as
  * expandable tree table rows. A toolbar with filter controls is displayed above the table.
  */
-class AttributesTable implements IsElement<HTMLElement> {
+public class AttributesTable implements IsElement<HTMLElement> {
 
     private static final Logger logger = Logger.getLogger(AttributesTable.class.getName());
     private final Filter<AttributeDescription> filter;
@@ -62,7 +62,7 @@ class AttributesTable implements IsElement<HTMLElement> {
     private final HTMLElement root;
     private EmptyState noAttributes;
 
-    AttributesTable(Metadata metadata) {
+    public AttributesTable(Metadata metadata) {
         filter = new AttributesFilter().onChange(this::onFilterChanged);
         visible = ov(metadata.resourceDescription().attributes().size());
         total = ov(metadata.resourceDescription().attributes().size());

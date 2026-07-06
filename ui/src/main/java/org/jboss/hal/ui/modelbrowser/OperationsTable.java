@@ -92,7 +92,7 @@ import static org.patternfly.style.Width.width45;
  * The {@code :add} and {@code :remove} operations are excluded from direct execution. Global operations can be shown or hidden
  * via a toggle. A toolbar with filter controls is displayed above the table.
  */
-class OperationsTable implements IsElement<HTMLElement> {
+public class OperationsTable implements IsElement<HTMLElement> {
 
     private static final Logger logger = Logger.getLogger(OperationsTable.class.getName());
     private final AddressTemplate template;
@@ -103,7 +103,7 @@ class OperationsTable implements IsElement<HTMLElement> {
     private final HTMLElement root;
     private EmptyState noAttributes;
 
-    OperationsTable(AddressTemplate template, Metadata metadata) {
+    public OperationsTable(AddressTemplate template, Metadata metadata) {
         boolean showGlobalOperations = uic().settings().get(Settings.Key.SHOW_GLOBAL_OPERATIONS).asBoolean();
         this.template = template;
         this.filter = new OperationsFilter(showGlobalOperations).onChange(this::onFilterChanged);
