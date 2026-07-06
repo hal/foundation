@@ -70,7 +70,7 @@ import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionConte
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.EDIT;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
 import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
 import static org.patternfly.core.Attributes.role;
 import static org.patternfly.core.Attributes.tabindex;

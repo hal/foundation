@@ -16,13 +16,13 @@
 package org.jboss.hal.ui.resource;
 
 import org.jboss.elemento.Id;
-import org.jboss.hal.ui.resource.manager.ResourceManager;
+import org.jboss.hal.ui.resource.data.ResourceData;
 
 /** Generates stable HTML element IDs for form and view items based on attribute name and display state. */
 public interface ItemIdentifier {
 
     /** Builds a unique HTML element ID from the attribute's fully qualified name and the given display state. */
-    static String identifier(ResourceAttribute resourceAttribute, ResourceManager.State state) {
+    static String identifier(ResourceAttribute resourceAttribute, ResourceData.State state) {
         return Id.build(resourceAttribute.fqn, state.name());
     }
 }

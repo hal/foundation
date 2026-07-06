@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.manager;
+package org.jboss.hal.ui.resource.data;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import org.jboss.elemento.By;
@@ -31,10 +31,10 @@ import org.jboss.hal.model.filter.TypesAttribute;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
 import org.jboss.hal.ui.filter.NameSearchInput;
-import org.jboss.hal.ui.resource.manager.ResourceManager.State;
+import org.jboss.hal.ui.resource.data.ResourceData.State;
 
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.EDIT;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.VIEW;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.VIEW;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarContent;
 import org.patternfly.component.toolbar.ToolbarGroup;
@@ -68,18 +68,18 @@ import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.style.Classes.modifier;
 
 /**
- * Action toolbar for the {@link ResourceManager}. Provides attribute filters (name, type, status, storage, access type) and
+ * Action toolbar for the {@link ResourceData}. Provides attribute filters (name, type, status, storage, access type) and
  * context-aware action buttons that change between view mode (refresh, reset, edit) and edit mode (save, cancel). Filter
  * chips and a clear-all action are shown when filter criteria are active.
  */
-public class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceToolbar> {
+public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceDataToolbar> {
 
     // ------------------------------------------------------ factory
 
     /** Creates a new toolbar bound to the given resource manager, filter, and item counters. */
-    public static ResourceToolbar resourceToolbar(ResourceManager resourceManager,
+    public static ResourceDataToolbar resourceDataToolbar(ResourceData resourceData,
             Filter<ResourceAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
-        return new ResourceToolbar(resourceManager, filter, visible, total);
+        return new ResourceDataToolbar(resourceData, filter, visible, total);
     }
 
     // ------------------------------------------------------ instance
@@ -89,15 +89,15 @@ public class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTML
     private final String editId;
     private final Toolbar toolbar;
     private final ToolbarContent toolbarContent;
-    private final ResourceManager resourceManager;
+    private final ResourceData resourceData;
     private ToolbarGroup viewActionGroup;
     private ToolbarGroup editActionGroup;
     private ToolbarItem resetItem;
     private ToolbarItem editItem;
 
-    private ResourceToolbar(ResourceManager resourceManager, Filter<ResourceAttribute> filter,
+    private ResourceDataToolbar(ResourceData resourceData, Filter<ResourceAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
-        this.resourceManager = resourceManager;
+        this.resourceData = resourceData;
 
         this.resetId = Id.unique("reset");
         this.refreshId = Id.unique("refresh");
@@ -142,11 +142,11 @@ public class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTML
 
     @Override
     public String ouiaComponentType() {
-        return "HalOP/ResourceToolbar";
+        return "HalOP/ResourceDataToolbar";
     }
 
     @Override
-    public ResourceToolbar that() {
+    public ResourceDataToolbar that() {
         return this;
     }
 
@@ -176,18 +176,18 @@ public class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTML
         resetItem = toolbarItem()
                 .add(button().id(resetId).plain().icon(powerOff())
                         .ouiaId(OuiaIds.RESET_BTN)
-                        .onClick((e, b) -> resourceManager.reset()))
+                        .onClick((e, b) -> resourceData.reset()))
                 .add(tooltip(By.id(resetId),
                         "Reset attributes to their initial or default value. Applied only to nillable attributes without relationships to other attributes."));
         ToolbarItem refreshItem = toolbarItem()
                 .add(button().id(refreshId).plain().icon(rotateRight())
                         .ouiaId(OuiaIds.REFRESH_BTN)
-                        .onClick((e, b) -> resourceManager.refresh()))
+                        .onClick((e, b) -> resourceData.refresh()))
                 .add(tooltip(By.id(refreshId), "Refresh"));
         editItem = toolbarItem()
                 .add(button().id(editId).plain().icon(penToSquare())
                         .ouiaId(OuiaIds.EDIT_BTN)
-                        .onClick((e, b) -> resourceManager.load(EDIT)))
+                        .onClick((e, b) -> resourceData.load(EDIT)))
                 .add(tooltip(By.id(editId), "Edit resource"));
         viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
                 .addItem(refreshItem)
@@ -200,11 +200,11 @@ public class ResourceToolbar implements IsElement<HTMLElement>, OuiaSupport<HTML
         ToolbarItem saveItem = toolbarItem()
                 .add(button("Save").primary()
                         .ouiaId(OuiaIds.SAVE_BTN)
-                        .onClick((e, b) -> resourceManager.save()));
+                        .onClick((e, b) -> resourceData.save()));
         ToolbarItem cancelItem = toolbarItem()
                 .add(button("Cancel").secondary()
                         .ouiaId(OuiaIds.CANCEL_BTN)
-                        .onClick((e, b) -> resourceManager.cancel()));
+                        .onClick((e, b) -> resourceData.cancel()));
         editActionGroup = toolbarGroup(buttonGroup).css(modifier("align-right"))
                 .addItem(saveItem)
                 .addItem(cancelItem);

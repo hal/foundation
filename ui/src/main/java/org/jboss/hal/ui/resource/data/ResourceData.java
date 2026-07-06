@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.manager;
+package org.jboss.hal.ui.resource.data;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.jboss.hal.ui.resource.ResourceItem;
 import org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder;
@@ -33,14 +33,8 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.modelbrowser.NoMatch;
-import org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder;
-import org.jboss.hal.ui.resource.form.FormItemFlags.Scope;
-import org.jboss.hal.ui.resource.form.FormItemFlags;
-import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.view.ResourceView;
-import org.jboss.hal.ui.resource.view.ViewItem;
-import org.jboss.hal.ui.resource.view.ViewItemFactory;
 import org.patternfly.component.HasItems;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
@@ -67,11 +61,11 @@ import static org.jboss.hal.ui.resource.form.FormItemFactory.formItem;
 import static org.jboss.hal.ui.resource.ResourceAttribute.includes;
 import static org.jboss.hal.ui.resource.ResourceAttribute.resourceAttributes;
 import static org.jboss.hal.ui.resource.view.ViewItemFactory.viewItem;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.EDIT;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.ERROR;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.NO_ATTRIBUTES;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.VIEW;
-import static org.jboss.hal.ui.resource.manager.ResourceToolbar.resourceToolbar;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.ERROR;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.NO_ATTRIBUTES;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.VIEW;
+import static org.jboss.hal.ui.resource.data.ResourceDataToolbar.resourceDataToolbar;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.button.Button.button;
@@ -86,20 +80,20 @@ import static org.patternfly.style.Classes.modifier;
 
 /**
  * Central state machine that orchestrates viewing and editing of WildFly management resource attributes. Combines a
- * {@link ResourceFilter} and {@link ResourceToolbar} with a {@link ResourceView} and
+ * {@link ResourceFilter} and {@link ResourceDataToolbar} with a {@link ResourceView} and
  * {@link org.jboss.hal.ui.resource.form.ResourceForm}.
  * <p>
  * Manages transitions between {@link State#VIEW}, {@link State#EDIT}, {@link State#NO_ATTRIBUTES}, and
  * {@link State#ERROR} states. On attach, it loads the resource from the management endpoint and populates either a
  * read-only view or an editable form depending on the requested state.
  */
-public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManager>, IsElement<HTMLElement>, Attachable {
+public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, IsElement<HTMLElement>, Attachable {
 
     // ------------------------------------------------------ factory
 
     /** Creates a new resource manager for the given address template and metadata. */
-    public static ResourceManager resourceManager(AddressTemplate template, Metadata metadata) {
-        return new ResourceManager(template, metadata);
+    public static ResourceData resourceData(AddressTemplate template, Metadata metadata) {
+        return new ResourceData(template, metadata);
     }
 
     // ------------------------------------------------------ instance
@@ -116,7 +110,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
         ERROR
     }
 
-    private static final Logger logger = Logger.getLogger(ResourceManager.class.getName());
+    private static final Logger logger = Logger.getLogger(ResourceData.class.getName());
 
     private final AddressTemplate template;
     private final Metadata metadata;
@@ -125,7 +119,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private final ObservableValue<Integer> total;
     private final Filter<ResourceAttribute> filter;
     private final NoMatch<ResourceAttribute> noMatch;
-    private final ResourceToolbar toolbar;
+    private final ResourceDataToolbar toolbar;
     private final HTMLContainerBuilder<HTMLDivElement> rootContainer;
     private final HTMLElement root;
     private boolean inlineEdit;
@@ -134,7 +128,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     private HasItems<HTMLElement, ?, ? extends ResourceItem<?>> items;
     private ResourceForm resourceForm;
 
-    ResourceManager(AddressTemplate template, Metadata metadata) {
+    ResourceData(AddressTemplate template, Metadata metadata) {
         this.template = template;
         this.metadata = metadata;
         this.attributes = new ArrayList<>();
@@ -149,7 +143,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
                 .param(INCLUDE_RUNTIME, true)
                 .build();
         this.root = div().css(halComponent(resource))
-                .add(toolbar = resourceToolbar(this, filter, visible, total))
+                .add(toolbar = resourceDataToolbar(this, filter, visible, total))
                 .add(rootContainer = div().css(halComponent(resource, body)))
                 .element();
 
@@ -170,18 +164,18 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     // ------------------------------------------------------ builder
 
     /** Enables inline editing for this resource manager. */
-    public ResourceManager inlineEdit() {
+    public ResourceData inlineEdit() {
         return inlineEdit(true);
     }
 
     /** Controls whether inline editing is enabled. */
-    public ResourceManager inlineEdit(boolean inlineEdit) {
+    public ResourceData inlineEdit(boolean inlineEdit) {
         this.inlineEdit = inlineEdit;
         return this;
     }
 
     /** Overrides the default {@code read-resource} operation used to load the resource. */
-    public ResourceManager operation(Operation operation) {
+    public ResourceData operation(Operation operation) {
         if (operation != null) {
             this.operation = operation;
         } else {
@@ -191,7 +185,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     }
 
     /** Restricts the displayed attributes to the given fully qualified names. An empty iterable shows all attributes. */
-    public ResourceManager attributes(Iterable<String> attributes) {
+    public ResourceData attributes(Iterable<String> attributes) {
         for (String attribute : attributes) {
             this.attributes.add(attribute);
         }
@@ -199,7 +193,7 @@ public class ResourceManager implements TypedBuilder<HTMLElement, ResourceManage
     }
 
     @Override
-    public ResourceManager that() {
+    public ResourceData that() {
         return this;
     }
 

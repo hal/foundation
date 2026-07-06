@@ -24,8 +24,8 @@
  * <dd>Editable form items for resource attributes (boolean, numeric, string, capability references, etc.).</dd>
  * <dt>{@link org.jboss.hal.ui.resource.view}</dt>
  * <dd>Read-only display of resource attributes using description lists.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.manager}</dt>
- * <dd>Resource management orchestration with toolbar and filtering.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.data}</dt>
+ * <dd>View/edit state machine for resource attribute values.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog}</dt>
  * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>

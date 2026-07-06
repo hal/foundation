@@ -21,7 +21,7 @@ import org.jboss.hal.resources.OuiaIds;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.ui.resource.manager.ResourceManager.resourceManager;
+import static org.jboss.hal.ui.resource.data.ResourceData.resourceData;
 import static org.patternfly.component.tabs.Tab.tab;
 import static org.patternfly.component.tabs.TabContent.tabContent;
 import static org.patternfly.component.tabs.Tabs.tabs;
@@ -45,7 +45,7 @@ class ResourceDetails implements IsElement<HTMLElement> {
                 .addItem(tab("data", "Data")
                         .ouiaId(OuiaIds.MODEL_BROWSER_TAB_DATA)
                         .addContent(tabContent().css(util("pt-md"))
-                                .add(resourceManager(mbn.template, metadata))))
+                                .add(resourceData(mbn.template, metadata))))
                 .run(tbs -> {
                     if (!metadata.resourceDescription().attributes().isEmpty()) {
                         tbs.addItem(tab("attributes", "Attributes")

@@ -63,7 +63,7 @@ import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
-import static org.jboss.hal.ui.resource.manager.ResourceManager.State.VIEW;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.VIEW;
 import static org.jboss.hal.ui.resource.view.ViewItemProviders.specialViewItems;
 import static org.jboss.hal.ui.resource.view.CapabilityReference.capabilityReference;
 import static org.patternfly.component.button.Button.button;
