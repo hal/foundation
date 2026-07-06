@@ -60,6 +60,7 @@ import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.fullHeight;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.static_;
+import static org.patternfly.style.Placement.bottomEnd;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Height;
 
@@ -98,7 +99,8 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
-                                .addItem(toolbarItem().add(themeSelector("hal")))
+                                .addItem(toolbarItem().add(themeSelector("hal")
+                                        .placement(bottomEnd)))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
                                         group.addItem(toolbarItem().add(endpointSelector(endpointStorage)));

@@ -24,6 +24,7 @@ import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketBindingColumn;
 
+/** Finder column that lists local-destination outbound socket bindings within a socket binding group. */
 @Dependent
 public class OutboundLocalColumn implements ColumnProvider {
 
@@ -42,6 +43,6 @@ public class OutboundLocalColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return socketBindingColumn(crud, ID, "Outbound Local");
+        return socketBindingColumn(ID, "Outbound Local");
     }
 }

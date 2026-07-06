@@ -27,5 +27,11 @@ import org.jboss.hal.dmr.Operation;
 @FunctionalInterface
 public interface DispatcherErrorHandler {
 
+    /**
+     * Called when a DMR operation fails.
+     *
+     * @param operation the failed operation
+     * @param error     the error message describing the failure
+     */
     void onError(Operation operation, String error);
 }

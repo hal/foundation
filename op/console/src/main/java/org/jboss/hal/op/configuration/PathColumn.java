@@ -22,12 +22,13 @@ import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;
-import static org.jboss.hal.op.configuration.ConfigurationRoutes.RESOURCE_ROUTE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
 
+/** Finder column listing the filesystem paths defined in the WildFly configuration. */
 @Dependent
 public class PathColumn implements ColumnProvider {
 
+    /** Column identifier used for registration and OUIA test IDs. */
     public static final String ID = "path-column";
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("path=*");
 
@@ -38,7 +39,7 @@ public class PathColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        return crudColumn(ID, "Path", RESOURCE_ROUTE, asList("path", "read-only", "relative-to"),
+        return crudColumn(ID, "Path", asList("path", "read-only", "relative-to"),
                 __ -> TEMPLATE, null);
     }
 }

@@ -68,11 +68,13 @@ public class TypeValues {
                 .collect(joining());
     }
 
+    /** Returns a string like {@code Type(name:identifier)}. */
     @Override
     public String toString() {
         return "Type(" + name + ':' + identifier + ')';
     }
 
+    /** Two type values are equal if they have the same name and identifier. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {return true;}
@@ -81,6 +83,7 @@ public class TypeValues {
         return Objects.equals(name, that.name) && Objects.equals(identifier, that.identifier);
     }
 
+    /** Returns a hash code based on the name and identifier. */
     @Override
     public int hashCode() {
         return Objects.hash(name, identifier);

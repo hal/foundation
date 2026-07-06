@@ -34,6 +34,7 @@ public class ServerGroupDeployment extends Content {
         this.serverGroup = serverGroup;
     }
 
+    /** Two server group deployments are equal if they share the same name and server group. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,6 +55,7 @@ public class ServerGroupDeployment extends Content {
         return name().equals(that.name());
     }
 
+    /** Returns a hash code based on the deployment name and server group. */
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -62,6 +64,7 @@ public class ServerGroupDeployment extends Content {
         return result;
     }
 
+    /** Returns a string like {@code ServerGroupDeployment{name@group, ENABLED}}. */
     @Override
     public String toString() {
         return "ServerGroupDeployment{" + name() + "@" + serverGroup + ", " + (enabled() ? ENABLED : DISABLED) + "}";

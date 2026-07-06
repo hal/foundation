@@ -39,6 +39,7 @@ public class ProcessStateProcessor implements DmrHeaderProcessor {
 
     @Inject Event<ProcessStateEvent> processStateEventEvent;
 
+    /** Scans DMR response headers for {@code process-state} entries and fires a {@link ProcessStateEvent} if any are found. */
     @Override
     public void process(DmrHeader[] headers) {
         ProcessState processState = new ProcessState();

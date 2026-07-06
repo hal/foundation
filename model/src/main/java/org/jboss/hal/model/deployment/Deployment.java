@@ -74,6 +74,7 @@ public class Deployment extends Content {
         }
     }
 
+    /** Two deployments are equal if they have the same name and reference server. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,6 +94,7 @@ public class Deployment extends Content {
         return name().equals(that.name());
     }
 
+    /** Returns a hash code based on the deployment name and reference server. */
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -101,6 +103,7 @@ public class Deployment extends Content {
         return result;
     }
 
+    /** Returns a string describing the deployment name, server, enabled state, and status. */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
