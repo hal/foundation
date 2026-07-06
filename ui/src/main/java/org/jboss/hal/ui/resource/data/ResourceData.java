@@ -35,6 +35,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.HalClasses;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.expandable.ExpandableSection;
 import org.patternfly.component.form.FormFieldGroup;
@@ -254,6 +255,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                                 String groupName = entry.getKey();
                                 List<ResourceAttribute> groupAttributes = entry.getValue();
                                 DescriptionList dl = descriptionList()
+                                        .css(halComponent(HalClasses.resource, HalClasses.view))
                                         .orientation(breakpoints(
                                                 sm, vertical,
                                                 md, horizontal,
