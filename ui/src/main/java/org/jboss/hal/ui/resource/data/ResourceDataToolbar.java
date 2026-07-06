@@ -162,17 +162,14 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     }
 
     void adjust(State state, SecurityContext securityContext) {
+        failSafeRemoveFromParent(editActionGroup);
+        failSafeRemoveFromParent(viewActionGroup);
         if (state == VIEW) {
-            failSafeRemoveFromParent(editActionGroup);
             ElementGuard.toggle(resetItem, securityContext.writable());
             ElementGuard.toggle(editItem, securityContext.writable());
             toolbarContent.addGroup(viewActionGroup()); // recreate!
         } else if (state == EDIT) {
-            failSafeRemoveFromParent(viewActionGroup);
             toolbarContent.addGroup(editActionGroup()); // recreate!
-        } else {
-            failSafeRemoveFromParent(editActionGroup);
-            failSafeRemoveFromParent(viewActionGroup);
         }
     }
 
