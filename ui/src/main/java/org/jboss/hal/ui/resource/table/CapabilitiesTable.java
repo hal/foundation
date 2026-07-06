@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.modelbrowser;
+package org.jboss.hal.ui.resource.table;
 
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
@@ -28,8 +28,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.patternfly.component.emptystate.EmptyState.emptyState;
-import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.table.Table.table;
@@ -38,7 +37,6 @@ import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
-import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.layout.bullseye.Bullseye.bullseye;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
@@ -71,11 +69,8 @@ public class CapabilitiesTable implements IsElement<HTMLElement> {
                                 tbody.addRow(tr(Id.unique("empty"))
                                         .addItem(td().colSpan(3)
                                                 .add(bullseye()
-                                                        .add(emptyState()
-                                                                .icon(ban())
-                                                                .text("No capabilities")
-                                                                .addBody(emptyStateBody()
-                                                                        .text("This resource provides no capabilities."))))));
+                                                        .add(noItems("No capabilities",
+                                                                "This resource provides no capabilities.")))));
                             } else {
                                 tbody.addRows(metadata.resourceDescription().capabilities(), capability -> tr(capability.name())
                                         .addItem(td("Name")

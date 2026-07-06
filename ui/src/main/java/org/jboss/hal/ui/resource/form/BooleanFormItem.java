@@ -16,10 +16,8 @@
 package org.jboss.hal.ui.resource.form;
 
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.EXISTING_RESOURCE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.NEW_RESOURCE;
+
 import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import org.jboss.hal.dmr.ModelNode;
@@ -122,7 +120,7 @@ public class BooleanFormItem extends FormItem {
 
     @Override
     boolean validate() {
-        if (inputMode == FormItemInputMode.EXPRESSION) {
+        if (inputMode == EXPRESSION) {
             return validateExpressionMode();
         }
         return true;
@@ -131,35 +129,21 @@ public class BooleanFormItem extends FormItem {
     // ------------------------------------------------------ data
 
     @Override
-    boolean isModified() {
-        if (ra.readable && !ra.description.readOnly()) {
-            if (flags.scope == NEW_RESOURCE) {
-                if (inputMode == NATIVE) {
-                    if (ra.description.hasDefault()) {
-                        return ra.description.get(DEFAULT).asBoolean() != switchControl.value();
-                    } else {
-                        return ra.value.asBoolean(false) != switchControl.value();
-                    }
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else if (flags.scope == EXISTING_RESOURCE) {
-                boolean wasDefined = ra.value.isDefined();
-                if (inputMode == NATIVE) {
-                    if (wasDefined) {
-                        // modified if the original value was an expression or is different from the current user input
-                        return ra.expression || ra.value.asBoolean() != switchControl.value();
-                    } else {
-                        return true;
-                    }
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else {
-                unknownScope();
-            }
+    boolean isNativeModifiedForNew() {
+        if (ra.description.hasDefault()) {
+            return ra.description.get(DEFAULT).asBoolean() != switchControl.value();
+        } else {
+            return ra.value.asBoolean(false) != switchControl.value();
         }
-        return false;
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
+        if (wasDefined) {
+            return ra.expression || ra.value.asBoolean() != switchControl.value();
+        } else {
+            return true;
+        }
     }
 
     @Override

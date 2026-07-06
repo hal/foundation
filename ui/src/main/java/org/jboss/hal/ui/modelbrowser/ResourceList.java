@@ -20,6 +20,11 @@ import java.util.List;
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
+import org.patternfly.component.emptystate.EmptyState;
+
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.env.Stability;
@@ -68,9 +73,7 @@ import static org.jboss.hal.ui.modelbrowser.ModelBrowserEngine.parseChildren;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.FOLDER;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.SINGLETON_FOLDER;
 import static org.patternfly.component.button.Button.button;
-import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
-import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.component.list.DataList.dataList;
 import static org.patternfly.component.list.DataListAction.dataListAction;
@@ -90,7 +93,6 @@ import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroupPlain
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.core.ObservableValue.ov;
-import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.icon.IconSets.fas.plus;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.layout.flex.AlignItems.center;
@@ -121,7 +123,7 @@ class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, R
     private final ObservableValue<Integer> visible;
     private final ObservableValue<Integer> total;
     private final Filter<ModelBrowserNode> filter;
-    private final NoMatch<ModelBrowserNode> noMatch;
+    private final EmptyState noMatch;
     private final Operation operation;
     private final ToolbarItem addItem;
     private final Toolbar toolbar;
@@ -137,7 +139,7 @@ class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, R
         this.filter = new Filter<ModelBrowserNode>(FilterOperator.AND)
                 .add(new NameAttribute<>(mbn -> mbn.name))
                 .onChange(this::onFilterChanged);
-        this.noMatch = new NoMatch<>(filter);
+        this.noMatch = noMatch(filter);
         this.operation = new Operation.Builder(parent.template.parent().resolve(), READ_CHILDREN_NAMES_OPERATION)
                 .param(CHILD_TYPE, parent.name)
                 .build();
@@ -271,11 +273,7 @@ class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, R
         }
         actions.add(button("Refresh").link().onClick((e, b) -> refresh()));
 
-        listContainer.appendChild(emptyState()
-                .icon(ban())
-                .text("No child resources")
-                .addBody(emptyStateBody()
-                        .text("This resource has no child resources."))
+        listContainer.appendChild(noItems("No child resources", "This resource has no child resources.")
                 .addFooter(emptyStateFooter()
                         .addActions(actions))
                 .element());
@@ -362,10 +360,10 @@ class ResourceList implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, R
                         }
                     }
                 }
-                noMatch.toggle(listContainer, matchingItems == 0);
+                toggle(noMatch, listContainer, matchingItems == 0);
             } else {
                 matchingItems = total.get();
-                noMatch.toggle(listContainer, false);
+                toggle(noMatch, listContainer, false);
                 dataList.items().forEach(dlg -> dlg.classList().remove(modifier(filtered)));
             }
             visible.set(matchingItems);

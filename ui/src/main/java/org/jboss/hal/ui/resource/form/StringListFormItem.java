@@ -16,11 +16,7 @@
 package org.jboss.hal.ui.resource.form;
 
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.EXISTING_RESOURCE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.NEW_RESOURCE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.noExpression;
 import static org.jboss.hal.ui.resource.form.HelperTexts.required;
 import static org.jboss.hal.ui.resource.form.StringListSupport.defaultValues;
 import static org.jboss.hal.ui.resource.form.StringListSupport.isExistingModified;
@@ -123,25 +119,13 @@ class StringListFormItem extends FormItem {
     // ------------------------------------------------------ data
 
     @Override
-    boolean isModified() {
-        if (ra.readable && !ra.description.readOnly()) {
-            if (flags.scope == NEW_RESOURCE) {
-                if (inputMode == NATIVE) {
-                    return isNewModified(ra, values());
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else if (flags.scope == EXISTING_RESOURCE) {
-                if (inputMode == NATIVE) {
-                    return isExistingModified(ra, values(), ra.value.isDefined());
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else {
-                unknownScope();
-            }
-        }
-        return false;
+    boolean isNativeModifiedForNew() {
+        return isNewModified(ra, values());
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
+        return isExistingModified(ra, values(), wasDefined);
     }
 
     @Override

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.modelbrowser;
+package org.jboss.hal.ui.resource.table;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.logger.Logger;
@@ -31,8 +31,8 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
-import static org.jboss.hal.ui.brick.FinderBricks.emptyRow;
-import static org.jboss.hal.ui.modelbrowser.AttributesToolbar.attributesToolbar;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
+import static org.jboss.hal.ui.resource.table.AttributesToolbar.attributesToolbar;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.Tbody.tbody;
 import static org.patternfly.component.table.Th.th;
@@ -94,7 +94,7 @@ public class AttributesTable implements IsElement<HTMLElement> {
 
     private void noAttributes() {
         if (noAttributes == null) {
-            noAttributes = emptyRow(filter);
+            noAttributes = noMatch(filter);
         }
         if (!isAttached(noAttributes)) {
             tbody.empty(4, noAttributes);

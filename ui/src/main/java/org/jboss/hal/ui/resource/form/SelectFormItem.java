@@ -16,11 +16,7 @@
 package org.jboss.hal.ui.resource.form;
 
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.EXISTING_RESOURCE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.NEW_RESOURCE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.noExpression;
 import static org.jboss.hal.ui.resource.form.HelperTexts.required;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 
@@ -129,38 +125,24 @@ class SelectFormItem extends FormItem {
     // ------------------------------------------------------ data
 
     @Override
-    boolean isModified() {
-        if (ra.readable && !ra.description.readOnly()) {
-            if (flags.scope == NEW_RESOURCE) {
-                if (inputMode == NATIVE) {
-                    String selectedValue = selectControl.value();
-                    if (ra.description.hasDefault()) {
-                        return !ra.description.get(DEFAULT).asString().equals(selectedValue);
-                    } else {
-                        return !UNDEFINED.equals(selectedValue);
-                    }
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else if (flags.scope == EXISTING_RESOURCE) {
-                boolean wasDefined = ra.value.isDefined();
-                if (inputMode == NATIVE) {
-                    String selectedValue = selectControl.value();
-                    if (wasDefined) {
-                        // modified if the original value was an expression or is different from the current user input
-                        String originalValue = ra.value.asString();
-                        return ra.expression || !originalValue.equals(selectedValue);
-                    } else {
-                        return !UNDEFINED.equals(selectedValue);
-                    }
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else {
-                unknownScope();
-            }
+    boolean isNativeModifiedForNew() {
+        String selectedValue = selectControl.value();
+        if (ra.description.hasDefault()) {
+            return !ra.description.get(DEFAULT).asString().equals(selectedValue);
+        } else {
+            return !UNDEFINED.equals(selectedValue);
         }
-        return false;
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
+        String selectedValue = selectControl.value();
+        if (wasDefined) {
+            String originalValue = ra.value.asString();
+            return ra.expression || !originalValue.equals(selectedValue);
+        } else {
+            return !UNDEFINED.equals(selectedValue);
+        }
     }
 
     @Override
@@ -181,7 +163,6 @@ class SelectFormItem extends FormItem {
     // ------------------------------------------------------ events
 
     @Override
-    @SuppressWarnings("DuplicatedCode")
     void afterSwitchedToNativeMode() {
         boolean wasDefined = ra.value.isDefined();
         if (wasDefined && !ra.expression) {

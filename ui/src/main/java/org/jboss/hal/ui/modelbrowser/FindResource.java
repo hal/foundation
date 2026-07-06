@@ -40,7 +40,6 @@ import org.patternfly.component.list.ListItem;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.popover.Popover;
 import org.patternfly.core.Timeouts;
-import org.patternfly.icon.IconSets.fas;
 import org.patternfly.layout.flex.FlexItem;
 import org.patternfly.layout.flex.Gap;
 import org.patternfly.style.Breakpoint;
@@ -65,8 +64,7 @@ import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
-import static org.patternfly.component.emptystate.EmptyState.emptyState;
-import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noResults;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
@@ -292,11 +290,7 @@ class FindResource {
                                         .plain())));
 
         noResults = flexItem()
-                .add(emptyState()
-                        .icon(fas.magnifyingGlass())
-                        .text("No results found")
-                        .addBody(emptyStateBody()
-                                .text("No resources match the search criteria.")));
+                .add(noResults("No resources match the search criteria."));
 
         searchModal = modal().css(halComponent(modelBrowser, search))
                 .top()

@@ -29,7 +29,15 @@ import static org.patternfly.component.textinputgroup.TextInputGroupUtilities.te
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.icon.IconSets.fas.xmark;
 
-/** Search input with an additional reload button, used by {@link CapabilityReferenceFormItem} to refresh capability data. */
+/**
+ * Search input with an additional reload button, used by {@link CapabilityReferenceFormItem} to refresh capability data.
+ * <p>
+ * This class mirrors the structure of {@link FilterReloadInput}. The duplication exists because the PatternFly type hierarchy
+ * requires separate subclasses: this class extends {@link org.patternfly.component.textinputgroup.BaseSearchInput} (for
+ * single-select typeaheads), while {@link FilterReloadInput} extends
+ * {@link org.patternfly.component.textinputgroup.BaseFilterInput} (for multi-select typeaheads). A shared abstract class is not
+ * possible since Java does not support multiple inheritance.
+ */
 class SearchReloadInput extends BaseSearchInput<SearchReloadInput> {
 
     // ------------------------------------------------------ factory

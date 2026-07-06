@@ -173,105 +173,119 @@ public class ViewItemFactory {
         return term;
     }
 
+    /**
+     * Dispatches to a type-specific rendering method based on the attribute's state (restricted, expression, defined, or
+     * undefined).
+     */
     private static HTMLElement value(AddressTemplate template, ResourceAttribute ra) {
-        HTMLElement element;
-
         // TODO Implement sensitive constraints
         if (!ra.readable) {
-            element = span().css(halModifier(restricted))
-                    .text("restricted")
-                    .add(icon(lock().css(util("ml-sm"))))
-                    .element();
-
+            return restrictedValue();
+        } else if (ra.expression) {
+            return expressionValue(ra);
+        } else if (ra.value.isDefined()) {
+            return definedValue(template, ra);
         } else {
-            if (ra.expression) {
-                HTMLElement resolveButton = button().plain().inline().icon(resolveExpressionIcon().get())
-                        .onClick((e, b) -> {
-                            // TODO Resolve expression
-                            uic().notifications().send(nyi());
-                            logger.info("Resolve expression: %s", ra.value.asString());
-                        })
-                        .element();
-                element = span()
-                        .add(renderExpression(ra.value.asString()))
-                        .add(resolveButton)
-                        .add(tooltip(resolveButton, "Resolve expression"))
-                        .element();
-
-            } else {
-                if (ra.value.isDefined()) {
-                    if (ra.description.hasDefined(TYPE)) {
-                        ModelType type = ra.description.get(TYPE).asType();
-                        if (type == BOOLEAN) {
-                            String unique = Id.unique(ra.name);
-                            element = switch_(unique, unique)
-                                    .value(ra.value.asBoolean())
-                                    .ariaLabel(ra.name)
-                                    .checkIcon()
-                                    .readonly()
-                                    .element();
-                        } else if (type.simple()) {
-                            String unit = ra.description.unit();
-                            if (unit != null) {
-                                element = span()
-                                        .add(span().text(ra.value.asString()))
-                                        .add(span().css(halComponent(resource, view, HalClasses.unit))
-                                                .text(unit))
-                                        .element();
-                            } else if (ra.description.hasDefined(ALLOWED)) {
-                                List<String> allowed = ra.description.get(ALLOWED)
-                                        .asList()
-                                        .stream()
-                                        .map(ModelNode::asString)
-                                        .sorted(naturalOrder())
-                                        .collect(toList());
-                                allowed.remove(ra.value.asString());
-                                element = labelGroup()
-                                        .numLabels(1)
-                                        .collapsedText("Allowed values")
-                                        .addItem(Label.label("", grey).text(ra.value.asString()))
-                                        .addItems(allowed, a -> Label.label(a, grey).disabled())
-                                        .element();
-                            } else {
-                                if (ra.description.hasDefined(CAPABILITY_REFERENCE)) {
-                                    String capability = ra.description.get(CAPABILITY_REFERENCE).asString();
-                                    element = capabilityReference(template, capability, ra)
-                                            .element();
-                                } else {
-                                    element = plainText(ra);
-                                }
-                            }
-                        } else if (type == LIST) {
-                            ModelType valueType = ra.description.has(VALUE_TYPE) &&
-                                    ra.description.get(VALUE_TYPE).getType() != OBJECT
-                                    ? ra.description.get(VALUE_TYPE).asType()
-                                    : null;
-                            if (valueType != null && valueType.simple()) {
-                                element = list().plain().inline()
-                                        .addItems(ra.value.asList().stream().map(ModelNode::asString).collect(toList()),
-                                                v -> listItem(Id.build(v, "value")).text(v))
-                                        .element();
-                            } else {
-                                element = modelNodeCode(ra.value).element();
-                            }
-                        } else if (type == OBJECT) {
-                            element = modelNodeCode(ra.value).element();
-                        } else {
-                            element = plainText(ra);
-                        }
-                    } else {
-                        logger.warn("No type information found in resource description for attribute %s in resource %s. " +
-                                "Fallback to plain text representation.", ra.name, template);
-                        element = plainText(ra);
-                    }
-                } else {
-                    element = plainText(ra);
-                    element.classList.add(halComponent(resource, view, undefined));
-                }
-            }
+            HTMLElement element = plainText(ra);
+            element.classList.add(halComponent(resource, view, undefined));
+            return element;
         }
+    }
 
-        return element;
+    private static HTMLElement restrictedValue() {
+        return span().css(halModifier(restricted))
+                .text("restricted")
+                .add(icon(lock().css(util("ml-sm"))))
+                .element();
+    }
+
+    private static HTMLElement expressionValue(ResourceAttribute ra) {
+        HTMLElement resolveButton = button().plain().inline().icon(resolveExpressionIcon().get())
+                .onClick((e, b) -> {
+                    // TODO Resolve expression
+                    uic().notifications().send(nyi());
+                    logger.info("Resolve expression: %s", ra.value.asString());
+                })
+                .element();
+        return span()
+                .add(renderExpression(ra.value.asString()))
+                .add(resolveButton)
+                .add(tooltip(resolveButton, "Resolve expression"))
+                .element();
+    }
+
+    private static HTMLElement definedValue(AddressTemplate template, ResourceAttribute ra) {
+        if (!ra.description.hasDefined(TYPE)) {
+            logger.warn("No type information found in resource description for attribute %s in resource %s. " +
+                    "Fallback to plain text representation.", ra.name, template);
+            return plainText(ra);
+        }
+        ModelType type = ra.description.get(TYPE).asType();
+        if (type == BOOLEAN) {
+            return booleanValue(ra);
+        } else if (type.simple()) {
+            return simpleValue(template, ra);
+        } else if (type == LIST) {
+            return listValue(ra);
+        } else if (type == OBJECT) {
+            return modelNodeCode(ra.value).element();
+        } else {
+            return plainText(ra);
+        }
+    }
+
+    private static HTMLElement booleanValue(ResourceAttribute ra) {
+        String unique = Id.unique(ra.name);
+        return switch_(unique, unique)
+                .value(ra.value.asBoolean())
+                .ariaLabel(ra.name)
+                .checkIcon()
+                .readonly()
+                .element();
+    }
+
+    private static HTMLElement simpleValue(AddressTemplate template, ResourceAttribute ra) {
+        String unit = ra.description.unit();
+        if (unit != null) {
+            return span()
+                    .add(span().text(ra.value.asString()))
+                    .add(span().css(halComponent(resource, view, HalClasses.unit)).text(unit))
+                    .element();
+        } else if (ra.description.hasDefined(ALLOWED)) {
+            List<String> allowed = ra.description.get(ALLOWED)
+                    .asList()
+                    .stream()
+                    .map(ModelNode::asString)
+                    .sorted(naturalOrder())
+                    .collect(toList());
+            allowed.remove(ra.value.asString());
+            return labelGroup()
+                    .numLabels(1)
+                    .collapsedText("Allowed values")
+                    .addItem(Label.label("", grey).text(ra.value.asString()))
+                    .addItems(allowed, a -> Label.label(a, grey).disabled())
+                    .element();
+        } else if (ra.description.hasDefined(CAPABILITY_REFERENCE)) {
+            String capability = ra.description.get(CAPABILITY_REFERENCE).asString();
+            return capabilityReference(template, capability, ra).element();
+        } else {
+            return plainText(ra);
+        }
+    }
+
+    private static HTMLElement listValue(ResourceAttribute ra) {
+        ModelType valueType = ra.description.has(VALUE_TYPE) &&
+                ra.description.get(VALUE_TYPE).getType() != OBJECT
+                ? ra.description.get(VALUE_TYPE).asType()
+                : null;
+        if (valueType != null && valueType.simple()) {
+            return list().plain().inline()
+                    .addItems(ra.value.asList().stream().map(ModelNode::asString).collect(toList()),
+                            v -> listItem(Id.build(v, "value")).text(v))
+                    .element();
+        } else {
+            return modelNodeCode(ra.value).element();
+        }
     }
 
     private static HTMLElement plainText(ResourceAttribute ra) {

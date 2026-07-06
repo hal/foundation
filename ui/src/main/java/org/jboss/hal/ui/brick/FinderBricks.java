@@ -22,10 +22,9 @@ import java.util.function.Supplier;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
-import org.jboss.hal.ui.resource.finder.FinderSupport;
 import org.patternfly.component.content.ContentType;
-import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.extension.finder.Finder;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
@@ -41,16 +40,11 @@ import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
 import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.emptystate.EmptyState.emptyState;
-import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
-import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
-import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
 import static org.patternfly.extension.finder.FinderColumnActions.finderColumnActions;
 import static org.patternfly.extension.finder.FinderColumnHeader.finderColumnHeader;
 import static org.patternfly.extension.finder.FinderItem.finderItem;
 import static org.patternfly.extension.finder.FinderItemActions.finderItemActions;
-import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 import static org.patternfly.icon.IconSets.fas.plus;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.icon.IconSets.fas.trash;
@@ -66,27 +60,6 @@ public final class FinderBricks {
 
     public static Finder topLevelFinder() {
         return Finder.finder();
-    }
-
-    /**
-     * Creates an empty state shown when no finder items match the current filter. Displays a "No results found" message with a
-     * "Clear all filters" action that resets the filter.
-     *
-     * @param filter the active filter whose state will be reset when the user clicks "Clear all filters"
-     * @param <T>    the type of items being filtered
-     * @return an empty state component
-     */
-    public static <T> EmptyState emptyRow(Filter<T> filter) {
-        return emptyState()
-                .icon(magnifyingGlass())
-                .text("No results found")
-                .addBody(emptyStateBody()
-                        .text(
-                                "No results match the filter criteria. Clear all filters and try again."))
-                .addFooter(emptyStateFooter()
-                        .addActions(emptyStateActions()
-                                .add(button("Clear all filters").link()
-                                        .onClick((event, component) -> filter.resetAll()))));
     }
 
     /**
@@ -126,7 +99,7 @@ public final class FinderBricks {
                                     .plain()
                                     .small()
                                     .onClick((e, b) -> {
-                                        AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                                        AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
                                         if (template != null) {
                                             uic().routeRegistry().goTo(template);
                                         }
@@ -134,7 +107,7 @@ public final class FinderBricks {
                             .addButton(button(trash()).plain().small()
                                     .ouiaId(OuiaIds.ouia(id, "delete", "btn"))
                                     .onClick((e, b) -> {
-                                        AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                                        AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
                                         deleteResourceModal(template).then(n -> {
                                             if (n.isDefined()) {
                                                 item.column().reload();
@@ -151,7 +124,7 @@ public final class FinderBricks {
             column.onPreview((item, preview) -> {
                 String name = item.text();
                 stackPreview(preview, name, s -> {
-                    AddressTemplate template = item.get(FinderSupport.TEMPLATE_KEY);
+                    AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
                     uic().crud().readWithMetadata(template).then(tuple -> {
                         s.addItem(stackItem().add(resourceView(template, tuple.key, tuple.value, previewAttributes)));
                         return null;

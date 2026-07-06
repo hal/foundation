@@ -26,7 +26,8 @@
  * Key components:
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.form.FormItem}</dt>
- * <dd>Abstract base class for all form items with expression mode support and validation.</dd>
+ * <dd>Abstract base class for all form items with expression mode support, validation, and a template method for
+ * modification detection ({@link org.jboss.hal.ui.resource.form.FormItem#isModified()}).</dd>
  * <dt>{@link org.jboss.hal.ui.resource.form.FormItemFactory}</dt>
  * <dd>Creates the appropriate form item subclass based on attribute type and constraints.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.form.ResourceForm}</dt>
@@ -63,6 +64,10 @@
  * <dd>Shared helpers for loading capability suggestions and creating new provider resources.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.form.StringListSupport}</dt>
  * <dd>Shared helpers for modification detection and model node conversion for string list attributes.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.SearchReloadInput}</dt>
+ * <dd>Search input with reload button for single-select capability typeaheads.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form.FilterReloadInput}</dt>
+ * <dd>Filter input with reload button for multi-select capability typeaheads.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.form;

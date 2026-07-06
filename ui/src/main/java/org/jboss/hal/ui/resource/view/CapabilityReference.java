@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.view;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -34,6 +33,7 @@ import org.jboss.elemento.Key;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
+import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.patternfly.component.label.Label;
 import org.patternfly.component.tooltip.PopperTooltip;
 import org.patternfly.popper.Modifiers;

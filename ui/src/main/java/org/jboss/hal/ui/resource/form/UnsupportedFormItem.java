@@ -78,7 +78,12 @@ class UnsupportedFormItem extends FormItem {
     }
 
     @Override
-    boolean isModified() {
+    boolean isNativeModifiedForNew() {
+        return false;
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
         return false;
     }
 

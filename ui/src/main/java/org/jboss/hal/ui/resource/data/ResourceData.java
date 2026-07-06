@@ -32,7 +32,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.modelbrowser.NoMatch;
+import org.patternfly.component.emptystate.EmptyState;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.view.ResourceView;
 import org.patternfly.component.HasItems;
@@ -69,6 +69,10 @@ import static org.jboss.hal.ui.resource.data.ResourceDataToolbar.resourceDataToo
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.button.Button.button;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.error;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
@@ -118,7 +122,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     private final ObservableValue<Integer> visible;
     private final ObservableValue<Integer> total;
     private final Filter<ResourceAttribute> filter;
-    private final NoMatch<ResourceAttribute> noMatch;
+    private final EmptyState noMatch;
     private final ResourceDataToolbar toolbar;
     private final HTMLContainerBuilder<HTMLDivElement> rootContainer;
     private final HTMLElement root;
@@ -135,7 +139,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         this.visible = ov(0);
         this.total = ov(0);
         this.filter = new ResourceFilter().onChange(this::onFilterChanged);
-        this.noMatch = new NoMatch<>(filter);
+        this.noMatch = noMatch(filter);
         this.inlineEdit = false;
         this.state = null;
         this.operation = new Operation.Builder(template.resolve(), READ_RESOURCE_OPERATION)
@@ -244,11 +248,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     private void noAttributes() {
         changeState(NO_ATTRIBUTES);
-        rootContainer.add(emptyState()
-                .icon(ban())
-                .text("No attributes")
-                .addBody(emptyStateBody()
-                        .text("This resource contains no attributes.")));
+        rootContainer.add(noItems("No attributes", "This resource contains no attributes."));
     }
 
     private void operationError(String operation, String error) {
@@ -268,11 +268,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     private void metadataError() {
         changeState(ERROR);
-        rootContainer.add(emptyState()
-                .status(danger)
-                .text("No metadata")
-                .addBody(emptyStateBody()
-                        .text("Unable to view resource: No metadata found!")));
+        rootContainer.add(error("No metadata", "Unable to view resource: No metadata found!"));
     }
 
     // ------------------------------------------------------ filter
@@ -293,10 +289,10 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         }
                     }
                 }
-                noMatch.toggle(rootContainer.element(), matchingItems == 0);
+                toggle(noMatch, rootContainer.element(), matchingItems == 0);
             } else {
                 matchingItems = total.get();
-                noMatch.toggle(rootContainer.element(), false);
+                toggle(noMatch, rootContainer.element(), false);
                 items.items().forEach(item -> item.element().classList.remove(modifier(filtered)));
             }
             visible.set(matchingItems);

@@ -16,11 +16,7 @@
 package org.jboss.hal.ui.resource.form;
 
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.EXISTING_RESOURCE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.NEW_RESOURCE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.noExpression;
 import static org.jboss.hal.ui.resource.form.HelperTexts.required;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
@@ -137,39 +133,24 @@ class CapabilityReferenceFormItem extends FormItem {
     // ------------------------------------------------------ data
 
     @Override
-    boolean isModified() {
-        if (ra.readable && !ra.description.readOnly()) {
-            if (flags.scope == NEW_RESOURCE) {
-                if (inputMode == NATIVE) {
-                    String value = value();
-                    if (ra.description.hasDefault()) {
-                        return !ra.description.get(DEFAULT).asString().equals(value);
-                    } else {
-                        return value != null && !value.isEmpty();
-                    }
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-
-            } else if (flags.scope == EXISTING_RESOURCE) {
-                boolean wasDefined = ra.value.isDefined();
-                if (inputMode == NATIVE) {
-                    String value = value();
-                    if (wasDefined) {
-                        // modified if the original value was an expression or is different from the current user input
-                        String originalValue = ra.value.asString();
-                        return ra.expression || !originalValue.equals(value);
-                    } else {
-                        return value != null && !value.isEmpty();
-                    }
-                } else if (inputMode == EXPRESSION) {
-                    return isExpressionModified();
-                }
-            } else {
-                unknownScope();
-            }
+    boolean isNativeModifiedForNew() {
+        String value = value();
+        if (ra.description.hasDefault()) {
+            return !ra.description.get(DEFAULT).asString().equals(value);
+        } else {
+            return value != null && !value.isEmpty();
         }
-        return false;
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
+        String value = value();
+        if (wasDefined) {
+            String originalValue = ra.value.asString();
+            return ra.expression || !originalValue.equals(value);
+        } else {
+            return value != null && !value.isEmpty();
+        }
     }
 
     @Override
@@ -190,7 +171,6 @@ class CapabilityReferenceFormItem extends FormItem {
     // ------------------------------------------------------ events
 
     @Override
-    @SuppressWarnings("DuplicatedCode")
     void afterSwitchedToExpressionMode() {
         boolean wasDefined = ra.value.isDefined();
         if (wasDefined && !ra.expression) {

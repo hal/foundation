@@ -253,9 +253,50 @@ public abstract class FormItem implements
     // ------------------------------------------------------ data
 
     /**
-     * Checks if the form item has been modified.
+     * Checks if the form item has been modified by comparing the current value against the initial value.
+     * <p>
+     * This method implements the shared scope/input-mode branching logic. In {@link FormItemInputMode#NATIVE NATIVE} mode it
+     * delegates to {@link #isNativeModifiedForNew()} or {@link #isNativeModifiedForExisting(boolean)}, which subclasses
+     * implement with their specific value comparison. In {@link FormItemInputMode#EXPRESSION EXPRESSION} or
+     * {@link FormItemInputMode#MIXED MIXED} mode it delegates to {@link #isExpressionModified()}.
+     * <p>
+     * Subclasses that operate exclusively in a non-standard mode (e.g. {@link StringFormItem} uses {@code MIXED}) may
+     * override this method entirely.
      */
-    abstract boolean isModified();
+    boolean isModified() {
+        if (ra.readable && !ra.description.readOnly()) {
+            if (flags.scope == NEW_RESOURCE) {
+                if (inputMode == NATIVE) {
+                    return isNativeModifiedForNew();
+                } else if (inputMode == EXPRESSION || inputMode == MIXED) {
+                    return isExpressionModified();
+                }
+            } else if (flags.scope == EXISTING_RESOURCE) {
+                if (inputMode == NATIVE) {
+                    return isNativeModifiedForExisting(ra.value.isDefined());
+                } else if (inputMode == EXPRESSION || inputMode == MIXED) {
+                    return isExpressionModified();
+                }
+            } else {
+                unknownScope();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether the native control value has been modified when adding a new resource.
+     * <p>
+     * Subclasses implement this to compare their native control's current value against the default or initial state.
+     */
+    abstract boolean isNativeModifiedForNew();
+
+    /**
+     * Checks whether the native control value has been modified when editing an existing resource.
+     *
+     * @param wasDefined {@code true} if the attribute had a defined value before editing
+     */
+    abstract boolean isNativeModifiedForExisting(boolean wasDefined);
 
     /** Checks whether the text control value differs from the original value in expression or mixed mode. */
     boolean isExpressionModified() {

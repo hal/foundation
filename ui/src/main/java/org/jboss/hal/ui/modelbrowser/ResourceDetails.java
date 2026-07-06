@@ -18,6 +18,9 @@ package org.jboss.hal.ui.modelbrowser;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.resources.OuiaIds;
+import org.jboss.hal.ui.resource.table.AttributesTable;
+import org.jboss.hal.ui.resource.table.CapabilitiesTable;
+import org.jboss.hal.ui.resource.table.OperationsTable;
 
 import elemental2.dom.HTMLElement;
 

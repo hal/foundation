@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.modelbrowser;
+package org.jboss.hal.ui.resource.table;
 
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.IsElement;
@@ -50,11 +50,11 @@ import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescription;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeName;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
-import static org.jboss.hal.ui.brick.FinderBricks.emptyRow;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.brick.OperationBricks.operationDescription;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.modelbrowser.OperationsToolbar.operationsToolbar;
+import static org.jboss.hal.ui.resource.table.OperationsToolbar.operationsToolbar;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.executeOperationModal;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
@@ -211,7 +211,7 @@ public class OperationsTable implements IsElement<HTMLElement> {
 
     private void noOperations() {
         if (noAttributes == null) {
-            noAttributes = emptyRow(filter);
+            noAttributes = noMatch(filter);
         }
         if (!isAttached(noAttributes)) {
             tbody.empty(5, noAttributes);

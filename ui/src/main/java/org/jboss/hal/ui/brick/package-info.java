@@ -40,7 +40,10 @@
  * <dt>{@link org.jboss.hal.ui.brick.StabilityBricks}</dt>
  * <dd>Maps stability levels (experimental, preview, community, default) to PatternFly statuses and icons.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.FinderBricks}</dt>
- * <dd>Finder column construction with CRUD actions, preview panel layouts, and filter-aware empty states.</dd>
+ * <dd>Finder column construction with CRUD actions and preview panel layouts.</dd>
+ * <dt>{@link org.jboss.hal.ui.brick.EmptyStateBricks}</dt>
+ * <dd>Reusable empty-state components for "no results", "no match", "no items", and "error" scenarios, plus a toggle
+ * utility for showing/hiding empty states in containers.</dd>
  * </dl>
  *
  * @see org.jboss.hal.ui

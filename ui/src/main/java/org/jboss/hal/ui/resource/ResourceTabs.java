@@ -18,9 +18,9 @@ package org.jboss.hal.ui.resource;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.modelbrowser.AttributesTable;
-import org.jboss.hal.ui.modelbrowser.CapabilitiesTable;
-import org.jboss.hal.ui.modelbrowser.OperationsTable;
+import org.jboss.hal.ui.resource.table.AttributesTable;
+import org.jboss.hal.ui.resource.table.CapabilitiesTable;
+import org.jboss.hal.ui.resource.table.OperationsTable;
 
 import elemental2.dom.HTMLElement;
 

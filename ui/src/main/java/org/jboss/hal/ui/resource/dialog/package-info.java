@@ -17,15 +17,21 @@
 /**
  * Modal dialogs for WildFly management resource operations.
  * <p>
- * Provides factory methods for adding and deleting management resources, as well as executing management operations with
- * parameter input. All dialogs return promises for asynchronous handling.
+ * Provides dialogs for adding, deleting, and executing operations on management resources. All dialogs return promises for
+ * asynchronous handling.
  * <p>
  * Key components:
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.dialog.ResourceDialogs}</dt>
- * <dd>Factory methods for add, delete, and execute operation modals/wizards.</dd>
+ * <dd>Public facade with static entry points for all resource dialogs.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.dialog.AddResourceDialogs}</dt>
+ * <dd>Add resource wizard and modal dialogs.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.dialog.DeleteResourceDialog}</dt>
+ * <dd>Delete confirmation dialog.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.dialog.ExecuteOperationDialogs}</dt>
+ * <dd>Execute operation dialog with parameter inputs and result display.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog.ExecuteOperationDialog}</dt>
- * <dd>Builder-style wrapper for executing a management operation in a modal dialog.</dd>
+ * <dd>Builder-style wrapper for executing a management operation (stub, not yet wired up).</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.dialog;

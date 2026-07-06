@@ -66,7 +66,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERAT
 import static org.jboss.hal.op.task.statistics.NewExpressionModal.newExpressionModal;
 import static org.jboss.hal.op.task.statistics.StatisticsEnabledMultiSelect.statisticsEnabledMultiSelect;
 import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
-import static org.jboss.hal.ui.brick.FinderBricks.emptyRow;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.patternfly.component.Ordered.DATA_ORDER;
@@ -473,7 +473,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
 
     private void noResources() {
         if (noResources == null) {
-            noResources = emptyRow(filter);
+            noResources = noMatch(filter);
         }
         if (!isAttached(noResources)) {
             resourcesTBody.empty(6, noResources);

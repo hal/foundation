@@ -15,9 +15,7 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
 import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
 import static org.jboss.hal.ui.resource.form.HelperTexts.required;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 
@@ -88,10 +86,20 @@ class StringFormItem extends FormItem {
 
     @Override
     boolean isModified() {
+        // StringFormItem runs in mixed mode, so it's safe to delegate to isExpressionModified()
         if (ra.readable && !ra.description.readOnly()) {
-            // StringFormItem runs in mixed mode, so it's safe to delegate to isExpressionModified()
             return isExpressionModified();
         }
+        return false;
+    }
+
+    @Override
+    boolean isNativeModifiedForNew() {
+        return false;
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
         return false;
     }
 
