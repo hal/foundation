@@ -16,12 +16,15 @@
 package org.jboss.hal.ui.resource.data;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.jboss.hal.ui.resource.ResourceItem;
+import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder;
 import org.jboss.hal.ui.resource.form.FormItemFlags.Scope;
 import org.jboss.hal.ui.resource.form.FormItemFlags;
+import org.jboss.hal.ui.resource.view.ViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.elemento.Attachable;
 import org.jboss.elemento.HTMLContainerBuilder;
@@ -33,6 +36,10 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.patternfly.component.emptystate.EmptyState;
+import org.patternfly.component.expandable.ExpandableSection;
+import org.patternfly.component.form.FormFieldGroup;
+import org.patternfly.component.form.FormFieldGroupBody;
+import org.patternfly.component.list.DescriptionList;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.view.ResourceView;
 import org.patternfly.component.HasItems;
@@ -48,6 +55,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
+import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
@@ -58,6 +66,8 @@ import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.form.FormItemFactory.formItem;
+import static org.jboss.hal.ui.resource.ResourceAttribute.grouped;
+import static org.jboss.hal.ui.resource.ResourceAttribute.hasGroups;
 import static org.jboss.hal.ui.resource.ResourceAttribute.includes;
 import static org.jboss.hal.ui.resource.ResourceAttribute.resourceAttributes;
 import static org.jboss.hal.ui.resource.view.ViewItemFactory.viewItem;
@@ -77,10 +87,25 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
+import static org.patternfly.component.expandable.ExpandableSection.expandableSection;
+import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
+import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
+import static org.patternfly.component.form.FormFieldGroup.formFieldGroup;
+import static org.patternfly.component.form.FormFieldGroupBody.formFieldGroupBody;
+import static org.patternfly.component.form.FormFieldGroupHeader.formFieldGroupHeader;
+import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.icon.IconSets.fas.ban;
+import static org.patternfly.style.Breakpoint._2xl;
+import static org.patternfly.style.Breakpoint.lg;
+import static org.patternfly.style.Breakpoint.md;
+import static org.patternfly.style.Breakpoint.sm;
+import static org.patternfly.style.Breakpoint.xl;
+import static org.patternfly.style.Breakpoints.breakpoints;
 import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Orientation.horizontal;
+import static org.patternfly.style.Orientation.vertical;
 
 /**
  * Central state machine that orchestrates viewing and editing of WildFly management resource attributes. Combines a
@@ -127,6 +152,10 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     private final HTMLContainerBuilder<HTMLDivElement> rootContainer;
     private final HTMLElement root;
     private boolean inlineEdit;
+    private boolean grouped;
+    private boolean supportsGrouping;
+    private List<ResourceItem<?>> allItems;
+    private List<HTMLElement> groupContainers;
     private State state;
     private Operation operation;
     private HasItems<HTMLElement, ?, ? extends ResourceItem<?>> items;
@@ -141,6 +170,10 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         this.filter = new ResourceFilter().onChange(this::onFilterChanged);
         this.noMatch = noMatch(filter);
         this.inlineEdit = false;
+        this.grouped = false;
+        this.supportsGrouping = false;
+        this.allItems = new ArrayList<>();
+        this.groupContainers = new ArrayList<>();
         this.state = null;
         this.operation = new Operation.Builder(template.resolve(), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
@@ -211,17 +244,87 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                     List<ResourceAttribute> resourceAttributes = resourceAttributes(resource, metadata, includes(attributes));
 
                     if (state == VIEW) {
-                        ResourceView resourceView = new ResourceView();
-                        for (ResourceAttribute ra : resourceAttributes) {
-                            resourceView.addItem(viewItem(template, metadata, ra));
+                        allItems.clear();
+                        groupContainers.clear();
+                        supportsGrouping = hasGroups(resourceAttributes);
+                        if (grouped && supportsGrouping) {
+                            HTMLContainerBuilder<HTMLDivElement> viewContainer = div();
+                            Map<String, List<ResourceAttribute>> groups = grouped(resourceAttributes);
+                            for (Map.Entry<String, List<ResourceAttribute>> entry : groups.entrySet()) {
+                                String groupName = entry.getKey();
+                                List<ResourceAttribute> groupAttributes = entry.getValue();
+                                DescriptionList dl = descriptionList()
+                                        .orientation(breakpoints(
+                                                sm, vertical,
+                                                md, horizontal,
+                                                lg, horizontal,
+                                                xl, horizontal,
+                                                _2xl, horizontal));
+                                for (ResourceAttribute ra : groupAttributes) {
+                                    ViewItem vi = viewItem(template, metadata, ra);
+                                    dl.addItem(vi.descriptionListGroup);
+                                    allItems.add(vi);
+                                }
+                                if ("ungrouped".equals(groupName)) {
+                                    viewContainer.add(dl);
+                                } else {
+                                    ExpandableSection es = expandableSection()
+                                            .addToggle(expandableSectionToggle(capitalCase(groupName)))
+                                            .addContent(expandableSectionContent().add(dl));
+                                    es.expand();
+                                    viewContainer.add(es);
+                                    groupContainers.add(es.element());
+                                }
+                            }
+                            items = null;
+                            rootContainer.add(viewContainer);
+                        } else {
+                            ResourceView resourceView = new ResourceView();
+                            for (ResourceAttribute ra : resourceAttributes) {
+                                resourceView.addItem(viewItem(template, metadata, ra));
+                            }
+                            items = resourceView;
+                            rootContainer.add(items);
                         }
-                        items = resourceView;
 
                     } else if (state == EDIT) {
+                        allItems.clear();
+                        groupContainers.clear();
+                        supportsGrouping = hasGroups(resourceAttributes);
                         resourceForm = new ResourceForm(template);
-                        for (ResourceAttribute ra : resourceAttributes) {
-                            resourceForm.addItem(formItem(template, metadata, ra,
-                                    new FormItemFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED)));
+                        if (grouped && supportsGrouping) {
+                            Map<String, List<ResourceAttribute>> groups = grouped(resourceAttributes);
+                            for (Map.Entry<String, List<ResourceAttribute>> entry : groups.entrySet()) {
+                                String groupName = entry.getKey();
+                                List<ResourceAttribute> groupAttributes = entry.getValue();
+                                if ("ungrouped".equals(groupName)) {
+                                    for (ResourceAttribute ra : groupAttributes) {
+                                        FormItem fi = formItem(template, metadata, ra,
+                                                new FormItemFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));
+                                        resourceForm.addItem(fi);
+                                        allItems.add(fi);
+                                    }
+                                } else {
+                                    FormFieldGroupBody ffgBody = formFieldGroupBody();
+                                    for (ResourceAttribute ra : groupAttributes) {
+                                        FormItem fi = formItem(template, metadata, ra,
+                                                new FormItemFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));
+                                        resourceForm.addItem(fi);
+                                        ffgBody.addGroup(fi.formGroup);
+                                        allItems.add(fi);
+                                    }
+                                    FormFieldGroup ffg = formFieldGroup(true)
+                                            .addHeader(formFieldGroupHeader().title(capitalCase(groupName)))
+                                            .addBody(ffgBody);
+                                    resourceForm.addFieldGroup(ffg);
+                                    groupContainers.add(ffg.element());
+                                }
+                            }
+                        } else {
+                            for (ResourceAttribute ra : resourceAttributes) {
+                                resourceForm.addItem(formItem(template, metadata, ra,
+                                        new FormItemFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED)));
+                            }
                         }
                         items = resourceForm;
                     }
@@ -235,7 +338,9 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         }
                         toolbar.adjust(state, metadata.securityContext());
                         setVisible(toolbar, true);
-                        rootContainer.add(items);
+                        if (items != null) {
+                            rootContainer.add(items);
+                        }
                     }
                 } else {
                     noAttributes();
@@ -274,12 +379,21 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     // ------------------------------------------------------ filter
 
     private void onFilterChanged(Filter<ResourceAttribute> filter, String origin) {
-        if ((state == VIEW || state == EDIT) && items != null && isAttached(element())) {
+        if ((state == VIEW || state == EDIT) && isAttached(element())) {
             logger.debug("Filter attributes: %s", filter);
             int matchingItems;
+            Iterable<? extends ResourceItem<?>> filterItems;
+            if (grouped && !allItems.isEmpty()) {
+                filterItems = allItems;
+            } else if (items != null) {
+                filterItems = items;
+            } else {
+                filterItems = java.util.Collections.emptyList();
+            }
+
             if (filter.defined()) {
                 matchingItems = 0;
-                for (ResourceItem<?> item : items) {
+                for (ResourceItem<?> item : filterItems) {
                     ResourceAttribute ra = item.resourceAttribute();
                     if (ra != null) {
                         boolean match = filter.match(ra);
@@ -289,11 +403,28 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         }
                     }
                 }
+                // Hide group containers where all items are filtered out
+                for (HTMLElement container : groupContainers) {
+                    boolean hasVisibleItem = false;
+                    for (ResourceItem<?> item : filterItems) {
+                        if (container.contains(item.element())
+                                && !item.element().classList.contains(modifier(filtered))) {
+                            hasVisibleItem = true;
+                            break;
+                        }
+                    }
+                    setVisible(container, hasVisibleItem);
+                }
                 toggle(noMatch, rootContainer.element(), matchingItems == 0);
             } else {
                 matchingItems = total.get();
                 toggle(noMatch, rootContainer.element(), false);
-                items.items().forEach(item -> item.element().classList.remove(modifier(filtered)));
+                for (ResourceItem<?> item : filterItems) {
+                    item.element().classList.remove(modifier(filtered));
+                }
+                for (HTMLElement container : groupContainers) {
+                    setVisible(container, true);
+                }
             }
             visible.set(matchingItems);
         }
@@ -341,6 +472,20 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         }
     }
 
+    void toggleGrouped() {
+        grouped = !grouped;
+        removeChildrenFrom(rootContainer);
+        load(state);
+    }
+
+    boolean isGrouped() {
+        return grouped;
+    }
+
+    boolean supportsGrouping() {
+        return supportsGrouping;
+    }
+
     // ------------------------------------------------------ internal
 
     private void changeState(State state) {
@@ -349,6 +494,8 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         this.state = state;
         if (stateChange) {
             removeChildrenFrom(rootContainer);
+            allItems.clear();
+            groupContainers.clear();
             // only hide the toolbar if there's a change from VIEW|EDIT to some other state or vice versa
             setVisible(toolbar, viewOrEdit);
         }

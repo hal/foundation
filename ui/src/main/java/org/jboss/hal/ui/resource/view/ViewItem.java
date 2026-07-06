@@ -52,7 +52,7 @@ public class ViewItem implements
 
     // ------------------------------------------------------ instance
 
-    final DescriptionListGroup descriptionListGroup;
+    public final DescriptionListGroup descriptionListGroup;
     private final String identifier;
     private final Map<String, Object> data;
 

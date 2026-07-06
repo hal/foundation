@@ -105,7 +105,7 @@ public abstract class FormItem implements
     private final FormGroupLabel label;
 
     FormItemInputMode inputMode;
-    FormGroup formGroup;
+    public FormGroup formGroup;
     FormGroupControl formGroupControl;
     TextInput textControl;
     HTMLElement expressionContainer;
