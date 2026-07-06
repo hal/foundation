@@ -90,6 +90,7 @@ public class Role {
         this.includeAll = false;
     }
 
+    /** Two roles are equal if they have the same identifier. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -107,6 +108,7 @@ public class Role {
         return true;
     }
 
+    /** Returns a hash code based on the role identifier. */
     @Override
     public int hashCode() {
         return identifier.hashCode();

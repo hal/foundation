@@ -23,5 +23,13 @@ interface DmrResponseProcessor {
 
     String PARSE_ERROR = "Unable to parse response with unexpected content-type ";
 
+    /**
+     * Decodes a raw DMR response payload into a {@link ModelNode}.
+     *
+     * @param method      the HTTP method used for the request
+     * @param contentType the content type of the response
+     * @param payload     the raw (typically base64-encoded) response body
+     * @return the decoded model node
+     */
     ModelNode processPayload(HttpMethod method, String contentType, String payload);
 }

@@ -63,6 +63,7 @@ public class Content extends NamedNode {
         get(MANAGED).set(managed);
     }
 
+    /** Returns a string describing name, archive type, managed flag, and server group deployments. */
     @Override
     public String toString() {
         return "Content(" + name() + ", " +

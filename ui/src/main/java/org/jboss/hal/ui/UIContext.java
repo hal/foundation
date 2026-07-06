@@ -32,6 +32,7 @@ import org.jboss.hal.meta.CapabilityRegistry;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.tree.ModelTree;
+import org.jboss.hal.ui.navigation.RouteRegistry;
 
 /**
  * Holds common classes often needed in UI elements.
@@ -68,6 +69,7 @@ public class UIContext {
     private final ModelTree modelTree;
     private final Notifications notifications;
     private final PlaceManager placeManager;
+    private final RouteRegistry routeRegistry;
     private final Settings settings;
     private final StatementContext statementContext;
 
@@ -83,6 +85,7 @@ public class UIContext {
             ModelTree modelTree,
             Notifications notifications,
             PlaceManager placeManager,
+            RouteRegistry routeRegistry,
             Settings settings,
             StatementContext statementContext
     ) {
@@ -95,6 +98,7 @@ public class UIContext {
         this.modelTree = modelTree;
         this.notifications = notifications;
         this.placeManager = placeManager;
+        this.routeRegistry = routeRegistry;
         this.settings = settings;
         this.statementContext = statementContext;
     }
@@ -142,6 +146,11 @@ public class UIContext {
     /** Returns the place manager for navigating the application. */
     public PlaceManager placeManager() {
         return placeManager;
+    }
+
+    /** Returns the route registry for navigating to routes by address template. */
+    public RouteRegistry routeRegistry() {
+        return routeRegistry;
     }
 
     /** Returns the notification service for displaying messages to the user. */

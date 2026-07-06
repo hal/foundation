@@ -89,6 +89,7 @@ public class Roles implements Iterable<Role> {
         return scopedRoles;
     }
 
+    /** Returns an iterator over all roles (standard and scoped). */
     @Override
     public Iterator<Role> iterator() {
         return lookup.values().iterator();

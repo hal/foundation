@@ -73,6 +73,7 @@ public class NamedNode extends ModelNode {
         assignName(name);
     }
 
+    /** Two named nodes are equal if they have the same name and underlying node. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,6 +94,7 @@ public class NamedNode extends ModelNode {
 
     }
 
+    /** Returns a hash code based on the name and the underlying node. */
     @Override
     public int hashCode() {
         int result = super.hashCode();

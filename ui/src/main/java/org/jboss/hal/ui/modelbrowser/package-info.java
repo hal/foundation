@@ -32,6 +32,7 @@
  *     <li>{@link org.jboss.hal.ui.modelbrowser.AttributesFilter} - filter for the attributes table</li>
  *     <li>{@link org.jboss.hal.ui.modelbrowser.OperationsFilter} - filter for the operations table</li>
  *     <li>{@link org.jboss.hal.ui.modelbrowser.FindResource} - modal dialog for searching resources</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.GotoResource} - modal dialog for navigating to a resource by address</li>
  * </ul>
  *
  * @see org.jboss.hal.ui.modelbrowser.ModelBrowser

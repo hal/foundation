@@ -94,6 +94,7 @@ public class Composite extends Operation implements Iterable<Operation> {
         return this;
     }
 
+    /** Returns an iterator over the operations in this composite. */
     @Override
     public Iterator<Operation> iterator() {
         return operations.iterator();

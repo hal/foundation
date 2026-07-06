@@ -41,12 +41,12 @@ public class NavigationProducer {
                         .ouiaId(OuiaIds.NAV_DASHBOARD))
                 .addItem(navigationItem("/deployments", "Deployments", placeManager.href("/deployments"))
                         .ouiaId(OuiaIds.NAV_DEPLOYMENTS))
-                .addItem(navigationItem("/tasks", "Tasks", placeManager.href("/tasks"))
-                        .ouiaId(OuiaIds.NAV_TASKS))
                 .addItem(navigationItem("/configuration", "Configuration", placeManager.href("/configuration"))
                         .ouiaId(OuiaIds.NAV_CONFIGURATION))
                 .addItem(navigationItem("/runtime", "Runtime", placeManager.href("/runtime"))
                         .ouiaId(OuiaIds.NAV_RUNTIME))
+                .addItem(navigationItem("/tasks", "Tasks", placeManager.href("/tasks"))
+                        .ouiaId(OuiaIds.NAV_TASKS))
                 .addItem(navigationItem("/management-model", "Management model", placeManager.href("/management-model"))
                         .ouiaId(OuiaIds.NAV_MODEL_BROWSER));
     }

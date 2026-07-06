@@ -25,11 +25,10 @@ import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.core.Humanize.capitalCase;
-import static org.jboss.hal.op.configuration.ConfigurationRoutes.RESOURCE_ROUTE;
+import static org.jboss.hal.op.navigation.KnownRoutes.SUBSYSTEM_ROUTE;
 import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.metadataPreview;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.itemAddress;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
@@ -42,11 +41,7 @@ import static org.patternfly.icon.IconSets.fas.arrowUpRightFromSquare;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
-/**
- * Finder column that lists all WildFly subsystems. Each item displays the subsystem name in capital case, provides a "view"
- * action that navigates to the {@link ConfigurationResourcePage}, and shows the subsystem's resource description in the preview
- * panel.
- */
+/** Finder column listing the subsystems defined in the WildFly configuration. */
 @Dependent
 public class SubsystemColumn implements ColumnProvider {
 
@@ -74,7 +69,7 @@ public class SubsystemColumn implements ColumnProvider {
                         .text(capitalCase(node.asString()))
                         .run(item -> item.addActions(finderItemActions()
                                 .addButton(button(arrowUpRightFromSquare()).plain().small().onClick((e, b) ->
-                                        placeManager.goTo(RESOURCE_ROUTE, itemAddress(item))))))))
+                                        placeManager.goTo(SUBSYSTEM_ROUTE, node.asString())))))))
                 .onPreview(metadataPreview((name, metadata, preview) ->
                         stackPreview(preview, capitalCase(name), stack -> stack.addItem(stackItem()
                                 .add(content(p).editorial().text(metadata.resourceDescription().description()))))));

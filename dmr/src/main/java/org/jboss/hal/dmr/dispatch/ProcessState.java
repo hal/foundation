@@ -44,6 +44,7 @@ public class ProcessState implements Iterable<ServerState> {
         serverStates.add(serverState);
     }
 
+    /** Returns an iterator over the server states. */
     @Override
     public Iterator<ServerState> iterator() {
         return serverStates.iterator();

@@ -18,8 +18,8 @@ package org.jboss.hal.meta;
 import java.util.Objects;
 
 /**
- * Strategy interface for resolving {@link Placeholder placeholders} in {@link AddressTemplate address templates} to
- * concrete values.
+ * Strategy interface for resolving {@link Placeholder placeholders}, wildcards, or any other dynamic parts in
+ * {@link AddressTemplate address templates} to concrete values.
  */
 @FunctionalInterface
 public interface TemplateResolver {

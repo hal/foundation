@@ -219,6 +219,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
 
     private void onClick() {
         if (state == State.ONE_RESOURCE && singleTemplate != null) {
+            // TODO [Finding 2] Use ModelBrowser.inScope() for link styling
             SelectInTree.dispatch(element(), singleTemplate);
         } else if (state == State.MULTIPLE_RESOURCES) {
             popper.show(null);
@@ -250,6 +251,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                         String size = String.valueOf(templates.size());
                         SortedMap<Integer, List<AddressTemplate>> ranked = rank(templates);
                         for (List<AddressTemplate> rank : ranked.values()) {
+                            // TODO [Finding 2] Use ModelBrowser.inScope() for link styling
                             menuList.addItems(rank, tpl -> listItem()
                                     .add(button(tpl.toString()).link().inline()
                                             .onClick((e, btn) -> SelectInTree.dispatch(element(), tpl))));
