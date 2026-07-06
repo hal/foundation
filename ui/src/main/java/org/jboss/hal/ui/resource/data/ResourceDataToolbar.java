@@ -46,6 +46,7 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.hal.ui.filter.DeReDeExMultiSelect.deReDeExMultiSelect;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.StorageAccessTypeMultiSelect.storageAccessTypeMultiSelect;
@@ -62,6 +63,8 @@ import static org.patternfly.component.toolbar.ToolbarGroupType.filterGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.toolbar.ToolbarItemType.searchFilter;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
+import static org.patternfly.icon.IconSets.fas.layerGroup;
+import static org.patternfly.icon.IconSets.fas.list;
 import static org.patternfly.icon.IconSets.fas.penToSquare;
 import static org.patternfly.icon.IconSets.fas.powerOff;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
@@ -87,6 +90,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     private final String resetId;
     private final String refreshId;
     private final String editId;
+    private final String groupToggleId;
     private final Toolbar toolbar;
     private final ToolbarContent toolbarContent;
     private final ResourceData resourceData;
@@ -94,6 +98,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     private ToolbarGroup editActionGroup;
     private ToolbarItem resetItem;
     private ToolbarItem editItem;
+    private ToolbarItem groupToggleItem;
 
     private ResourceDataToolbar(ResourceData resourceData, Filter<ResourceAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
@@ -102,6 +107,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
         this.resetId = Id.unique("reset");
         this.refreshId = Id.unique("refresh");
         this.editId = Id.unique("edit");
+        this.groupToggleId = Id.unique("group-toggle");
         this.toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent = toolbarContent()
                         .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter)))
@@ -173,6 +179,13 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     // The toolbar groups, items and most important their tooltips are recreated each time so that the attach()
     // method on the tooltips is called and the overlay setup is done correctly.
     private ToolbarGroup viewActionGroup() {
+        groupToggleItem = toolbarItem()
+                .add(button().id(groupToggleId).plain()
+                        .icon(resourceData.isGrouped() ? list() : layerGroup())
+                        .onClick((e, b) -> resourceData.toggleGrouped()))
+                .add(tooltip(By.id(groupToggleId),
+                        resourceData.isGrouped() ? "Flat layout" : "Grouped layout"));
+        setVisible(groupToggleItem, resourceData.supportsGrouping());
         resetItem = toolbarItem()
                 .add(button().id(resetId).plain().icon(powerOff())
                         .ouiaId(OuiaIds.RESET_BTN)
@@ -190,6 +203,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
                         .onClick((e, b) -> resourceData.load(EDIT)))
                 .add(tooltip(By.id(editId), "Edit resource"));
         viewActionGroup = toolbarGroup(actionGroupPlain).css(modifier("align-right"))
+                .addItem(groupToggleItem)
                 .addItem(refreshItem)
                 .addItem(resetItem)
                 .addItem(editItem);
@@ -197,6 +211,13 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     }
 
     private ToolbarGroup editActionGroup() {
+        groupToggleItem = toolbarItem()
+                .add(button().id(groupToggleId).plain()
+                        .icon(resourceData.isGrouped() ? list() : layerGroup())
+                        .onClick((e, b) -> resourceData.toggleGrouped()))
+                .add(tooltip(By.id(groupToggleId),
+                        resourceData.isGrouped() ? "Flat layout" : "Grouped layout"));
+        setVisible(groupToggleItem, resourceData.supportsGrouping());
         ToolbarItem saveItem = toolbarItem()
                 .add(button("Save").primary()
                         .ouiaId(OuiaIds.SAVE_BTN)
@@ -206,6 +227,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
                         .ouiaId(OuiaIds.CANCEL_BTN)
                         .onClick((e, b) -> resourceData.cancel()));
         editActionGroup = toolbarGroup(buttonGroup).css(modifier("align-right"))
+                .addItem(groupToggleItem)
                 .addItem(saveItem)
                 .addItem(cancelItem);
         return editActionGroup;
