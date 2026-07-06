@@ -15,24 +15,42 @@
  */
 
 /**
- * Shared abstractions and data types for WildFly management resource UI components.
+ * Composable UI components for viewing and interacting with WildFly management resources.
  * <p>
- * This package defines the core data types and interfaces used across the resource sub-packages for viewing and editing WildFly
- * management resource attributes. Concrete UI components are organized in sub-packages by concern:
+ * This package provides a layered component architecture for building resource views. Components can be composed together
+ * via {@link org.jboss.hal.ui.resource.ResourceShell} or used individually. All components accept
+ * {@link org.jboss.hal.meta.AddressTemplate} and {@link org.jboss.hal.meta.Metadata} at construction time, and those
+ * requiring runtime data load it on attach via the Elemento {@code Attachable} pattern.
+ * <p>
+ * Top-level composable components:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.form}</dt>
- * <dd>Editable form items for resource attributes (boolean, numeric, string, capability references, etc.).</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view}</dt>
- * <dd>Read-only display of resource attributes using description lists.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceShell}</dt>
+ * <dd>Layout shell that accepts breadcrumb, header, and content (tabs or resource list).</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceBreadcrumb}</dt>
+ * <dd>Clickable breadcrumb trail for resource addresses with copy-to-clipboard.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceHeader}</dt>
+ * <dd>Resource name, stability label, and description.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceTabs}</dt>
+ * <dd>Tab container with Data, Attributes, Operations, and Capabilities perspectives.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceList}</dt>
+ * <dd>Filterable list of child resources with add/remove/view actions.</dd>
+ * </dl>
+ * <p>
+ * Sub-packages by concern:
+ * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.data}</dt>
  * <dd>View/edit state machine for resource attribute values.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view}</dt>
+ * <dd>Read-only display of resource attributes using description lists.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.form}</dt>
+ * <dd>Editable form items for resource attributes.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog}</dt>
  * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>
  * <dd>Finder navigation support.</dd>
  * </dl>
  * <p>
- * Key types in this package:
+ * Shared data types in this package:
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.ItemIdentifier}</dt>
  * <dd>Utility for generating stable HTML element IDs for form and view items.</dd>
