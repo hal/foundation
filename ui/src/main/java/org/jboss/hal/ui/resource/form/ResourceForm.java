@@ -34,6 +34,7 @@ import org.patternfly.component.RemoveItemHandler;
 import org.patternfly.component.UpdateItemHandler;
 import org.patternfly.component.alert.Alert;
 import org.patternfly.component.form.Form;
+import org.patternfly.component.form.FormFieldGroup;
 
 import elemental2.dom.HTMLElement;
 
@@ -92,6 +93,11 @@ public class ResourceForm implements
         items.put(item.identifier(), item);
         form.addItem(item.formGroup);
         return aur.added(item);
+    }
+
+    public ResourceForm addFieldGroup(FormFieldGroup fieldGroup) {
+        form.addFieldGroup(fieldGroup);
+        return this;
     }
 
     // ------------------------------------------------------ api
