@@ -284,7 +284,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                                 resourceView.addItem(viewItem(template, metadata, ra));
                             }
                             items = resourceView;
-                            rootContainer.add(items);
                         }
 
                     } else if (state == EDIT) {
