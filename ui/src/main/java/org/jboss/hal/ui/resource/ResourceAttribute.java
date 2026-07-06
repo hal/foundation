@@ -119,10 +119,8 @@ public class ResourceAttribute {
 
     /**
      * Groups attributes by their attribute group name. Ungrouped attributes are placed under the key {@code "ungrouped"} as
-     * the last entry. Groups are sorted alphabetically.
+     * the first entry. Groups are sorted alphabetically.
      */
-    // TODO Make use of attribute groups and turn them into form field groups
-    //  https://www.patternfly.org/components/forms/form/design-guidelines#field-groups
     public static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
         List<ResourceAttribute> ungrouped = new ArrayList<>();
         TreeMap<String, List<ResourceAttribute>> groups = new TreeMap<>();
@@ -131,17 +129,24 @@ public class ResourceAttribute {
                 ungrouped.add(attribute);
             } else {
                 groups.computeIfAbsent(attribute.group, k -> new ArrayList<>()).add(attribute);
-
             }
         }
-        if (ungrouped.isEmpty()) {
-            return groups;
-        } else {
-            // Groups are sorted, but ungrouped is always the last one
-            LinkedHashMap<String, List<ResourceAttribute>> withUngrouped = new LinkedHashMap<>(groups);
-            withUngrouped.put("ungrouped", ungrouped);
-            return withUngrouped;
+        LinkedHashMap<String, List<ResourceAttribute>> result = new LinkedHashMap<>();
+        if (!ungrouped.isEmpty()) {
+            result.put("ungrouped", ungrouped);
         }
+        result.putAll(groups);
+        return result;
+    }
+
+    /** Returns {@code true} if any attribute in the list has a non-null attribute group. */
+    public static boolean hasGroups(List<ResourceAttribute> attributes) {
+        for (ResourceAttribute attribute : attributes) {
+            if (attribute.group != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ------------------------------------------------------ instance
