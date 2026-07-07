@@ -30,9 +30,9 @@ import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
-import org.jboss.hal.ui.filter.NameSearchInput;
 import org.jboss.hal.ui.resource.data.ResourceData.State;
 
+import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.VIEW;
 import org.patternfly.component.toolbar.Toolbar;
@@ -98,7 +98,6 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     private ToolbarGroup editActionGroup;
     private ToolbarItem resetItem;
     private ToolbarItem editItem;
-    private ToolbarItem groupToggleItem;
 
     private ResourceDataToolbar(ResourceData resourceData, Filter<ResourceAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
@@ -110,7 +109,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
         this.groupToggleId = Id.unique("group-toggle");
         this.toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent = toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter)))
+                        .addItem(toolbarItem(searchFilter).add(nameSearchInput(filter)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(typesFilterMultiSelect(filter)))
                                 .addItem(toolbarItem().add(deReDeExMultiSelect(filter)))
@@ -176,12 +175,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     // The toolbar groups, items and most important their tooltips are recreated each time so that the attach()
     // method on the tooltips is called and the overlay setup is done correctly.
     private ToolbarGroup viewActionGroup() {
-        groupToggleItem = toolbarItem()
-                .add(button().id(groupToggleId).plain()
-                        .icon(resourceData.isGrouped() ? list() : layerGroup())
-                        .onClick((e, b) -> resourceData.toggleGrouped()))
-                .add(tooltip(By.id(groupToggleId),
-                        resourceData.isGrouped() ? "Flat layout" : "Grouped layout"));
+        ToolbarItem groupToggleItem = groupToggleItem();
         setVisible(groupToggleItem, resourceData.supportsGrouping());
         resetItem = toolbarItem()
                 .add(button().id(resetId).plain().icon(powerOff())
@@ -208,12 +202,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     }
 
     private ToolbarGroup editActionGroup() {
-        groupToggleItem = toolbarItem()
-                .add(button().id(groupToggleId).plain()
-                        .icon(resourceData.isGrouped() ? list() : layerGroup())
-                        .onClick((e, b) -> resourceData.toggleGrouped()))
-                .add(tooltip(By.id(groupToggleId),
-                        resourceData.isGrouped() ? "Flat layout" : "Grouped layout"));
+        ToolbarItem groupToggleItem = groupToggleItem();
         setVisible(groupToggleItem, resourceData.supportsGrouping());
         ToolbarItem saveItem = toolbarItem()
                 .add(button("Save").primary()
@@ -228,5 +217,14 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
                 .addItem(saveItem)
                 .addItem(cancelItem);
         return editActionGroup;
+    }
+
+    private ToolbarItem groupToggleItem() {
+        return toolbarItem()
+                .add(button().id(groupToggleId).plain()
+                        .icon(resourceData.isGrouped() ? list() : layerGroup())
+                        .onClick((e, b) -> resourceData.toggleGrouped()))
+                .add(tooltip(By.id(groupToggleId),
+                        resourceData.isGrouped() ? "Switch to flat layout" : "Switch to grouped layout"));
     }
 }

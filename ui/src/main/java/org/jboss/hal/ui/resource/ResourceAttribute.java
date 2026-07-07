@@ -33,17 +33,27 @@ import org.jboss.hal.meta.security.SecurityContext;
 import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 
 /**
- * Data holder for a WildFly management attribute. Combines the attribute's value, description metadata, and security
- * context into a single object used by both form and view components.
+ * Data holder for a WildFly management attribute. Combines the attribute's value, description metadata, and security context
+ * into a single object used by both form and view components.
  * <p>
- * Attributes can be nested inside record-type (simple record) attributes. In that case, the fully qualified name contains
- * the parent attribute name as a prefix separated by a dot.
+ * Attributes can be nested inside record-type (simple record) attributes. In that case, the fully qualified name contains the
+ * parent attribute name as a prefix separated by a dot.
  */
 public class ResourceAttribute {
 
+    /**
+     * Represents the default group name for attributes that do not belong to any defined group. This constant is used as a key
+     * when grouping attributes for categorization. Ungrouped attributes are typically placed under this key as the first entry
+     * when attributes are grouped alphabetically.
+     */
+    public static final String UNGROUPED = "ungrouped";
+
     // ------------------------------------------------------ predicates
 
-    /** Returns a predicate that accepts only attributes whose fully qualified name is in the given list. An empty list accepts all. */
+    /**
+     * Returns a predicate that accepts only attributes whose fully qualified name is in the given list. An empty list accepts
+     * all.
+     */
     public static Predicate<AttributeDescription> includes(List<String> attributes) {
         return ad -> {
             if (attributes.isEmpty()) {
@@ -118,8 +128,8 @@ public class ResourceAttribute {
     }
 
     /**
-     * Groups attributes by their attribute group name. Ungrouped attributes are placed under the key {@code "ungrouped"} as
-     * the first entry. Groups are sorted alphabetically.
+     * Groups attributes by their attribute group name. Ungrouped attributes are placed under the key {@code "ungrouped"} as the
+     * first entry. Groups are sorted alphabetically.
      */
     public static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
         List<ResourceAttribute> ungrouped = new ArrayList<>();
@@ -133,7 +143,7 @@ public class ResourceAttribute {
         }
         LinkedHashMap<String, List<ResourceAttribute>> result = new LinkedHashMap<>();
         if (!ungrouped.isEmpty()) {
-            result.put("ungrouped", ungrouped);
+            result.put(UNGROUPED, ungrouped);
         }
         result.putAll(groups);
         return result;

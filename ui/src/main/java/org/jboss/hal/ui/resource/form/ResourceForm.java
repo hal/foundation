@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.form;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,11 +36,13 @@ import org.patternfly.component.UpdateItemHandler;
 import org.patternfly.component.alert.Alert;
 import org.patternfly.component.form.Form;
 import org.patternfly.component.form.FormFieldGroup;
+import org.patternfly.component.form.FormFieldGroupBody;
 
 import elemental2.dom.HTMLElement;
 
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
@@ -51,11 +54,14 @@ import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.component.form.FormAlert.formAlert;
+import static org.patternfly.component.form.FormFieldGroup.formFieldGroup;
+import static org.patternfly.component.form.FormFieldGroupBody.formFieldGroupBody;
+import static org.patternfly.component.form.FormFieldGroupHeader.formFieldGroupHeader;
 
 /**
  * Horizontal form container for editing a WildFly management resource. Manages a collection of {@link FormItem} instances,
- * provides validation with alert display, and generates DMR {@code write-attribute} / {@code undefine-attribute} operations
- * for modified attributes.
+ * provides validation with alert display, and generates DMR {@code write-attribute} / {@code undefine-attribute} operations for
+ * modified attributes.
  */
 public class ResourceForm implements
         TypedBuilder<HTMLElement, ResourceForm>,
@@ -64,6 +70,7 @@ public class ResourceForm implements
 
     private final AddressTemplate template;
     private final Map<String, FormItem> items;
+    private final Map<String, FormFieldGroupBody> groupBodies;
     private final AurHandler<ResourceForm, FormItem> aur;
     private final Form form;
 
@@ -71,6 +78,7 @@ public class ResourceForm implements
     public ResourceForm(AddressTemplate template) {
         this.template = template;
         this.items = new LinkedHashMap<>();
+        this.groupBodies = new HashMap<>();
         this.aur = new AurHandler<>(this);
         this.form = form().css(halComponent(resource, HalClasses.form))
                 .horizontal();
@@ -92,6 +100,18 @@ public class ResourceForm implements
     public ResourceForm add(FormItem item) {
         items.put(item.identifier(), item);
         form.addItem(item.formGroup);
+        return aur.added(item);
+    }
+
+    public ResourceForm addItem(FormItem item, String group) {
+        groupBodies.computeIfAbsent(group, k -> {
+            FormFieldGroupBody body = formFieldGroupBody();
+            form.addFieldGroup(formFieldGroup(true)
+                    .addHeader(formFieldGroupHeader().title(capitalCase(group)))
+                    .addBody(body));
+            return body;
+        }).addGroup(item.formGroup);
+        items.put(item.identifier(), item);
         return aur.added(item);
     }
 
@@ -145,6 +165,7 @@ public class ResourceForm implements
     @Override
     public void clear() {
         form.clear();
+        groupBodies.clear();
         Iterator<FormItem> iterator = items.values().iterator();
         while (iterator.hasNext()) {
             FormItem item = iterator.next();

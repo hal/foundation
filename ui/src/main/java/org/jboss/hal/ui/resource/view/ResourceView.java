@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.view;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -29,6 +28,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.patternfly.component.AddItemHandler;
 import org.patternfly.component.AurHandler;
 import org.patternfly.component.HasItems;
@@ -56,8 +56,8 @@ import static org.patternfly.style.Orientation.horizontal;
 import static org.patternfly.style.Orientation.vertical;
 
 /**
- * Read-only display of WildFly management resource attributes as a responsive PatternFly description list. Each attribute
- * is rendered as a {@link ViewItem}. Supports add, update, and remove operations on items.
+ * Read-only display of WildFly management resource attributes as a responsive PatternFly description list. Each attribute is
+ * rendered as a {@link ViewItem}. Supports add, update, and remove operations on items.
  */
 public class ResourceView implements
         TypedBuilder<HTMLElement, ResourceView>,
@@ -110,12 +110,6 @@ public class ResourceView implements
                         lg, horizontal,
                         xl, horizontal,
                         _2xl, horizontal));
-    }
-
-    ResourceView(DescriptionList dl) {
-        this.items = new LinkedHashMap<>();
-        this.aur = new AurHandler<>(this);
-        this.dl = dl;
     }
 
     @Override
