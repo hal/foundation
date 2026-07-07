@@ -25,6 +25,21 @@
     --hal-resource-label-width-on-2xl: 28ch;
 }
 
+.hal-c-resource__groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    > .hal-c-resource__view {
+        margin-block-end: var(--pf-t--global--spacer--md);
+    }
+}
+
+.hal-c-resource__group {
+    border-block-start: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+    padding-block: var(--pf-t--global--spacer--sm);
+}
+
 .hal-c-resource__nested-label {
     display: flex;
     flex-wrap: wrap;

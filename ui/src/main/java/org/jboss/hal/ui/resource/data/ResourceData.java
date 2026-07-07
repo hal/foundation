@@ -28,6 +28,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.jboss.hal.ui.resource.ResourceItem;
 import org.jboss.hal.ui.resource.form.FormItem;
@@ -59,6 +60,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.resources.HalClasses.body;
+import static org.jboss.hal.resources.HalClasses.groups;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -94,6 +96,7 @@ import static org.patternfly.component.form.FormFieldGroupBody.formFieldGroupBod
 import static org.patternfly.component.form.FormFieldGroupHeader.formFieldGroupHeader;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.style.Classes.filtered;
+import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.modifier;
 
 /**
@@ -237,7 +240,8 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
                     if (state == VIEW) {
                         if (grouped && supportsGrouping) {
-                            HTMLContainerBuilder<HTMLDivElement> resourceViewsContainer = div();
+                            HTMLContainerBuilder<HTMLDivElement> resourceViewsContainer = div()
+                                    .css(halComponent(HalClasses.resource, groups));
                             Map<String, List<ResourceAttribute>> groups = grouped(resourceAttributes);
                             for (Map.Entry<String, List<ResourceAttribute>> entry : groups.entrySet()) {
                                 String groupName = entry.getKey();
@@ -252,9 +256,9 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                                     resourceViewsContainer.add(groupResourceView);
                                 } else {
                                     ExpandableSection es = expandableSection()
+                                            .css(halComponent(HalClasses.resource, group))
                                             .addToggle(expandableSectionToggle(capitalCase(groupName)))
                                             .addContent(expandableSectionContent().add(groupResourceView));
-                                    es.expand();
                                     resourceViewsContainer.add(es);
                                     groupContainers.add(es.element());
                                 }
