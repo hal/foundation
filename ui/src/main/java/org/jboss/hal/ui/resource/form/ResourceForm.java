@@ -115,6 +115,18 @@ public class ResourceForm implements
         return aur.added(item);
     }
 
+    /** Registers a form item for validation and data collection without adding it to the form's DOM tree. */
+    public ResourceForm registerItem(FormItem item) {
+        items.put(item.identifier(), item);
+        return aur.added(item);
+    }
+
+    /** Adds an arbitrary element to the form's DOM tree. */
+    public ResourceForm addContent(IsElement<?> content) {
+        form.add(content);
+        return this;
+    }
+
     public ResourceForm addFieldGroup(FormFieldGroup fieldGroup) {
         form.addFieldGroup(fieldGroup);
         return this;

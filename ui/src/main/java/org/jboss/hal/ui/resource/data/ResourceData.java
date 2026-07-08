@@ -40,8 +40,6 @@ import org.jboss.hal.ui.resource.view.ResourceView;
 import org.jboss.hal.ui.resource.view.ViewItem;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.expandable.ExpandableSection;
-import org.patternfly.component.form.FormFieldGroup;
-import org.patternfly.component.form.FormFieldGroupBody;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
 
@@ -91,9 +89,6 @@ import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFoo
 import static org.patternfly.component.expandable.ExpandableSection.expandableSection;
 import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
-import static org.patternfly.component.form.FormFieldGroup.formFieldGroup;
-import static org.patternfly.component.form.FormFieldGroupBody.formFieldGroupBody;
-import static org.patternfly.component.form.FormFieldGroupHeader.formFieldGroupHeader;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.group;
@@ -289,19 +284,20 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                                         items.add(fi);
                                     }
                                 } else {
-                                    FormFieldGroupBody body = formFieldGroupBody();
+                                    HTMLContainerBuilder<HTMLDivElement> groupContent = div();
                                     for (ResourceAttribute ra : groupAttributes) {
                                         FormItem fi = formItem(template, metadata, ra,
                                                 new FormItemFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));
-                                        body.addGroup(fi.formGroup);
+                                        groupContent.add(fi.formGroup);
+                                        resourceForm.registerItem(fi);
                                         items.add(fi);
                                     }
-                                    FormFieldGroup fieldGroup = formFieldGroup()
-                                            .expandable()
-                                            .addHeader(formFieldGroupHeader().title(capitalCase(groupName)))
-                                            .addBody(body);
-                                    resourceForm.addFieldGroup(fieldGroup);
-                                    groupContainers.add(fieldGroup.element());
+                                    ExpandableSection es = expandableSection()
+                                            .css(halComponent(HalClasses.resource, group))
+                                            .addToggle(expandableSectionToggle(capitalCase(groupName)))
+                                            .addContent(expandableSectionContent().add(groupContent));
+                                    resourceForm.addContent(es);
+                                    groupContainers.add(es.element());
                                 }
                             }
                         } else {
