@@ -140,7 +140,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     private final StatisticsTask task;
     private final Dispatcher dispatcher;
     private final Notifications notifications;
-    private final Filter<ResourceData> filter;
+    private final Filter<StatisticsEnabledState> filter;
     private final ObservableValue<Integer> visible;
     private final ObservableValue<Integer> total;
     private final PageGroup pageGroup;
@@ -155,7 +155,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     private final MenuList bulkNestedExpressionMenuList;
     private final Table resourcesTable;
     private final Tbody resourcesTBody;
-    private final Map<ResourceData, MenuList[]> expressionMenuLists;
+    private final Map<StatisticsEnabledState, MenuList[]> expressionMenuLists;
     private EmptyState noResources;
 
     ResourcesSection(StatisticsTask task, Dispatcher dispatcher, Notifications notifications) {
@@ -163,7 +163,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         this.dispatcher = dispatcher;
         this.notifications = notifications;
 
-        this.filter = new Filter<ResourceData>(AND).onChange(this::onFilterChanged);
+        this.filter = new Filter<StatisticsEnabledState>(AND).onChange(this::onFilterChanged);
         this.filter.add(new NameAttribute<>(rd -> rd.template.toString()));
         this.filter.add(new StatisticsEnabledAttribute());
 
@@ -261,7 +261,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     // ------------------------------------------------------ api
 
     /** Adds a row for the given resource data to the resources table. */
-    void addResource(ResourceData sed) {
+    void addResource(StatisticsEnabledState sed) {
         resourcesTBody.addItem(resourceRow(sed));
     }
 
@@ -282,7 +282,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
     }
 
     /** Adds an expression dropdown to the table row of the given resource data. */
-    void addExpressionDropdown(ResourceData rd, Set<String> expressions) {
+    void addExpressionDropdown(StatisticsEnabledState rd, Set<String> expressions) {
         HTMLElement td = resourcesTBody.querySelector(By.data(EXPRESSION_DROPDOWN_DATA, rd.template.toString()));
         if (td != null) {
             MenuList expressionMenuList = menuList().ordered();
@@ -315,13 +315,13 @@ class ResourcesSection implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ filter
 
-    private void onFilterChanged(Filter<ResourceData> filter, String origin) {
+    private void onFilterChanged(Filter<StatisticsEnabledState> filter, String origin) {
         int matchingItems;
         selectFilteredMenuItem.disabled(!filter.defined());
         if (filter.defined()) {
             matchingItems = 0;
             for (Tr row : resourcesTBody.items()) {
-                ResourceData rd = row.get(RESOURCE_DATA);
+                StatisticsEnabledState rd = row.get(RESOURCE_DATA);
                 if (rd != null) {
                     boolean match = filter.match(rd);
                     row.classList().toggle(modifier(filtered), !match);
@@ -390,10 +390,10 @@ class ResourcesSection implements IsElement<HTMLElement> {
     // ------------------------------------------------------ (bulk) update
 
     private void bulkUpdate(Boolean value, String expression) {
-        List<ResourceData> selected = resourcesTable.selectedItems().stream()
-                .map(tr -> tr.<ResourceData>get(RESOURCE_DATA))
+        List<StatisticsEnabledState> selected = resourcesTable.selectedItems().stream()
+                .map(tr -> tr.<StatisticsEnabledState>get(RESOURCE_DATA))
                 .collect(toList());
-        List<ResourceData> allowed = expression != null
+        List<StatisticsEnabledState> allowed = expression != null
                 ? selected.stream().filter(rd -> rd.expressionsAllowed).collect(toList())
                 : selected;
         List<Operation> operations = allowed.stream()
@@ -412,7 +412,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                                 (selected.size() - allowed.size()) + " resources have not been updated because they do not support expressions.";
                         notifications.send(warning(title, description));
                     }
-                    for (ResourceData rd : allowed) {
+                    for (StatisticsEnabledState rd : allowed) {
                         readAndUpdateRow(rd);
                     }
                     return null;
@@ -425,7 +425,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 });
     }
 
-    private void singleUpdate(ResourceData rd, Boolean value, String expression) {
+    private void singleUpdate(StatisticsEnabledState rd, Boolean value, String expression) {
         dispatcher.execute(writeAttributeOperation(rd.template, value, expression))
                 .then(__ -> {
                     notifications.send(success("Resources updated",
@@ -441,9 +441,9 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 });
     }
 
-    private void readAndUpdateRow(ResourceData rd) {
+    private void readAndUpdateRow(StatisticsEnabledState rd) {
         dispatcher.execute(readAttributeOperation(rd.template)).then(modelNode -> {
-            ResourceData copy = rd.copy(modelNode);
+            StatisticsEnabledState copy = rd.copy(modelNode);
             resourcesTBody.updateItem(resourceRow(copy));
             if (copy.expressionsAllowed) {
                 addExpressionDropdown(copy, task.expressions);
@@ -480,7 +480,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         }
     }
 
-    private Tr resourceRow(ResourceData rd) {
+    private Tr resourceRow(StatisticsEnabledState rd) {
         String templateId = Id.build(rd.template.toString());
         Td seTd = td(STATISTICS_ENABLED_COLUMN);
         Td taTd = td(TRUE_ACTION_COLUMN).action().wrap(fitContent);
@@ -515,7 +515,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         return tr;
     }
 
-    private Dropdown expressionDropdown(ResourceData rd, MenuList expressionList, MenuList nestedExpressionList) {
+    private Dropdown expressionDropdown(StatisticsEnabledState rd, MenuList expressionList, MenuList nestedExpressionList) {
         Dropdown dropdown = rd == null
                 ? dropdown(menuToggle("Expression").secondary())
                 : dropdown(ellipsisVertical(), "Expressions for " + rd.template).placement(bottomEnd);
@@ -533,7 +533,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
         return dropdown;
     }
 
-    private MenuItem statisticsEnabledItem(ResourceData rd) {
+    private MenuItem statisticsEnabledItem(StatisticsEnabledState rd) {
         String identifier = rd == null
                 ? Id.build(WILDFLY_STATISTICS_ENABLED)
                 : Id.build(rd.template.toString(), WILDFLY_STATISTICS_ENABLED);
@@ -549,7 +549,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 });
     }
 
-    private MenuItem expressionItem(ResourceData rd, String expression) {
+    private MenuItem expressionItem(StatisticsEnabledState rd, String expression) {
         String identifier = rd == null
                 ? Id.build(expression)
                 : Id.build(rd.template.toString(), expression);
@@ -566,7 +566,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 });
     }
 
-    private MenuItem nestedExpressionItem(ResourceData rd, String expression) {
+    private MenuItem nestedExpressionItem(StatisticsEnabledState rd, String expression) {
         String identifier = rd == null
                 ? Id.build(WILDFLY_STATISTICS_ENABLED, expression)
                 : Id.build(rd.template.toString(), WILDFLY_STATISTICS_ENABLED, expression);
@@ -583,7 +583,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                 });
     }
 
-    private MenuItem newExpressionItem(ResourceData rd) {
+    private MenuItem newExpressionItem(StatisticsEnabledState rd) {
         String identifier = rd == null
                 ? Id.build("new-expression")
                 : Id.build(rd.template.toString(), "new-expression");

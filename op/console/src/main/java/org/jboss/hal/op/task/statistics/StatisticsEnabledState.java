@@ -30,7 +30,7 @@ import static org.jboss.hal.dmr.ModelType.EXPRESSION;
  * Holds the {@code statistics-enabled} attribute value for a single WildFly management resource. Tracks the resource's
  * address template, current attribute value, and whether the attribute supports expressions.
  */
-class ResourceData {
+class StatisticsEnabledState {
 
     /** The address template of the resource. */
     final AddressTemplate template;
@@ -41,21 +41,21 @@ class ResourceData {
     /** Whether the {@code statistics-enabled} attribute allows expression values. */
     boolean expressionsAllowed;
 
-    ResourceData(AddressTemplate template, ModelNode value) {
+    StatisticsEnabledState(AddressTemplate template, ModelNode value) {
         this.template = template;
         this.value = value;
         this.expressionsAllowed = false;
     }
 
-    private ResourceData(AddressTemplate template, ModelNode value, boolean expressionsAllowed) {
+    private StatisticsEnabledState(AddressTemplate template, ModelNode value, boolean expressionsAllowed) {
         this.template = template;
         this.value = value;
         this.expressionsAllowed = expressionsAllowed;
     }
 
     /** Returns a copy of this resource data with the given updated value. */
-    ResourceData copy(ModelNode value) {
-        return new ResourceData(template, value, expressionsAllowed);
+    StatisticsEnabledState copy(ModelNode value) {
+        return new StatisticsEnabledState(template, value, expressionsAllowed);
     }
 
     /** Returns {@code true} if the current value is a DMR expression. */
@@ -77,7 +77,7 @@ class ResourceData {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {return false;}
-        ResourceData that = (ResourceData) o;
+        StatisticsEnabledState that = (StatisticsEnabledState) o;
         return Objects.equals(template, that.template);
     }
 

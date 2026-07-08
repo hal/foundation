@@ -234,6 +234,10 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                     supportsGrouping = hasGroups(resourceAttributes);
 
                     if (state == VIEW) {
+                        // Grouped view uses a separate ResourceView (DescriptionList) per group.
+                        // Unlike edit mode, we can't use a single ResourceView with registerItem()/addContent()
+                        // because CSS custom properties for label widths are set on .hal-c-resource__view
+                        // and must be inherited by DescriptionListGroup elements through the DOM tree.
                         if (grouped && supportsGrouping) {
                             HTMLContainerBuilder<HTMLDivElement> resourceViewsContainer = div()
                                     .css(halComponent(HalClasses.resource, groups));
@@ -270,6 +274,10 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         }
 
                     } else if (state == EDIT) {
+                        // Grouped edit uses a single ResourceForm as registry: addItem() for ungrouped
+                        // (DOM + collection), registerItem() for grouped (collection only), and
+                        // addContent() for ExpandableSections (DOM only). This works because form items
+                        // don't rely on CSS custom property inheritance from their parent container.
                         resourceForm = new ResourceForm(template);
                         if (grouped && supportsGrouping) {
                             Map<String, List<ResourceAttribute>> groups = grouped(resourceAttributes);

@@ -47,7 +47,7 @@ class StatisticsEnabledMultiSelect implements IsElement<HTMLElement> {
     // ------------------------------------------------------ factory
 
     /** Creates a new multi-select filter component bound to the given filter. */
-    static StatisticsEnabledMultiSelect statisticsEnabledMultiSelect(Filter<ResourceData> filter) {
+    static StatisticsEnabledMultiSelect statisticsEnabledMultiSelect(Filter<StatisticsEnabledState> filter) {
         return new StatisticsEnabledMultiSelect(filter);
     }
 
@@ -57,7 +57,7 @@ class StatisticsEnabledMultiSelect implements IsElement<HTMLElement> {
     private static final String STATISTICS_ENABLED_KEY = STATISTICS_ENABLED + "-key";
     private final MultiSelect multiSelect;
 
-    StatisticsEnabledMultiSelect(Filter<ResourceData> filter) {
+    StatisticsEnabledMultiSelect(Filter<StatisticsEnabledState> filter) {
         filter.onChange(this::onFilterChanged);
         this.multiSelect = multiSelect(menuToggle().text(Humanize.sentenceCase(STATISTICS_ENABLED)))
                 .addMenu(multiSelectGroupMenu()
@@ -77,7 +77,7 @@ class StatisticsEnabledMultiSelect implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ internal
 
-    private void setFilter(Filter<ResourceData> filter, List<MenuItem> menuItems) {
+    private void setFilter(Filter<StatisticsEnabledState> filter, List<MenuItem> menuItems) {
         Optional<StatisticsEnabledValue> sev = menuItems.stream()
                 .filter(menuItem -> menuItem.has(STATISTICS_ENABLED_KEY))
                 .map(menuItem -> menuItem.<StatisticsEnabledValue>get(STATISTICS_ENABLED_KEY))
@@ -89,11 +89,11 @@ class StatisticsEnabledMultiSelect implements IsElement<HTMLElement> {
         }
     }
 
-    private void onFilterChanged(Filter<ResourceData> filter, String origin) {
+    private void onFilterChanged(Filter<StatisticsEnabledState> filter, String origin) {
         if (!origin.equals(ORIGIN)) {
             multiSelect.clear(false);
             List<String> identifiers = new ArrayList<>();
-            MultiSelects.<ResourceData, StatisticsEnabledValue>collectIdentifiers(identifiers, filter,
+            MultiSelects.<StatisticsEnabledState, StatisticsEnabledValue>collectIdentifiers(identifiers, filter,
                     StatisticsEnabledAttribute.NAME, value -> value.identifier);
             multiSelect.selectIdentifiers(identifiers, false);
         }

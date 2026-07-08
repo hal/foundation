@@ -80,7 +80,7 @@ public class StatisticsTask implements Task {
     public static final String TASK_ID = StatisticsTask.class.getName();
 
     final Set<String> expressions;
-    final Map<AddressTemplate, ResourceData> resources;
+    final Map<AddressTemplate, StatisticsEnabledState> resources;
     private final Dispatcher dispatcher;
     private final MetadataRepository metadataRepository;
     private final ModelTree modelTree;
@@ -156,7 +156,7 @@ public class StatisticsTask implements Task {
                             if (template.fullyQualified() && statisticsEnabled.isDefined()) {
                                 // Already add expressions and resources to the tables.
                                 // Update the dropdowns later if we know whether the attributes support expressions.
-                                ResourceData rd = new ResourceData(template, statisticsEnabled);
+                                StatisticsEnabledState rd = new StatisticsEnabledState(template, statisticsEnabled);
                                 for (String expression : rd.expressions()) {
                                     addExpression(expression, false);
                                 }
