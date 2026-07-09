@@ -14,6 +14,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Refactor model browser detail panel to use reusable resource components (ResourceShell, ResourceBreadcrumb, ResourceHeader, ResourceTabs, ResourceList) — eliminates ~460 lines of duplicated code
+- Generalize ResourceBreadcrumb with SegmentHandler callback providing depth-aware segment click handling
+- Generalize ResourceHeader with customTitle(), showStability(), and showDescription() builder methods for different display contexts
+- Generalize ResourceTabs with initialSelection() and onSelect() builder methods for tab memory across resource selections
+- Generalize ResourceList with automatic wildcard template detection to choose the right DMR operation (read-children-names vs read-children-types)
 - Unify grouped layout to use ExpandableSection in both view and edit mode for consistent UX
 - Improve resource package architecture — rename manager subpackage to data, consolidate context keys into Keys interface, make table classes public for reuse
 

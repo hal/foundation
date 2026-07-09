@@ -63,6 +63,17 @@ class ModelBrowserEngine {
 
     private static final Logger logger = Logger.getLogger(ModelBrowserEngine.class.getName());
 
+    // The DMR operation selection and result parsing below mirrors the logic in
+    // ResourceList.load() / parseChildNames() / parseChildTypes().
+    // Both use the same two-mode pattern based on the template shape:
+    //   - wildcard (=*): read-children-names on the parent address
+    //   - non-wildcard:  read-children-types with include-singletons on the template address
+    // The duplication is intentional: this class builds a hierarchical ModelBrowserNode tree
+    // (with SINGLETON_FOLDER grouping and non-existing singleton detection) for the TreeView,
+    // while ResourceList builds a flat ChildResource list for a DataList.
+    // The shared logic is small (~40 lines) and unlikely to diverge, so extracting it into a
+    // shared utility would add indirection without meaningful benefit.
+
     /**
      * Returns a function that returns a promise to read the child resources of the selected tree view item. Uses
      * {@link #parseChildren(ModelBrowserNode, ModelNode, boolean)} and {@link #mbn2tvi(Dispatcher)}.

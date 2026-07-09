@@ -278,6 +278,16 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
 
     // ------------------------------------------------------ internal
 
+    // The DMR operation selection and result parsing below mirrors the logic in
+    // ModelBrowserEngine.readChildrenOperation() / parseChildren().
+    // Both use the same two-mode pattern based on the template shape:
+    //   - wildcard (=*): read-children-names on the parent address
+    //   - non-wildcard:  read-children-types with include-singletons on the template address
+    // The duplication is intentional: ModelBrowserEngine builds a hierarchical ModelBrowserNode
+    // tree for the TreeView, while this class builds a flat ChildResource list for a DataList.
+    // The shared logic is small (~40 lines) and unlikely to diverge, so extracting it into a
+    // shared utility would add indirection without meaningful benefit.
+
     private void load() {
         if (wildcardTemplate) {
             loadByChildNames();
@@ -319,6 +329,9 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
         return children;
     }
 
+    // Singleton detection: read-children-types with include-singletons returns "key=value"
+    // for singletons (e.g. "core-service=management") and plain names for regular children
+    // (e.g. "extension"). The "=" in the result is the DMR convention that distinguishes them.
     private List<ChildResource> parseChildTypes(ModelNode result) {
         List<ChildResource> children = new ArrayList<>();
         if (result.isDefined()) {
