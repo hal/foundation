@@ -206,7 +206,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
     }
 
     void select(AddressTemplate template) {
-        if (!template.isEmpty() && template.fullyQualified()) {
+        if (!template.isEmpty()) {
             TreeViewItem item = treeView.findItem(template.identifier());
             if (item != null) {
                 treeView.select(item);

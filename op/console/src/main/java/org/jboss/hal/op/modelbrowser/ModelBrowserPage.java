@@ -15,8 +15,9 @@
  */
 package org.jboss.hal.op.modelbrowser;
 
+import java.util.Optional;
+
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
@@ -24,7 +25,6 @@ import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.ui.modelbrowser.ModelBrowser;
 
 import elemental2.dom.HTMLElement;
 
@@ -33,22 +33,21 @@ import static org.jboss.hal.resources.OuiaIds.PAGE_MODEL_BROWSER;
 import static org.jboss.hal.ui.modelbrowser.ModelBrowser.modelBrowser;
 import static org.patternfly.component.page.PageSection.pageSection;
 
-/** Page hosting the management model browser, routed to {@code /management-model}. Renders the full resource tree starting from the root address. */
+/**
+ * Page hosting the management model browser, routed to {@code /management-model}. Renders the full resource tree starting from
+ * the root address.
+ */
 @Dependent
 @Route("/management-model/:selection?")
 public class ModelBrowserPage implements Page {
 
-    private final ModelBrowser modelBrowser;
-
-    @Inject
-    public ModelBrowserPage() {
-        this.modelBrowser = modelBrowser(AddressTemplate.root());
-    }
-
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
+        Optional<AddressTemplate> selection = parameter.has("selection")
+                ? AddressTemplate.ofUntrusted(parameter.get("selection"))
+                : Optional.empty();
         return singletonList(pageSection().ouiaId(PAGE_MODEL_BROWSER)
-                .add(modelBrowser)
+                .add(modelBrowser(AddressTemplate.root(), selection.orElse(null)))
                 .element());
     }
 }

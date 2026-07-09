@@ -9,11 +9,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add auto-grouping for resources with many attributes but no metadata-defined attribute groups — alphabetical letter-range sections (e.g. "A – D", "E – H") appear automatically when a resource has 20+ attributes, using the strategy pattern with GroupingStrategy, MetadataGrouping, and AutoGrouping
 - Add attribute group layout toggle for resource views and forms — groups attributes by their WildFly management model attribute group with expandable/collapsible sections, ungrouped attributes first and named groups sorted a-z
 - Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
 
 ### Changed
 
+- Extract OUIA component type strings to OuiaIds constants for consistent test identifiers
+- Rename statistics ResourceData to StatisticsEnabledState for clarity
 - Refactor model browser detail panel to use reusable resource components (ResourceShell, ResourceBreadcrumb, ResourceHeader, ResourceTabs, ResourceList) — eliminates ~460 lines of duplicated code
 - Generalize ResourceBreadcrumb with SegmentHandler callback providing depth-aware segment click handling
 - Generalize ResourceHeader with customTitle(), showStability(), and showDescription() builder methods for different display contexts
@@ -24,6 +27,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Fix non-existing singleton popover in model browser — attach popover at item creation time instead of in parent's onToggle handler, which fired before async children loaded
+- Fix tooltip placement for model browser back/forward buttons
 - Fix toolbar action group duplication when toggling grouped layout in the same view/edit state
 - Fix grouped DescriptionList missing HAL CSS class causing different spacing compared to flat layout
 - Fix grouped view mode spacing to align with edit mode
@@ -32,7 +37,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Upgrades
 
 - Bump PatternFly Java to 0.9.4
-- Bump Quarkus platform to 3.37.1
+- Bump Quarkus platform to 3.37.2
 - Bump Maven managed dependencies and plugins
 - Bump npm dependencies, dev dependencies, and packageManager versions
 

@@ -137,13 +137,10 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
     }
 
     private HTMLElement titleFor(ModelBrowserNode mbn) {
-        switch (mbn.type) {
-            case SINGLETON_FOLDER:
-                return span().add("Singleton child resources of ").add(code().text(mbn.name)).element();
-            case FOLDER:
-                return span().add("Child resources of ").add(code().text(mbn.name)).element();
-            default:
-                return span().text(mbn.name).element();
-        }
+        return switch (mbn.type) {
+            case SINGLETON_FOLDER -> span().add("Singleton child resources of ").add(code().text(mbn.name)).element();
+            case FOLDER -> span().add("Child resources of ").add(code().text(mbn.name)).element();
+            default -> span().text(mbn.name).element();
+        };
     }
 }

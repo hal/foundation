@@ -35,7 +35,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.patternfly.component.label.Label;
-import org.patternfly.component.tooltip.PopperTooltip;
+import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.popper.Modifiers;
 import org.patternfly.popper.Popper;
 import org.patternfly.popper.PopperBuilder;
@@ -194,7 +194,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
         findResources().then(__ -> {
             setVisible(providedBy, state == State.ONE_RESOURCE || state == State.MULTIPLE_RESOURCES);
             if (state == State.ONE_RESOURCE && singleTemplate != null) {
-                PopperTooltip.tooltip(providedBy.element(), singleTemplate.toString()).appendToBody();
+                providedBy.add(Tooltip.tooltip(providedBy.element(), singleTemplate.toString()));
             }
             return null;
         });

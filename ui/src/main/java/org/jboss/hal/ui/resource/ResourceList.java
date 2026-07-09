@@ -23,26 +23,21 @@ import org.jboss.elemento.Attachable;
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
-import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.model.filter.NameAttribute;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.emptystate.EmptyState;
-
-import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
-import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
 import org.patternfly.component.list.DataList;
 import org.patternfly.component.list.DataListCell;
 import org.patternfly.component.list.DataListItem;
 import org.patternfly.component.menu.Menu;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarItem;
-import org.patternfly.component.tooltip.PopperTooltip;
+import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.core.OuiaSupport;
 import org.patternfly.filter.Filter;
@@ -68,6 +63,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OP
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.patternfly.component.button.Button.button;
@@ -98,7 +96,6 @@ import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.Gap.md;
-import static org.patternfly.popper.PopperPlacement.auto;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.modifier;
@@ -142,6 +139,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
     /** Callback for add-resource actions. */
     @FunctionalInterface
     public interface AddCallback {
+
         void onAdd(AddressTemplate parent, String childName, boolean singleton);
     }
 
@@ -164,8 +162,6 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
     }
 
     // ------------------------------------------------------ instance
-
-    private static final Logger logger = Logger.getLogger(ResourceList.class.getName());
 
     private final AddressTemplate template;
     private final Metadata metadata;
@@ -195,12 +191,13 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
                 .onChange(this::onFilterChanged);
         this.noMatch = noMatch(filter);
 
-        addItem = toolbarItem();
-        PopperTooltip.tooltip(addItem.element(), "Add").appendToBody();
+        String addId = Id.unique("add");
+        addItem = toolbarItem().id(addId)
+                .add(Tooltip.tooltip(By.id(addId), "Add"));
         String refreshId = Id.unique("refresh");
         ToolbarItem refreshItem = toolbarItem()
                 .add(button().id(refreshId).plain().icon(rotateRight()).onClick((e, b) -> refresh()))
-                .add(PopperTooltip.tooltip(By.id(refreshId), "Refresh").placement(auto));
+                .add(Tooltip.tooltip(By.id(refreshId), "Refresh"));
 
         Variable spacer = componentVar(component(Classes.toolbar), "spacer");
         Variable filterGroupSpacer = componentVar(component(Classes.toolbar, Classes.group), "m-filter-group", "spacer");
