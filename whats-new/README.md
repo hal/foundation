@@ -49,6 +49,7 @@ The model browser has been greatly improved:
 - Copy the current address to the clipboard
 - Descriptions in resources list views
 - Follow capability references
+- Scoped model browser: when navigating into a resource (e.g. from a finder), the model browser adapts to the resource scope — flat resources without children display the detail panel at full width, breadcrumbs and find/goto are scoped to the root resource
 
 ### Create dependent resources on the fly
 
@@ -57,6 +58,14 @@ https://github.com/user-attachments/assets/ebfa910b-b52f-4e9d-9e71-689341a16dc2
 ### Data
 
 - Filter by name, status (defined/undefined, required/not required, deprecated/not deprecated) and mode (storage/access type)
+- Grouping of attributes based on the attribute groups defined in the resource description metadata
+
+  ![attribute-groups.png](attribute-groups.png)
+
+- Auto-grouping for resources with many attributes: resources with 20+ attributes can automatically be grouped into alphabetical letter-range sections (e.g. "A – D", "E – H") when no metadata-defined groups exist
+
+  ![auto-grouping.png](auto-grouping.png)
+
 - Attribute description as popovers
 - Links for referenced capabilities (popup for multiple references)
 - Support for simple nested attributes
@@ -78,6 +87,16 @@ https://github.com/user-attachments/assets/ebfa910b-b52f-4e9d-9e71-689341a16dc2
 ### Capabilities
 
 - New tab that shows the capabilities of the selected resource
+
+## Navigation
+
+- Finder selection is synced with the navigation item: clicking a navigation item restores the last finder selection
+- Browser back/forward buttons work correctly within the finder
+
+## Test automation
+
+- OUIA component IDs on all major UI components for stable, automation-friendly selectors
+- `@halconsole/ouia` NPM package that provides TypeScript constants and an ID builder function for use in Playwright test suites
 
 ## JavaScript API
 
