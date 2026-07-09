@@ -84,7 +84,7 @@ class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, 
 
     @Override
     public String ouiaComponentType() {
-        return "HalOP/EndpointTable";
+        return OuiaIds.TYPE_ENDPOINT_TABLE;
     }
 
     @Override

@@ -138,7 +138,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
 
     @Override
     public String ouiaComponentType() {
-        return "HalOP/Skeleton";
+        return OuiaIds.TYPE_SKELETON;
     }
 
     @Override

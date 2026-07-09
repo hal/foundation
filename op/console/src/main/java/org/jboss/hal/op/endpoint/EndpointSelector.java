@@ -94,7 +94,7 @@ public class EndpointSelector implements IsElement<HTMLElement>, OuiaSupport<HTM
 
     @Override
     public String ouiaComponentType() {
-        return "HalOP/EndpointSelector";
+        return OuiaIds.TYPE_ENDPOINT_SELECTOR;
     }
 
     @Override

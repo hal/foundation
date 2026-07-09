@@ -118,6 +118,19 @@ public interface OuiaIds {
     String SAVE_BTN = "hal-op-save-btn";
     String STABILITY_DISMISS_BTN = "hal-op-stability-dismiss-btn";
 
+    // ------------------------------------------------------ component types
+
+    String TYPE_ENDPOINT_FORM = "halOP/EndpointForm";
+    String TYPE_ENDPOINT_SELECTOR = "halOP/EndpointSelector";
+    String TYPE_ENDPOINT_TABLE = "halOP/EndpointTable";
+    String TYPE_ERROR_SKELETON = "halOP/ErrorSkeleton";
+    String TYPE_MODEL_BROWSER_DETAIL = "halOP/ModelBrowserDetail";
+    String TYPE_MODEL_BROWSER_TREE = "halOP/ModelBrowserTree";
+    String TYPE_RESOURCE_DATA_TOOLBAR = "halOP/ResourceDataToolbar";
+    String TYPE_RESOURCE_LIST = "halOP/ResourceList";
+    String TYPE_SKELETON = "halOP/Skeleton";
+    String TYPE_STABILITY_BANNER = "halOP/StabilityBanner";
+
     /**
      * Composes an OUIA ID with the {@code hal-op} prefix.
      *

@@ -75,7 +75,7 @@ public class ErrorSkeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLEl
 
     @Override
     public String ouiaComponentType() {
-        return "HalOP/ErrorSkeleton";
+        return OuiaIds.TYPE_ERROR_SKELETON;
     }
 
     @Override
