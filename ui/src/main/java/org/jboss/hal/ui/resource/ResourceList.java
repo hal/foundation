@@ -29,6 +29,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.model.filter.NameAttribute;
 import org.patternfly.component.emptystate.EmptyState;
 
@@ -43,6 +44,7 @@ import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarItem;
 import org.patternfly.component.tooltip.PopperTooltip;
 import org.patternfly.core.ObservableValue;
+import org.patternfly.core.OuiaSupport;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
 import org.patternfly.layout.flex.Flex;
@@ -52,13 +54,16 @@ import org.patternfly.style.Variable;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
+import static java.util.Collections.emptyList;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Elements.small;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
@@ -103,8 +108,17 @@ import static org.patternfly.style.Variable.componentVar;
 /**
  * Filterable list of child resources for a WildFly management resource.
  * <p>
- * Loads child resource names on attach via {@code read-children-types} and displays them as a data list. Each child has
- * "View" and optional "Remove" action buttons. New children can be added via the toolbar.
+ * Automatically detects the loading strategy from the template:
+ * <ul>
+ * <li>Wildcard templates (ending with {@code =*}): uses {@code read-children-names} on the parent address with the child type
+ * as parameter. This lists instances of a specific child type (e.g., all {@code core-service} singletons).</li>
+ * <li>Fully qualified templates: uses {@code read-children-types} with {@code include-singletons=true} on the template address.
+ * This lists all child types of a resource.</li>
+ * </ul>
+ * For wildcard (singleton folder) templates, call sites can provide additional {@linkplain #missingChildren(List) missing
+ * children} — singletons that could exist but don't yet — so they appear as "Add" options.
+ * <p>
+ * Each child has "View" and optional "Remove" action buttons. New children can be added via the toolbar.
  * <p>
  * Communication uses callbacks:
  * <ul>
@@ -113,7 +127,8 @@ import static org.patternfly.style.Variable.componentVar;
  * <li>{@link #onDelete(Consumer)} — invoked when a child's "Remove" button is clicked</li>
  * </ul>
  */
-public class ResourceList implements IsElement<HTMLElement>, Attachable {
+public class ResourceList implements IsElement<HTMLElement>, Attachable,
+        OuiaSupport<HTMLElement, ResourceList> {
 
     // ------------------------------------------------------ factory
 
@@ -130,15 +145,33 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
         void onAdd(AddressTemplate parent, String childName, boolean singleton);
     }
 
+    // ------------------------------------------------------ child resource
+
+    /** Describes a child resource in the list. */
+    public static class ChildResource {
+
+        public final String name;
+        public final AddressTemplate template;
+        public final boolean singleton;
+        public final boolean exists;
+
+        public ChildResource(String name, AddressTemplate template, boolean singleton, boolean exists) {
+            this.name = name;
+            this.template = template;
+            this.singleton = singleton;
+            this.exists = exists;
+        }
+    }
+
     // ------------------------------------------------------ instance
 
     private static final Logger logger = Logger.getLogger(ResourceList.class.getName());
 
     private final AddressTemplate template;
     private final Metadata metadata;
+    private final boolean wildcardTemplate;
     private final ObservableValue<Integer> visible;
     private final ObservableValue<Integer> total;
-    private final Filter<ChildResource> filter;
     private final EmptyState noMatch;
     private final ToolbarItem addItem;
     private final Toolbar toolbar;
@@ -147,14 +180,17 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
     private Consumer<AddressTemplate> onSelect;
     private AddCallback onAdd;
     private Consumer<AddressTemplate> onDelete;
+    private List<ChildResource> extraMissingChildren;
     private DataList dataList;
 
     ResourceList(AddressTemplate template, Metadata metadata) {
         this.template = template;
         this.metadata = metadata;
+        this.wildcardTemplate = !template.isEmpty() && "*".equals(template.last().value);
         this.visible = ov(0);
         this.total = ov(0);
-        this.filter = new Filter<ChildResource>(FilterOperator.AND)
+        this.extraMissingChildren = emptyList();
+        Filter<ChildResource> filter = new Filter<ChildResource>(FilterOperator.AND)
                 .add(new NameAttribute<>(cr -> cr.name))
                 .onChange(this::onFilterChanged);
         this.noMatch = noMatch(filter);
@@ -186,6 +222,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
                 .add(listContainer = div().element())
                 .element();
         Attachable.register(this, this);
+        initOuia();
     }
 
     @Override
@@ -194,11 +231,32 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
     }
 
     @Override
+    public String ouiaComponentType() {
+        return OuiaIds.TYPE_RESOURCE_LIST;
+    }
+
+    @Override
     public HTMLElement element() {
         return root;
     }
 
     // ------------------------------------------------------ builder
+
+    /**
+     * Provides additional children that could exist but don't yet (e.g., missing singletons known from the tree). These are
+     * merged with the loaded children and shown as "Add" options.
+     */
+    public ResourceList missingChildren(List<ChildResource> missingChildren) {
+        this.extraMissingChildren = missingChildren != null ? missingChildren : emptyList();
+        return this;
+    }
+
+    @Override
+    public ResourceList that() {
+        return this;
+    }
+
+    // ------------------------------------------------------ events
 
     /** Registers a callback invoked when a child resource's "View" button is clicked. */
     public ResourceList onSelect(Consumer<AddressTemplate> onSelect) {
@@ -221,33 +279,47 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
     // ------------------------------------------------------ internal
 
     private void load() {
-        Operation operation = new Operation.Builder(template.resolve(), READ_CHILDREN_TYPES_OPERATION)
-                .param(INCLUDE_SINGLETONS, true)
+        if (wildcardTemplate) {
+            loadByChildNames();
+        } else {
+            loadByChildTypes();
+        }
+    }
+
+    private void loadByChildNames() {
+        AddressTemplate parentAddress = template.parent();
+        String childType = template.last().key;
+        Operation operation = new Operation.Builder(parentAddress.resolve(), READ_CHILDREN_NAMES_OPERATION)
+                .param(CHILD_TYPE, childType)
                 .build();
         uic().dispatcher().execute(operation, result -> {
-            List<ChildResource> children = parseChildren(result);
-            List<ChildResource> existing = new ArrayList<>();
-            List<ChildResource> missing = new ArrayList<>();
-            for (ChildResource child : children) {
-                if (child.exists) {
-                    existing.add(child);
-                } else {
-                    missing.add(child);
-                }
-            }
-
-            if (existing.isEmpty()) {
-                empty(missing);
-            } else {
-                setupAddButton(missing);
-                visible.set(existing.size());
-                total.set(existing.size());
-                showChildren(existing);
-            }
+            List<ChildResource> children = parseChildNames(result);
+            addMissingChildren(children);
+            processChildren(children);
         });
     }
 
-    private List<ChildResource> parseChildren(ModelNode result) {
+    private void loadByChildTypes() {
+        Operation operation = new Operation.Builder(template.resolve(), READ_CHILDREN_TYPES_OPERATION)
+                .param(INCLUDE_SINGLETONS, true)
+                .build();
+        uic().dispatcher().execute(operation, result -> processChildren(parseChildTypes(result)));
+    }
+
+    private List<ChildResource> parseChildNames(ModelNode result) {
+        List<ChildResource> children = new ArrayList<>();
+        if (result.isDefined()) {
+            String key = template.last().key;
+            for (ModelNode node : result.asList()) {
+                String name = node.asString();
+                AddressTemplate childTemplate = template.parent().append(key, name);
+                children.add(new ChildResource(name, childTemplate, true, true));
+            }
+        }
+        return children;
+    }
+
+    private List<ChildResource> parseChildTypes(ModelNode result) {
         List<ChildResource> children = new ArrayList<>();
         if (result.isDefined()) {
             for (ModelNode node : result.asList()) {
@@ -260,6 +332,36 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
             }
         }
         return children;
+    }
+
+    private void addMissingChildren(List<ChildResource> children) {
+        for (ChildResource missing : extraMissingChildren) {
+            boolean found = children.stream().anyMatch(cr -> cr.name.equals(missing.name));
+            if (!found) {
+                children.add(missing);
+            }
+        }
+    }
+
+    private void processChildren(List<ChildResource> children) {
+        List<ChildResource> existing = new ArrayList<>();
+        List<ChildResource> missing = new ArrayList<>();
+        for (ChildResource child : children) {
+            if (child.exists) {
+                existing.add(child);
+            } else {
+                missing.add(child);
+            }
+        }
+
+        if (existing.isEmpty()) {
+            empty(missing);
+        } else {
+            setupAddButton(missing);
+            visible.set(existing.size());
+            total.set(existing.size());
+            showChildren(existing);
+        }
     }
 
     private void empty(List<ChildResource> missing) {
@@ -295,6 +397,11 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
             dataList.addItem(dataListItem(childId)
                     .addCell(nameCell(childId, child))
                     .addAction(dataListAction()
+                            .run(dataListAction -> {
+                                if (!child.singleton) {
+                                    dataListAction.style("align-items", "center");
+                                }
+                            })
                             .add(button("View").tertiary()
                                     .onClick((e, b) -> {
                                         if (onSelect != null) {
@@ -404,21 +511,5 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable {
     public void refresh() {
         removeChildrenFrom(listContainer);
         load();
-    }
-
-    // ------------------------------------------------------ inner class
-
-    private static class ChildResource {
-        final String name;
-        final AddressTemplate template;
-        final boolean singleton;
-        final boolean exists;
-
-        ChildResource(String name, AddressTemplate template, boolean singleton, boolean exists) {
-            this.name = name;
-            this.template = template;
-            this.singleton = singleton;
-            this.exists = exists;
-        }
     }
 }

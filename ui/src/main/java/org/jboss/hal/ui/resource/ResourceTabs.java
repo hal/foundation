@@ -15,12 +15,15 @@
  */
 package org.jboss.hal.ui.resource;
 
+import java.util.function.BiConsumer;
+
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.table.AttributesTable;
 import org.jboss.hal.ui.resource.table.CapabilitiesTable;
 import org.jboss.hal.ui.resource.table.OperationsTable;
+import org.patternfly.component.tabs.Tabs;
 
 import elemental2.dom.HTMLElement;
 
@@ -44,7 +47,8 @@ import static org.patternfly.style.Classes.util;
  * <dt>Capabilities</dt>
  * <dd>Table of capabilities declared by the resource.</dd>
  * </dl>
- * Renders from metadata at construction time. The Data tab loads runtime data on attach.
+ * Supports optional initial tab selection and tab-change callbacks via builder methods.
+ * The element is constructed lazily on the first call to {@link #element()}.
  */
 public class ResourceTabs implements IsElement<HTMLElement> {
 
@@ -57,16 +61,49 @@ public class ResourceTabs implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ instance
 
-    private final HTMLElement root;
+    private final AddressTemplate template;
+    private final Metadata metadata;
+    private String initialSelection;
+    private BiConsumer<String, Boolean> onSelect;
+    private HTMLElement root;
 
     ResourceTabs(AddressTemplate template, Metadata metadata) {
-        this.root = tabs()
+        this.template = template;
+        this.metadata = metadata;
+    }
+
+    @Override
+    public HTMLElement element() {
+        if (root == null) {
+            root = build();
+        }
+        return root;
+    }
+
+    // ------------------------------------------------------ builder
+
+    /** Sets the initially selected tab by its identifier. */
+    public ResourceTabs initialSelection(String tabId) {
+        this.initialSelection = tabId;
+        return this;
+    }
+
+    /** Registers a callback invoked when a tab is selected. Receives the tab identifier and selection state. */
+    public ResourceTabs onSelect(BiConsumer<String, Boolean> onSelect) {
+        this.onSelect = onSelect;
+        return this;
+    }
+
+    // ------------------------------------------------------ internal
+
+    private HTMLElement build() {
+        Tabs tbs = tabs()
                 .addItem(tab("data", "Data")
                         .addContent(tabContent().css(util("pt-md"))
                                 .add(resourceData(template, metadata))))
-                .run(tbs -> {
+                .run(t -> {
                     if (!metadata.resourceDescription().attributes().isEmpty()) {
-                        tbs.addItem(tab("attributes", "Attributes")
+                        t.addItem(tab("attributes", "Attributes")
                                 .addContent(tabContent().css(util("pt-md"))
                                         .add(new AttributesTable(metadata))));
                     }
@@ -76,12 +113,14 @@ public class ResourceTabs implements IsElement<HTMLElement> {
                                 .add(new OperationsTable(template, metadata))))
                 .addItem(tab("capabilities", "Capabilities")
                         .addContent(tabContent()
-                                .add(new CapabilitiesTable(metadata))))
-                .element();
-    }
+                                .add(new CapabilitiesTable(metadata))));
 
-    @Override
-    public HTMLElement element() {
-        return root;
+        if (initialSelection != null) {
+            tbs.initialSelection(initialSelection);
+        }
+        if (onSelect != null) {
+            tbs.onSelect((e, tab, selected) -> onSelect.accept(tab.identifier(), selected));
+        }
+        return tbs.element();
     }
 }

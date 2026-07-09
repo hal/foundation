@@ -15,102 +15,62 @@
  */
 package org.jboss.hal.ui.modelbrowser;
 
-import org.jboss.elemento.By;
-import org.jboss.elemento.HTMLContainerBuilder;
-import org.jboss.elemento.Id;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.OuiaIds;
-import org.patternfly.component.breadcrumb.Breadcrumb;
-import org.patternfly.component.breadcrumb.BreadcrumbItem;
-import org.patternfly.component.icon.Icon;
-import org.patternfly.component.icon.IconSize;
-import org.patternfly.component.page.PageBreadcrumb;
-import org.patternfly.component.page.PageSection;
-import org.patternfly.component.title.Title;
-import org.patternfly.component.tooltip.Tooltip;
+import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
+import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
+import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
+import org.jboss.hal.ui.resource.ResourceList.ChildResource;
+import org.jboss.hal.ui.resource.ResourceShell;
 import org.patternfly.core.OuiaSupport;
-import org.patternfly.layout.flex.FlexItem;
 
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLParagraphElement;
 
-import static elemental2.dom.DomGlobal.navigator;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
-import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.span;
-import static org.jboss.elemento.EventType.click;
 import static org.jboss.hal.resources.HalClasses.content;
-import static org.jboss.hal.resources.HalClasses.copy;
 import static org.jboss.hal.resources.HalClasses.detail;
 import static org.jboss.hal.resources.HalClasses.halComponent;
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.ROOT_ID;
-import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.FOLDER;
-import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.RESOURCE;
-import static org.jboss.hal.ui.modelbrowser.ModelBrowserNode.Type.SINGLETON_RESOURCE;
-import static org.patternfly.component.breadcrumb.Breadcrumb.breadcrumb;
-import static org.patternfly.component.breadcrumb.BreadcrumbItem.breadcrumbItem;
-import static org.patternfly.component.content.Content.content;
-import static org.patternfly.component.icon.Icon.icon;
-import static org.patternfly.component.page.PageBreadcrumb.pageBreadcrumb;
-import static org.patternfly.component.page.PageGroup.pageGroup;
-import static org.patternfly.component.page.PageSection.pageSection;
-import static org.patternfly.component.title.Title.title;
-import static org.patternfly.component.tooltip.Tooltip.tooltip;
-import static org.patternfly.icon.IconSets.fas.copy;
-import static org.patternfly.layout.flex.AlignItems.center;
-import static org.patternfly.layout.flex.Flex.flex;
-import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.style.Size._3xl;
-import static org.patternfly.style.Sticky.top;
+import static org.jboss.hal.ui.resource.ResourceBreadcrumb.resourceBreadcrumb;
+import static org.jboss.hal.ui.resource.ResourceHeader.resourceHeader;
+import static org.jboss.hal.ui.resource.ResourceList.resourceList;
+import static org.jboss.hal.ui.resource.ResourceShell.resourceShell;
+import static org.jboss.hal.ui.resource.ResourceTabs.resourceTabs;
 
 /**
  * Right-side detail panel of the model browser showing information about the selected resource.
  * <p>
- * For folder nodes, displays a {@link ResourceList} of child resources. For resource nodes, displays a tabbed view with data,
- * attributes, operations, and capabilities tabs via {@link ResourceDetails}. The panel includes a breadcrumb trail for
- * navigation and a copy-to-clipboard button for the resource address.
+ * For folder nodes, displays a {@link org.jboss.hal.ui.resource.ResourceList} of child resources. For resource nodes, displays
+ * a tabbed view with data, attributes, operations, and capabilities tabs via {@link org.jboss.hal.ui.resource.ResourceTabs}.
+ * The panel includes a breadcrumb trail for navigation and a copy-to-clipboard button for the resource address.
+ * <p>
+ * Delegates to the reusable resource components ({@link ResourceShell}, {@link org.jboss.hal.ui.resource.ResourceBreadcrumb},
+ * {@link org.jboss.hal.ui.resource.ResourceHeader}, {@link org.jboss.hal.ui.resource.ResourceTabs},
+ * {@link org.jboss.hal.ui.resource.ResourceList}) for rendering.
  */
 class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserDetail> {
 
-    /** Tracks the last selected tab ID so it can be restored when switching between resources. */
     static String lastTab = null;
     private final ModelBrowser modelBrowser;
     private final HTMLElement root;
-    private final PageBreadcrumb pageBreadcrumb;
-    private final Title header;
-    private final FlexItem stabilityContainer;
-    private final HTMLContainerBuilder<HTMLParagraphElement> description;
-    private final PageSection pageSection;
 
     ModelBrowserDetail(ModelBrowser modelBrowser) {
         this.modelBrowser = modelBrowser;
-        this.root = div().css(halComponent(HalClasses.modelBrowser, detail))
-                .add(pageGroup()
-                        .sticky(top)
-                        .addSection(pageBreadcrumb = pageBreadcrumb().ouiaId(OuiaIds.MODEL_BROWSER_BREADCRUMB))
-                        .addSection(pageSection()
-                                .add(content()
-                                        .add(flex().alignItems(center)
-                                                .addItem(flexItem().add(header = title(1, _3xl, "").ouiaId(OuiaIds.MODEL_BROWSER_RESOURCE_HEADING)))
-                                                .addItem(stabilityContainer = flexItem()))
-                                        .add(description = p().text("")))))
-                .add(pageSection = pageSection().css(halComponent(HalClasses.modelBrowser, detail, content)))
-                .element();
+        this.root = div().css(halComponent(HalClasses.modelBrowser, detail)).element();
         initOuia();
     }
 
     @Override
     public String ouiaComponentType() {
-        return "HalOP/ModelBrowserDetail";
+        return OuiaIds.TYPE_MODEL_BROWSER_DETAIL;
     }
 
     @Override
@@ -124,110 +84,66 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
     }
 
     void show(ModelBrowserNode mbn) {
-        clear();
+        removeChildrenFrom(root);
         uic().metadataRepository().lookup(mbn.template, metadata -> {
-            fillBreadcrumb(mbn);
-            adjustHeader(mbn, metadata);
+            int rootSize = modelBrowser.root.size();
+            ResourceShell shell = resourceShell(mbn.template, metadata)
+                    .contentCss(halComponent(HalClasses.modelBrowser, detail, content))
+                    .addBreadcrumb(resourceBreadcrumb(mbn.template, metadata)
+                            .onSegmentClick((item, template, depth) -> {
+                                if (depth < rootSize) {
+                                    modelBrowser.home();
+                                } else {
+                                    modelBrowser.tree.select(item.identifier());
+                                }
+                            }))
+                    .addHeader(resourceHeader(mbn.template, metadata)
+                            .customTitle(titleFor(mbn))
+                            .showStability(mbn.type != ModelBrowserNode.Type.SINGLETON_FOLDER)
+                            .showDescription(mbn.type != ModelBrowserNode.Type.SINGLETON_FOLDER));
+
             switch (mbn.type) {
                 case SINGLETON_FOLDER:
                 case FOLDER:
-                    pageSection.add(new ResourceList(mbn, metadata));
+                    shell.addResourceList(resourceList(mbn.template, metadata)
+                            .missingChildren(missingChildrenFor(mbn))
+                            .onSelect(template -> SelectInTree.dispatch(root, template))
+                            .onAdd((parent, child, singleton) -> AddResource.dispatch(root, parent, child, singleton))
+                            .onDelete(template -> DeleteResource.dispatch(root, template)));
                     break;
                 case SINGLETON_RESOURCE:
                 case RESOURCE:
-                    pageSection.add(new ResourceDetails(mbn, metadata));
+                    shell.addTabs(resourceTabs(mbn.template, metadata)
+                            .initialSelection(lastTab)
+                            .onSelect((tabId, selected) -> lastTab = tabId));
                     break;
             }
+            root.appendChild(shell.element());
         });
     }
 
-    private void fillBreadcrumb(ModelBrowserNode mbn) {
-        Breadcrumb breadcrumb = breadcrumb();
-        if (mbn.template.isEmpty()) {
-            breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/"));
-        } else {
-            int rootSize = modelBrowser.root.size();
-            if (rootSize == 0) {
-                breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/")
-                        .onClick((event, breadcrumbItem) -> {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            modelBrowser.home();
-                        }));
-            } else {
-                breadcrumb.addItem(breadcrumbItem(ROOT_ID, "/"));
-            }
-            AddressTemplate current = AddressTemplate.root();
-            for (Segment segment : mbn.template) {
-                current = current.append(segment.key, segment.value);
-                final AddressTemplate finalTemplate = current;
-                boolean last = current.last().equals(mbn.template.last());
-                BreadcrumbItem item = breadcrumbItem(current.identifier(),
-                        segment.key + "=" + segment.value);
-                if (last) {
-                    item.active(true);
-                    item.add(copyToClipboard(finalTemplate));
-                } else if (current.size() == rootSize) {
-                    item.onClick((event, breadcrumbItem) -> {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        modelBrowser.home();
-                    });
-                } else if (current.size() > rootSize) {
-                    item.onClick((event, breadcrumbItem) -> {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        modelBrowser.tree.select(breadcrumbItem.identifier());
-                    });
-                }
-                breadcrumb.addItem(item);
-            }
+    private List<ChildResource> missingChildrenFor(ModelBrowserNode parent) {
+        if (parent.type != ModelBrowserNode.Type.SINGLETON_FOLDER || parent.children.isEmpty()) {
+            return new ArrayList<>();
         }
-        pageBreadcrumb.addBreadcrumb(breadcrumb);
+        AddressTemplate parentTemplate = parent.template;
+        List<ChildResource> missing = new ArrayList<>();
+        for (ModelBrowserNode child : parent.children) {
+            AddressTemplate childTemplate = parentTemplate.parent()
+                    .append(parentTemplate.last().key, child.name);
+            missing.add(new ChildResource(child.name, childTemplate, true, false));
+        }
+        return missing;
     }
 
-    private void adjustHeader(ModelBrowserNode mbn, Metadata metadata) {
+    private HTMLElement titleFor(ModelBrowserNode mbn) {
         switch (mbn.type) {
             case SINGLETON_FOLDER:
-                header.add("Singleton child resources of ").add(code().text(mbn.name));
-                break;
+                return span().add("Singleton child resources of ").add(code().text(mbn.name)).element();
             case FOLDER:
-                header.add("Child resources of ").add(code().text(mbn.name));
-                break;
-            case SINGLETON_RESOURCE:
-            case RESOURCE:
-                header.add(mbn.name);
-                break;
+                return span().add("Child resources of ").add(code().text(mbn.name)).element();
+            default:
+                return span().text(mbn.name).element();
         }
-        if (mbn.type == FOLDER || mbn.type == SINGLETON_RESOURCE || mbn.type == RESOURCE) {
-            Stability stability = metadata.resourceDescription().stability();
-            if (uic().environment().highlightStability(stability)) {
-                stabilityContainer.add(stabilityLabel(stability));
-            }
-            description.text(metadata.resourceDescription().description());
-        }
-    }
-
-    private void clear() {
-        removeChildrenFrom(pageBreadcrumb);
-        removeChildrenFrom(stabilityContainer);
-        removeChildrenFrom(header);
-        removeChildrenFrom(description);
-        removeChildrenFrom(pageSection);
-    }
-
-    private HTMLElement copyToClipboard(AddressTemplate template) {
-        String copyToClipboardId = Id.unique("address", "copy");
-        String copyToClipboardText = "Copy address to clipboard";
-        Tooltip tooltip = tooltip(By.id(copyToClipboardId), copyToClipboardText)
-                .onClose((e, t) -> t.text(copyToClipboardText)); // restore text
-        Icon icon = icon(copy()).size(IconSize.sm).id(copyToClipboardId).on(click, e -> {
-            navigator.clipboard.writeText(template.toString());
-            tooltip.text("Address copied");
-        });
-        return span().css(halComponent(HalClasses.modelBrowser, copy))
-                .add(icon)
-                .add(tooltip)
-                .element();
     }
 }

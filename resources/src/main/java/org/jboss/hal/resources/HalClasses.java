@@ -36,6 +36,7 @@ public interface HalClasses {
     String dollar = "dollar";
     String expression = "expression";
     String goto_ = "goto";
+    String groupBody = "group-body";
     String groups = "groups";
     String modelBrowser = "model-browser";
     String name = "name";

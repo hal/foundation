@@ -76,6 +76,14 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ builder
 
+    /** Adds CSS classes to the content section. */
+    public ResourceShell contentCss(String... css) {
+        for (String c : css) {
+            contentSection.classList.add(c);
+        }
+        return this;
+    }
+
     /** Adds a breadcrumb to the sticky header area. */
     public ResourceShell addBreadcrumb(ResourceBreadcrumb breadcrumb) {
         stickyGroup.appendChild(pageBreadcrumb().add(breadcrumb).element());

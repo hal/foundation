@@ -58,6 +58,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.resources.HalClasses.body;
+import static org.jboss.hal.resources.HalClasses.groupBody;
 import static org.jboss.hal.resources.HalClasses.groups;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
@@ -292,7 +293,8 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                                         items.add(fi);
                                     }
                                 } else {
-                                    HTMLContainerBuilder<HTMLDivElement> groupContent = div();
+                                    HTMLContainerBuilder<HTMLDivElement> groupContent = div()
+                                            .css(halComponent(HalClasses.resource, groupBody));
                                     for (ResourceAttribute ra : groupAttributes) {
                                         FormItem fi = formItem(template, metadata, ra,
                                                 new FormItemFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));

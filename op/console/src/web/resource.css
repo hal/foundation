@@ -42,7 +42,7 @@
     &.pf-m-expanded > .pf-v6-c-expandable-section__content {
         padding-block-end: var(--pf-t--global--spacer--sm);
 
-        > div {
+        > .hal-c-resource__group-body {
             display: grid;
             gap: var(--pf-v6-c-form--GridGap, var(--pf-t--global--spacer--gap--group--vertical));
         }

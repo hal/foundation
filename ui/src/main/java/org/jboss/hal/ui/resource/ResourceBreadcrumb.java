@@ -15,7 +15,8 @@
  */
 package org.jboss.hal.ui.resource;
 
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
@@ -28,6 +29,7 @@ import org.patternfly.component.icon.Icon;
 import org.patternfly.component.icon.IconSize;
 import org.patternfly.component.tooltip.Tooltip;
 
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
 import static elemental2.dom.DomGlobal.navigator;
@@ -42,10 +44,10 @@ import static org.patternfly.icon.IconSets.fas.copy;
 /**
  * Clickable breadcrumb trail for a WildFly management resource address.
  * <p>
- * Each address segment is rendered as a breadcrumb item. Clicking a segment invokes the {@code onSegmentClick} callback with
- * the corresponding address template. The active (last) segment includes a copy-to-clipboard button for the full address.
- * <p>
- * Renders fully from the address template at construction time — no attach-time data loading.
+ * Each address segment is rendered as a breadcrumb item. The active (last) segment includes a copy-to-clipboard button for the
+ * full address. Non-active segments delegate clicks to the registered {@link SegmentHandler}, which receives the segment's
+ * template, its depth (0-based position in the address), and the breadcrumb item. The root {@code /} is reported at depth
+ * {@code -1}.
  */
 public class ResourceBreadcrumb implements IsElement<HTMLElement> {
 
@@ -56,24 +58,45 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement> {
         return new ResourceBreadcrumb(template, metadata);
     }
 
+    // ------------------------------------------------------ callback
+
+    /** Handler invoked when a non-active breadcrumb segment is clicked. */
+    @FunctionalInterface
+    public interface SegmentHandler {
+
+        /**
+         * @param item     the breadcrumb item that was clicked
+         * @param template the address template up to and including the clicked segment
+         * @param depth    the 0-based position of the segment in the template ({@code -1} for the root {@code /})
+         */
+        void onSegmentClick(BreadcrumbItem item, AddressTemplate template, int depth);
+    }
+
     // ------------------------------------------------------ instance
 
     private final HTMLElement root;
-    private Consumer<AddressTemplate> onSegmentClick;
+    private final List<SegmentHandler> segmentHandler;
 
     ResourceBreadcrumb(AddressTemplate template, Metadata metadata) {
+        this.segmentHandler = new ArrayList<>();
+
         org.patternfly.component.breadcrumb.Breadcrumb bc = breadcrumb();
         if (template.isEmpty()) {
-            bc.addItem(breadcrumbItem("root", "/"));
+            bc.addItem(breadcrumbItem("root", "/")
+                    .onClick((event, item) -> {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        fireSegmentClick(event, item, AddressTemplate.root(), -1);
+                    }));
         } else {
             bc.addItem(breadcrumbItem("root", "/")
                     .onClick((event, item) -> {
                         event.preventDefault();
-                        if (onSegmentClick != null) {
-                            onSegmentClick.accept(AddressTemplate.root());
-                        }
+                        event.stopPropagation();
+                        fireSegmentClick(event, item, AddressTemplate.root(), -1);
                     }));
             AddressTemplate current = AddressTemplate.root();
+            int depth = 0;
             for (Segment segment : template) {
                 current = current.append(segment.key, segment.value);
                 boolean last = current.last().equals(template.last());
@@ -84,14 +107,15 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement> {
                     item.add(copyToClipboard(current));
                 } else {
                     final AddressTemplate target = current;
+                    final int segmentDepth = depth;
                     item.onClick((event, bi) -> {
                         event.preventDefault();
-                        if (onSegmentClick != null) {
-                            onSegmentClick.accept(target);
-                        }
+                        event.stopPropagation();
+                        fireSegmentClick(event, bi, target, segmentDepth);
                     });
                 }
                 bc.addItem(item);
+                depth++;
             }
         }
         this.root = bc.element();
@@ -102,15 +126,23 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement> {
         return root;
     }
 
-    // ------------------------------------------------------ builder
+    // ------------------------------------------------------ events
 
-    /** Registers a callback invoked when a non-active breadcrumb segment is clicked. */
-    public ResourceBreadcrumb onSegmentClick(Consumer<AddressTemplate> onSegmentClick) {
-        this.onSegmentClick = onSegmentClick;
+    /** Registers a handler invoked when a non-active breadcrumb segment is clicked. */
+    public ResourceBreadcrumb onSegmentClick(SegmentHandler segmentHandler) {
+        this.segmentHandler.add(segmentHandler);
         return this;
     }
 
     // ------------------------------------------------------ internal
+
+    private void fireSegmentClick(Event event, BreadcrumbItem item, AddressTemplate template, int depth) {
+        event.preventDefault();
+        event.stopPropagation();
+        for (SegmentHandler handler : segmentHandler) {
+            handler.onSegmentClick(item, template, depth);
+        }
+    }
 
     private HTMLElement copyToClipboard(AddressTemplate template) {
         String id = Id.unique("address", "copy");
