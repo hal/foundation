@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.jboss.elemento.By;
-import org.jboss.elemento.Id;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
@@ -34,11 +33,9 @@ import org.patternfly.component.tree.TreeViewItem;
 
 import elemental2.promise.Promise;
 
-import static elemental2.dom.DomGlobal.document;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.div;
-import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
@@ -178,51 +175,20 @@ class ModelBrowserEngine {
                         }
                     } else {
                         tvi.css(modifier(disabled));
-                    }
-                })
-                .onToggle((event, tvi, expanded) -> {
-                    if (expanded) {
-                        for (TreeViewItem item : tvi.items()) {
-                            if (item.element().classList.contains(modifier(disabled))) {
-                                ModelBrowserNode m = item.get(Keys.MODEL_BROWSER_NODE);
-                                if (m != null) {
-                                    nonExistingSingletonPopover(m, item);
-                                }
-                            }
-                        }
-                    } else {
-                        for (TreeViewItem item : tvi.items()) {
-                            if (item.element().classList.contains(modifier(disabled))) {
-                                ModelBrowserNode m = item.get(Keys.MODEL_BROWSER_NODE);
-                                if (m != null) {
-                                    logger.debug("Remove popover for non-existing singleton resource %s", m.identifier);
-                                    failSafeRemoveFromParent(document.getElementById(popoverId(m)));
-                                }
-                            }
-                        }
+                        nonExistingSingletonPopover(mbn, tvi);
                     }
                 });
     }
 
     private static void nonExistingSingletonPopover(ModelBrowserNode mbn, TreeViewItem tvi) {
-        String popoverId = popoverId(mbn);
-        if (document.getElementById(popoverId) != null) {
-            logger.debug("Add popover for non-existing singleton resource %s", mbn.identifier);
-            AddressTemplate anonymous = mbn.template.anonymiseLast(); // /a=b/c=d -> /a=b/c=*
-            tvi.add(popover(By.data(identifier, mbn.identifier))
-                    .id(popoverId)
-                    .addHeader(mbn.name)
-                    .addBody(popoverBody()
-                            .add(div().add("This resource does not yet exist."))
-                            .add(div().add(button("Add resource").link().inline()
-                                    .onClick((e, b) -> ModelBrowserEvents.AddResource.dispatch(b.element(),
-                                            anonymous, mbn.name, true))))));
-        } else {
-            logger.warn("Add popover for non-existing singleton resource %s already exists", mbn.identifier);
-        }
-    }
-
-    private static String popoverId(ModelBrowserNode mbn) {
-        return Id.build("add", "nonexisting", mbn.identifier);
+        logger.debug("Add popover for non-existing singleton resource %s", mbn.identifier);
+        AddressTemplate anonymous = mbn.template.anonymiseLast(); // /a=b/c=d -> /a=b/c=*
+        tvi.add(popover(By.data(identifier, mbn.identifier))
+                .addHeader(mbn.name)
+                .addBody(popoverBody()
+                        .add(div().add("This resource does not yet exist."))
+                        .add(div().add(button("Add resource").link().inline()
+                                .onClick((e, b) -> ModelBrowserEvents.AddResource.dispatch(b.element(),
+                                        anonymous, mbn.name, true))))));
     }
 }
