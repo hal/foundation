@@ -49,7 +49,6 @@ public interface OuiaIds {
     String DASHBOARD_HEALTH_CARD = "hal-op-dashboard-health-card";
     String DASHBOARD_LOG_CARD = "hal-op-dashboard-log-card";
     String DASHBOARD_OVERVIEW_CARD = "hal-op-dashboard-overview-card";
-    String DASHBOARD_RUNTIME_CARD = "hal-op-dashboard-runtime-card";
     String DASHBOARD_STATUS_CARD = "hal-op-dashboard-status-card";
     String DELETE_BTN = "hal-op-delete-btn";
     String DELETE_MODAL = "hal-op-delete-modal";
@@ -70,14 +69,13 @@ public interface OuiaIds {
     String FIND_RESOURCE_MODAL = "hal-op-find-resource-modal";
     String FIND_RESOURCE_SEARCH_BTN = "hal-op-find-resource-search-btn";
     String LOG_CHOOSE_BTN = "hal-op-log-choose-btn";
-    String MAIN = "hal-op-main";
     String LOG_SHOW_BTN = "hal-op-log-show-btn";
+    String MAIN = "hal-op-main";
     String MASTHEAD = "hal-op-masthead";
     String MASTHEAD_LOGO = "hal-op-masthead-logo";
     String MASTHEAD_TOOLBAR = "hal-op-masthead-toolbar";
     String MODEL_BROWSER_ATTRIBUTES_FILTER = "hal-op-model-browser-attributes-filter";
     String MODEL_BROWSER_BACK_BTN = "hal-op-model-browser-back-btn";
-    String MODEL_BROWSER_BREADCRUMB = "hal-op-model-browser-breadcrumb";
     String MODEL_BROWSER_COLLAPSE_BTN = "hal-op-model-browser-collapse-btn";
     String MODEL_BROWSER_FIND_BTN = "hal-op-model-browser-find-btn";
     String MODEL_BROWSER_FORWARD_BTN = "hal-op-model-browser-forward-btn";
@@ -85,12 +83,6 @@ public interface OuiaIds {
     String MODEL_BROWSER_HOME_BTN = "hal-op-model-browser-home-btn";
     String MODEL_BROWSER_OPERATIONS_FILTER = "hal-op-model-browser-operations-filter";
     String MODEL_BROWSER_REFRESH_BTN = "hal-op-model-browser-refresh-btn";
-    String MODEL_BROWSER_RESOURCE_HEADING = "hal-op-model-browser-resource-heading";
-    String MODEL_BROWSER_TAB_ATTRIBUTES = "hal-op-model-browser-tab-attributes";
-    String MODEL_BROWSER_TAB_CAPABILITIES = "hal-op-model-browser-tab-capabilities";
-    String MODEL_BROWSER_TAB_DATA = "hal-op-model-browser-tab-data";
-    String MODEL_BROWSER_TAB_OPERATIONS = "hal-op-model-browser-tab-operations";
-    String MODEL_BROWSER_TABS = "hal-op-model-browser-tabs";
     String MODEL_BROWSER_TREE = "hal-op-model-browser-tree";
     String NAV = "hal-op-nav";
     String NAV_CONFIGURATION = "hal-op-nav-configuration";
@@ -115,21 +107,11 @@ public interface OuiaIds {
     String PAGE_TASKS_HEADER = "hal-op-page-tasks-header";
     String REFRESH_BTN = "hal-op-refresh-btn";
     String RESET_BTN = "hal-op-reset-btn";
+    String RESOURCE_BREADCRUMB = "hal-op-resource-breadcrumb";
+    String RESOURCE_HEADER = "hal-op-resource-header";
+    String RESOURCE_TABS = "hal-op-resource-tabs";
     String SAVE_BTN = "hal-op-save-btn";
     String STABILITY_DISMISS_BTN = "hal-op-stability-dismiss-btn";
-
-    // ------------------------------------------------------ component types
-
-    String TYPE_ENDPOINT_FORM = "halOP/EndpointForm";
-    String TYPE_ENDPOINT_SELECTOR = "halOP/EndpointSelector";
-    String TYPE_ENDPOINT_TABLE = "halOP/EndpointTable";
-    String TYPE_ERROR_SKELETON = "halOP/ErrorSkeleton";
-    String TYPE_MODEL_BROWSER_DETAIL = "halOP/ModelBrowserDetail";
-    String TYPE_MODEL_BROWSER_TREE = "halOP/ModelBrowserTree";
-    String TYPE_RESOURCE_DATA_TOOLBAR = "halOP/ResourceDataToolbar";
-    String TYPE_RESOURCE_LIST = "halOP/ResourceList";
-    String TYPE_SKELETON = "halOP/Skeleton";
-    String TYPE_STABILITY_BANNER = "halOP/StabilityBanner";
 
     /**
      * Composes an OUIA ID with the {@code hal-op} prefix.

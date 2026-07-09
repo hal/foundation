@@ -20,10 +20,12 @@ import java.util.function.BiConsumer;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.table.AttributesTable;
 import org.jboss.hal.ui.resource.table.CapabilitiesTable;
 import org.jboss.hal.ui.resource.table.OperationsTable;
 import org.patternfly.component.tabs.Tabs;
+import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
 
@@ -50,7 +52,7 @@ import static org.patternfly.style.Classes.util;
  * Supports optional initial tab selection and tab-change callbacks via builder methods.
  * The element is constructed lazily on the first call to {@link #element()}.
  */
-public class ResourceTabs implements IsElement<HTMLElement> {
+public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceTabs> {
 
     // ------------------------------------------------------ factory
 
@@ -73,9 +75,20 @@ public class ResourceTabs implements IsElement<HTMLElement> {
     }
 
     @Override
+    public String ouiaComponentType() {
+        return "halOP/ResourceTabs";
+    }
+
+    @Override
+    public ResourceTabs that() {
+        return this;
+    }
+
+    @Override
     public HTMLElement element() {
         if (root == null) {
             root = build();
+            initOuia(OuiaIds.RESOURCE_TABS);
         }
         return root;
     }

@@ -19,6 +19,8 @@ import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.OuiaIds;
+import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
 
@@ -46,7 +48,7 @@ import static org.patternfly.style.Size._3xl;
  * </ul>
  * The element is constructed lazily on the first call to {@link #element()}.
  */
-public class ResourceHeader implements IsElement<HTMLElement> {
+public class ResourceHeader implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceHeader> {
 
     // ------------------------------------------------------ factory
 
@@ -71,9 +73,20 @@ public class ResourceHeader implements IsElement<HTMLElement> {
     }
 
     @Override
+    public String ouiaComponentType() {
+        return "halOP/ResourceHeader";
+    }
+
+    @Override
+    public ResourceHeader that() {
+        return this;
+    }
+
+    @Override
     public HTMLElement element() {
         if (root == null) {
             root = build();
+            initOuia(OuiaIds.RESOURCE_HEADER);
         }
         return root;
     }

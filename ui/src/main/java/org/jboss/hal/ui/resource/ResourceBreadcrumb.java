@@ -24,10 +24,12 @@ import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.Segment;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.breadcrumb.BreadcrumbItem;
 import org.patternfly.component.icon.Icon;
 import org.patternfly.component.icon.IconSize;
 import org.patternfly.component.tooltip.Tooltip;
+import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
@@ -49,7 +51,7 @@ import static org.patternfly.icon.IconSets.fas.copy;
  * template, its depth (0-based position in the address), and the breadcrumb item. The root {@code /} is reported at depth
  * {@code -1}.
  */
-public class ResourceBreadcrumb implements IsElement<HTMLElement> {
+public class ResourceBreadcrumb implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ResourceBreadcrumb> {
 
     // ------------------------------------------------------ factory
 
@@ -119,6 +121,17 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement> {
             }
         }
         this.root = bc.element();
+        initOuia(OuiaIds.RESOURCE_BREADCRUMB);
+    }
+
+    @Override
+    public String ouiaComponentType() {
+        return "halOP/ResourceBreadcrumb";
+    }
+
+    @Override
+    public ResourceBreadcrumb that() {
+        return this;
     }
 
     @Override

@@ -92,7 +92,7 @@ public class StabilityBanner implements IsElement<HTMLElement>, OuiaSupport<HTML
 
     @Override
     public String ouiaComponentType() {
-        return OuiaIds.TYPE_STABILITY_BANNER;
+        return "halOP/StabilityBanner";
     }
 
     @Override

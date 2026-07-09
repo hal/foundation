@@ -21,7 +21,6 @@ import java.util.List;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -70,7 +69,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
 
     @Override
     public String ouiaComponentType() {
-        return OuiaIds.TYPE_MODEL_BROWSER_DETAIL;
+        return "halOP/ModelBrowserDetail";
     }
 
     @Override

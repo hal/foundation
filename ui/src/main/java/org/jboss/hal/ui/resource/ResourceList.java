@@ -29,7 +29,6 @@ import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.model.filter.NameAttribute;
-import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.list.DataList;
 import org.patternfly.component.list.DataListCell;
@@ -229,7 +228,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
 
     @Override
     public String ouiaComponentType() {
-        return OuiaIds.TYPE_RESOURCE_LIST;
+        return "halOP/ResourceList";
     }
 
     @Override

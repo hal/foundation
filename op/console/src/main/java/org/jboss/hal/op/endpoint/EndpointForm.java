@@ -130,7 +130,7 @@ class EndpointForm implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, E
 
     @Override
     public String ouiaComponentType() {
-        return OuiaIds.TYPE_ENDPOINT_FORM;
+        return "halOP/EndpointForm";
     }
 
     @Override

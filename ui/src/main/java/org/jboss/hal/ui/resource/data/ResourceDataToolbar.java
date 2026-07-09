@@ -147,7 +147,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
 
     @Override
     public String ouiaComponentType() {
-        return OuiaIds.TYPE_RESOURCE_DATA_TOOLBAR;
+        return "halOP/ResourceDataToolbar";
     }
 
     @Override

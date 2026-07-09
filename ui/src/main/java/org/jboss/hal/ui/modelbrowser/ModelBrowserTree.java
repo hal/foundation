@@ -148,7 +148,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
 
     @Override
     public String ouiaComponentType() {
-        return OuiaIds.TYPE_MODEL_BROWSER_TREE;
+        return "halOP/ModelBrowserTree";
     }
 
     @Override
