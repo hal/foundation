@@ -26,7 +26,6 @@ jobs:
         with:
           java-version: 25
           distribution: temurin
-          cache: maven
       - run: $MVN install
         working-directory: bom
       - run: $MVN package -P op,test-suite -DskipTests
