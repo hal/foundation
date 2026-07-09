@@ -31,6 +31,12 @@
  * <dd>Action toolbar with attribute filters and context-aware buttons for view and edit modes.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.data.ResourceFilter}</dt>
  * <dd>Multi-criteria attribute filter supporting name search, type, status, storage, and access type.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.data.GroupingStrategy}</dt>
+ * <dd>Strategy interface for grouping resource attributes into named sections.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.data.MetadataGrouping}</dt>
+ * <dd>Groups attributes by their metadata-defined {@code attribute-group}.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.data.AutoGrouping}</dt>
+ * <dd>Groups attributes into alphabetical letter-range chunks for resources without metadata groups.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.data;

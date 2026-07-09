@@ -69,7 +69,6 @@ import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
 import static org.jboss.hal.ui.resource.ResourceAttribute.UNGROUPED;
-import static org.jboss.hal.ui.resource.ResourceAttribute.grouped;
 import static org.jboss.hal.ui.resource.ResourceAttribute.hasGroups;
 import static org.jboss.hal.ui.resource.ResourceAttribute.includes;
 import static org.jboss.hal.ui.resource.ResourceAttribute.resourceAttributes;
@@ -103,6 +102,9 @@ import static org.patternfly.style.Classes.modifier;
  * Manages transitions between {@link State#VIEW}, {@link State#EDIT}, {@link State#NO_ATTRIBUTES}, and {@link State#ERROR}
  * states. On attach, it loads the resource from the management endpoint and populates either a read-only view or an editable
  * form depending on the requested state.
+ * <p>
+ * Attribute grouping is handled by a {@link GroupingStrategy}: {@link MetadataGrouping} for resources with metadata-defined
+ * attribute groups, or {@link AutoGrouping} for resources with many attributes but no metadata groups.
  */
 public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, IsElement<HTMLElement>, Attachable {
 
@@ -146,6 +148,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     private boolean supportsGrouping;
     private State state;
     private Operation operation;
+    private GroupingStrategy groupingStrategy;
     private ResourceForm resourceForm;
 
     ResourceData(AddressTemplate template, Metadata metadata) {
@@ -232,7 +235,14 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                     List<ResourceAttribute> resourceAttributes = resourceAttributes(resource, metadata, includes(attributes));
                     items.clear();
                     groupContainers.clear();
-                    supportsGrouping = hasGroups(resourceAttributes);
+                    if (hasGroups(resourceAttributes)) {
+                        groupingStrategy = new MetadataGrouping();
+                    } else if (resourceAttributes.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD) {
+                        groupingStrategy = new AutoGrouping();
+                    } else {
+                        groupingStrategy = null;
+                    }
+                    supportsGrouping = groupingStrategy != null;
 
                     if (state == VIEW) {
                         // Grouped view uses a separate ResourceView (DescriptionList) per group.
@@ -242,7 +252,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         if (grouped && supportsGrouping) {
                             HTMLContainerBuilder<HTMLDivElement> resourceViewsContainer = div()
                                     .css(halComponent(HalClasses.resource, groups));
-                            Map<String, List<ResourceAttribute>> groups = grouped(resourceAttributes);
+                            Map<String, List<ResourceAttribute>> groups = groupingStrategy.group(resourceAttributes);
                             for (Map.Entry<String, List<ResourceAttribute>> entry : groups.entrySet()) {
                                 String groupName = entry.getKey();
                                 List<ResourceAttribute> groupAttributes = entry.getValue();
@@ -281,7 +291,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         // don't rely on CSS custom property inheritance from their parent container.
                         resourceForm = new ResourceForm(template);
                         if (grouped && supportsGrouping) {
-                            Map<String, List<ResourceAttribute>> groups = grouped(resourceAttributes);
+                            Map<String, List<ResourceAttribute>> groups = groupingStrategy.group(resourceAttributes);
                             for (Map.Entry<String, List<ResourceAttribute>> entry : groups.entrySet()) {
                                 String groupName = entry.getKey();
                                 List<ResourceAttribute> groupAttributes = entry.getValue();

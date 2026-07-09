@@ -16,10 +16,7 @@
 package org.jboss.hal.ui.resource;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import org.jboss.hal.dmr.ModelNode;
@@ -42,9 +39,8 @@ import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 public class ResourceAttribute {
 
     /**
-     * Represents the default group name for attributes that do not belong to any defined group. This constant is used as a key
-     * when grouping attributes for categorization. Ungrouped attributes are typically placed under this key as the first entry
-     * when attributes are grouped alphabetically.
+     * Key used by {@link org.jboss.hal.ui.resource.data.MetadataGrouping} for attributes that do not belong to any
+     * metadata-defined attribute group.
      */
     public static final String UNGROUPED = "ungrouped";
 
@@ -125,28 +121,6 @@ public class ResourceAttribute {
             }
         }
         return resourceAttributes;
-    }
-
-    /**
-     * Groups attributes by their attribute group name. Ungrouped attributes are placed under the key {@code "ungrouped"} as the
-     * first entry. Groups are sorted alphabetically.
-     */
-    public static Map<String, List<ResourceAttribute>> grouped(List<ResourceAttribute> attributes) {
-        List<ResourceAttribute> ungrouped = new ArrayList<>();
-        TreeMap<String, List<ResourceAttribute>> groups = new TreeMap<>();
-        for (ResourceAttribute attribute : attributes) {
-            if (attribute.group == null) {
-                ungrouped.add(attribute);
-            } else {
-                groups.computeIfAbsent(attribute.group, k -> new ArrayList<>()).add(attribute);
-            }
-        }
-        LinkedHashMap<String, List<ResourceAttribute>> result = new LinkedHashMap<>();
-        if (!ungrouped.isEmpty()) {
-            result.put(UNGROUPED, ungrouped);
-        }
-        result.putAll(groups);
-        return result;
     }
 
     /** Returns {@code true} if any attribute in the list has a non-null attribute group. */
