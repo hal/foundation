@@ -62,7 +62,6 @@ import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Padding.noPadding;
-import static org.patternfly.style.Placement.bottomStart;
 import static org.patternfly.style.Size.sm;
 import static org.patternfly.style.Sticky.top;
 
@@ -331,7 +330,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
                 node = treeViewItem.get(Keys.MODEL_BROWSER_NODE);
             }
             if (backTooltip == null) {
-                backTooltip = tooltip(backButton.element(), "").placement(bottomStart);
+                backTooltip = tooltip(backButton.element(), "");
                 insertAfter(backTooltip, backButton.element());
             }
             if (node != null) {
@@ -349,7 +348,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
                 node = treeViewItem.get(Keys.MODEL_BROWSER_NODE);
             }
             if (forwardTooltip == null) {
-                forwardTooltip = tooltip(forwardButton.element(), "").placement(bottomStart);
+                forwardTooltip = tooltip(forwardButton.element(), "");
                 insertAfter(forwardTooltip, forwardButton.element());
             }
             if (node != null) {
