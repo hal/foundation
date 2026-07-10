@@ -59,18 +59,18 @@ import static org.patternfly.layout.flex.Gap.sm;
  *     <li><b>Undefined</b> — gray "Not configured" text</li>
  * </ul>
  */
-class CredentialReferenceViewItem implements IsElement<HTMLElement>, Attachable {
+class CredentialReferenceValue implements IsElement<HTMLElement>, Attachable {
 
     // ------------------------------------------------------ factory
 
-    static CredentialReferenceViewItem credentialReferenceView(ResourceAttribute ra) {
-        return new CredentialReferenceViewItem(ra);
+    static CredentialReferenceValue credentialReferenceValue(ResourceAttribute ra) {
+        return new CredentialReferenceValue(ra);
     }
 
     // ------------------------------------------------------ instance
 
     private static final String MASKED = "••••••••";
-    private static final Logger logger = Logger.getLogger(CredentialReferenceViewItem.class.getName());
+    private static final Logger logger = Logger.getLogger(CredentialReferenceValue.class.getName());
 
     private final HTMLElement root;
     private final ResourceAttribute ra;
@@ -79,7 +79,7 @@ class CredentialReferenceViewItem implements IsElement<HTMLElement>, Attachable 
     private HTMLElement storeLink;
     private AddressTemplate storeTemplate;
 
-    CredentialReferenceViewItem(ResourceAttribute ra) {
+    CredentialReferenceValue(ResourceAttribute ra) {
         this.ra = ra;
         this.mode = CredentialReference.mode(ra.value);
 

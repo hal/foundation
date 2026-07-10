@@ -23,7 +23,7 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import static org.jboss.hal.ui.resource.CompositeAttributes.CREDENTIAL_REFERENCE;
-import static org.jboss.hal.ui.resource.view.CredentialReferenceViewItem.credentialReferenceView;
+import static org.jboss.hal.ui.resource.view.CredentialReferenceValue.credentialReferenceValue;
 import static org.jboss.hal.ui.resource.view.ViewItemFactory.defaultViewItem;
 
 /**
@@ -46,7 +46,7 @@ public class ViewItemProviders {
 
             @Override
             public ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
-                return defaultViewItem(metadata, ra, credentialReferenceView(ra).element());
+                return defaultViewItem(metadata, ra, credentialReferenceValue(ra).element());
             }
         });
     }
