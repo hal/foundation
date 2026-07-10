@@ -14,10 +14,15 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.form;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.jboss.hal.core.Humanize.sentenceCase;
+import static org.jboss.hal.ui.resource.CompositeAttributes.CREDENTIAL_REFERENCE;
+import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
+import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
+import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
 
 /** Registry of special-case {@link FormItemProvider} instances consulted by {@link FormItemFactory} before falling back to default form item creation. */
 public class FormItemProviders {
@@ -26,26 +31,25 @@ public class FormItemProviders {
     public static final List<FormItemProvider> specialFormItems = new ArrayList<>();
 
     static {
-        // TODO Add support to create and return specific form items based on the address template and attribute.
-        // For instance /subsystem=logging/pattern-formatter=*@color-map
-        // Accepts a comma delimited list of colors to be used for different levels with a pattern formatter.
-        // The format for the color mapping pattern is level-name:color-name.
-        // Valid Levels: severe, fatal, error, warn, warning, info, debug, trace, config, fine, finer, finest
-        // Valid Colors: black, green, red, yellow, blue, magenta, cyan, white, brightblack, brightred, brightgreen, brightblue,
-        // brightyellow, brightmagenta, brightcyan, brightwhit
-        // Another example is the 'credential-reference' complex attribute used all over the place.
+        // Credential reference — consolidated form item for all credential-reference variants
+        specialFormItems.add(new FormItemProvider() {
+            @Override
+            public boolean test(org.jboss.hal.meta.AddressTemplate template,
+                    org.jboss.hal.meta.Metadata metadata,
+                    org.jboss.hal.ui.resource.ResourceAttribute ra,
+                    FormItemFlags flags) {
+                return CREDENTIAL_REFERENCE.matches(ra.description);
+            }
 
-        // The first provider wins!
-        // specialFormItems.add(new FormItemProvider() {
-        //     @Override
-        //     public boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
-        //         return ...;
-        //     }
-        //
-        //     @Override
-        //     public ViewItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
-        //         return ...;
-        //     }
-        // });
+            @Override
+            public FormItem formItem(org.jboss.hal.meta.AddressTemplate template,
+                    org.jboss.hal.meta.Metadata metadata,
+                    org.jboss.hal.ui.resource.ResourceAttribute ra,
+                    FormItemFlags flags) {
+                // TODO Replace with custom credential reference form item
+                String id = identifier(ra, EDIT);
+                return new UnsupportedFormItem(id, ra, formGroupLabel(id).text(sentenceCase(ra.name)), flags);
+            }
+        });
     }
 }
