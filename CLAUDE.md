@@ -131,32 +131,6 @@ Enforced by: maven-enforcer-plugin (Maven/JDK version), Checkstyle (WildFly rule
 
 Style: 4-space indent, UTF-8, max line length 128, LF line endings.
 
-## Module Structure
-
-All code modules live under `code-parent` for shared dependency management:
-
-| Module | Purpose |
-|---|---|
-| `core` | Notifications, CRUD operations, label building |
-| `db` | Local database (PouchDB-based) |
-| `dmr` | DMR protocol communication with WildFly domain controller |
-| `environment` | Environment info and configuration |
-| `event` | Event system base classes |
-| `meta` | Metadata registry, statement context, resource address resolution |
-| `model` | Domain-driven model classes |
-| `resources` | Constants, string IDs, resource definitions |
-| `task` | Task interface and repository |
-| `ui` | UI formatters, model browser, filters |
-
-Application modules:
-- `op/console` — J2CL-compiled SPA (Vite bundler, PatternFly 6)
-- `op/standalone` — Quarkus HTTP server wrapping the SPA (production)
-- `op/test-suite` — Quarkus HTTP server wrapping the SPA (test suite, Docker)
-- `op/subsystem` — WildFly subsystem extension for the HAL console
-- `op/feature-pack` — Galleon feature pack to provision HAL into WildFly
-
-Supporting modules: `bom` (dependency versions), `build-config` (checkstyle/license rules).
-
 ## Architecture
 
 **Dependency Injection**: Crysknife CDI (Jakarta CDI-compatible, works with J2CL). Uses `@ApplicationScoped`, `@Inject` annotations.
@@ -173,15 +147,6 @@ Supporting modules: `bom` (dependency versions), `build-config` (checkstyle/lice
 - `StatementContext` — resolves placeholders in resource addresses
 - `CrudOperations` — abstract CRUD layer over DMR
 - `Notifications` — event-driven notification system
-
-## Tech Stack
-
-- Java 21, Maven 3.9.9+ (use `./mvnw` wrapper)
-- J2CL v0.23 (Java → JavaScript transpilation)
-- Crysknife CDI, Elemento, PatternFly Java
-- Vite, Node.js, pnpm (frontend tooling)
-- Quarkus (standalone server)
-- JUnit 6 + Mockito (testing)
 
 ## Issue Tracker
 
