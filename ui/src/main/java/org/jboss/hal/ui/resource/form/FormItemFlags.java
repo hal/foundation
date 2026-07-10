@@ -30,9 +30,9 @@ public class FormItemFlags {
     public enum Placeholder {
         /** No placeholder text. */
         NONE,
-        /** Show "undefined" as placeholder. */
+        /** Show "undefined" as a placeholder. */
         UNDEFINED,
-        /** Show the attribute's default value as placeholder. */
+        /** Show the attribute's default value as a placeholder. */
         DEFAULT_VALUE
     }
 

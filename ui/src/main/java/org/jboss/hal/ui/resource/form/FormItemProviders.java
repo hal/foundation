@@ -18,11 +18,14 @@ package org.jboss.hal.ui.resource.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.jboss.hal.core.Humanize.sentenceCase;
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.ui.resource.ResourceAttribute;
+
 import static org.jboss.hal.ui.resource.CompositeAttributes.CREDENTIAL_REFERENCE;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
-import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
+import static org.jboss.hal.ui.resource.form.FormItemFactory.defaultLabel;
 
 /** Registry of special-case {@link FormItemProvider} instances consulted by {@link FormItemFactory} before falling back to default form item creation. */
 public class FormItemProviders {
@@ -34,21 +37,16 @@ public class FormItemProviders {
         // Credential reference — consolidated form item for all credential-reference variants
         specialFormItems.add(new FormItemProvider() {
             @Override
-            public boolean test(org.jboss.hal.meta.AddressTemplate template,
-                    org.jboss.hal.meta.Metadata metadata,
-                    org.jboss.hal.ui.resource.ResourceAttribute ra,
+            public boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra,
                     FormItemFlags flags) {
                 return CREDENTIAL_REFERENCE.matches(ra.description);
             }
 
             @Override
-            public FormItem formItem(org.jboss.hal.meta.AddressTemplate template,
-                    org.jboss.hal.meta.Metadata metadata,
-                    org.jboss.hal.ui.resource.ResourceAttribute ra,
+            public FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra,
                     FormItemFlags flags) {
-                // TODO Replace with custom credential reference form item
                 String id = identifier(ra, EDIT);
-                return new UnsupportedFormItem(id, ra, formGroupLabel(id).text(sentenceCase(ra.name)), flags);
+                return new CredentialReferenceFormItem(id, ra, defaultLabel(id, metadata, ra), flags, template);
             }
         });
     }

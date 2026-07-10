@@ -15,7 +15,7 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-/** Enumerates the input modes a {@link FormItem} can operate in: native controls, expression text input, or mixed. */
+/** Lists the input modes a {@link FormItem} can operate in: native controls, expression text input, or mixed. */
 public enum FormItemInputMode {
 
     /** The form item uses its native control (switch, select, number input, etc.). */

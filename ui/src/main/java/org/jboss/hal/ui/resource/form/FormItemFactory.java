@@ -225,6 +225,11 @@ public class FormItemFactory {
         return formItem.store(Keys.RESOURCE_ATTRIBUTE, ra);
     }
 
+    /** Creates the standard form group label for an attribute. Used by {@link FormItemProvider} implementations. */
+    static FormGroupLabel defaultLabel(String identifier, Metadata metadata, ResourceAttribute ra) {
+        return label(identifier, metadata, ra);
+    }
+
     private static FormGroupLabel label(String identifier, Metadata metadata, ResourceAttribute ra) {
         FormGroupLabel formGroupLabel;
         if (ra.description != null) {
