@@ -20,8 +20,8 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
-import org.jboss.hal.ui.resource.CredentialReference;
-import org.jboss.hal.ui.resource.CredentialReference.Mode;
+import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute;
+import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute.Mode;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.TextInput;
@@ -95,7 +95,7 @@ class CredentialReferenceFormItem extends FormItem {
             AddressTemplate template) {
         super(identifier, ra, label, flags);
         this.template = template;
-        this.originalMode = CredentialReference.mode(ra.value);
+        this.originalMode = CredentialReferenceAttribute.mode(ra.value);
 
         // resolve capability from nested store description
         AttributeDescriptions nested = ra.description.valueTypeAttributeDescriptions();

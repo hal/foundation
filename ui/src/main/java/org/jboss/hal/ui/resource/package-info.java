@@ -48,6 +48,8 @@
  * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.table}</dt>
  * <dd>Read-only metadata tables for attributes, operations, and capabilities.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.composite}</dt>
+ * <dd>Composite attribute detection for structured OBJECT attributes rendered as single components.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>
  * <dd>Finder navigation support.</dd>
  * </dl>

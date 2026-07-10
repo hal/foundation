@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.view;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import java.util.List;
 
@@ -27,6 +26,7 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
+import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.patternfly.component.label.Label;
 import org.patternfly.component.list.DescriptionListTerm;
 import org.patternfly.core.Roles;
@@ -54,18 +54,18 @@ import static org.jboss.hal.resources.HalClasses.restricted;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
 import static org.jboss.hal.resources.HalClasses.undefined;
 import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.AttributeBricks.nestedElementSeparator;
 import static org.jboss.hal.ui.brick.CodeBricks.modelNodeCode;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
-import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.VIEW;
-import static org.jboss.hal.ui.resource.view.ViewItemProviders.specialViewItems;
 import static org.jboss.hal.ui.resource.view.CapabilityReference.capabilityReference;
+import static org.jboss.hal.ui.resource.view.ViewItemProviders.customViewItem;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
@@ -87,36 +87,33 @@ import static org.patternfly.style.Color.grey;
 /**
  * Creates read-only {@link ViewItem} components for displaying management attribute values.
  * <p>
- * Generates appropriate UI representations based on the attribute's type, constraints, and metadata. Supports simple
- * types, lists, objects, expressions, capability references, and units. Handles nested attributes, deprecation status,
- * and stability levels.
+ * Generates appropriate UI representations based on the attribute's type, constraints, and metadata. Supports simple types,
+ * lists, objects, expressions, capability references, and units. Handles nested attributes, deprecation status, and stability
+ * levels.
  */
 public class ViewItemFactory {
 
     private static final Logger logger = Logger.getLogger(ViewItemFactory.class.getName());
 
     /**
-     * Creates a {@link ViewItem} for the given attribute. First consults {@link ViewItemProviders#specialViewItems} for a
-     * custom provider; if none matches, builds a default view item with a type-appropriate value representation.
+     * Creates a {@link ViewItem} for the given attribute. First consults
+     * {@link ViewItemProviders#customViewItem(AddressTemplate, Metadata, ResourceAttribute)} for a custom provider; if none
+     * matches, builds a default view item with a type-appropriate value representation.
      */
     public static ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
-        ViewItem viewItem = null;
-        for (ViewItemProvider vip : specialViewItems) {
-            if (vip.test(template, metadata, ra)) {
-                viewItem = vip.viewItem(template, metadata, ra);
-                break;
-            }
-        }
+        ViewItem viewItem = customViewItem(template, metadata, ra);
         if (viewItem == null) {
             viewItem = defaultViewItem(metadata, ra, value(template, ra));
         }
         return viewItem.store(Keys.RESOURCE_ATTRIBUTE, ra);
     }
 
-    /** Creates a default {@link ViewItem} with the standard label and the given value element. Used by {@link ViewItemProvider} implementations. */
+    /**
+     * Creates a default {@link ViewItem} with the standard label and the given value element. Used by {@link ViewItemProvider}
+     * implementations.
+     */
     static ViewItem defaultViewItem(Metadata metadata, ResourceAttribute ra, HTMLElement valueElement) {
-        return new ViewItem(identifier(ra, VIEW), defaultLabel(metadata, ra), valueElement)
-                .store(Keys.RESOURCE_ATTRIBUTE, ra);
+        return new ViewItem(identifier(ra, VIEW), defaultLabel(metadata, ra), valueElement);
     }
 
     /** Creates the standard description list term (label) for an attribute. Used by {@link ViewItemProvider} implementations. */

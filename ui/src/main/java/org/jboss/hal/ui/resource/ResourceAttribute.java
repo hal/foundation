@@ -26,6 +26,7 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.security.SecurityContext;
+import org.jboss.hal.ui.resource.composite.CompositeAttributes;
 
 import static org.jboss.hal.dmr.ModelType.EXPRESSION;
 

@@ -1049,6 +1049,7 @@ public interface ModelDescriptionConstants {
     String TRIM_DESCRIPTIONS = "trim-descriptions";
     String TRUST_CACERTS = "trust-cacerts";
     String TRUST_MANAGER = "trust-manager";
+    String TIME = "time";
     String TRUST_MODULE = "trust-module";
     String TYPE = "type";
     String UNDEFINE_ATTRIBUTE_OPERATION = "undefine-attribute";

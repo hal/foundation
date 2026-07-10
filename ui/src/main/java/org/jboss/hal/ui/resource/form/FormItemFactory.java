@@ -15,18 +15,6 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.EXISTING_RESOURCE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Scope.NEW_RESOURCE;
-import static org.jboss.hal.ui.resource.form.FormItemProviders.specialFormItems;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder.DEFAULT_VALUE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder.NONE;
-import static org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder.UNDEFINED;
-import org.jboss.hal.ui.resource.ResourceAttribute;
-import org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder;
-
 import org.jboss.elemento.Elements;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelDescriptionConstants;
@@ -39,6 +27,8 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
+import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.core.Aria;
 import org.patternfly.core.Roles;
@@ -64,13 +54,14 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
+import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.AttributeBricks.nestedElementSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
-import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.ItemIdentifier.identifier;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
+import static org.jboss.hal.ui.resource.form.FormItemProviders.customFormItem;
 import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
 import static org.patternfly.core.Attributes.role;
 import static org.patternfly.core.Attributes.tabindex;
@@ -130,8 +121,8 @@ public class FormItemFactory {
 
     /**
      * Creates the appropriate {@link FormItem} subclass for the given resource attribute. First consults the
-     * {@link FormItemProviders#specialFormItems} registry for custom overrides, then falls back to default creation based on
-     * the attribute's type, allowed values, and capability references.
+     * {@link FormItemProviders#customFormItem(AddressTemplate, Metadata, ResourceAttribute, FormItemFlags)} method for custom
+     * overrides, then falls back to default creation based on the attribute's type, allowed values, and capability references.
      *
      * @param template the address template of the resource
      * @param metadata the resource metadata
@@ -139,13 +130,7 @@ public class FormItemFactory {
      * @param flags    configuration flags controlling scope and placeholder behavior
      */
     public static FormItem formItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags) {
-        FormItem formItem = null;
-        for (FormItemProvider fip : specialFormItems) {
-            if (fip.test(template, metadata, ra, flags)) {
-                formItem = fip.formItem(template, metadata, ra, flags);
-                break;
-            }
-        }
+        FormItem formItem = customFormItem(template, metadata, ra, flags);
         if (formItem == null) {
             String identifier = identifier(ra, EDIT);
             FormGroupLabel formGroupLabel = label(identifier, metadata, ra);

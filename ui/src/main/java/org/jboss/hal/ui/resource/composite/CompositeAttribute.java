@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.composite;
 
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.ResourceAttribute;
 
 /**
  * Predicate for identifying management model attributes that should be treated as indivisible composite units rather than being

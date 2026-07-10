@@ -1,0 +1,180 @@
+/*
+ *  Copyright 2024 Red Hat
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.jboss.hal.ui.resource.form;
+
+import java.util.List;
+
+import org.jboss.elemento.Id;
+import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.composite.TimeUnitAttribute;
+import org.patternfly.component.form.FormGroupLabel;
+import org.patternfly.component.form.FormSelect;
+import org.patternfly.component.form.TextInput;
+
+import static java.util.stream.Collectors.toList;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.TIME;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
+import static org.jboss.hal.ui.resource.form.HelperTexts.required;
+import static org.patternfly.component.ValidationStatus.error;
+import static org.patternfly.component.form.FormGroup.formGroup;
+import static org.patternfly.component.form.FormGroupControl.formGroupControl;
+import static org.patternfly.component.form.FormSelect.formSelect;
+import static org.patternfly.component.form.FormSelectOption.formSelectOption;
+import static org.patternfly.component.form.TextInput.textInput;
+import static org.patternfly.component.form.TextInputType.number;
+import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
+import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
+
+/**
+ * Form item for editing keepalive-time attributes. Presents an {@code InputGroup} combining a number input for the time value
+ * and a select dropdown for the unit, rendering them as a single consolidated form control.
+ */
+class TimeUnitFormItem extends FormItem {
+
+    private final TextInput timeInput;
+    private final FormSelect unitSelect;
+    private final long originalTime;
+    private final String originalUnit;
+
+    TimeUnitFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
+        super(identifier, ra, label, flags);
+        this.originalTime = TimeUnitAttribute.time(ra.value);
+        this.originalUnit = TimeUnitAttribute.unit(ra.value);
+
+        // time input
+        timeInput = textInput(number, Id.build(identifier, "time"))
+                .run(ti -> {
+                    ti.input().autocomplete("off");
+                    ti.input().min(0);
+                    ti.input().apply(e -> e.step = "1");
+                    if (originalTime >= 0) {
+                        ti.value(String.valueOf(originalTime));
+                    }
+                });
+
+        // unit select — read allowed values from the nested unit attribute description
+        List<String> allowedUnits = allowedUnits(ra);
+        unitSelect = formSelect(Id.build(identifier, "unit"))
+                .run(fs -> fs.selectElement().attr("autocomplete", "off"))
+                .addOptions(allowedUnits, u -> formSelectOption(u))
+                .run(fs -> {
+                    if (originalUnit != null) {
+                        fs.value(originalUnit);
+                    }
+                });
+
+        // build the form group with an InputGroup
+        formGroupControl = formGroupControl()
+                .addInputGroup(inputGroup()
+                        .addItem(inputGroupItem().fill()
+                                .addControl(timeInput))
+                        .addItem(inputGroupItem()
+                                .addControl(unitSelect)));
+
+        formGroup = formGroup(identifier)
+                .required(ra.description.required())
+                .addLabel(label)
+                .addControl(formGroupControl);
+    }
+
+    // ------------------------------------------------------ allowed values
+
+    private static List<String> allowedUnits(ResourceAttribute ra) {
+        AttributeDescriptions nested = ra.description.valueTypeAttributeDescriptions();
+        AttributeDescription unitDescription = nested.get(UNIT);
+        if (unitDescription != null && unitDescription.hasDefined(ALLOWED)) {
+            return unitDescription.get(ALLOWED).asList().stream()
+                    .map(ModelNode::asString)
+                    .collect(toList());
+        }
+        return List.of("NANOSECONDS", "MICROSECONDS", "MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS");
+    }
+
+    // ------------------------------------------------------ validation
+
+    @Override
+    void resetValidation() {
+        timeInput.resetValidation();
+        unitSelect.resetValidation();
+        if (formGroupControl != null) {
+            formGroupControl.removeHelperText();
+        }
+    }
+
+    @Override
+    boolean validate() {
+        String timeValue = timeValue();
+        if (requiredOnItsOwn() && timeValue.isEmpty()) {
+            timeInput.validated(error);
+            formGroupControl.addHelperText(required(ra));
+            return false;
+        }
+        if (!timeValue.isEmpty()) {
+            try {
+                Long.parseLong(timeValue);
+            } catch (NumberFormatException e) {
+                timeInput.validated(error);
+                formGroupControl.addHelperText(required(ra));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ------------------------------------------------------ data
+
+    @Override
+    boolean isNativeModifiedForNew() {
+        return !timeValue().isEmpty();
+    }
+
+    @Override
+    boolean isNativeModifiedForExisting(boolean wasDefined) {
+        if (!wasDefined) {
+            return !timeValue().isEmpty();
+        }
+        String currentTimeStr = timeValue();
+        String currentUnit = unitValue();
+        long currentTime = currentTimeStr.isEmpty() ? -1 : Long.parseLong(currentTimeStr);
+        return currentTime != originalTime || !currentUnit.equals(originalUnit != null ? originalUnit : "");
+    }
+
+    @Override
+    ModelNode modelNode() {
+        String timeStr = timeValue();
+        if (timeStr.isEmpty()) {
+            return new ModelNode();
+        }
+        ModelNode result = new ModelNode();
+        result.get(TIME).set(Long.parseLong(timeStr));
+        result.get(UNIT).set(unitValue());
+        return result;
+    }
+
+    // ------------------------------------------------------ internal
+
+    private String timeValue() {
+        return timeInput.value() != null ? timeInput.value() : "";
+    }
+
+    private String unitValue() {
+        return unitSelect.value() != null ? unitSelect.value() : "";
+    }
+}

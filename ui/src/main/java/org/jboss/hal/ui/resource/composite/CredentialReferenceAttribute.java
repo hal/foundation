@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.composite;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
@@ -49,7 +49,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
  *
  * @see CompositeAttributes
  */
-public class CredentialReference implements CompositeAttribute {
+public class CredentialReferenceAttribute implements CompositeAttribute {
 
     /** The credential reference mode derived from which sub-attributes have values. */
     public enum Mode {

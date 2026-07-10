@@ -22,8 +22,8 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
-import org.jboss.hal.ui.resource.CredentialReference;
-import org.jboss.hal.ui.resource.CredentialReference.Mode;
+import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute;
+import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute.Mode;
 import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import elemental2.dom.HTMLElement;
@@ -59,18 +59,18 @@ import static org.patternfly.layout.flex.Gap.sm;
  *     <li><b>Undefined</b> — gray "Not configured" text</li>
  * </ul>
  */
-class CredentialReferenceValue implements IsElement<HTMLElement>, Attachable {
+class CredentialReferenceView implements IsElement<HTMLElement>, Attachable {
 
     // ------------------------------------------------------ factory
 
-    static CredentialReferenceValue credentialReferenceValue(ResourceAttribute ra) {
-        return new CredentialReferenceValue(ra);
+    static CredentialReferenceView credentialReferenceValue(ResourceAttribute ra) {
+        return new CredentialReferenceView(ra);
     }
 
     // ------------------------------------------------------ instance
 
     private static final String MASKED = "••••••••";
-    private static final Logger logger = Logger.getLogger(CredentialReferenceValue.class.getName());
+    private static final Logger logger = Logger.getLogger(CredentialReferenceView.class.getName());
 
     private final HTMLElement root;
     private final ResourceAttribute ra;
@@ -79,9 +79,9 @@ class CredentialReferenceValue implements IsElement<HTMLElement>, Attachable {
     private HTMLElement storeLink;
     private AddressTemplate storeTemplate;
 
-    CredentialReferenceValue(ResourceAttribute ra) {
+    CredentialReferenceView(ResourceAttribute ra) {
         this.ra = ra;
-        this.mode = CredentialReference.mode(ra.value);
+        this.mode = CredentialReferenceAttribute.mode(ra.value);
 
         this.root = flex().css(halComponent(resource, view, credentialReference))
                 .alignItems(center).columnGap(sm)

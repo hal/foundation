@@ -21,7 +21,7 @@ import org.jboss.hal.meta.Metadata;
 
 /**
  * Strategy interface for creating specialised {@link ViewItem} instances based on attribute template and metadata.
- * Implementations are registered in {@link ViewItemProviders#specialViewItems} and consulted by
+ * Implementations are registered in {@link ViewItemProviders#registry} and consulted by
  * {@link ViewItemFactory#viewItem(AddressTemplate, Metadata, ResourceAttribute)} before falling back to the default
  * rendering.
  */
