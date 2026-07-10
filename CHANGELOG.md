@@ -11,6 +11,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add composite attribute infrastructure (`CompositeAttribute`, `CompositeAttributes`) to prevent flattening of complex attributes that should be rendered as a single unit, with structure-based matching instead of name-based
 - Add credential-reference view item provider — consolidated single-line display with status label badge (green for credential store reference, orange warning for clear text), clickable store name navigating to the credential store via capability registry, masked password with show/hide toggle, and "undefined" state
+- Add credential-reference form item provider — radio-button mode selector (Not configured / Clear text / Credential store) with capability-reference typeahead for store selection (with inline create), alias input, optional password for auto-provision, and optional credential type field
 - Add auto-grouping for resources with many attributes but no metadata-defined attribute groups — alphabetical letter-range sections (e.g. "A – D", "E – H") appear automatically when a resource has 20+ attributes, using the strategy pattern with GroupingStrategy, MetadataGrouping, and AutoGrouping
 - Add attribute group layout toggle for resource views and forms — groups attributes by their WildFly management model attribute group with expandable/collapsible sections, ungrouped attributes first and named groups sorted a-z
 - Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
