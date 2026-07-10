@@ -9,6 +9,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add composite attribute infrastructure (`CompositeAttribute`, `CompositeAttributes`) to prevent flattening of complex attributes that should be rendered as a single unit, with structure-based matching instead of name-based
+- Add credential-reference view item provider — consolidated single-line display with status label badge (green for credential store reference, orange warning for clear text), clickable store name navigating to the credential store via capability registry, masked password with show/hide toggle, and "undefined" state
 - Add auto-grouping for resources with many attributes but no metadata-defined attribute groups — alphabetical letter-range sections (e.g. "A – D", "E – H") appear automatically when a resource has 20+ attributes, using the strategy pattern with GroupingStrategy, MetadataGrouping, and AutoGrouping
 - Add attribute group layout toggle for resource views and forms — groups attributes by their WildFly management model attribute group with expandable/collapsible sections, ungrouped attributes first and named groups sorted a-z
 - Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
@@ -36,7 +38,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Upgrades
 
-- Bump PatternFly Java to 0.9.4
+- Bump PatternFly Java to 0.9.5-SNAPSHOT
 - Bump Quarkus platform to 3.37.2
 - Bump Maven managed dependencies and plugins
 - Bump npm dependencies, dev dependencies, and packageManager versions
