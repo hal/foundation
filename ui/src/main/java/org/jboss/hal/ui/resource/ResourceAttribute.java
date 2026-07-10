@@ -77,7 +77,7 @@ public class ResourceAttribute {
             Predicate<AttributeDescription> predicate) {
         List<ResourceAttribute> resourceAttributes = new ArrayList<>();
         for (AttributeDescription description : operationDescription.parameters()) {
-            if (description.simpleRecord()) {
+            if (description.simpleRecord() && !CompositeAttributes.isComposite(description)) {
                 AttributeDescriptions nestedDescriptions = description.valueTypeAttributeDescriptions();
                 for (AttributeDescription nestedDescription : nestedDescriptions) {
                     if (predicate.test(nestedDescription)) {
@@ -105,7 +105,7 @@ public class ResourceAttribute {
             Predicate<AttributeDescription> predicate) {
         List<ResourceAttribute> resourceAttributes = new ArrayList<>();
         for (AttributeDescription ad : metadata.resourceDescription().attributes()) {
-            if (ad.simpleRecord()) {
+            if (ad.simpleRecord() && !CompositeAttributes.isComposite(ad)) {
                 AttributeDescriptions nads = ad.valueTypeAttributeDescriptions();
                 for (AttributeDescription nad : nads) {
                     if (predicate.test(nad)) {

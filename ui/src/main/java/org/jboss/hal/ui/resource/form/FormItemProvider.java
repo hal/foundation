@@ -20,7 +20,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 
 /** Strategy interface for providing special-case {@link FormItem} implementations based on address template and attribute metadata. */
-interface FormItemProvider {
+public interface FormItemProvider {
 
     /** Tests must be cheap and fast! They're executed every time a form item is created. */
     boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra, FormItemFlags flags);

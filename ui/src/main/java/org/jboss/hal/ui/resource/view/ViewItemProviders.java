@@ -14,10 +14,17 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.view;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.ui.resource.ResourceAttribute;
+
+import static org.jboss.hal.ui.resource.CompositeAttributes.CREDENTIAL_REFERENCE;
+import static org.jboss.hal.ui.resource.view.CredentialReferenceViewItem.credentialReferenceView;
+import static org.jboss.hal.ui.resource.view.ViewItemFactory.defaultViewItem;
 
 /**
  * Registry of {@link ViewItemProvider} instances that supply specialised {@link ViewItem} components for specific
@@ -30,20 +37,17 @@ public class ViewItemProviders {
     public static final List<ViewItemProvider> specialViewItems = new ArrayList<>();
 
     static {
-        // TODO Add support to create and return specific view items based on the address template and/or attribute.
-        // For example the 'credential-reference' complex attribute used all over the place.
+        // Credential reference — consolidated view for all credential-reference variants
+        specialViewItems.add(new ViewItemProvider() {
+            @Override
+            public boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
+                return CREDENTIAL_REFERENCE.matches(ra.description);
+            }
 
-        // The first provider wins!
-        // specialViewItems.add(new ViewItemProvider() {
-        //     @Override
-        //     public boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
-        //         return ...;
-        //     }
-        //
-        //     @Override
-        //     public ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
-        //         return ...;
-        //     }
-        // });
+            @Override
+            public ViewItem viewItem(AddressTemplate template, Metadata metadata, ResourceAttribute ra) {
+                return defaultViewItem(metadata, ra, credentialReferenceView(ra).element());
+            }
+        });
     }
 }

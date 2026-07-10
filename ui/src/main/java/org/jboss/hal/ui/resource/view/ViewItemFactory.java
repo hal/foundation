@@ -108,12 +108,20 @@ public class ViewItemFactory {
             }
         }
         if (viewItem == null) {
-            DescriptionListTerm descriptionListTerm = label(metadata, ra);
-            HTMLElement valueElement = value(template, ra);
-            viewItem = new ViewItem(identifier(ra, VIEW), descriptionListTerm, valueElement)
-                    .store(Keys.RESOURCE_ATTRIBUTE, ra);
+            viewItem = defaultViewItem(metadata, ra, value(template, ra));
         }
         return viewItem.store(Keys.RESOURCE_ATTRIBUTE, ra);
+    }
+
+    /** Creates a default {@link ViewItem} with the standard label and the given value element. Used by {@link ViewItemProvider} implementations. */
+    static ViewItem defaultViewItem(Metadata metadata, ResourceAttribute ra, HTMLElement valueElement) {
+        return new ViewItem(identifier(ra, VIEW), defaultLabel(metadata, ra), valueElement)
+                .store(Keys.RESOURCE_ATTRIBUTE, ra);
+    }
+
+    /** Creates the standard description list term (label) for an attribute. Used by {@link ViewItemProvider} implementations. */
+    static DescriptionListTerm defaultLabel(Metadata metadata, ResourceAttribute ra) {
+        return label(metadata, ra);
     }
 
     private static DescriptionListTerm label(Metadata metadata, ResourceAttribute ra) {

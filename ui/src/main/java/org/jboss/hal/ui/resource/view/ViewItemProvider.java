@@ -25,9 +25,9 @@ import org.jboss.hal.meta.Metadata;
  * {@link ViewItemFactory#viewItem(AddressTemplate, Metadata, ResourceAttribute)} before falling back to the default
  * rendering.
  */
-interface ViewItemProvider {
+public interface ViewItemProvider {
 
-    /** Tests whether this provider handles the given attribute. Must be cheap and fast -- executed for every view item. */
+    /** Tests whether this provider handles the given attribute. Must be fast -- executed for every view item. */
     boolean test(AddressTemplate template, Metadata metadata, ResourceAttribute ra);
 
     /** Creates a specialised view item for the given attribute. Only called when {@link #test} returns {@code true}. */

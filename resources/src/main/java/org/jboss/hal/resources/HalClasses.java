@@ -26,6 +26,7 @@ public interface HalClasses {
     String body = "body";
     String capabilityReference = "capability-reference";
     String colon = "colon";
+    String credentialReference = "credential-reference";
     String content = "content";
     String copy = "copy";
     String curlyBraces = "curly-braces";
