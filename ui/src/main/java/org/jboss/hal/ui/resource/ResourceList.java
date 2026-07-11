@@ -386,6 +386,8 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
                 actions.add(dropdown(menuToggle(plainText).text("Add"))
                         .addMenu(missingMenu(missing)));
             }
+        } else if (metadata.resourceDescription().operations().supports(ADD)) {
+            actions.add(button("Add").link().onClick((e, b) -> fireAdd(null)));
         }
         actions.add(button("Refresh").link().onClick((e, b) -> refresh()));
 
