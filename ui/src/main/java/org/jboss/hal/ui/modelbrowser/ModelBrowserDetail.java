@@ -105,6 +105,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
                 case SINGLETON_FOLDER:
                 case FOLDER:
                     shell.addResourceList(resourceList(mbn.template, metadata)
+                            .singletonFolder(mbn.type == ModelBrowserNode.Type.SINGLETON_FOLDER)
                             .missingChildren(missingChildrenFor(mbn))
                             .onSelect(template -> SelectInTree.dispatch(root, template))
                             .onAdd((parent, child, singleton) -> AddResource.dispatch(root, parent, child, singleton))

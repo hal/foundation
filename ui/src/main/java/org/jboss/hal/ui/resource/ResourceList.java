@@ -176,6 +176,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
     private AddCallback onAdd;
     private Consumer<AddressTemplate> onDelete;
     private List<ChildResource> extraMissingChildren;
+    private boolean singletonFolder;
     private DataList dataList;
 
     ResourceList(AddressTemplate template, Metadata metadata) {
@@ -185,6 +186,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
         this.visible = ov(0);
         this.total = ov(0);
         this.extraMissingChildren = emptyList();
+        this.singletonFolder = false;
         Filter<ChildResource> filter = new Filter<ChildResource>(FilterOperator.AND)
                 .add(new NameAttribute<>(cr -> cr.name))
                 .onChange(this::onFilterChanged);
@@ -244,6 +246,11 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
      */
     public ResourceList missingChildren(List<ChildResource> missingChildren) {
         this.extraMissingChildren = missingChildren != null ? missingChildren : emptyList();
+        return this;
+    }
+
+    public ResourceList singletonFolder(boolean singletonFolder) {
+        this.singletonFolder = singletonFolder;
         return this;
     }
 
@@ -319,7 +326,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
             for (ModelNode node : result.asList()) {
                 String name = node.asString();
                 AddressTemplate childTemplate = template.parent().append(key, name);
-                children.add(new ChildResource(name, childTemplate, false, true));
+                children.add(new ChildResource(name, childTemplate, singletonFolder, true));
             }
         }
         return children;
