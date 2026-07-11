@@ -319,7 +319,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
             for (ModelNode node : result.asList()) {
                 String name = node.asString();
                 AddressTemplate childTemplate = template.parent().append(key, name);
-                children.add(new ChildResource(name, childTemplate, true, true));
+                children.add(new ChildResource(name, childTemplate, false, true));
             }
         }
         return children;
