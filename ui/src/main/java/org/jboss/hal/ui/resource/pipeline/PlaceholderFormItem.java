@@ -33,7 +33,7 @@ import static org.patternfly.component.form.FormGroupLabel.formGroupLabel;
  * Placeholder form item used during the pipeline build-out. Renders a read-only text display inside a form group. Always reports
  * as unmodified and produces no operations. Will be replaced with proper type-specific implementations during migration.
  */
-class PlaceholderFormItem implements PipelineFormItem {
+class PlaceholderFormItem implements FormItem {
 
     private final String identifier;
     private final HTMLElement root;

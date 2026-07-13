@@ -40,7 +40,7 @@ class RelativeToProvider implements ItemProvider {
     }
 
     @Override
-    public List<PipelineFormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
         return singletonList(new PlaceholderFormItem(group.primary().name(), group, context));
     }
 }

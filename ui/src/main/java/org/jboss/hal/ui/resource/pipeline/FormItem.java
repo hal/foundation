@@ -30,7 +30,7 @@ import org.jboss.hal.dmr.ResourceAddress;
  * The {@link #operations(ResourceAddress)} method is the key difference from the existing {@code FormItem} class, where
  * operations were produced by the form, not the item.
  */
-public interface PipelineFormItem extends IsElement<HTMLElement> {
+public interface FormItem extends IsElement<HTMLElement> {
 
     /** Returns a unique identifier for this form item, suitable for use as a DOM element ID. */
     String identifier();

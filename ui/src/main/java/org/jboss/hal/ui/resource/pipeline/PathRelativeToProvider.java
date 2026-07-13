@@ -43,12 +43,12 @@ class PathRelativeToProvider implements ItemProvider {
     }
 
     @Override
-    public List<PipelineViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
         return singletonList(new PlaceholderViewItem(group.name(), group, context));
     }
 
     @Override
-    public List<PipelineFormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
         return singletonList(new PlaceholderFormItem(group.name(), group, context));
     }
 }

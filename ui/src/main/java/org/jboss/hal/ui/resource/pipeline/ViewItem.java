@@ -23,7 +23,7 @@ import org.jboss.elemento.IsElement;
  * A read-only view item produced by the pipeline. Implementations wrap a PatternFly {@code DescriptionListGroup} or similar
  * component for displaying attribute values.
  */
-public interface PipelineViewItem extends IsElement<HTMLElement> {
+public interface ViewItem extends IsElement<HTMLElement> {
 
     /** Returns a unique identifier for this view item, suitable for use as a DOM element ID. */
     String identifier();

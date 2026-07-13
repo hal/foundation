@@ -23,14 +23,14 @@ Working name: **pipeline**. Alternatives considered:
 
 No upfront filtering of attributes; every attribute from `metadata.resourceDescription().attributes()` enters the pipeline.
 
-**Output:** An ordered list of `PipelineViewItem` or `PipelineFormItem`. Each form item knows how to produce 1..n DMR operations via `operations(ResourceAddress)`. These operations are flat-mapped into a single composite operation for the resource write.
+**Output:** An ordered list of `ViewItem` or `FormItem`. Each form item knows how to produce 1..n DMR operations via `operations(ResourceAddress)`. These operations are flat-mapped into a single composite operation for the resource write.
 
 **Shape:** One pipeline with two entry points:
 
 ```
 Pipeline pipeline = Pipeline.create();
-pipeline.viewItems(context) → List<PipelineViewItem>
-pipeline.formItems(context) → List<PipelineFormItem>
+pipeline.viewItems(context) → List<ViewItem>
+pipeline.formItems(context) → List<FormItem>
 ```
 
 Stage 1 (grouping) is identical for both. Stage 2 (itemization) calls `viewItems()` or `formItems()` on the matched provider.
@@ -140,8 +140,8 @@ Creates view and form items for matched groups. Returns lists because a provider
 ```
 ItemProvider
   ├── matches(group: AttributeGroup): boolean
-  ├── viewItems(group: AttributeGroup, context: PipelineContext): List<PipelineViewItem>
-  └── formItems(group: AttributeGroup, context: PipelineContext): List<PipelineFormItem>
+  ├── viewItems(group: AttributeGroup, context: PipelineContext): List<ViewItem>
+  └── formItems(group: AttributeGroup, context: PipelineContext): List<FormItem>
 ```
 
 `PipelineContext` bundles `AddressTemplate`, `Metadata`, `ModelNode` resource values, and `PipelineFlags`. Providers use it to access RBAC, capabilities, current values, and the resource address for DMR operations.
@@ -217,11 +217,20 @@ Shares the same UI component as FileProvider — same semantic concept (path + r
 
 Only 1 occurrence: `ejb3/file-passivation-store=*` (deprecated). The 4 attributes that allow expressions need a fallback to free-text input.
 
+### Flattening provider
+
+**FlatteningProvider:** Matches unclaimed OBJECT simpleRecord groups. Flattens into n items, one per sub-attribute. Each sub-attribute uses its `fullyQualifiedName()` for DMR writes (e.g. `"my-record.foo"`). Must be registered after all composite providers and before the default provider.
+
 ### Default provider
 
-Handles all unmatched groups:
-- OBJECT simpleRecord → flatten into n items (one per sub-attribute, labeled with `parent / sub` prefix)
-- Single attribute → type-based rendering (text input, checkbox, number input, dropdown for allowed values, etc.)
+**DefaultItemProvider:** Catch-all for all remaining unmatched groups. Pure type-based dispatch:
+- BOOLEAN → checkbox/switch
+- INT/LONG/DOUBLE → number input
+- STRING with allowed values → select dropdown
+- STRING with capability reference → typeahead
+- STRING (plain) → text input
+- LIST of STRING → string list editor
+- Other → read-only unsupported display
 
 ## Implementation Status
 
@@ -256,39 +265,91 @@ The existing implementation in `org.jboss.hal.ui.resource` splits the same conce
 |---|---|---|
 | Grouping + flattening | `ResourceAttribute.resourceAttributes()` | Stage 1 matchers (grouping only) |
 | Composite detection | `CompositeAttributes.isComposite()` + `CompositeAttribute` | Composite matchers in stage 1 |
-| Flattening decision | `simpleRecord() && !isComposite()` in `ResourceAttribute` | `DefaultItemProvider` in stage 2 |
+| Flattening decision | `simpleRecord() && !isComposite()` in `ResourceAttribute` | `FlatteningProvider` in stage 2 |
 | Sibling detection | Not supported | `PathRelativeToMatcher` in stage 1 |
 | View item creation | `ViewItemProviders` registry | `ItemProvider.viewItems()` in stage 2 |
 | Form item creation | `FormItemProviders` registry | `ItemProvider.formItems()` in stage 2 |
 | Data carrier | `ResourceAttribute` (wraps 1 description + value) | `AttributeGroup` (wraps 1..n descriptions) + `PipelineContext` (values) |
-| Operation production | `ResourceForm.attributeOperations()` on the form | `PipelineFormItem.operations()` on each item |
+| Operation production | `ResourceForm.attributeOperations()` on the form | `FormItem.operations()` on each item |
 
 The existing code remains untouched. The new pipeline is built separately in this package. Migration happens later.
 
-## Known Attribute Patterns
+## Management Model Coverage Analysis (WildFly 40)
 
-### Already handled (by existing code)
+Total attributes: **5,803** (4,118 configuration + 1,685 runtime)
 
-**credential-reference family** — 49 occurrences, 9 name variants. Matched by OBJECT structure `{store, alias, clear-text, type}`.
+### Fully covered — 89% (5,165 attributes)
 
-### Composite candidates
+| Type / Pattern | Count | Pipeline handler |
+|---|---|---|
+| STRING | 2,128 | DefaultItemProvider |
+| BOOLEAN | 1,380 | DefaultItemProvider |
+| INT | 946 | DefaultItemProvider |
+| LONG | 638 | DefaultItemProvider |
+| DOUBLE | 36 | DefaultItemProvider |
+| BYTES | 1 | DefaultItemProvider (unsupported display) |
+| LIST of simple type | 255 | DefaultItemProvider |
+| credential-reference family | 49 | CredentialReferenceMatcher + Provider |
+| keepalive-time | 8 | TimeUnitMatcher + Provider |
+| file (logging) | 8 | FileMatcher + Provider |
+| *-column (infinispan JDBC) | 20 | FlatteningProvider (simpleRecord) |
+| Other simpleRecord OBJECTs | ~60 | FlatteningProvider |
+| path + relative-to siblings | 31 | PathRelativeToMatcher + Provider |
+| standalone relative-to | 1 | RelativeToProvider |
 
-**keepalive-time** — 19 occurrences across thread pools. Structure: `{time: LONG, unit: STRING}`.
+The pipeline handles all simple types (STRING, BOOLEAN, INT, LONG, DOUBLE), all LIST-of-simple-type attributes, all known composite OBJECTs, all simpleRecord OBJECTs (flattened), and sibling attribute groups.
 
-**file** — 8 occurrences in logging subsystem. Structure: `{path: STRING, relative-to: STRING}`.
+### Not yet covered — 11% (638 attributes)
 
-### Sibling group candidates
+Three distinct UI patterns that differ fundamentally from the single-attribute / simple-record model:
 
-**path + relative-to** — 31 occurrences across 11 subsystems. Two separate STRING attributes that are semantically coupled.
+#### 1. Free-form key-value maps — 222 occurrences (HIGH impact)
 
-### Standalone candidates
+OBJECT attributes with no structured value-type — arbitrary `{String → String}` maps. These need a **map editor** (add/remove key-value rows), not a type-based form item.
 
-**relative-to without sibling path** — 1 deprecated occurrence (`ejb3/file-passivation-store=*`). FIP only.
+| Attribute | Occurrences |
+|---|---|
+| `properties` | 105 |
+| `*-properties` (capacity-incrementer, stale-connection-checker, etc.) | 71 |
+| `params` | 13 |
+| `configuration` | 12 |
+| `meta-data`, `activation-config`, `property`, etc. | 21 |
 
-### Not addressed by this pipeline
+**Recommendation:** A `MapProvider` that matches OBJECT attributes with no CONSISTS_OF relationship (or where the value-type is a simple scalar). This is the highest-value next addition.
 
-**filter (logging)** — Recursive OBJECT, not a simpleRecord. Needs a tree/builder UI.
+#### 2. LIST of OBJECT — 52 occurrences (MEDIUM impact)
 
-**schedule (EJB timers)** — Read-only runtime attributes on deployment resources.
+Lists where each element is a structured object. These need a **table/list editor** with per-row structured editing.
 
-**properties / configuration / params** — Free-form key-value maps (not structured records). Need a map editor, not this pipeline.
+| Attribute | Occurrences | Sub-types |
+|---|---|---|
+| `timers` | 6 | OBJECT, STRING, BOOLEAN, LONG |
+| `filters` | 3 | BOOLEAN, STRING, DOUBLE |
+| `wm-security-mapping-*` | 6 | STRING |
+| `mechanism-configurations` | 2 | STRING, LIST |
+| `permissions`, `certificates`, `global-modules`, etc. | 35 | various |
+
+Many of these (especially `timers`, `certificates`) are runtime-only, so read-only table display would suffice.
+
+#### 3. Complex/recursive OBJECTs — 13 occurrences (LOW impact)
+
+OBJECTs with nested OBJECT or LIST sub-attributes — not `simpleRecord()`.
+
+| Attribute | Occurrences | Notes |
+|---|---|---|
+| `filter` (logging) | 8 | Recursive tree: `replace`, `not`, `any`, `all`, `level-range` are nested OBJECTs |
+| `identity-mapping` | 1 | Deep nesting: sub-OBJECTs + sub-LISTs |
+| `jwt` | 1 | Nested OBJECT (`key-map`) + LISTs (`audience`, `issuer`) |
+| `attributes` (undertow) | 1 | 35 nested OBJECTs (access log format attributes) |
+| `last-gc-info` | 1 | Runtime-only, nested memory usage OBJECTs |
+
+Most are runtime-only or deployment-scoped. The `filter` attribute (8 occurrences) is the only configuration-relevant one, and it would need a tree/builder UI.
+
+### Coverage by storage type
+
+| Storage | Covered | Not covered | Coverage |
+|---|---|---|---|
+| Configuration (4,118) | 3,687 | 431 | **90%** |
+| Runtime (1,685) | 1,478 | 207 | **88%** |
+
+Runtime attributes are read-only, so even "not covered" ones render acceptably as plain text or JSON display.

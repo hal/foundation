@@ -52,18 +52,21 @@ public final class Pipeline {
      * relative-to), then the default catch-all.
      */
     public static Pipeline create() {
+        // Order is important!
         List<AttributeMatcher> matchers = List.of(
                 new CredentialReferenceMatcher(),
                 new TimeUnitMatcher(),
                 new FileMatcher(),
                 new PathRelativeToMatcher()
         );
+        // Order is important!
         List<ItemProvider> providers = List.of(
                 new CredentialReferenceProvider(),
                 new TimeUnitProvider(),
                 new FileProvider(),
                 new PathRelativeToProvider(),
                 new RelativeToProvider(),
+                new FlatteningProvider(),
                 new DefaultItemProvider()
         );
         return new Pipeline(matchers, providers);
@@ -78,13 +81,13 @@ public final class Pipeline {
     }
 
     /** Runs the pipeline and produces view items for all attributes in the resource metadata. */
-    public List<PipelineViewItem> viewItems(PipelineContext context) {
+    public List<ViewItem> viewItems(PipelineContext context) {
         List<AttributeGroup> groups = group(context);
         return itemizeView(groups, context);
     }
 
     /** Runs the pipeline and produces form items for all attributes in the resource metadata. */
-    public List<PipelineFormItem> formItems(PipelineContext context) {
+    public List<FormItem> formItems(PipelineContext context) {
         List<AttributeGroup> groups = group(context);
         return itemizeForm(groups, context);
     }
@@ -123,12 +126,12 @@ public final class Pipeline {
 
     // ------------------------------------------------------ stage 2: itemize
 
-    private List<PipelineViewItem> itemizeView(List<AttributeGroup> groups, PipelineContext context) {
-        List<PipelineViewItem> items = new ArrayList<>();
+    private List<ViewItem> itemizeView(List<AttributeGroup> groups, PipelineContext context) {
+        List<ViewItem> items = new ArrayList<>();
         for (AttributeGroup group : groups) {
             for (ItemProvider provider : providers) {
                 if (provider.matches(group)) {
-                    List<PipelineViewItem> result = provider.viewItems(group, context);
+                    List<ViewItem> result = provider.viewItems(group, context);
                     if (result != null) {
                         items.addAll(result);
                         break;
@@ -139,12 +142,12 @@ public final class Pipeline {
         return items;
     }
 
-    private List<PipelineFormItem> itemizeForm(List<AttributeGroup> groups, PipelineContext context) {
-        List<PipelineFormItem> items = new ArrayList<>();
+    private List<FormItem> itemizeForm(List<AttributeGroup> groups, PipelineContext context) {
+        List<FormItem> items = new ArrayList<>();
         for (AttributeGroup group : groups) {
             for (ItemProvider provider : providers) {
                 if (provider.matches(group)) {
-                    List<PipelineFormItem> result = provider.formItems(group, context);
+                    List<FormItem> result = provider.formItems(group, context);
                     if (result != null) {
                         items.addAll(result);
                         break;

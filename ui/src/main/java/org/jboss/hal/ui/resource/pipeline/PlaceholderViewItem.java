@@ -28,7 +28,7 @@ import static org.patternfly.component.list.DescriptionListTerm.descriptionListT
  * Placeholder view item used during the pipeline build-out. Renders a simple label + text value display. Will be replaced with
  * proper type-specific implementations during migration.
  */
-class PlaceholderViewItem implements PipelineViewItem {
+class PlaceholderViewItem implements ViewItem {
 
     private final String identifier;
     private final HTMLElement root;

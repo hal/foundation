@@ -59,12 +59,12 @@ class CredentialReferenceProvider implements ItemProvider {
     }
 
     @Override
-    public List<PipelineViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
         return singletonList(new PlaceholderViewItem(group.primary().name(), group, context));
     }
 
     @Override
-    public List<PipelineFormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
         return singletonList(new PlaceholderFormItem(group.primary().name(), group, context));
     }
 }

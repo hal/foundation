@@ -38,7 +38,7 @@ public interface ItemProvider {
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<PipelineViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    default List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
         return null;
     }
 
@@ -47,7 +47,7 @@ public interface ItemProvider {
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<PipelineFormItem> formItems(AttributeGroup group, PipelineContext context) {
+    default List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
         return null;
     }
 }
