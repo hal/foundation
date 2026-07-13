@@ -16,7 +16,6 @@
 package org.jboss.hal.ui.resource.composite;
 
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 /**
  * Predicate for identifying management model attributes that should be treated as indivisible composite units rather than being
@@ -25,25 +24,11 @@ import org.jboss.hal.ui.resource.ResourceAttribute;
  * Implementations match based on the attribute's <em>structure</em> (type, value-type shape, sub-attribute names) rather than
  * its name, so they naturally cover all name variants of the same structural pattern (e.g. {@code credential-reference},
  * {@code recovery-credential-reference}, {@code source-credential-reference}).
- * <p>
- * A registered {@code CompositeAttribute} affects three stages:
- * <ol>
- *     <li>{@link ResourceAttribute#resourceAttributes ResourceAttribute.resourceAttributes()} — prevents flattening, keeping
- *         the attribute as a single {@link ResourceAttribute} with the full OBJECT value.</li>
- *     <li>{@link org.jboss.hal.ui.resource.view.ViewItemProvider} — enables a custom read-only view rendering.</li>
- *     <li>{@link org.jboss.hal.ui.resource.form.FormItemProvider} — enables a custom form input rendering.</li>
- * </ol>
- * Registration and lookup are managed by {@link CompositeAttributes}.
  *
  * @see CompositeAttributes
  */
 @FunctionalInterface
 public interface CompositeAttribute {
 
-    /**
-     * Tests whether the given attribute description matches this composite pattern. Implementations should inspect the
-     * attribute's type and value-type structure, not its name. Must be fast — called for every attribute during a resource
-     * attribute collection.
-     */
     boolean matches(AttributeDescription description);
 }

@@ -15,6 +15,11 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.CredentialReferenceFormItem;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.view.CredentialReferenceViewItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
@@ -32,8 +37,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
  * Provider for credential reference composite attributes. Matches groups containing a single OBJECT attribute with the
  * credential reference structure ({@code store}, {@code alias}, {@code clear-text}).
  * <p>
- * TODO: Replace placeholder items with proper credential reference UI (radio mode selection, store typeahead, clear-text
- * toggle) during migration from the existing {@code CredentialReferenceFormItem} and {@code CredentialReferenceView}.
  */
 class CredentialReferenceProvider implements ItemProvider {
 
@@ -60,11 +63,13 @@ class CredentialReferenceProvider implements ItemProvider {
 
     @Override
     public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderViewItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new CredentialReferenceViewItem(ra.fqn(), ra, context));
     }
 
     @Override
     public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderFormItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new CredentialReferenceFormItem(ra.fqn(), ra, context));
     }
 }

@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.form;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 import java.util.HashSet;
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelDescriptionConstants;
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -32,20 +32,17 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
  */
 public class StringListSupport {
 
-    /** Returns {@code true} if the values differ from the attribute's default for a new resource. */
-    static boolean isNewModified(ResourceAttribute ra, List<String> values) {
-        if (ra.description.hasDefault()) {
+    static boolean isNewModified(ResolvedAttribute ra, List<String> values) {
+        if (ra.description().hasDefault()) {
             return differentValues(defaultValues(ra), values);
         } else {
             return !values.isEmpty();
         }
     }
 
-    /** Returns {@code true} if the values differ from the original persisted values for an existing resource. */
-    static boolean isExistingModified(ResourceAttribute ra, List<String> values, boolean wasDefined) {
+    static boolean isExistingModified(ResolvedAttribute ra, List<String> values, boolean wasDefined) {
         if (wasDefined) {
-            // modified if the original value was an expression or is different from the current user input
-            return ra.expression || differentValues(modelValues(ra), values);
+            return ra.expression() || differentValues(modelValues(ra), values);
         } else {
             return !values.isEmpty();
         }
@@ -64,27 +61,24 @@ public class StringListSupport {
         }
     }
 
-    /** Extracts the current list values from the resource attribute's model node. */
-    static List<String> modelValues(ResourceAttribute ra) {
-        if (ra.value.isDefined()) {
-            return ra.value.asList().stream()
+    static List<String> modelValues(ResolvedAttribute ra) {
+        if (ra.value().isDefined()) {
+            return ra.value().asList().stream()
                     .map(ModelNode::asString)
                     .collect(toList());
         }
         return emptyList();
     }
 
-    /** Extracts the default list values from the attribute description, or returns an empty list. */
-    static List<String> defaultValues(ResourceAttribute ra) {
-        if (ra.description.hasDefined(ModelDescriptionConstants.DEFAULT)) {
-            return ra.description.get(DEFAULT).asList().stream()
+    static List<String> defaultValues(ResolvedAttribute ra) {
+        if (ra.description().hasDefined(ModelDescriptionConstants.DEFAULT)) {
+            return ra.description().get(DEFAULT).asList().stream()
                     .map(ModelNode::asString)
                     .collect(toList());
         }
         return emptyList();
     }
 
-    /** Returns {@code true} if the two lists contain different elements (order-independent comparison). */
     static boolean differentValues(List<String> a, List<String> b) {
         if (a.isEmpty() && b.isEmpty()) {
             return false;

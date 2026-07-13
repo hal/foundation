@@ -21,9 +21,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jboss.elemento.Id;
+import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.jboss.hal.ui.resource.view.ViewItem;
 import org.patternfly.component.content.ContentType;
 import org.patternfly.extension.finder.Finder;
 import org.patternfly.extension.finder.FinderColumn;
@@ -33,11 +40,14 @@ import org.patternfly.extension.finder.ResolvedFinderPath;
 import org.patternfly.filter.Filter;
 import org.patternfly.layout.stack.Stack;
 
+import elemental2.dom.HTMLElement;
+
+import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.deleteResourceModal;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
-import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
+import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
@@ -126,7 +136,7 @@ public final class FinderBricks {
                 stackPreview(preview, name, s -> {
                     AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
                     uic().crud().readWithMetadata(template).then(tuple -> {
-                        s.addItem(stackItem().add(resourceView(template, tuple.key, tuple.value, previewAttributes)));
+                        s.addItem(stackItem().add(previewView(template, tuple.key, tuple.value, previewAttributes)));
                         return null;
                     });
                 });
@@ -160,6 +170,21 @@ public final class FinderBricks {
             }
             stack.accept(s);
         }));
+    }
+
+    /** Creates a pipeline-based preview view for finder items, restricted to the given attribute names. */
+    public static HTMLElement previewView(AddressTemplate template, ModelNode resource, Metadata metadata,
+            List<String> attributes) {
+        PipelineContext context = new PipelineContext(template, metadata, resource,
+                new PipelineFlags(PipelineFlags.Scope.EXISTING_RESOURCE, PipelineFlags.Placeholder.NONE));
+        List<ViewItem> items = Pipeline.create().viewItems(context);
+        HTMLElement dl = descriptionList().css(halComponent(HalClasses.resource, HalClasses.view)).element();
+        for (ViewItem item : items) {
+            if (attributes.isEmpty() || attributes.contains(item.attribute().fqn())) {
+                dl.appendChild(item.element());
+            }
+        }
+        return dl;
     }
 
     private FinderBricks() {

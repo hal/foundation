@@ -9,37 +9,47 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add composite attribute infrastructure (`CompositeAttribute`, `CompositeAttributes`) to prevent flattening of complex attributes that should be rendered as a single unit, with structure-based matching instead of name-based
-- Add credential-reference view item provider — consolidated single-line display with status label badge (green for credential store reference, orange warning for clear text), clickable store name navigating to the credential store via capability registry, masked password with show/hide toggle, and "undefined" state
-- Add credential-reference form item provider — radio-button mode selector (Not configured / Clear text / Credential store) with capability-reference typeahead for store selection (with inline create), alias input, optional password for auto-provision, and optional credential type field
-- Add auto-grouping for resources with many attributes but no metadata-defined attribute groups — alphabetical letter-range sections (e.g. "A – D", "E – H") appear automatically when a resource has 20+ attributes, using the strategy pattern with GroupingStrategy, MetadataGrouping, and AutoGrouping
-- Add attribute group layout toggle for resource views and forms — groups attributes by their WildFly management model attribute group with expandable/collapsible sections, ungrouped attributes first and named groups sorted a-z
+- Add attribute-to-item pipeline for resource view/form rendering — two-stage architecture with matchers (grouping) and providers (itemization) that replaces the old factory-based approach
+- Add self-contained view and form item base classes (`AbstractViewItem`, `AbstractFormItem`) that build their complete UI (label + value/input) from a `ResolvedAttribute` — eliminates factory-item coupling
+- Add type-specific view items: `DefaultViewItem` (boolean switch, text, unit, allowed values, capability reference, list, JSON), `TimeUnitViewItem`, `CredentialReferenceViewItem`, `FileViewItem`, `PathRelativeToViewItem`
+- Add type-specific form items: `StringFormItem`, `BooleanFormItem`, `NumberFormItem`, `SelectFormItem`, `CapabilityReferenceFormItem` (typeahead), `CapabilityReferencesFormItem` (multi-select typeahead), `StringListFormItem` (label-based multi-value), `TimeUnitFormItem`, `CredentialReferenceFormItem` (radio mode selection with store typeahead), `FileFormItem`, `PathRelativeToFormItem`, `RestrictedFormItem`, `UnsupportedFormItem`
+- Add `PipelineForm` as lightweight form wrapper for pipeline form items with validation, model node collection, and alert display
+- Add pipeline entry point for operation parameters — `Pipeline.formItems(context, parameters)` for dialog classes
+- Add `previewView()` helper in `FinderBricks` for pipeline-based finder previews
 - Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
 
 ### Changed
 
+- Wire pipeline into `ResourceData` — replaces old `ResourceAttribute.resourceAttributes()` → factory → item loop with `Pipeline.viewItems()`/`formItems()` calls
+- Wire pipeline into dialog classes — `ExecuteOperationDialogs` and `AddResourceDialogs` now use `Pipeline` and `PipelineForm` instead of old `ResourceForm` and `FormItemFactory`
+- Migrate `ResourceFilter` from `Filter<ResourceAttribute>` to `Filter<ResolvedAttribute>`
+- Refactor `CapabilityReference` to accept `String attributeValue` instead of `ResourceAttribute`
+- Inline attribute grouping logic in `ResourceData` — replaces `GroupingStrategy`/`MetadataGrouping`/`AutoGrouping`
 - Extract OUIA component type strings to OuiaIds constants for consistent test identifiers
 - Rename statistics ResourceData to StatisticsEnabledState for clarity
-- Refactor model browser detail panel to use reusable resource components (ResourceShell, ResourceBreadcrumb, ResourceHeader, ResourceTabs, ResourceList) — eliminates ~460 lines of duplicated code
-- Generalize ResourceBreadcrumb with SegmentHandler callback providing depth-aware segment click handling
-- Generalize ResourceHeader with customTitle(), showStability(), and showDescription() builder methods for different display contexts
-- Generalize ResourceTabs with initialSelection() and onSelect() builder methods for tab memory across resource selections
-- Generalize ResourceList with automatic wildcard template detection to choose the right DMR operation (read-children-names vs read-children-types)
-- Unify grouped layout to use ExpandableSection in both view and edit mode for consistent UX
-- Improve resource package architecture — rename manager subpackage to data, consolidate context keys into Keys interface, make table classes public for reuse
+- Refactor model browser detail panel to use reusable resource components (ResourceShell, ResourceBreadcrumb, ResourceHeader, ResourceTabs, ResourceList)
+- Improve resource package architecture — rename manager subpackage to data, consolidate context keys into Keys interface
+
+### Removed
+
+- Remove `ResourceAttribute`, `ResourceItem`, `ItemIdentifier` — replaced by `ResolvedAttribute` record
+- Remove `ViewItemFactory`, `ViewItemProvider`, `ViewItemProviders`, `ResourceView` — replaced by pipeline view items
+- Remove `FormItemFactory`, `FormItemProvider`, `FormItemProviders`, `ResourceForm` — replaced by pipeline form items and `PipelineForm`
+- Remove `FormItemFlags`, `FormItemInputMode`, `HelperTexts` — replaced by `PipelineFlags`, `InputMode`, inline helpers
+- Remove `GroupingStrategy`, `MetadataGrouping`, `AutoGrouping` — grouping logic inlined in `ResourceData`
+- Remove `CredentialReferenceView`, `TimeUnitView` — replaced by pipeline view items
+- Remove all old form item implementations (13 `Old*` classes)
 
 ### Fixed
 
 - Fix non-existing singleton popover in model browser — attach popover at item creation time instead of in parent's onToggle handler, which fired before async children loaded
 - Fix tooltip placement for model browser back/forward buttons
-- Fix toolbar action group duplication when toggling grouped layout in the same view/edit state
-- Fix grouped DescriptionList missing HAL CSS class causing different spacing compared to flat layout
-- Fix grouped view mode spacing to align with edit mode
-- Fix duplicate resource view rendering caused by double rootContainer.add(items) in flat VIEW path
+- Fix missing remove button for singleton folder children in model browser resource list
+- Fix missing Add button in empty state for non-singleton folders in model browser
 
 ### Upgrades
 
-- Bump PatternFly Java to 0.9.5-SNAPSHOT
+- Bump PatternFly Java to 0.9.5
 - Bump Quarkus platform to 3.37.2
 - Bump Maven managed dependencies and plugins
 - Bump npm dependencies, dev dependencies, and packageManager versions

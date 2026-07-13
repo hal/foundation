@@ -13,18 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.pipeline;
+package org.jboss.hal.ui.resource.form;
 
-import elemental2.dom.HTMLElement;
+/** Lists the input modes a form item can operate in: native controls, expression text input, or mixed. */
+enum InputMode {
 
-import org.jboss.elemento.IsElement;
+    /** The form item uses its native control (switch, select, number input, etc.). */
+    NATIVE,
 
-/**
- * A read-only view item produced by the pipeline. Implementations wrap a PatternFly {@code DescriptionListGroup} or similar
- * component for displaying attribute values.
- */
-public interface ViewItem extends IsElement<HTMLElement> {
+    /** The form item shows a text input for entering WildFly expressions ({@code $&#123;...&#125;}). */
+    EXPRESSION,
 
-    /** Returns a unique identifier for this view item, suitable for use as a DOM element ID. */
-    String identifier();
+    /** The form item accepts both literal values and expressions in a single text input. */
+    MIXED
 }

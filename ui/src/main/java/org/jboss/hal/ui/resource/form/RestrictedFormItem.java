@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.form;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.patternfly.component.form.FormGroupLabel;
 
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
@@ -27,15 +28,14 @@ import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
 import static org.patternfly.icon.IconSets.fas.lock;
 
-/** Form item displayed when the current user lacks read permission for the attribute, showing a locked "restricted" indicator. */
-class RestrictedFormItem extends FormItem {
+/** Form item displayed when the current user lacks read permission, showing a locked "restricted" indicator. */
+public class RestrictedFormItem extends AbstractFormItem {
 
-    RestrictedFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
-
+    public RestrictedFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
         formGroup = formGroup(identifier)
-                .required(ra.description.required())
-                .addLabel(label)
+                .required(attribute.description().required())
+                .addLabel(label())
                 .addControl(formGroupControl()
                         .add(inputGroup()
                                 .addItem(inputGroupItem().fill()
@@ -56,7 +56,7 @@ class RestrictedFormItem extends FormItem {
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         return new ModelNode();
     }
 }

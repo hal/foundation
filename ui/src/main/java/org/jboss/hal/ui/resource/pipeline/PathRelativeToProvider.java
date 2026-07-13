@@ -15,6 +15,11 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.PathRelativeToFormItem;
+import org.jboss.hal.ui.resource.view.PathRelativeToViewItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -27,9 +32,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
  * This is the sibling counterpart to {@link FileProvider}, which handles the same concept as a composite OBJECT attribute. Both
  * render identically but differ in DMR write semantics: this provider produces 2 separate {@code write-attribute} operations
  * (one per attribute), while {@link FileProvider} produces 1 operation writing the whole OBJECT.
- * <p>
- * TODO: Replace placeholder items with proper path + relative-to UI (text input + path typeahead/dropdown, consolidated view
- * display).
  */
 class PathRelativeToProvider implements ItemProvider {
 
@@ -44,11 +46,13 @@ class PathRelativeToProvider implements ItemProvider {
 
     @Override
     public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderViewItem(group.name(), group, context));
+        List<ResolvedAttribute> resolved = ResolvedAttribute.resolveAll(group, context);
+        return singletonList(new PathRelativeToViewItem(group.name(), resolved, context));
     }
 
     @Override
     public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderFormItem(group.name(), group, context));
+        List<ResolvedAttribute> resolved = ResolvedAttribute.resolveAll(group, context);
+        return singletonList(new PathRelativeToFormItem(group.name(), resolved, context));
     }
 }

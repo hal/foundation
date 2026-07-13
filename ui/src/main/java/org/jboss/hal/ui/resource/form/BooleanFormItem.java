@@ -15,15 +15,12 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.switch_.Switch;
 
@@ -35,6 +32,8 @@ import static org.jboss.hal.resources.HalClasses.form;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.ui.brick.ExpressionBricks.expressionModeIcon;
+import static org.jboss.hal.ui.resource.form.InputMode.EXPRESSION;
+import static org.jboss.hal.ui.resource.form.InputMode.NATIVE;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
@@ -46,43 +45,37 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.none;
 import static org.patternfly.style.Classes.switch_;
 
-/**
- * Form item for editing boolean management attributes, rendered as a toggle switch.
- * <p>
- * Supports both native boolean values and expression mode for dynamic configuration. The switch is read-only when the
- * attribute is marked as read-only in the management model metadata.
- */
-// TODO Implement sensitive
-//  Example: /subsystem=jmx, attribute "non-core-mbean-sensitivity"
-public class BooleanFormItem extends FormItem {
+/** Form item for editing boolean attributes, rendered as a toggle switch with optional expression mode. */
+public class BooleanFormItem extends AbstractFormItem {
 
-    // The select control is created by selectControl() called during defaultSetup().
-    // It's, so to speak, final and never null!
     private /*final*/ Switch switchControl;
 
-    BooleanFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
+    public BooleanFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
         defaultSetup();
     }
 
+    @Override
     FormGroupControl readOnlyGroup() {
-        TextInput textControl = readOnlyTextControl();
-        if (ra.expression) {
+        TextInput tc = readOnlyTextControl();
+        if (attribute.expression()) {
             return formGroupControl()
                     .addInputGroup(inputGroup()
-                            .addItem(inputGroupItem().fill().addControl(textControl))
+                            .addItem(inputGroupItem().fill().addControl(tc))
                             .addItem(inputGroupItem().addButton(resolveExpressionButton())));
-        } else if (!ra.value.isDefined()) {
-            return formGroupControl().addControl(textControl);
+        } else if (!attribute.value().isDefined()) {
+            return formGroupControl().addControl(tc);
         } else {
             return formGroupControl().add(switchControl());
         }
     }
 
+    @Override
     FormGroupControl nativeGroup() {
         return formGroupControl().add(switchControl());
     }
 
+    @Override
     HTMLElement nativeContainer() {
         if (nativeContainer == null) {
             nativeContainer = flex().alignItems(center).spaceItems(none)
@@ -102,24 +95,24 @@ public class BooleanFormItem extends FormItem {
 
     private Switch switchControl() {
         boolean booleanValue = false;
-        if (ra.value.isDefined()) {
-            booleanValue = ra.value.asBoolean(false);
+        if (attribute.value().isDefined()) {
+            booleanValue = attribute.value().asBoolean(false);
         } else {
-            if (ra.description.hasDefined(DEFAULT)) {
-                booleanValue = ra.description.get(DEFAULT).asBoolean(false);
+            if (attribute.description().hasDefined(DEFAULT)) {
+                booleanValue = attribute.description().get(DEFAULT).asBoolean(false);
             }
         }
         switchControl = switch_(identifier, identifier, booleanValue)
                 .checkIcon()
-                .ariaLabel(ra.name)
-                .readonly(ra.description.readOnly());
+                .ariaLabel(attribute.name())
+                .readonly(attribute.description().readOnly());
         return switchControl;
     }
 
     // ------------------------------------------------------ validation
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         if (inputMode == EXPRESSION) {
             return validateExpressionMode();
         }
@@ -130,24 +123,24 @@ public class BooleanFormItem extends FormItem {
 
     @Override
     boolean isNativeModifiedForNew() {
-        if (ra.description.hasDefault()) {
-            return ra.description.get(DEFAULT).asBoolean() != switchControl.value();
+        if (attribute.description().hasDefault()) {
+            return attribute.description().get(DEFAULT).asBoolean() != switchControl.value();
         } else {
-            return ra.value.asBoolean(false) != switchControl.value();
+            return attribute.value().asBoolean(false) != switchControl.value();
         }
     }
 
     @Override
     boolean isNativeModifiedForExisting(boolean wasDefined) {
         if (wasDefined) {
-            return ra.expression || ra.value.asBoolean() != switchControl.value();
+            return attribute.expression() || attribute.value().asBoolean() != switchControl.value();
         } else {
             return true;
         }
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         if (inputMode == NATIVE) {
             return new ModelNode().set(switchControl.value());
         } else if (inputMode == EXPRESSION) {

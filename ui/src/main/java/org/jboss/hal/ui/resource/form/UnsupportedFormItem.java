@@ -14,51 +14,36 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.form;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.patternfly.component.form.FormControl;
-import org.patternfly.component.form.FormGroupLabel;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.unsupportedType;
 import static org.patternfly.component.ValidationStatus.warning;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.form.TextArea.textArea;
+import static org.patternfly.component.help.HelperText.helperText;
 
 /** Read-only fallback form item displayed for attribute types that are not yet supported (OBJECT, complex LIST, etc.). */
-class UnsupportedFormItem extends FormItem {
+public class UnsupportedFormItem extends AbstractFormItem {
 
-    UnsupportedFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
+    public UnsupportedFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
 
         FormControl<?, ?> control;
-        ModelType type = ra.description.get(TYPE).asType();
+        ModelType type = attribute.description().get(TYPE).asType();
         if (type == ModelType.LIST || type == ModelType.OBJECT) {
-            String value = ra.value.toJSONString().replace("\\/", "/");
-            int newLines = 0;
-            for (int i = 0; i < value.length(); i++) {
-                if (value.charAt(i) == '\n') {
-                    newLines++;
-                }
-            }
-            int rows;
-            if (newLines == 0) {
-                rows = 1;
-            } else if (newLines > 1 && newLines < 10) {
-                rows = 3;
-            } else {
-                rows = 5;
-            }
+            String value = attribute.value().toJSONString().replace("\\/", "/");
             control = textArea(identifier)
-                    .readonly() // the fallback form item is always read-only!
+                    .readonly()
                     .validated(warning)
-                    // TODO
-                    // .applyTo(ta -> ta.element().rows = rows)
                     .run(ta -> {
-                        if (ra.value.isDefined()) {
+                        if (attribute.value().isDefined()) {
                             ta.value(value);
                         } else {
                             ta.placeholder("undefined");
@@ -66,15 +51,17 @@ class UnsupportedFormItem extends FormItem {
                     });
         } else {
             control = textControl()
-                    .readonly() // the fallback form item is always read-only!
+                    .readonly()
                     .validated(warning);
         }
         formGroup = formGroup(identifier)
-                .required(ra.description.required())
-                .addLabel(label)
+                .required(attribute.description().required())
+                .addLabel(label())
                 .addControl(formGroupControl()
                         .addControl(control)
-                        .addHelperText(unsupportedType(ra.description.formatType())));
+                        .addHelperText(helperText(
+                                "The type of this attribute is not yet supported: " + attribute.description().formatType(),
+                                warning)));
     }
 
     @Override
@@ -88,7 +75,7 @@ class UnsupportedFormItem extends FormItem {
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         return new ModelNode();
     }
 }

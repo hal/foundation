@@ -49,8 +49,8 @@
  *         ↓ stage 2 providers resolve against PipelineContext
  * ResolvedAttribute     — 1 description + its current value + readable/writable (snapshot)
  *         ↓ passed to item constructors
- * FormItem      — holds 1..n ResolvedAttributes, renders UI, produces operations
- * ViewItem      — holds 1..n ResolvedAttributes, renders read-only display
+ * OldFormItem      — holds 1..n ResolvedAttributes, renders UI, produces operations
+ * OldViewItem      — holds 1..n ResolvedAttributes, renders read-only display
  * </pre>
  * <p>
  * {@link org.jboss.hal.ui.resource.pipeline.AttributeGroup} is the stage 1 → stage 2 contract (descriptions only).

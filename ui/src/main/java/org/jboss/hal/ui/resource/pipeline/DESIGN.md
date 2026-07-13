@@ -234,28 +234,38 @@ Only 1 occurrence: `ejb3/file-passivation-store=*` (deprecated). The 4 attribute
 
 ## Implementation Status
 
-### Placeholder items
+All view and form item implementations are complete. No placeholder items remain.
 
-Existing `FormItem` methods (`validate()`, `isModified()`, `modelNode()`) are package-private in `org.jboss.hal.ui.resource.form`. Since existing code is not modified, the adapted providers (credential-reference, time-unit) and the default provider use `PlaceholderViewItem` / `PlaceholderFormItem` as temporary implementations. These render simple text displays and produce no operations.
+### View items
 
-During migration, when existing code can be modified:
-1. Make the needed `FormItem` methods public, OR
-2. Create native pipeline implementations for each item type
+- `AbstractViewItem` — base class with label creation, value dispatch (restricted/expression/defined/undefined)
+- `DefaultViewItem` — type-based rendering (BOOLEAN switch, simple text/unit/allowed, LIST, OBJECT JSON)
+- `TimeUnitViewItem` — time + unit display
+- `CredentialReferenceViewItem` — store/alias or masked clear-text display
+- `FileViewItem` — path + relative-to display
+- `PathRelativeToViewItem` — sibling path + relative-to display
+
+### Form items
+
+- `AbstractFormItem` — base class with label, expression toggle, modification tracking, DMR operations
+- `StringFormItem` — mixed-mode text input
+- `BooleanFormItem` — switch with expression fallback
+- `NumberFormItem` — number input with min/max/allowed-values and range validation
+- `SelectFormItem` — dropdown for STRING with ALLOWED values
+- `UnsupportedFormItem` — read-only JSON fallback
+- `RestrictedFormItem` — locked display for unreadable attributes
+- `TimeUnitFormItem` — number input + unit dropdown
+- `CredentialReferenceFormItem` — radio mode selection (not configured / clear text / credential store)
+- `FileFormItem` — path + relative-to text inputs
+- `PathRelativeToFormItem` — sibling path + relative-to (produces 2 separate DMR operations)
 
 ### What works now
 
 - Full pipeline architecture (Pipeline, matchers, providers, context)
 - All matchers correctly claim attributes from the pool
-- All providers correctly match their groups
+- All providers correctly match their groups and produce real view/form items
 - Pipeline ordering preserves original metadata attribute order
 - Immutable pool processing via `MatchResult`
-
-### What needs migration work
-
-- Credential-reference VIP/FIP (complex UI: radio modes, capability typeahead, inline creation)
-- Time-unit VIP/FIP (number input + unit dropdown)
-- File and path+relative-to VIP/FIP (text input + path typeahead)
-- Default type-based VIP/FIP (Boolean, String, Number, Select, etc.)
 
 ## Comparison to Current Code
 

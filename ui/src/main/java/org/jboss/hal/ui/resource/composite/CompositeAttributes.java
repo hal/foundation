@@ -19,24 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 
 /**
- * Registry of {@link CompositeAttribute} instances. Consulted by
- * {@link ResourceAttribute#resourceAttributes(org.jboss.hal.dmr.ModelNode, org.jboss.hal.meta.Metadata,
- * java.util.function.Predicate) ResourceAttribute.resourceAttributes()} to decide whether a {@code simpleRecord} attribute
- * should be kept as a single composite unit or flattened into individual nested attributes.
- * <p>
- * The same instances are reused by {@link org.jboss.hal.ui.resource.view.ViewItemProvider ViewItemProvider} and
- * {@link org.jboss.hal.ui.resource.form.FormItemProvider FormItemProvider} implementations, ensuring that the match predicate
- * is consistent across flattening, view rendering, and form rendering.
+ * Registry of {@link CompositeAttribute} instances. Used to decide whether a {@code simpleRecord} attribute should be kept as
+ * a single composite unit or flattened into individual nested attributes.
  */
 public final class CompositeAttributes {
 
-    /** Shared {@link CredentialReferenceAttribute} instance for use by view and form item providers. */
     public static final CredentialReferenceAttribute CREDENTIAL_REFERENCE = new CredentialReferenceAttribute();
-
-    /** Shared {@link TimeUnitAttribute} instance for use by view and form item providers. */
     public static final TimeUnitAttribute TIME_UNIT = new TimeUnitAttribute();
 
     private static final List<CompositeAttribute> registry = new ArrayList<>();
@@ -46,7 +36,6 @@ public final class CompositeAttributes {
         registry.add(TIME_UNIT);
     }
 
-    /** Returns {@code true} if any registered {@link CompositeAttribute} matches the given attribute description. */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isComposite(AttributeDescription description) {
         for (CompositeAttribute ca : registry) {

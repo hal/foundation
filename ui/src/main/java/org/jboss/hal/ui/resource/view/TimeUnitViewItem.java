@@ -15,8 +15,9 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.elemento.IsElement;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+
 import org.jboss.hal.ui.resource.composite.TimeUnitAttribute;
 
 import elemental2.dom.HTMLElement;
@@ -25,36 +26,24 @@ import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.timeUnit;
-import static org.jboss.hal.resources.HalClasses.undefined;
 import static org.jboss.hal.resources.HalClasses.view;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.Gap.sm;
 
-/**
- * Read-only view component for keepalive-time attributes. Renders a consolidated single-line display:
- * <ul>
- *     <li><b>Defined</b> — shows the time and unit as a single value, e.g. "100 MILLISECONDS"</li>
- *     <li><b>Undefined</b> — gray "undefined" text</li>
- * </ul>
- */
-class TimeUnitView implements IsElement<HTMLElement> {
+/** View item for time-unit composite attributes. Shows time value + unit (e.g. "100 MILLISECONDS"). */
+public class TimeUnitViewItem extends AbstractViewItem {
 
-    // ------------------------------------------------------ factory
-
-    static TimeUnitView timeUnitValue(ResourceAttribute ra) {
-        return new TimeUnitView(ra);
+    public TimeUnitViewItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
     }
 
-    // ------------------------------------------------------ instance
+    @Override
+    protected HTMLElement definedValue() {
+        long time = TimeUnitAttribute.time(attribute.value());
+        String unit = TimeUnitAttribute.unit(attribute.value());
 
-    private final HTMLElement root;
-
-    TimeUnitView(ResourceAttribute ra) {
-        long time = TimeUnitAttribute.time(ra.value);
-        String unit = TimeUnitAttribute.unit(ra.value);
-
-        this.root = flex().css(halComponent(resource, view, timeUnit))
+        HTMLElement root = flex().css(halComponent(resource, view, timeUnit))
                 .alignItems(center).columnGap(sm)
                 .element();
 
@@ -62,13 +51,8 @@ class TimeUnitView implements IsElement<HTMLElement> {
             root.appendChild(span().text(String.valueOf(time)).element());
             root.appendChild(span().text(unit).element());
         } else {
-            root.classList.add(halComponent(resource, view, undefined));
-            root.appendChild(span().text("undefined").element());
+            root.appendChild(span().text(attribute.value().asString()).element());
         }
-    }
-
-    @Override
-    public HTMLElement element() {
         return root;
     }
 }

@@ -46,7 +46,7 @@ import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceWizard
 import static org.patternfly.component.menu.MenuItem.menuItem;
 
 /**
- * Shared helper methods for {@link CapabilityReferenceFormItem} and {@link CapabilityReferencesFormItem} that load capability
+ * Shared helper methods for {@link OldCapabilityReferenceFormItem} and {@link OldCapabilityReferencesFormItem} that load capability
  * suggestions from the registry and handle creation of new capability provider resources.
  */
 public class CapabilityReferenceSupport {

@@ -15,25 +15,13 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.required;
-import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
-import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
-import static org.jboss.hal.ui.resource.form.FilterReloadInput.filterReloadInput;
-import static org.jboss.hal.ui.resource.form.StringListSupport.defaultValues;
-import static org.jboss.hal.ui.resource.form.StringListSupport.isExistingModified;
-import static org.jboss.hal.ui.resource.form.StringListSupport.isNewModified;
-import static org.jboss.hal.ui.resource.form.StringListSupport.modelValues;
-import static org.jboss.hal.ui.resource.form.StringListSupport.valuesModelNode;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MultiTypeahead;
 import org.patternfly.style.Modifiers.FullWidth;
@@ -41,8 +29,19 @@ import org.patternfly.style.Modifiers.FullWidth;
 import elemental2.dom.HTMLElement;
 
 import static java.util.stream.Collectors.toList;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
+import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
+import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
+import static org.jboss.hal.ui.resource.form.FilterReloadInput.filterReloadInput;
+import static org.jboss.hal.ui.resource.form.InputMode.EXPRESSION;
+import static org.jboss.hal.ui.resource.form.InputMode.NATIVE;
+import static org.jboss.hal.ui.resource.form.StringListSupport.defaultValues;
+import static org.jboss.hal.ui.resource.form.StringListSupport.isExistingModified;
+import static org.jboss.hal.ui.resource.form.StringListSupport.isNewModified;
+import static org.jboss.hal.ui.resource.form.StringListSupport.modelValues;
+import static org.jboss.hal.ui.resource.form.StringListSupport.valuesModelNode;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
@@ -52,27 +51,19 @@ import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectMenu;
 import static org.patternfly.component.menu.MultiTypeahead.multiTypeahead;
 
-/**
- * Form item for editing a list of capability references, rendered as a multi-select typeahead that suggests values from the
- * capability registry.
- */
-class CapabilityReferencesFormItem extends FormItem {
+/** Form item for LIST-of-STRING attributes with a capability reference, rendered as a multi-select typeahead. */
+public class CapabilityReferencesFormItem extends AbstractFormItem {
 
-    private final AddressTemplate template;
     private final String capability;
-    // The typeahead control is created in the constructor by
-    // defaultSetup() -> nativeContainer() -> typeaheadControl().
-    // It's, so to speak, final and never null!
     private /*final*/ MultiTypeahead typeahead;
 
-    CapabilityReferencesFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags,
-            AddressTemplate template, String capability) {
-        super(identifier, ra, label, flags);
-        this.template = template;
-        this.capability = capability;
+    public CapabilityReferencesFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
+        this.capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
         defaultSetup();
     }
 
+    @Override
     FormGroupControl readOnlyGroup() {
         return readOnlyGroupWithExpressionSwitch();
     }
@@ -84,7 +75,6 @@ class CapabilityReferencesFormItem extends FormItem {
 
     @Override
     HTMLElement nativeContainer() {
-        // Recreate every time the container is requested. Otherwise, the popper/menu won't work as expected.
         nativeContainer = inputGroup()
                 .addItem(inputGroupItem().addButton(switchToExpressionModeButton()))
                 .addItem(inputGroupItem().fill().add(typeaheadControl()))
@@ -93,23 +83,23 @@ class CapabilityReferencesFormItem extends FormItem {
     }
 
     private MultiTypeahead typeaheadControl() {
-        FilterReloadInput filterReloadInput = filterReloadInput(identifier)
+        FilterReloadInput fri = filterReloadInput(identifier)
                 .plain()
                 .placeholder("")
                 .onReload((e, c) -> typeahead.menu().reload());
-        typeahead = multiTypeahead(filterReloadInput)
+        typeahead = multiTypeahead(fri)
                 .applyToMenuToggle(FullWidth::fullWidth)
                 .allowNewItems(value -> "Add \"" + value + "\"...", value -> newItem(value, capability))
                 .addMenu(multiSelectMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
-                                        .addItems(capabilityItems(template, capability)))));
+                                        .addItems(capabilityItems(context.template(), capability)))));
 
-        if (ra.value.isDefined()) {
-            values(modelValues(ra));
-        } else if (ra.description.hasDefault()) {
-            typeahead.menuToggle().filterInput().placeholder(ra.description.get(DEFAULT).asString());
-        } else if (ra.description.nillable()) {
+        if (attribute.value().isDefined()) {
+            values(modelValues(attribute));
+        } else if (attribute.description().hasDefault()) {
+            typeahead.menuToggle().filterInput().placeholder(attribute.description().get(DEFAULT).asString());
+        } else if (attribute.description().nillable()) {
             typeahead.menuToggle().filterInput().placeholder(UNDEFINED);
         }
         return typeahead;
@@ -118,20 +108,20 @@ class CapabilityReferencesFormItem extends FormItem {
     // ------------------------------------------------------ validation
 
     @Override
-    void resetValidation() {
+    public void resetValidation() {
         super.resetValidation();
-        typeahead.menuToggle().resetValidation();
+        if (typeahead != null) {
+            typeahead.menuToggle().resetValidation();
+        }
     }
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         if (inputMode == NATIVE) {
-            if (requiredOnItsOwn()) {
-                if (values().isEmpty()) {
-                    typeahead.menuToggle().validated(error);
-                    formGroupControl.addHelperText(required(ra));
-                    return false;
-                }
+            if (requiredOnItsOwn() && values().isEmpty()) {
+                typeahead.menuToggle().validated(error);
+                formGroupControl.addHelperText(requiredHelperText());
+                return false;
             }
         } else if (inputMode == EXPRESSION) {
             return validateExpressionMode();
@@ -143,16 +133,16 @@ class CapabilityReferencesFormItem extends FormItem {
 
     @Override
     boolean isNativeModifiedForNew() {
-        return isNewModified(ra, values());
+        return isNewModified(attribute, values());
     }
 
     @Override
     boolean isNativeModifiedForExisting(boolean wasDefined) {
-        return isExistingModified(ra, values(), wasDefined);
+        return isExistingModified(attribute, values(), wasDefined);
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         if (inputMode == NATIVE) {
             return valuesModelNode(values());
         } else if (inputMode == EXPRESSION) {
@@ -164,16 +154,15 @@ class CapabilityReferencesFormItem extends FormItem {
     // ------------------------------------------------------ events
 
     @Override
-    void afterSwitchedToExpressionMode() {
-        boolean wasDefined = ra.value.isDefined();
-        if (wasDefined && !ra.expression) {
-            values(modelValues(ra));
+    void afterSwitchedToNativeMode() {
+        if (attribute.value().isDefined() && !attribute.expression()) {
+            values(modelValues(attribute));
         } else {
-            if (ra.description.hasDefault()) {
-                List<String> defaultValues = defaultValues(ra);
-                typeahead.menuToggle().searchInput().placeholder(String.join(" ", defaultValues));
-                values(defaultValues);
-            } else if (ra.description.nillable()) {
+            if (attribute.description().hasDefault()) {
+                List<String> dv = defaultValues(attribute);
+                typeahead.menuToggle().searchInput().placeholder(String.join(" ", dv));
+                values(dv);
+            } else if (attribute.description().nillable()) {
                 typeahead.menuToggle().searchInput().placeholder(UNDEFINED);
             }
         }

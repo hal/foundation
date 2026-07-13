@@ -33,7 +33,6 @@ import org.jboss.elemento.Key;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
-import org.jboss.hal.ui.resource.ResourceAttribute;
 import org.patternfly.component.label.Label;
 import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.popper.Modifiers;
@@ -92,8 +91,8 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
     // ------------------------------------------------------ factory
 
     static CapabilityReference capabilityReference(AddressTemplate origin, String capability,
-            ResourceAttribute ra) {
-        return new CapabilityReference(origin, capability, ra);
+            String attributeValue) {
+        return new CapabilityReference(origin, capability, attributeValue);
     }
 
     // ------------------------------------------------------ instance
@@ -108,7 +107,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
 
     private final AddressTemplate origin;
     private final String capability;
-    private final ResourceAttribute ra;
+    private final String attributeValue;
     private final List<HandlerRegistration> handlerRegistrations;
     private final Label providedBy;
     private final HTMLElement menuElement;
@@ -119,10 +118,10 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
     private AddressTemplate singleTemplate;
     private Popper popper;
 
-    CapabilityReference(AddressTemplate origin, String capability, ResourceAttribute ra) {
+    CapabilityReference(AddressTemplate origin, String capability, String attributeValue) {
         this.origin = origin;
         this.capability = capability;
-        this.ra = ra;
+        this.attributeValue = attributeValue;
         this.handlerRegistrations = new ArrayList<>();
         this.state = null;
         this.singleTemplate = null;
@@ -130,7 +129,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
         this.root = flex().css(halComponent(capabilityReference))
                 .alignItems(center).columnGap(sm)
                 .add(span().css(halComponent(capabilityReference, value))
-                        .text(ra.value.asString())
+                        .text(attributeValue)
                         .element())
                 .add(providedBy = label(Elements.button(ButtonType.button), Id.build("provided-by", capability), "", Color.blue)
                         .css(modifier(overflow))
@@ -142,7 +141,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                         .gutter()
                         .addItem(stackItem()
                                 .add("Attribute ")
-                                .add(strong().text(ra.value.asString()).element())
+                                .add(strong().text(attributeValue).element())
                                 .add(" references the capability")
                                 .add(br())
                                 .add(strong().add(code().text(capability)))
@@ -225,7 +224,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
             popper.show(null);
         } else {
             logger.error("Invalid state %s in capability reference for capability %s and attribute %s",
-                    state.name(), capability, ra);
+                    state.name(), capability, attributeValue);
         }
     }
 
@@ -233,13 +232,13 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
 
     // Only this method may change the state!
     private Promise<Void> findResources() {
-        return uic().capabilityRegistry().findResources(capability, ra.value.asString())
+        return uic().capabilityRegistry().findResources(capability, attributeValue)
                 .then(templates -> {
 
                     if (templates.isEmpty()) {
                         state = State.NO_RESOURCES;
                         setVisible(providedBy.element(), false);
-                        logger.warn("No resources found for capability %s and attribute %s", capability, ra);
+                        logger.warn("No resources found for capability %s and attribute %s", capability, attributeValue);
 
                     } else if (templates.size() == 1) {
                         state = State.ONE_RESOURCE;
@@ -264,7 +263,7 @@ class CapabilityReference implements IsElement<HTMLElement>, Attachable {
                 .catch_(error -> {
                     state = State.FAILED;
                     logger.error("Unable to find resources for capability %s and attribute %s: %s",
-                            capability, ra, String.valueOf(error));
+                            capability, attributeValue, String.valueOf(error));
                     return Promise.resolve((Void) null);
                 });
     }

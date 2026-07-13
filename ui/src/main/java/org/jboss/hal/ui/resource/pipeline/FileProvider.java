@@ -15,6 +15,11 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.FileFormItem;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.view.FileViewItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
@@ -34,7 +39,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
  * This is the composite counterpart to {@link PathRelativeToProvider}, which handles the same concept at the sibling attribute
  * level. Both can share UI components.
  * <p>
- * TODO: Replace placeholder items with proper file composite UI (text input + path dropdown, consolidated view display).
  */
 class FileProvider implements ItemProvider {
 
@@ -61,11 +65,13 @@ class FileProvider implements ItemProvider {
 
     @Override
     public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderViewItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new FileViewItem(ra.fqn(), ra, context));
     }
 
     @Override
     public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderFormItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new FileFormItem(ra.fqn(), ra, context));
     }
 }

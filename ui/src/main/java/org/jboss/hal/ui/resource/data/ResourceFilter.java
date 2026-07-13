@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.data;
-import org.jboss.hal.ui.resource.ResourceAttribute;
-
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
@@ -24,21 +22,22 @@ import org.jboss.hal.model.filter.NameAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
 
 /** Multi-criteria attribute filter supporting name search, type, status, storage, access type, and expression filtering. */
-public class ResourceFilter extends Filter<ResourceAttribute> {
+public class ResourceFilter extends Filter<ResolvedAttribute> {
 
     ResourceFilter() {
         super(FilterOperator.AND);
-        add(new NameAttribute<>(ra -> ra.name));
-        add(new TypesAttribute<>(ra -> ra.description));
-        add(new DefinedAttribute<>(ra -> ra.value));
-        add(new RequiredAttribute<>(ra -> ra.description));
-        add(new DeprecatedAttribute<>(ra -> ra.description));
-        add(new StorageAttribute<>(ra -> ra.description));
-        add(new AccessTypeAttribute<>(ra -> ra.description));
-        add(new ExpressionAttribute<>(ra -> ra.description));
+        add(new NameAttribute<>(ra -> ra.name()));
+        add(new TypesAttribute<>(ra -> ra.description()));
+        add(new DefinedAttribute<>(ra -> ra.value()));
+        add(new RequiredAttribute<>(ra -> ra.description()));
+        add(new DeprecatedAttribute<>(ra -> ra.description()));
+        add(new StorageAttribute<>(ra -> ra.description()));
+        add(new AccessTypeAttribute<>(ra -> ra.description()));
+        add(new ExpressionAttribute<>(ra -> ra.description()));
     }
 }

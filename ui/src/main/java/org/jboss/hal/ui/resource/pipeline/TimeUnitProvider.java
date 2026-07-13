@@ -15,6 +15,11 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.TimeUnitFormItem;
+import org.jboss.hal.ui.resource.view.TimeUnitViewItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
@@ -31,8 +36,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
  * Provider for time-unit composite attributes (e.g. {@code keepalive-time}). Matches groups containing a single OBJECT attribute
  * with the time-unit structure ({@code time} + {@code unit}).
  * <p>
- * TODO: Replace placeholder items with proper time-unit UI (number input + unit dropdown) during migration from the existing
- * {@code TimeUnitFormItem} and {@code TimeUnitView}.
  */
 class TimeUnitProvider implements ItemProvider {
 
@@ -59,11 +62,13 @@ class TimeUnitProvider implements ItemProvider {
 
     @Override
     public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderViewItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new TimeUnitViewItem(ra.fqn(), ra, context));
     }
 
     @Override
     public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderFormItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new TimeUnitFormItem(ra.fqn(), ra, context));
     }
 }

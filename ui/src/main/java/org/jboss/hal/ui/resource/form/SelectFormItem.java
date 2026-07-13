@@ -15,16 +15,13 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.required;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.FormSelectOption;
 
@@ -34,6 +31,8 @@ import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
+import static org.jboss.hal.ui.resource.form.InputMode.EXPRESSION;
+import static org.jboss.hal.ui.resource.form.InputMode.NATIVE;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.form.FormSelect.formSelect;
@@ -42,14 +41,12 @@ import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 
 /** Form item for editing string attributes with a fixed set of allowed values, rendered as a select dropdown. */
-class SelectFormItem extends FormItem {
+public class SelectFormItem extends AbstractFormItem {
 
-    // The select control is created in the constructor by defaultSetup() -> nativeContainer() -> selectControl().
-    // It's, so to speak, final and never null!
     private /*final*/ FormSelect selectControl;
 
-    SelectFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
+    public SelectFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
         defaultSetup();
     }
 
@@ -75,7 +72,7 @@ class SelectFormItem extends FormItem {
     }
 
     private FormSelect selectControl() {
-        List<String> allowedValues = ra.description.get(ALLOWED)
+        List<String> allowedValues = attribute.description().get(ALLOWED)
                 .asList()
                 .stream()
                 .map(ModelNode::asString)
@@ -83,17 +80,17 @@ class SelectFormItem extends FormItem {
         selectControl = formSelect(identifier)
                 .run(fs -> {
                     fs.selectElement().attr("autocomplete", "off");
-                    if (ra.description.nillable() && !ra.description.hasDefault()) {
+                    if (attribute.description().nillable() && !attribute.description().hasDefault()) {
                         fs.addOption(formSelectOption(UNDEFINED));
                     }
                 })
                 .addOptions(allowedValues, lbl -> FormSelectOption.formSelectOption(lbl, lbl))
                 .run(fs -> {
-                    if (ra.value.isDefined()) {
-                        fs.value(ra.value.asString());
-                    } else if (ra.description.hasDefault()) {
-                        fs.value(ra.description.get(DEFAULT).asString());
-                    } else if (ra.description.nillable()) {
+                    if (attribute.value().isDefined()) {
+                        fs.value(attribute.value().asString());
+                    } else if (attribute.description().hasDefault()) {
+                        fs.value(attribute.description().get(DEFAULT).asString());
+                    } else if (attribute.description().nillable()) {
                         fs.value(UNDEFINED);
                     }
                 });
@@ -103,17 +100,17 @@ class SelectFormItem extends FormItem {
     // ------------------------------------------------------ validation
 
     @Override
-    void resetValidation() {
+    public void resetValidation() {
         super.resetValidation();
         selectControl.resetValidation();
     }
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         if (inputMode == NATIVE) {
             if (requiredOnItsOwn() && UNDEFINED.equals(selectControl.value())) {
                 selectControl.validated(error);
-                formGroupControl.addHelperText(required(ra));
+                formGroupControl.addHelperText(requiredHelperText());
                 return false;
             }
         } else if (inputMode == EXPRESSION) {
@@ -127,8 +124,8 @@ class SelectFormItem extends FormItem {
     @Override
     boolean isNativeModifiedForNew() {
         String selectedValue = selectControl.value();
-        if (ra.description.hasDefault()) {
-            return !ra.description.get(DEFAULT).asString().equals(selectedValue);
+        if (attribute.description().hasDefault()) {
+            return !attribute.description().get(DEFAULT).asString().equals(selectedValue);
         } else {
             return !UNDEFINED.equals(selectedValue);
         }
@@ -138,15 +135,14 @@ class SelectFormItem extends FormItem {
     boolean isNativeModifiedForExisting(boolean wasDefined) {
         String selectedValue = selectControl.value();
         if (wasDefined) {
-            String originalValue = ra.value.asString();
-            return ra.expression || !originalValue.equals(selectedValue);
+            return attribute.expression() || !attribute.value().asString().equals(selectedValue);
         } else {
             return !UNDEFINED.equals(selectedValue);
         }
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         if (inputMode == NATIVE) {
             String selectedValue = selectControl.value();
             if (UNDEFINED.equals(selectedValue)) {
@@ -164,14 +160,13 @@ class SelectFormItem extends FormItem {
 
     @Override
     void afterSwitchedToNativeMode() {
-        boolean wasDefined = ra.value.isDefined();
-        if (wasDefined && !ra.expression) {
-            String originalValue = ra.value.asString();
-            failSafeSelectValue(originalValue);
+        boolean wasDefined = attribute.value().isDefined();
+        if (wasDefined && !attribute.expression()) {
+            failSafeSelectValue(attribute.value().asString());
         } else {
-            if (ra.description.hasDefault()) {
-                failSafeSelectValue(ra.description.get(DEFAULT).asString());
-            } else if (ra.description.nillable()) {
+            if (attribute.description().hasDefault()) {
+                failSafeSelectValue(attribute.description().get(DEFAULT).asString());
+            } else if (attribute.description().nillable()) {
                 failSafeSelectValue(UNDEFINED);
             } else {
                 selectControl.selectFirstValue(false);

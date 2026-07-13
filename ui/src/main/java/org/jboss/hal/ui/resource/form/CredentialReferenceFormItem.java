@@ -15,15 +15,15 @@
  */
 package org.jboss.hal.ui.resource.form;
 
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+
 import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute;
 import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute.Mode;
-import org.jboss.hal.ui.resource.ResourceAttribute;
-import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.menu.SingleTypeahead;
 import org.patternfly.style.Modifiers.FullWidth;
@@ -40,7 +40,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
-import static org.jboss.hal.ui.resource.form.HelperTexts.required;
 import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroup.formGroup;
@@ -54,17 +53,10 @@ import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
 import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
 
 /**
- * Form item for editing credential reference attributes. Presents three radio buttons for mode selection (Not configured /
- * Clear text / Credential store) with mode-specific fields:
- * <ul>
- *     <li><b>Not configured</b> — no fields, produces {@code undefine-attribute}</li>
- *     <li><b>Clear text</b> — password input</li>
- *     <li><b>Credential store</b> — store typeahead (with inline create), alias input, optional password for auto-provision,
- *         optional type</li>
- * </ul>
- * The "Not configured" radio is hidden when the attribute is required.
+ * Form item for credential reference attributes. Radio mode selection (Not configured / Clear text / Credential store) with
+ * mode-specific fields.
  */
-class CredentialReferenceFormItem extends FormItem {
+public class CredentialReferenceFormItem extends AbstractFormItem {
 
     private enum SelectedMode {
         NOT_CONFIGURED, CLEAR_TEXT, CREDENTIAL_STORE
@@ -72,64 +64,58 @@ class CredentialReferenceFormItem extends FormItem {
 
     private static final String RADIO_GROUP = "credential-reference-mode";
 
-    private final AddressTemplate template;
     private final Mode originalMode;
     private SelectedMode selectedMode;
     private String capability;
 
-    // clear-text mode controls
     private final TextInput clearTextInput;
     private final HTMLElement clearTextPanel;
-
-    // credential-store mode controls
     private SingleTypeahead storeTypeahead;
     private final TextInput aliasInput;
     private final TextInput storePasswordInput;
     private final TextInput typeInput;
     private final HTMLElement storePanel;
-
-    // radio for "not configured" (may be hidden)
     private final HTMLElement noneRadioContainer;
 
-    CredentialReferenceFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags,
-            AddressTemplate template) {
-        super(identifier, ra, label, flags);
-        this.template = template;
-        this.originalMode = CredentialReferenceAttribute.mode(ra.value);
+    public CredentialReferenceFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
+        this.originalMode = CredentialReferenceAttribute.mode(attribute.value());
 
-        // resolve capability from nested store description
-        AttributeDescriptions nested = ra.description.valueTypeAttributeDescriptions();
+        AttributeDescriptions nested = attribute.description().valueTypeAttributeDescriptions();
         AttributeDescription storeDescription = nested.get(STORE);
-        if (storeDescription.hasDefined(CAPABILITY_REFERENCE)) {
+        if (storeDescription != null && storeDescription.hasDefined(CAPABILITY_REFERENCE)) {
             capability = storeDescription.get(CAPABILITY_REFERENCE).asString();
+        }
+        if (capability == null) {
+            capability = "org.wildfly.security.credential-store";
         }
 
         String radioGroup = Id.build(identifier, RADIO_GROUP);
 
-        // -- "Not configured" radio
+        // "Not configured" radio
         noneRadioContainer = div()
                 .add(radio(Id.build(identifier, "none"), radioGroup, "Not configured")
                         .value(originalMode == Mode.UNDEFINED)
-                        .onChange((e, radio, checked) -> {
+                        .onChange((e, r, checked) -> {
                             if (checked) {
                                 switchMode(SelectedMode.NOT_CONFIGURED);
                             }
                         }))
                 .element();
-        if (ra.description.required()) {
+        if (attribute.description().required()) {
             setVisible(noneRadioContainer, false);
         }
 
-        // -- "Clear text" radio + panel
+        // "Clear text" controls
         clearTextInput = textInput(password, Id.build(identifier, "clear-text"));
-        if (originalMode == Mode.CLEAR_TEXT && ra.value.hasDefined(CLEAR_TEXT)) {
-            clearTextInput.value(ra.value.get(CLEAR_TEXT).asString());
+        if (originalMode == Mode.CLEAR_TEXT && attribute.value().hasDefined(CLEAR_TEXT)) {
+            clearTextInput.value(attribute.value().get(CLEAR_TEXT).asString());
         }
         clearTextPanel = div().css("cr-nested-fields")
                 .add(fieldRow("Password", clearTextInput.element()))
                 .element();
 
-        // -- "Credential store" radio + panel
+        // "Credential store" controls
         aliasInput = textInput(Id.build(identifier, "alias"));
         storePasswordInput = textInput(password, Id.build(identifier, "store-password"));
         storePasswordInput.placeholder("New password for alias...");
@@ -137,11 +123,11 @@ class CredentialReferenceFormItem extends FormItem {
         typeInput.placeholder("PasswordCredential");
 
         if (originalMode == Mode.STORE_REFERENCE) {
-            if (ra.value.hasDefined(ALIAS)) {
-                aliasInput.value(ra.value.get(ALIAS).asString());
+            if (attribute.value().hasDefined(ALIAS)) {
+                aliasInput.value(attribute.value().get(ALIAS).asString());
             }
-            if (ra.value.hasDefined(TYPE)) {
-                typeInput.value(ra.value.get(TYPE).asString());
+            if (attribute.value().hasDefined(TYPE)) {
+                typeInput.value(attribute.value().get(TYPE).asString());
             }
         }
 
@@ -154,7 +140,7 @@ class CredentialReferenceFormItem extends FormItem {
                         span().css("cr-optional-label").text("(optional)").element()))
                 .element();
 
-        // -- determine initial mode and visibility
+        // initial mode
         switch (originalMode) {
             case STORE_REFERENCE:
                 selectedMode = SelectedMode.CREDENTIAL_STORE;
@@ -169,12 +155,11 @@ class CredentialReferenceFormItem extends FormItem {
         setVisible(clearTextPanel, selectedMode == SelectedMode.CLEAR_TEXT);
         setVisible(storePanel, selectedMode == SelectedMode.CREDENTIAL_STORE);
 
-        // -- build the form group
         formGroupControl = formGroupControl()
                 .add(noneRadioContainer)
                 .add(radio(Id.build(identifier, "clear-text-radio"), radioGroup, "Clear text")
                         .value(originalMode == Mode.CLEAR_TEXT)
-                        .onChange((e, radio, checked) -> {
+                        .onChange((e, r, checked) -> {
                             if (checked) {
                                 switchMode(SelectedMode.CLEAR_TEXT);
                             }
@@ -182,7 +167,7 @@ class CredentialReferenceFormItem extends FormItem {
                 .add(clearTextPanel)
                 .add(radio(Id.build(identifier, "store-radio"), radioGroup, "Credential store")
                         .value(originalMode == Mode.STORE_REFERENCE)
-                        .onChange((e, radio, checked) -> {
+                        .onChange((e, r, checked) -> {
                             if (checked) {
                                 switchMode(SelectedMode.CREDENTIAL_STORE);
                             }
@@ -190,30 +175,25 @@ class CredentialReferenceFormItem extends FormItem {
                 .add(storePanel);
 
         formGroup = formGroup(identifier)
-                .required(ra.description.required())
-                .addLabel(label)
+                .required(attribute.description().required())
+                .addLabel(label())
                 .addControl(formGroupControl);
     }
 
-    // ------------------------------------------------------ controls
-
     private SingleTypeahead storeTypeaheadControl() {
-        if (capability == null) {
-            capability = "org.wildfly.security.credential-store";
-        }
-        SearchReloadInput searchReloadInput = searchReloadInput(Id.build(identifier, "store"))
+        storeTypeahead = singleTypeahead(searchReloadInput(Id.build(identifier, "store"))
                 .plain()
                 .placeholder("Select or create store...")
-                .onReload((e, c) -> storeTypeahead.menu().reload());
-        storeTypeahead = singleTypeahead(searchReloadInput)
+                .onReload((e, c) -> storeTypeahead.menu().reload()))
                 .applyToMenuToggle(FullWidth::fullWidth)
-                .allowNewItems(value -> "Add \"" + value + "\"...", value -> newItem(value, capability))
+                .allowNewItems(value -> "Add \"" + value + "\"...",
+                        value -> newItem(value, capability))
                 .addMenu(singleSelectMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
-                                        .addItems(capabilityItems(template, capability)))));
-        if (originalMode == Mode.STORE_REFERENCE && ra.value.hasDefined(STORE)) {
-            failSafeSelectStore(ra.value.get(STORE).asString());
+                                        .addItems(capabilityItems(context.template(), capability)))));
+        if (originalMode == Mode.STORE_REFERENCE && attribute.value().hasDefined(STORE)) {
+            failSafeSelectStore(attribute.value().get(STORE).asString());
         }
         return storeTypeahead;
     }
@@ -227,8 +207,6 @@ class CredentialReferenceFormItem extends FormItem {
         }
     }
 
-    // ------------------------------------------------------ mode switching
-
     private void switchMode(SelectedMode mode) {
         selectedMode = mode;
         setVisible(clearTextPanel, mode == SelectedMode.CLEAR_TEXT);
@@ -239,7 +217,7 @@ class CredentialReferenceFormItem extends FormItem {
     // ------------------------------------------------------ validation
 
     @Override
-    void resetValidation() {
+    public void resetValidation() {
         clearTextInput.resetValidation();
         aliasInput.resetValidation();
         if (storeTypeahead != null) {
@@ -251,12 +229,12 @@ class CredentialReferenceFormItem extends FormItem {
     }
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         switch (selectedMode) {
             case CLEAR_TEXT:
                 if (clearTextValue().isEmpty()) {
                     clearTextInput.validated(error);
-                    formGroupControl.addHelperText(required(ra));
+                    formGroupControl.addHelperText(requiredHelperText());
                     return false;
                 }
                 return true;
@@ -271,7 +249,7 @@ class CredentialReferenceFormItem extends FormItem {
                     valid = false;
                 }
                 if (!valid) {
-                    formGroupControl.addHelperText(required(ra));
+                    formGroupControl.addHelperText(requiredHelperText());
                 }
                 return valid;
             default:
@@ -294,12 +272,13 @@ class CredentialReferenceFormItem extends FormItem {
         }
         switch (selectedMode) {
             case CLEAR_TEXT:
-                String originalClearText = ra.value.hasDefined(CLEAR_TEXT) ? ra.value.get(CLEAR_TEXT).asString() : "";
+                String originalClearText = attribute.value().hasDefined(CLEAR_TEXT)
+                        ? attribute.value().get(CLEAR_TEXT).asString() : "";
                 return !originalClearText.equals(clearTextValue());
             case CREDENTIAL_STORE:
-                String originalStore = ra.value.hasDefined(STORE) ? ra.value.get(STORE).asString() : "";
-                String originalAlias = ra.value.hasDefined(ALIAS) ? ra.value.get(ALIAS).asString() : "";
-                String originalType = ra.value.hasDefined(TYPE) ? ra.value.get(TYPE).asString() : "";
+                String originalStore = attribute.value().hasDefined(STORE) ? attribute.value().get(STORE).asString() : "";
+                String originalAlias = attribute.value().hasDefined(ALIAS) ? attribute.value().get(ALIAS).asString() : "";
+                String originalType = attribute.value().hasDefined(TYPE) ? attribute.value().get(TYPE).asString() : "";
                 if (!originalStore.equals(storeValue()) || !originalAlias.equals(aliasValue())) {
                     return true;
                 }
@@ -313,7 +292,7 @@ class CredentialReferenceFormItem extends FormItem {
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         ModelNode result = new ModelNode();
         switch (selectedMode) {
             case NOT_CONFIGURED:

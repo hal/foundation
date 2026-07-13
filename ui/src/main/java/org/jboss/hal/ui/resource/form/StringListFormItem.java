@@ -15,21 +15,13 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.required;
-import static org.jboss.hal.ui.resource.form.StringListSupport.defaultValues;
-import static org.jboss.hal.ui.resource.form.StringListSupport.isExistingModified;
-import static org.jboss.hal.ui.resource.form.StringListSupport.isNewModified;
-import static org.jboss.hal.ui.resource.form.StringListSupport.modelValues;
-import static org.jboss.hal.ui.resource.form.StringListSupport.valuesModelNode;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.label.Label;
 import org.patternfly.component.textinputgroup.FilterInput;
 
@@ -38,21 +30,26 @@ import elemental2.dom.HTMLElement;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
+import static org.jboss.hal.ui.resource.form.InputMode.EXPRESSION;
+import static org.jboss.hal.ui.resource.form.InputMode.NATIVE;
+import static org.jboss.hal.ui.resource.form.StringListSupport.defaultValues;
+import static org.jboss.hal.ui.resource.form.StringListSupport.isExistingModified;
+import static org.jboss.hal.ui.resource.form.StringListSupport.isNewModified;
+import static org.jboss.hal.ui.resource.form.StringListSupport.modelValues;
+import static org.jboss.hal.ui.resource.form.StringListSupport.valuesModelNode;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.textinputgroup.FilterInput.filterInput;
 
-/** Form item for editing LIST-type attributes whose values are strings, rendered as a label-based multi-value input. */
-class StringListFormItem extends FormItem {
+/** Form item for LIST-of-STRING attributes, rendered as a label-based multi-value input. */
+public class StringListFormItem extends AbstractFormItem {
 
-    // The select control is created in the constructor by defaultSetup() -> nativeContainer() -> stringListControl().
-    // It's, so to speak, final and never null!
     private /*final*/ FilterInput filterInput;
 
-    StringListFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
+    public StringListFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
         defaultSetup();
     }
 
@@ -81,32 +78,33 @@ class StringListFormItem extends FormItem {
         filterInput = filterInput(identifier)
                 .applyTo(inputElement -> inputElement.autocomplete("off"))
                 .allowDuplicates(false);
-        if (ra.value.isDefined()) {
-            values(modelValues(ra));
-        } else if (ra.description.hasDefault()) {
-            filterInput.placeholder(ra.description.get(DEFAULT).asString());
-        } else if (ra.description.nillable()) {
+        if (attribute.value().isDefined()) {
+            values(modelValues(attribute));
+        } else if (attribute.description().hasDefault()) {
+            filterInput.placeholder(attribute.description().get(DEFAULT).asString());
+        } else if (attribute.description().nillable()) {
             filterInput.placeholder(UNDEFINED);
         }
-
         return filterInput;
     }
 
     // ------------------------------------------------------ validation
 
     @Override
-    void resetValidation() {
+    public void resetValidation() {
         super.resetValidation();
-        filterInput.resetValidation();
+        if (filterInput != null) {
+            filterInput.resetValidation();
+        }
     }
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         if (requiredOnItsOwn()) {
             if (inputMode == NATIVE) {
                 if (values().isEmpty()) {
                     filterInput.validated(error);
-                    formGroupControl.addHelperText(required(ra));
+                    formGroupControl.addHelperText(requiredHelperText());
                     return false;
                 }
             }
@@ -120,16 +118,16 @@ class StringListFormItem extends FormItem {
 
     @Override
     boolean isNativeModifiedForNew() {
-        return isNewModified(ra, values());
+        return isNewModified(attribute, values());
     }
 
     @Override
     boolean isNativeModifiedForExisting(boolean wasDefined) {
-        return isExistingModified(ra, values(), wasDefined);
+        return isExistingModified(attribute, values(), wasDefined);
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         if (inputMode == NATIVE) {
             return valuesModelNode(values());
         } else if (inputMode == EXPRESSION) {
@@ -141,18 +139,15 @@ class StringListFormItem extends FormItem {
     // ------------------------------------------------------ events
 
     @Override
-    void afterSwitchedToExpressionMode() {
-        // TODO Refactor expression support. Expressions are on the list elements (strings), not on the list itself.
-        //  See https://wildfly.zulipchat.com/#narrow/channel/174184-wildfly-developers/topic/Expression.20for.20attribute.20of.20type.20LIST/with/479335334
-        boolean wasDefined = ra.value.isDefined();
-        if (wasDefined && !ra.expression) {
-            values(modelValues(ra));
+    void afterSwitchedToNativeMode() {
+        if (attribute.value().isDefined() && !attribute.expression()) {
+            values(modelValues(attribute));
         } else {
-            if (ra.description.hasDefault()) {
-                List<String> defaultValues = defaultValues(ra);
-                filterInput.placeholder(String.join(" ", defaultValues));
-                values(defaultValues);
-            } else if (ra.description.nillable()) {
+            if (attribute.description().hasDefault()) {
+                List<String> dv = defaultValues(attribute);
+                filterInput.placeholder(String.join(" ", dv));
+                values(dv);
+            } else if (attribute.description().nillable()) {
                 filterInput.placeholder(UNDEFINED);
             }
         }

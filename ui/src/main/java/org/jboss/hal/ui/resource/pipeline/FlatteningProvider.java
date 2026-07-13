@@ -15,6 +15,10 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.view.DefaultViewItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +53,8 @@ class FlatteningProvider implements ItemProvider {
         AttributeDescriptions nested = parent.valueTypeAttributeDescriptions();
         List<ViewItem> items = new ArrayList<>();
         for (AttributeDescription nad : nested) {
-            AttributeGroup subGroup = AttributeGroup.single(nad);
-            items.add(new PlaceholderViewItem(nad.fullyQualifiedName(), subGroup, context));
+            ResolvedAttribute ra = ResolvedAttribute.resolve(nad, context);
+            items.add(new DefaultViewItem(ra.fqn(), ra, context));
         }
         return items;
     }
@@ -59,8 +63,8 @@ class FlatteningProvider implements ItemProvider {
         AttributeDescriptions nested = parent.valueTypeAttributeDescriptions();
         List<FormItem> items = new ArrayList<>();
         for (AttributeDescription nad : nested) {
-            AttributeGroup subGroup = AttributeGroup.single(nad);
-            items.add(new PlaceholderFormItem(nad.fullyQualifiedName(), subGroup, context));
+            ResolvedAttribute ra = ResolvedAttribute.resolve(nad, context);
+            items.add(DefaultItemProvider.formItem(ra, context));
         }
         return items;
     }

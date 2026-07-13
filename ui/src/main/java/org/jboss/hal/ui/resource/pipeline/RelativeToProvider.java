@@ -15,6 +15,10 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.StringFormItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -25,10 +29,8 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
  * sibling path attribute found). FIP only — uses default view rendering.
  * <p>
  * Only 1 non-deprecated occurrence exists: {@code ejb3/file-passivation-store=*}.
- * <p>
- * TODO: Replace placeholder form item with a typeahead/dropdown populated from {@code /path=*} children plus standard paths
- * ({@code jboss.server.log.dir}, etc.). For attributes that allow expressions, add a fallback to free-text input.
  */
+// TODO Replace with typeahead populated from /path=* and standard paths
 class RelativeToProvider implements ItemProvider {
 
     @Override
@@ -41,6 +43,7 @@ class RelativeToProvider implements ItemProvider {
 
     @Override
     public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
-        return singletonList(new PlaceholderFormItem(group.primary().name(), group, context));
+        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+        return singletonList(new StringFormItem(ra.fqn(), ra, context));
     }
 }

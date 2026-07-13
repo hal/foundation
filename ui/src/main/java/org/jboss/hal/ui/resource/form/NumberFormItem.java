@@ -15,19 +15,14 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.NATIVE;
-import static org.jboss.hal.ui.resource.form.HelperTexts.required;
-import static org.jboss.hal.ui.resource.form.HelperTexts.notInRange;
-import static org.jboss.hal.ui.resource.form.HelperTexts.notNumeric;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.inputgroup.InputGroup;
@@ -43,130 +38,61 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.MAX;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.MIN;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
+import static org.jboss.hal.ui.resource.form.InputMode.EXPRESSION;
+import static org.jboss.hal.ui.resource.form.InputMode.NATIVE;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.form.FormSelect.formSelect;
 import static org.patternfly.component.form.FormSelectOption.formSelectOption;
 import static org.patternfly.component.form.TextInput.textInput;
 import static org.patternfly.component.form.TextInputType.number;
+import static org.patternfly.component.help.HelperText.helperText;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 
-/**
- * Form item for editing numeric management attributes (INT, LONG, DOUBLE), rendered as a number input with min/max validation
- * or as a select when the attribute defines allowed values.
- */
-// TODO Implement sensitive
-//  Example: /subsystem=transactions, attribute "process-id-socket-max-ports"
-class NumberFormItem extends FormItem {
+/** Form item for editing numeric attributes (INT, LONG, DOUBLE), with min/max validation or allowed-values select. */
+public class NumberFormItem extends AbstractFormItem {
 
-    /**
-     * @see <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_SAFE_INTEGER">Number.MIN_SAFE_INTEGER</a>
-     */
     private static final long MIN_SAFE_LONG = -9007199254740991L;
-
-    /**
-     * @see <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER">Number.MAX_SAFE_INTEGER</a>
-     */
     private static final long MAX_SAFE_LONG = 9007199254740991L;
-
-    /**
-     * @see <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE">Number.MIN_VALUE</a>
-     */
-    private static final double MIN_SAFE_DOUBLE = 5e-324;
-
-    /**
-     * @see <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_VALUE">Number.MAX_VALUE</a>
-     */
-    private static final double MAX_SAFE_DOUBLE = 1.7976931348623157e+308;
-
-    /** Holds the result of parsing a string to a numeric value (INT, LONG, or DOUBLE). */
-    static class NumericValidation {
-
-        static NumericValidation valid(int intValue) {
-            return new NumericValidation(true, intValue, 0, 0, ModelType.INT);
-        }
-
-        static NumericValidation valid(long longValue) {
-            return new NumericValidation(true, 0, longValue, 0, ModelType.LONG);
-        }
-
-        static NumericValidation valid(double doubleValue) {
-            return new NumericValidation(true, 0, 0, doubleValue, ModelType.DOUBLE);
-        }
-
-        static NumericValidation invalid() {
-            return new NumericValidation(false, 0, 0, 0, ModelType.UNDEFINED);
-        }
-
-        boolean valid;
-        int intValue;
-        long longValue;
-        double doubleValue;
-        ModelType type;
-
-        NumericValidation(boolean valid, int intValue, long longValue, double doubleValue, ModelType type) {
-            this.valid = valid;
-            this.intValue = intValue;
-            this.longValue = longValue;
-            this.doubleValue = doubleValue;
-            this.type = type;
-        }
-    }
-
-    /** Holds the result of checking whether a numeric value falls within the attribute's allowed range. */
-    static class RangeValidation {
-
-        boolean valid;
-        String min;
-        String max;
-
-        RangeValidation(boolean valid, String min, String max) {
-            this.valid = valid;
-            this.min = min;
-            this.max = max;
-        }
-    }
 
     private FormSelect allowedValuesControl;
     private TextInput minMaxControl;
 
-    NumberFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
+    public NumberFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
         defaultSetup();
     }
 
+    @Override
     FormGroupControl readOnlyGroup() {
-        TextInput textControl = readOnlyTextControl();
-        if (ra.expression) {
+        TextInput tc = readOnlyTextControl();
+        if (attribute.expression()) {
             return formGroupControl()
                     .addInputGroup(inputGroup()
-                            .addItem(inputGroupItem().fill().addControl(textControl))
+                            .addItem(inputGroupItem().fill().addControl(tc))
                             .addItem(inputGroupItem().addButton(resolveExpressionButton()))
                             .run(ig -> {
-                                if (ra.description.unit() != null) {
+                                if (attribute.description().unit() != null) {
                                     ig.addText(unitInputGroupText());
                                 }
                             }));
         } else {
-            if (ra.description.unit() != null) {
+            if (attribute.description().unit() != null) {
                 return formGroupControl()
                         .addInputGroup(inputGroup()
-                                .addItem(inputGroupItem().fill().addControl(textControl))
+                                .addItem(inputGroupItem().fill().addControl(tc))
                                 .addText(unitInputGroupText()));
             } else {
-                return formGroupControl().addControl(textControl);
+                return formGroupControl().addControl(tc);
             }
         }
     }
 
+    @Override
     FormGroupControl nativeGroup() {
-        if (ra.description.hasDefined(ALLOWED)) {
-            if (ra.description.unit() != null) {
+        if (attribute.description().hasDefined(ALLOWED)) {
+            if (attribute.description().unit() != null) {
                 return formGroupControl()
                         .addInputGroup(inputGroup()
                                 .addItem(inputGroupItem().fill().addControl(allowedValuesControl()))
@@ -175,7 +101,7 @@ class NumberFormItem extends FormItem {
                 return formGroupControl().addControl(allowedValuesControl());
             }
         } else {
-            if (ra.description.unit() != null) {
+            if (attribute.description().unit() != null) {
                 return formGroupControl()
                         .addInputGroup(inputGroup()
                                 .addItem(inputGroupItem().fill().addControl(minMaxControl()))
@@ -186,38 +112,40 @@ class NumberFormItem extends FormItem {
         }
     }
 
+    @Override
     HTMLElement nativeContainer() {
         if (nativeContainer == null) {
-            InputGroup inputGroup = inputGroup().addItem(inputGroupItem().addButton(switchToExpressionModeButton()));
-            if (ra.description.hasDefined(ALLOWED)) {
-                inputGroup.addItem(inputGroupItem().fill().addControl(allowedValuesControl()));
+            InputGroup ig = inputGroup().addItem(inputGroupItem().addButton(switchToExpressionModeButton()));
+            if (attribute.description().hasDefined(ALLOWED)) {
+                ig.addItem(inputGroupItem().fill().addControl(allowedValuesControl()));
             } else {
-                inputGroup.addItem(inputGroupItem().fill().addControl(minMaxControl()));
+                ig.addItem(inputGroupItem().fill().addControl(minMaxControl()));
             }
-            if (ra.description.unit() != null) {
-                inputGroup.addText(unitInputGroupText());
+            if (attribute.description().unit() != null) {
+                ig.addText(unitInputGroupText());
             }
-            nativeContainer = inputGroup.element();
+            nativeContainer = ig.element();
         }
         return nativeContainer;
     }
 
     private FormSelect allowedValuesControl() {
-        List<Long> allowedValues = ra.description.get(ALLOWED).asList().stream().map(ModelNode::asLong).collect(toList());
+        List<Long> allowedValues = attribute.description().get(ALLOWED).asList().stream()
+                .map(ModelNode::asLong).collect(toList());
         allowedValuesControl = formSelect(identifier)
                 .run(fs -> {
                     fs.selectElement().attr("autocomplete", "off");
-                    if (ra.description.nillable()) {
+                    if (attribute.description().nillable()) {
                         fs.addOption(formSelectOption(UNDEFINED));
                     }
                 })
                 .addOptions(allowedValues, n -> formSelectOption(String.valueOf(n)))
                 .run(fs -> {
-                    if (ra.value.isDefined()) {
-                        fs.value(ra.value.asString());
-                    } else if (ra.description.hasDefault()) {
-                        fs.value(ra.description.get(DEFAULT).asString());
-                    } else if (ra.description.nillable()) {
+                    if (attribute.value().isDefined()) {
+                        fs.value(attribute.value().asString());
+                    } else if (attribute.description().hasDefault()) {
+                        fs.value(attribute.description().get(DEFAULT).asString());
+                    } else if (attribute.description().nillable()) {
                         fs.value(UNDEFINED);
                     }
                 });
@@ -228,20 +156,20 @@ class NumberFormItem extends FormItem {
         minMaxControl = textInput(number, identifier)
                 .run(ti -> {
                     ti.input().autocomplete("off");
-                    if (ra.value.isDefined()) {
-                        ti.value(ra.value.asString());
+                    if (attribute.value().isDefined()) {
+                        ti.value(attribute.value().asString());
                     }
                     applyPlaceholder(ti.input());
                 });
-        ModelType type = ra.description.get(TYPE).asType();
+        ModelType type = attribute.description().get(TYPE).asType();
         if (type == ModelType.INT) {
-            int min = max(ra.description.get(MIN).asInt(Integer.MIN_VALUE), Integer.MIN_VALUE);
-            int max = min(ra.description.get(MAX).asInt(Integer.MAX_VALUE), Integer.MAX_VALUE);
-            minMaxControl.input().min(min).max(max).apply(e -> e.step = "1");
+            int mn = max(attribute.description().get(MIN).asInt(Integer.MIN_VALUE), Integer.MIN_VALUE);
+            int mx = min(attribute.description().get(MAX).asInt(Integer.MAX_VALUE), Integer.MAX_VALUE);
+            minMaxControl.input().min(mn).max(mx).apply(e -> e.step = "1");
         } else if (type == ModelType.LONG) {
-            String min = String.valueOf(max(ra.description.get(MIN).asLong(MIN_SAFE_LONG), MIN_SAFE_LONG));
-            String max = String.valueOf(min(ra.description.get(MAX).asLong(MAX_SAFE_LONG), MAX_SAFE_LONG));
-            minMaxControl.input().min(min).max(max).apply(e -> e.step = "1");
+            String mn = String.valueOf(max(attribute.description().get(MIN).asLong(MIN_SAFE_LONG), MIN_SAFE_LONG));
+            String mx = String.valueOf(min(attribute.description().get(MAX).asLong(MAX_SAFE_LONG), MAX_SAFE_LONG));
+            minMaxControl.input().min(mn).max(mx).apply(e -> e.step = "1");
         } else if (type == ModelType.DOUBLE) {
             minMaxControl.input().apply(e -> e.step = "any");
         }
@@ -251,7 +179,7 @@ class NumberFormItem extends FormItem {
     // ------------------------------------------------------ validation
 
     @Override
-    void resetValidation() {
+    public void resetValidation() {
         super.resetValidation();
         if (allowedValuesControl != null) {
             allowedValuesControl.resetValidation();
@@ -262,31 +190,32 @@ class NumberFormItem extends FormItem {
     }
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         if (inputMode == NATIVE) {
             if (allowedValuesControl != null) {
                 if (requiredOnItsOwn() && UNDEFINED.equals(allowedValuesControl.value())) {
                     allowedValuesControl.validated(error);
-                    formGroupControl.addHelperText(required(ra));
+                    formGroupControl.addHelperText(requiredHelperText());
                     return false;
                 }
             } else if (minMaxControl != null) {
                 String value = minMaxControl.value();
                 if (requiredOnItsOwn() && value.isEmpty()) {
                     minMaxControl.validated(error);
-                    formGroupControl.addHelperText(required(ra));
+                    formGroupControl.addHelperText(requiredHelperText());
                     return false;
                 } else if (!value.isEmpty()) {
-                    NumericValidation numericValidation = isNumeric(value);
-                    if (!numericValidation.valid) {
+                    ModelType type = attribute.description().get(TYPE).asType();
+                    if (!isNumeric(value, type)) {
                         minMaxControl.validated(error);
-                        formGroupControl.addHelperText(notNumeric(numericValidation.type));
+                        formGroupControl.addHelperText(helperText(
+                                "The value is not a number. Only values of type " + type.name() + " are allowed.", error));
                         return false;
                     }
-                    RangeValidation rangeValidation = inRange(numericValidation);
-                    if (!rangeValidation.valid) {
+                    String rangeError = checkRange(value, type);
+                    if (rangeError != null) {
                         minMaxControl.validated(error);
-                        formGroupControl.addHelperText(notInRange(rangeValidation.min, rangeValidation.max));
+                        formGroupControl.addHelperText(helperText(rangeError, error));
                         return false;
                     }
                 }
@@ -297,54 +226,47 @@ class NumberFormItem extends FormItem {
         return true;
     }
 
-    private NumericValidation isNumeric(String value) {
-        ModelType type = ra.description.get(TYPE).asType();
-        if (type == ModelType.INT) {
-            try {
-                int intValue = Integer.parseInt(value);
-                return NumericValidation.valid(intValue);
-            } catch (NumberFormatException ignored) {
-                return NumericValidation.invalid();
+    private boolean isNumeric(String value, ModelType type) {
+        try {
+            if (type == ModelType.INT) {
+                Integer.parseInt(value);
+            } else if (type == ModelType.LONG) {
+                Long.parseLong(value);
+            } else if (type == ModelType.DOUBLE) {
+                Double.parseDouble(value);
+            } else {
+                return false;
             }
-        } else if (type == ModelType.LONG) {
-            try {
-                long longValue = Long.parseLong(value);
-                return NumericValidation.valid(longValue);
-            } catch (NumberFormatException ignored) {
-                return NumericValidation.invalid();
-            }
-        } else if (type == ModelType.DOUBLE) {
-            try {
-                double doubleValue = Double.parseDouble(value);
-                return NumericValidation.valid(doubleValue);
-            } catch (NumberFormatException ignored) {
-                return NumericValidation.invalid();
-            }
-        } else {
-            return NumericValidation.invalid();
+            return true;
+        } catch (NumberFormatException ignored) {
+            return false;
         }
     }
 
-    private RangeValidation inRange(NumericValidation numericValidation) {
-        ModelType type = numericValidation.type;
+    private String checkRange(String value, ModelType type) {
         if (type == ModelType.INT) {
-            int min = ra.description.hasDefined(MIN) ? ra.description.get(MIN).asInt() : Integer.MIN_VALUE;
-            int max = ra.description.hasDefined(MAX) ? ra.description.get(MAX).asInt() : Integer.MAX_VALUE;
-            int intValue = numericValidation.intValue;
-            return new RangeValidation(min <= intValue && intValue <= max, String.valueOf(min), String.valueOf(max));
+            int mn = attribute.description().hasDefined(MIN) ? attribute.description().get(MIN).asInt() : Integer.MIN_VALUE;
+            int mx = attribute.description().hasDefined(MAX) ? attribute.description().get(MAX).asInt() : Integer.MAX_VALUE;
+            int v = Integer.parseInt(value);
+            if (v < mn || v > mx) {
+                return "The value is out of range. The value must be >= " + mn + " and <= " + mx + ".";
+            }
         } else if (type == ModelType.LONG) {
-            long min = ra.description.hasDefined(MIN) ? ra.description.get(MIN).asLong() : MIN_SAFE_LONG;
-            long max = ra.description.hasDefined(MAX) ? ra.description.get(MAX).asLong() : MAX_SAFE_LONG;
-            long longValue = numericValidation.longValue;
-            return new RangeValidation(min <= longValue && longValue <= max, String.valueOf(min), String.valueOf(max));
+            long mn = attribute.description().hasDefined(MIN) ? attribute.description().get(MIN).asLong() : MIN_SAFE_LONG;
+            long mx = attribute.description().hasDefined(MAX) ? attribute.description().get(MAX).asLong() : MAX_SAFE_LONG;
+            long v = Long.parseLong(value);
+            if (v < mn || v > mx) {
+                return "The value is out of range. The value must be >= " + mn + " and <= " + mx + ".";
+            }
         } else if (type == ModelType.DOUBLE) {
-            double min = ra.description.hasDefined(MIN) ? ra.description.get(MIN).asDouble() : MIN_SAFE_DOUBLE;
-            double max = ra.description.hasDefined(MAX) ? ra.description.get(MAX).asDouble() : MAX_SAFE_DOUBLE;
-            double doubleValue = numericValidation.doubleValue;
-            return new RangeValidation(min <= doubleValue && doubleValue <= max, String.valueOf(min), String.valueOf(max));
-        } else {
-            return new RangeValidation(false, "", "");
+            double mn = attribute.description().hasDefined(MIN) ? attribute.description().get(MIN).asDouble() : 5e-324;
+            double mx = attribute.description().hasDefined(MAX) ? attribute.description().get(MAX).asDouble() : 1.7976931348623157e+308;
+            double v = Double.parseDouble(value);
+            if (v < mn || v > mx) {
+                return "The value is out of range. The value must be >= " + mn + " and <= " + mx + ".";
+            }
         }
+        return null;
     }
 
     // ------------------------------------------------------ data
@@ -353,14 +275,14 @@ class NumberFormItem extends FormItem {
     boolean isNativeModifiedForNew() {
         if (allowedValuesControl != null) {
             String selectedValue = allowedValuesControl.value();
-            if (ra.description.hasDefault()) {
-                return !ra.description.get(DEFAULT).asString().equals(selectedValue);
+            if (attribute.description().hasDefault()) {
+                return !attribute.description().get(DEFAULT).asString().equals(selectedValue);
             } else {
                 return !UNDEFINED.equals(selectedValue);
             }
         } else if (minMaxControl != null) {
-            if (ra.description.hasDefault()) {
-                return !ra.description.get(DEFAULT).asString().equals(minMaxControl.value());
+            if (attribute.description().hasDefault()) {
+                return !attribute.description().get(DEFAULT).asString().equals(minMaxControl.value());
             } else {
                 return !minMaxControl.value().isEmpty();
             }
@@ -373,15 +295,13 @@ class NumberFormItem extends FormItem {
         if (allowedValuesControl != null) {
             String selectedValue = allowedValuesControl.value();
             if (wasDefined) {
-                String originalValue = ra.value.asString();
-                return ra.expression || !originalValue.equals(selectedValue);
+                return attribute.expression() || !attribute.value().asString().equals(selectedValue);
             } else {
                 return !UNDEFINED.equals(selectedValue);
             }
         } else if (minMaxControl != null) {
             if (wasDefined) {
-                String originalValue = ra.value.asString();
-                return ra.expression || !originalValue.equals(minMaxControl.value());
+                return attribute.expression() || !attribute.value().asString().equals(minMaxControl.value());
             } else {
                 return !minMaxControl.value().isEmpty();
             }
@@ -390,14 +310,14 @@ class NumberFormItem extends FormItem {
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         if (inputMode == NATIVE) {
             if (allowedValuesControl != null) {
                 String selectedValue = allowedValuesControl.value();
                 if (UNDEFINED.equals(selectedValue)) {
                     return new ModelNode();
                 } else {
-                    return new ModelNode().set(numericModelNode(selectedValue));
+                    return numericModelNode(selectedValue);
                 }
             } else if (minMaxControl != null) {
                 String value = minMaxControl.value();
@@ -414,40 +334,37 @@ class NumberFormItem extends FormItem {
     }
 
     private ModelNode numericModelNode(String value) {
-        ModelType type = ra.description.get(TYPE).asType();
+        ModelType type = attribute.description().get(TYPE).asType();
         if (type == ModelType.INT) {
             return new ModelNode().set(Integer.parseInt(value));
         } else if (type == ModelType.LONG) {
             return new ModelNode().set(Long.parseLong(value));
         } else if (type == ModelType.DOUBLE) {
             return new ModelNode().set(Double.parseDouble(value));
-        } else {
-            return new ModelNode();
         }
+        return new ModelNode();
     }
 
     // ------------------------------------------------------ events
 
     @Override
     void afterSwitchedToNativeMode() {
-        boolean wasDefined = ra.value.isDefined();
+        boolean wasDefined = attribute.value().isDefined();
         if (allowedValuesControl != null) {
-            if (wasDefined && !ra.expression) {
-                String originalValue = ra.value.asString();
-                failSafeSelectValue(originalValue);
+            if (wasDefined && !attribute.expression()) {
+                failSafeSelectValue(attribute.value().asString());
             } else {
-                if (ra.description.hasDefault()) {
-                    failSafeSelectValue(ra.description.get(DEFAULT).asString());
-                } else if (ra.description.nillable()) {
+                if (attribute.description().hasDefault()) {
+                    failSafeSelectValue(attribute.description().get(DEFAULT).asString());
+                } else if (attribute.description().nillable()) {
                     failSafeSelectValue(UNDEFINED);
                 } else {
                     allowedValuesControl.selectFirstValue(false);
                 }
             }
         } else if (minMaxControl != null) {
-            if (wasDefined && !ra.expression) {
-                String originalValue = ra.value.asString();
-                minMaxControl.value(originalValue);
+            if (wasDefined && !attribute.expression()) {
+                minMaxControl.value(attribute.value().asString());
             }
         }
     }

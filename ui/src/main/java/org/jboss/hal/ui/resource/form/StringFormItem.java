@@ -15,16 +15,15 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import static org.jboss.hal.ui.resource.form.FormItemInputMode.MIXED;
-import static org.jboss.hal.ui.resource.form.HelperTexts.required;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import org.jboss.elemento.By;
 import org.jboss.hal.dmr.ModelNode;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormGroupLabel;
 
 import static org.jboss.hal.dmr.Expression.containsExpression;
+import static org.jboss.hal.ui.resource.form.InputMode.MIXED;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
@@ -32,28 +31,29 @@ import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 
-/** Form item for editing plain string management attributes, rendered as a text input that operates in mixed mode supporting both literal values and expressions. */
-class StringFormItem extends FormItem {
+/** Form item for editing plain string attributes, rendered as a text input in mixed mode (literals and expressions). */
+public class StringFormItem extends AbstractFormItem {
 
-    StringFormItem(String identifier, ResourceAttribute ra, FormGroupLabel label, FormItemFlags flags) {
-        super(identifier, ra, label, flags);
+    public StringFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        super(identifier, attribute, context);
         inputMode = MIXED;
 
-        if (ra.description.readOnly()) {
+        if (attribute.description().readOnly()) {
             formGroupControl = readOnlyGroup();
         } else {
-            if (ra.description.expressionAllowed()) {
+            if (attribute.description().expressionAllowed()) {
                 formGroupControl = expressionGroup();
             } else {
                 formGroupControl = normalGroup();
             }
         }
         formGroup = formGroup(identifier)
-                .required(ra.description.required())
-                .addLabel(label)
+                .required(attribute.description().required())
+                .addLabel(label())
                 .addControl(formGroupControl);
     }
 
+    @Override
     FormGroupControl readOnlyGroup() {
         return readOnlyGroupWithExpressionSwitch();
     }
@@ -73,10 +73,10 @@ class StringFormItem extends FormItem {
     // ------------------------------------------------------ validation
 
     @Override
-    boolean validate() {
+    public boolean validate() {
         if (requiredOnItsOwn() && emptyTextControl()) {
             textControl.validated(error);
-            formGroupControl.addHelperText(required(ra));
+            formGroupControl.addHelperText(requiredHelperText());
             return false;
         }
         return true;
@@ -85,9 +85,8 @@ class StringFormItem extends FormItem {
     // ------------------------------------------------------ data
 
     @Override
-    boolean isModified() {
-        // StringFormItem runs in mixed mode, so it's safe to delegate to isExpressionModified()
-        if (ra.readable && !ra.description.readOnly()) {
+    public boolean isModified() {
+        if (attribute.readable() && !attribute.description().readOnly()) {
             return isExpressionModified();
         }
         return false;
@@ -104,7 +103,7 @@ class StringFormItem extends FormItem {
     }
 
     @Override
-    ModelNode modelNode() {
+    public ModelNode modelNode() {
         String value = textControlValue();
         if (value.isEmpty()) {
             return new ModelNode();

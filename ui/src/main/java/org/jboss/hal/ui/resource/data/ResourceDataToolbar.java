@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 package org.jboss.hal.ui.resource.data;
-import org.jboss.hal.ui.resource.ResourceAttribute;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
@@ -81,7 +81,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
 
     /** Creates a new toolbar bound to the given resource data component, filter, and item counters. */
     public static ResourceDataToolbar resourceDataToolbar(ResourceData resourceData,
-            Filter<ResourceAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
+            Filter<ResolvedAttribute> filter, ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         return new ResourceDataToolbar(resourceData, filter, visible, total);
     }
 
@@ -99,7 +99,7 @@ public class ResourceDataToolbar implements IsElement<HTMLElement>, OuiaSupport<
     private ToolbarItem resetItem;
     private ToolbarItem editItem;
 
-    private ResourceDataToolbar(ResourceData resourceData, Filter<ResourceAttribute> filter,
+    private ResourceDataToolbar(ResourceData resourceData, Filter<ResolvedAttribute> filter,
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         this.resourceData = resourceData;
 

@@ -15,88 +15,20 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jboss.elemento.IsElement;
-import org.jboss.elemento.TypedBuilder;
-import org.jboss.hal.ui.resource.ResourceItem;
-import org.patternfly.component.HasIdentifier;
-import org.patternfly.component.list.DescriptionListGroup;
-import org.patternfly.component.list.DescriptionListTerm;
-import org.patternfly.core.ComponentContext;
-
 import elemental2.dom.HTMLElement;
 
-import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
-import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
+import org.jboss.elemento.IsElement;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 /**
- * A single read-only entry in a {@link ResourceView}, backed by a PatternFly {@link DescriptionListGroup}. Each view item
- * displays an attribute label (term) and its formatted value (description). Carries a {@link org.jboss.hal.ui.resource.ResourceAttribute}
- * via the component context.
+ * A read-only view item produced by the pipeline. Implementations wrap a PatternFly {@code DescriptionListGroup} or similar
+ * component for displaying attribute values.
  */
-public class ViewItem implements
-        ResourceItem<ViewItem>,
-        TypedBuilder<HTMLElement, ViewItem>,
-        IsElement<HTMLElement>,
-        ComponentContext<HTMLElement, ViewItem>,
-        HasIdentifier<HTMLElement, ViewItem> {
+public interface ViewItem extends IsElement<HTMLElement> {
 
-    // ------------------------------------------------------ factory
+    /** Returns a unique identifier for this view item, suitable for use as a DOM element ID. */
+    String identifier();
 
-    /** Creates a new view item with the given identifier, label term, and value element. */
-    public static ViewItem viewItem(String identifier, DescriptionListTerm descriptionListTerm, HTMLElement valueElement) {
-        return new ViewItem(identifier, descriptionListTerm, valueElement);
-    }
-
-    // ------------------------------------------------------ instance
-
-    public final DescriptionListGroup descriptionListGroup;
-    private final String identifier;
-    private final Map<String, Object> data;
-
-    ViewItem(String identifier, DescriptionListTerm descriptionListTerm, HTMLElement valueElement) {
-        this.identifier = identifier;
-        this.data = new HashMap<>();
-        this.descriptionListGroup = descriptionListGroup(identifier)
-                .addTerm(descriptionListTerm)
-                .addDescription(descriptionListDescription()
-                        .add(valueElement));
-    }
-
-    @Override
-    public HTMLElement element() {
-        return descriptionListGroup.element();
-    }
-
-    @Override
-    public ViewItem that() {
-        return this;
-    }
-
-    @Override
-    public String identifier() {
-        return identifier;
-    }
-
-    @Override
-    public <T> ViewItem store(String key, T value) {
-        data.put(key, value);
-        return this;
-    }
-
-    @Override
-    public boolean has(String key) {
-        return data.containsKey(key);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T get(String key) {
-        if (data.containsKey(key)) {
-            return (T) data.get(key);
-        }
-        return null;
-    }
+    /** Returns the primary resolved attribute this view item displays. Used for filtering and grouping. */
+    ResolvedAttribute attribute();
 }

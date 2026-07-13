@@ -28,10 +28,11 @@ import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.op.finder.ColumnProvider;
-import org.jboss.hal.ui.resource.view.ResourceView;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
 import org.patternfly.extension.finder.FinderPreview;
+
+import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -47,18 +48,17 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.SELECT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WHERE;
 import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.brick.FinderBricks.previewView;
 import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
 import static org.jboss.hal.resources.Keys.FINDER_TEMPLATE;
-import static org.jboss.hal.ui.resource.view.ResourceView.resourceView;
-import static org.jboss.hal.ui.resource.view.ViewItem.viewItem;
+import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
+import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
-/** Finder column listing the network interfaces defined in the WildFly configuration. */
 @Dependent
 public class InterfaceColumn implements ColumnProvider {
 
-    /** Column identifier used for registration and OUIA test IDs. */
     public static final String ID = "interface-column";
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("interface=*");
 
@@ -89,17 +89,17 @@ public class InterfaceColumn implements ColumnProvider {
         stackPreview(preview, name, stack -> {
             AddressTemplate template = item.get(FINDER_TEMPLATE);
             crud.readWithMetadata(template).then(tuple -> {
-                ResourceView resourceView = resourceView(template, tuple.key, tuple.value,
+                HTMLElement dl = previewView(template, tuple.key, tuple.value,
                         asList("inet-address", "loopback", "loopback-address", "multicast", "nic", "nic-match",
                                 "resolved-address"));
-                stack.addItem(stackItem().add(resourceView));
-                addSocketBindingGroup(resourceView, name);
+                stack.addItem(stackItem().add(dl));
+                addSocketBindingGroup(dl, name);
                 return null;
             });
         });
     }
 
-    private void addSocketBindingGroup(ResourceView resourceView, String interface_) {
+    private void addSocketBindingGroup(HTMLElement dl, String interface_) {
         AddressTemplate template = AddressTemplate.ofTrusted("{selected.profile}/socket-binding-group=*");
         Operation operation = new Operation.Builder(template.resolve(statementContext), QUERY_OPERATION)
                 .param(SELECT, new ModelNode().add(NAME))
@@ -114,10 +114,11 @@ public class InterfaceColumn implements ColumnProvider {
                     .sorted()
                     .collect(toList());
             if (!socketBindingGroups.isEmpty()) {
-                // TODO Add link to socket binding group
-                resourceView.add(viewItem("sbg",
-                        descriptionListTerm(sentenceCase(SOCKET_BINDING_GROUP)),
-                        span().text(socketBindingGroups.stream().collect(joining(", "))).element()));
+                dl.appendChild(descriptionListGroup("sbg")
+                        .addTerm(descriptionListTerm(sentenceCase(SOCKET_BINDING_GROUP)))
+                        .addDescription(descriptionListDescription()
+                                .add(span().text(socketBindingGroups.stream().collect(joining(", ")))))
+                        .element());
             }
         });
     }

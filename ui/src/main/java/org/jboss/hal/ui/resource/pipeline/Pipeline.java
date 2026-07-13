@@ -15,12 +15,16 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
 
 /**
@@ -82,23 +86,29 @@ public final class Pipeline {
 
     /** Runs the pipeline and produces view items for all attributes in the resource metadata. */
     public List<ViewItem> viewItems(PipelineContext context) {
-        List<AttributeGroup> groups = group(context);
+        List<AttributeGroup> groups = group(context.resourceDescription().attributes());
         return itemizeView(groups, context);
     }
 
     /** Runs the pipeline and produces form items for all attributes in the resource metadata. */
     public List<FormItem> formItems(PipelineContext context) {
-        List<AttributeGroup> groups = group(context);
+        List<AttributeGroup> groups = group(context.resourceDescription().attributes());
+        return itemizeForm(groups, context);
+    }
+
+    /** Runs the pipeline and produces form items for operation parameters (used by dialog classes). */
+    public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> parameters) {
+        List<AttributeGroup> groups = group(parameters);
         return itemizeForm(groups, context);
     }
 
     // ------------------------------------------------------ stage 1: group
 
-    private List<AttributeGroup> group(PipelineContext context) {
+    private List<AttributeGroup> group(Iterable<AttributeDescription> attributes) {
         List<AttributeDescription> pool = new ArrayList<>();
         Map<String, Integer> originalOrder = new HashMap<>();
         int index = 0;
-        for (AttributeDescription ad : context.resourceDescription().attributes()) {
+        for (AttributeDescription ad : attributes) {
             pool.add(ad);
             originalOrder.put(ad.name(), index++);
         }

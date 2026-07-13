@@ -24,7 +24,7 @@
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.view.ResourceView}</dt>
  * <dd>Description list container for read-only attribute display with responsive layout.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view.ViewItem}</dt>
+ * <dt>{@link org.jboss.hal.ui.resource.view.OldViewItem}</dt>
  * <dd>Individual description list entry for a single attribute value.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemFactory}</dt>
  * <dd>Creates type-appropriate view items based on attribute metadata.</dd>

@@ -15,45 +15,52 @@
  */
 package org.jboss.hal.ui.resource.dialog;
 
-import org.jboss.hal.ui.resource.ResourceAttribute;
-
 import java.util.List;
 
 import org.jboss.hal.core.Humanize;
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.WildcardResolver;
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
+import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
-import org.jboss.hal.ui.resource.form.FormItemFlags;
-import org.jboss.hal.ui.resource.form.FormItemFlags.Placeholder;
-import org.jboss.hal.ui.resource.form.FormItemFlags.Scope;
-import org.jboss.hal.ui.resource.form.ResourceForm;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.PipelineForm;
+import org.jboss.hal.ui.resource.form.StringFormItem;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
+import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.modal.ModalHeaderTitle;
 import org.patternfly.component.wizard.Wizard;
 import org.patternfly.component.wizard.WizardStep;
 
 import elemental2.promise.Promise;
-import elemental2.promise.Promise.PromiseExecutorCallbackFn.ResolveCallbackFn;
 
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.h;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADD;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.DESCRIPTION;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_WRITE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRED;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.ResourceAttribute.notDeprecated;
-import static org.jboss.hal.ui.resource.ResourceAttribute.resourceAttributes;
-import static org.jboss.hal.ui.resource.form.FormItemFactory.formItem;
-import static org.jboss.hal.ui.resource.form.FormItemFactory.nameFormItem;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.button.Button.button;
@@ -84,12 +91,6 @@ import static org.patternfly.style.Size.lg;
 import static org.patternfly.token.Token.globalFontSizeXs;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
-/**
- * Dialogs for adding management resources.
- * <p>
- * Provides a multi-step wizard for choosing a location and adding a resource ({@link #wizard(List, String)}), and a single
- * modal dialog for adding a resource at a known location ({@link #modal(AddressTemplate, String, boolean)}).
- */
 class AddResourceDialogs {
 
     static Promise<ModelNode> addResourceWizard(List<AddressTemplate> templates, String resource) {
@@ -155,10 +156,10 @@ class AddResourceDialogs {
                                             .get(ADD);
                                     removeChildrenFrom(step);
                                     if (operationDescription.isDefined()) {
-                                        ResourceForm resourceForm = resourceForm(template, metadata, operationDescription,
+                                        PipelineForm pipelineForm = resourceForm(template, metadata, operationDescription,
                                                 resource, false);
-                                        step.add(div().css(halComponent(HalClasses.resource)).add(resourceForm));
-                                        wzd.context().store(Keys.RESOURCE_FORM, resourceForm);
+                                        step.add(div().css(halComponent(HalClasses.resource)).add(pipelineForm));
+                                        wzd.context().store(Keys.RESOURCE_FORM, pipelineForm);
                                     } else {
                                         step.add(emptyState()
                                                 .status(danger)
@@ -171,8 +172,8 @@ class AddResourceDialogs {
                                 })
                                 .nextIfPromised((wzd, current, next) -> {
                                     AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);
-                                    ResourceForm resourceForm = wizard.context().get(Keys.RESOURCE_FORM);
-                                    return addResource(template, resourceForm)
+                                    PipelineForm pipelineForm = wizard.context().get(Keys.RESOURCE_FORM);
+                                    return addResource(template, pipelineForm)
                                             .then(modelNode -> {
                                                 wzd.context().store(Keys.MODEL_NODE, modelNode);
                                                 return Promise.resolve(modelNode.isDefined());
@@ -210,7 +211,7 @@ class AddResourceDialogs {
                 .then(metadata -> {
                     OperationDescription operationDescription = metadata.resourceDescription().operations().get(ADD);
                     if (operationDescription.isDefined()) {
-                        ResourceForm resourceForm = resourceForm(resolved, metadata, operationDescription, resource, singleton);
+                        PipelineForm pipelineForm = resourceForm(resolved, metadata, operationDescription, resource, singleton);
                         modal().size(lg).top()
                                 .ouiaId(OuiaIds.ADD_MODAL)
                                 .addHeader(modalHeader()
@@ -218,11 +219,11 @@ class AddResourceDialogs {
                                         .addDescription(metadata.resourceDescription().description()))
                                 .addBody(modalBody()
                                         .add(div().css(halComponent(HalClasses.resource))
-                                                .add(resourceForm)))
+                                                .add(pipelineForm)))
                                 .addFooter(modalFooter()
                                         .addButton(button("Add").primary()
                                                 .ouiaId(OuiaIds.ADD_BTN), (__, m) ->
-                                                addResource(resolved, resourceForm).then(modelNode -> {
+                                                addResource(resolved, pipelineForm).then(modelNode -> {
                                                     if (modelNode.isDefined()) {
                                                         m.close();
                                                         resolve.onInvoke(modelNode);
@@ -247,27 +248,49 @@ class AddResourceDialogs {
                 }));
     }
 
-    private static ResourceForm resourceForm(AddressTemplate template, Metadata metadata,
+    private static PipelineForm resourceForm(AddressTemplate template, Metadata metadata,
             OperationDescription operationDescription,
             String value, boolean singleton) {
-        List<ResourceAttribute> resourceAttributes = resourceAttributes(operationDescription, notDeprecated());
-        ResourceForm resourceForm = new ResourceForm(template);
+        PipelineContext context = new PipelineContext(template, metadata, new ModelNode(),
+                new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
+        List<FormItem> items = Pipeline.create().formItems(context, operationDescription.parameters());
+        PipelineForm pipelineForm = new PipelineForm();
         if (!singleton) {
-            resourceForm.addItem(nameFormItem(metadata, value));
+            pipelineForm.addItem(nameFormItem(metadata, value, context));
         }
-        for (ResourceAttribute ra : resourceAttributes) {
-            // TODO Support attribute groups
-            resourceForm.addItem(formItem(template, metadata, ra,
-                    new FormItemFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE)));
+        for (FormItem item : items) {
+            if (!item.attribute().description().deprecation().isDefined()) {
+                pipelineForm.addItem(item);
+            }
         }
-        return resourceForm;
+        return pipelineForm;
     }
 
-    private static Promise<ModelNode> addResource(AddressTemplate template, ResourceForm resourceForm) {
-        resourceForm.resetValidation();
-        if (resourceForm.validate()) {
+    static FormItem nameFormItem(Metadata metadata, String value, PipelineContext context) {
+        AttributeDescription nameDescription = metadata.resourceDescription().attributes().get(NAME);
+        if (!nameDescription.isDefined()) {
+            ModelNode modelNode = new ModelNode();
+            modelNode.get(DESCRIPTION).set("The name of the resource");
+            modelNode.get(TYPE).set(ModelType.STRING);
+            nameDescription = new AttributeDescription(new org.jboss.hal.dmr.Property(NAME, modelNode));
+        }
+        nameDescription.get(REQUIRED).set(true);
+        nameDescription.get(ACCESS_TYPE).set(READ_WRITE);
+        nameDescription.get(EXPRESSIONS_ALLOWED).set(false);
+
+        ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, true);
+        StringFormItem nameItem = new StringFormItem(NAME, ra, context);
+        if (value != null) {
+            nameItem.textControl().value(value);
+        }
+        return nameItem;
+    }
+
+    private static Promise<ModelNode> addResource(AddressTemplate template, PipelineForm pipelineForm) {
+        pipelineForm.resetValidation();
+        if (pipelineForm.validate()) {
             AddressTemplate resolved;
-            ModelNode payload = resourceForm.modelNode();
+            ModelNode payload = pipelineForm.modelNode();
             if (payload.has(NAME)) {
                 ModelNode nameModelNode = payload.remove(NAME);
                 resolved = new WildcardResolver(LTR, nameModelNode.asString()).resolve(template);
@@ -275,13 +298,13 @@ class AddResourceDialogs {
                 resolved = AddressTemplate.of(template);
             }
             return uic().crud().create(resolved, payload).catch_(error -> {
-                resourceForm.addAlert(
+                pipelineForm.addAlert(
                         alert(danger, "Failed to add resource").inline()
                                 .addDescription(String.valueOf(error)));
                 return Promise.resolve(new ModelNode());
             });
         } else {
-            resourceForm.validationAlert("Failed to add resource");
+            pipelineForm.validationAlert("Failed to add resource");
             return Promise.resolve(new ModelNode());
         }
     }
