@@ -52,10 +52,10 @@ public final class Pipeline {
      * Creates a pipeline with all matchers and providers registered in the correct priority order.
      * <p>
      * Matcher order (stage 1): composite matchers first (credential-reference, time-unit, file), then sibling matchers
-     * (path+relative-to).
+     * (path+relative-to), then map matcher (free-form key-value maps).
      * <p>
      * Provider order (stage 2): specific providers first (credential-reference, time-unit, file, path+relative-to, standalone
-     * relative-to), then the default catch-all.
+     * relative-to, map), then flattening for simpleRecord OBJECTs, then the default catch-all.
      */
     static Pipeline create() {
         // Order is important!
@@ -63,7 +63,8 @@ public final class Pipeline {
                 new CredentialReferenceMatcher(),
                 new TimeUnitMatcher(),
                 new FileMatcher(),
-                new PathRelativeToMatcher()
+                new PathRelativeToMatcher(),
+                new MapMatcher()
         );
         // Order is important!
         List<ItemProvider> providers = List.of(
@@ -72,6 +73,7 @@ public final class Pipeline {
                 new FileProvider(),
                 new PathRelativeToProvider(),
                 new RelativeToProvider(),
+                new MapProvider(),
                 new FlatteningProvider(),
                 new DefaultItemProvider()
         );

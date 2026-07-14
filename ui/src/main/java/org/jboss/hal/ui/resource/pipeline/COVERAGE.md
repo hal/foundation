@@ -4,7 +4,7 @@ Analysis of the WildFly management model attributes and their pipeline coverage.
 
 Total attributes: **5,803** (4,118 configuration + 1,685 runtime)
 
-## Covered — 89% (5,165 attributes)
+## Covered — ~93% (~5,387 attributes)
 
 | Type / Pattern | Count | Pipeline handler |
 |---|---|---|
@@ -22,26 +22,13 @@ Total attributes: **5,803** (4,118 configuration + 1,685 runtime)
 | Other simpleRecord OBJECTs | ~60 | FlatteningProvider |
 | path + relative-to siblings | 31 | PathRelativeToMatcher + PathRelativeToProvider |
 | standalone relative-to | 1 | RelativeToProvider |
+| Free-form key-value maps | 222 | MapMatcher + MapProvider |
 
-## Not yet covered — 11% (638 attributes)
+## Not yet covered — ~7% (~416 attributes)
 
-Three distinct UI patterns that differ fundamentally from the single-attribute / simple-record model.
+Two distinct UI patterns that differ fundamentally from the single-attribute / simple-record model.
 
-### 1. Free-form key-value maps — 222 occurrences (HIGH impact)
-
-OBJECT attributes with no structured value-type — arbitrary `{String → String}` maps. These need a map editor (add/remove key-value rows), not a type-based form item.
-
-| Attribute | Occurrences |
-|---|---|
-| `properties` | 105 |
-| `*-properties` (capacity-incrementer, stale-connection-checker, etc.) | 71 |
-| `params` | 13 |
-| `configuration` | 12 |
-| `meta-data`, `activation-config`, `property`, etc. | 21 |
-
-A `MapProvider` matching OBJECT attributes with no CONSISTS_OF relationship (or where the value-type is a simple scalar) would be the highest-value next addition.
-
-### 2. LIST of OBJECT — 52 occurrences (MEDIUM impact)
+### 1. LIST of OBJECT — 52 occurrences (MEDIUM impact)
 
 Lists where each element is a structured object. These need a table/list editor with per-row structured editing.
 
@@ -55,7 +42,7 @@ Lists where each element is a structured object. These need a table/list editor 
 
 Many of these (especially `timers`, `certificates`) are runtime-only, so read-only table display would suffice.
 
-### 3. Complex/recursive OBJECTs — 13 occurrences (LOW impact)
+### 2. Complex/recursive OBJECTs — 13 occurrences (LOW impact)
 
 OBJECTs with nested OBJECT or LIST sub-attributes — not `simpleRecord()`.
 
@@ -73,7 +60,7 @@ Most are runtime-only or deployment-scoped. The `filter` attribute (8 occurrence
 
 | Storage | Covered | Not covered | Coverage |
 |---|---|---|---|
-| Configuration (4,118) | 3,687 | 431 | **90%** |
-| Runtime (1,685) | 1,478 | 207 | **88%** |
+| Configuration (4,118) | ~3,909 | ~209 | **~95%** |
+| Runtime (1,685) | ~1,478 | ~207 | **~88%** |
 
 Runtime attributes are read-only, so even uncovered ones render acceptably as plain text or JSON display.
