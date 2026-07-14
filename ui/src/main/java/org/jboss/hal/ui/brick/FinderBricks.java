@@ -30,6 +30,7 @@ import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.jboss.hal.ui.resource.view.ResourceView;
 import org.jboss.hal.ui.resource.view.ViewItem;
 import org.patternfly.component.content.ContentType;
 import org.patternfly.extension.finder.Finder;
@@ -47,7 +48,6 @@ import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
 import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.deleteResourceModal;
 import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
-import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
@@ -178,7 +178,7 @@ public final class FinderBricks {
         PipelineContext context = new PipelineContext(template, metadata, resource,
                 new PipelineFlags(PipelineFlags.Scope.EXISTING_RESOURCE, PipelineFlags.Placeholder.NONE));
         List<ViewItem> items = Pipeline.create().viewItems(context);
-        HTMLElement dl = descriptionList().css(halComponent(HalClasses.resource, HalClasses.view)).element();
+        HTMLElement dl = ResourceView.createDescriptionList();
         for (ViewItem item : items) {
             if (attributes.isEmpty() || attributes.contains(item.attribute().fqn())) {
                 dl.appendChild(item.element());

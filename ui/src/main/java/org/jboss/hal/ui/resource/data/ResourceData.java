@@ -16,10 +16,7 @@
 package org.jboss.hal.ui.resource.data;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jboss.elemento.Attachable;
@@ -31,17 +28,17 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.view.ResourceView;
 import org.jboss.hal.ui.resource.view.ViewItem;
 import org.patternfly.component.emptystate.EmptyState;
-import org.patternfly.component.expandable.ExpandableSection;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
 
@@ -54,14 +51,11 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
-import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Notification.nyi;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.resources.HalClasses.body;
-import static org.jboss.hal.resources.HalClasses.groupBody;
-import static org.jboss.hal.resources.HalClasses.groups;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -82,14 +76,8 @@ import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.expandable.ExpandableSection.expandableSection;
-import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
-import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
-import static org.patternfly.component.form.Form.form;
-import static org.patternfly.component.list.DescriptionList.descriptionList;
 import static org.patternfly.core.ObservableValue.ov;
 import static org.patternfly.style.Classes.filtered;
-import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.modifier;
 
 /**
@@ -110,9 +98,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         VIEW, EDIT, NO_ATTRIBUTES, ERROR
     }
 
-    private static final String UNGROUPED = "ungrouped";
-    private static final int AUTO_GROUPING_THRESHOLD = 20;
-    private static final int TARGET_GROUP_SIZE = 10;
     private static final Logger logger = Logger.getLogger(ResourceData.class.getName());
 
     private final AddressTemplate template;
@@ -121,23 +106,20 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     private final ObservableValue<Integer> total;
     private final Filter<ResolvedAttribute> filter;
     private final List<String> attributes;
-    private final List<HTMLElement> groupContainers;
     private final EmptyState noMatch;
     private final ResourceDataToolbar toolbar;
     private final HTMLContainerBuilder<HTMLDivElement> rootContainer;
     private final HTMLElement root;
+    private final Pipeline pipeline;
+    private final List<ViewItem> viewItems;
+    private final List<FormItem> formItems;
 
-    private boolean inlineEdit;
     private boolean grouped;
     private boolean supportsGrouping;
     private State state;
     private Operation operation;
-    private Pipeline pipeline;
-
-    // current items — one of these is populated depending on state
-    private List<ViewItem> viewItems;
-    private List<FormItem> formItems;
-    private org.patternfly.component.form.Form currentForm;
+    private ResourceView resourceView;
+    private ResourceForm resourceForm;
 
     ResourceData(AddressTemplate template, Metadata metadata) {
         this.template = template;
@@ -146,9 +128,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         this.total = ov(0);
         this.filter = new ResourceFilter().onChange(this::onFilterChanged);
         this.attributes = new ArrayList<>();
-        this.groupContainers = new ArrayList<>();
         this.noMatch = noMatch(filter);
-        this.inlineEdit = false;
         this.grouped = false;
         this.supportsGrouping = false;
         this.state = null;
@@ -179,15 +159,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     }
 
     // ------------------------------------------------------ builder
-
-    public ResourceData inlineEdit() {
-        return inlineEdit(true);
-    }
-
-    public ResourceData inlineEdit(boolean inlineEdit) {
-        this.inlineEdit = inlineEdit;
-        return this;
-    }
 
     public ResourceData operation(Operation operation) {
         if (operation != null) {
@@ -221,22 +192,26 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                             new PipelineFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));
                     viewItems.clear();
                     formItems.clear();
-                    groupContainers.clear();
                     HTMLElement rootElement = null;
 
                     if (state == VIEW) {
                         List<ViewItem> items = pipeline.viewItems(context);
                         items = filterByIncludes(items);
                         viewItems.addAll(items);
-                        supportsGrouping = hasGroups(items);
-                        rootElement = buildViewElement(items);
+                        supportsGrouping = ResourceView.hasGroups(items)
+                                || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
+                        resourceView = new ResourceView();
+                        rootElement = resourceView.build(items, grouped && supportsGrouping);
 
                     } else if (state == EDIT) {
                         List<FormItem> items = pipeline.formItems(context);
                         items = filterByIncludes(items);
                         formItems.addAll(items);
-                        supportsGrouping = hasGroups(formItems);
-                        rootElement = buildFormElement(items);
+                        supportsGrouping = ResourceForm.hasGroups(items)
+                                || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
+                        resourceForm = new ResourceForm();
+                        resourceForm.addItems(items, grouped && supportsGrouping);
+                        rootElement = resourceForm.element();
                     }
 
                     if (state == VIEW || state == EDIT) {
@@ -258,119 +233,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         } else {
             metadataError();
         }
-    }
-
-    // ------------------------------------------------------ build view
-
-    private HTMLElement buildViewElement(List<ViewItem> items) {
-        if (grouped && supportsGrouping) {
-            HTMLContainerBuilder<HTMLDivElement> container = div().css(halComponent(HalClasses.resource, groups));
-            Map<String, List<ViewItem>> itemGroups = groupByMetadata(items);
-            for (Map.Entry<String, List<ViewItem>> entry : itemGroups.entrySet()) {
-                String groupName = entry.getKey();
-                List<ViewItem> groupItems = entry.getValue();
-                HTMLElement dl = descriptionList().css(halComponent(HalClasses.resource, HalClasses.view)).element();
-                for (ViewItem item : groupItems) {
-                    dl.appendChild(item.element());
-                }
-                if (UNGROUPED.equals(groupName)) {
-                    container.add(dl);
-                } else {
-                    ExpandableSection es = expandableSection()
-                            .css(halComponent(HalClasses.resource, group))
-                            .addToggle(expandableSectionToggle(capitalCase(groupName)))
-                            .addContent(expandableSectionContent().add(dl));
-                    container.add(es);
-                    groupContainers.add(es.element());
-                }
-            }
-            return container.element();
-        } else {
-            HTMLElement dl = descriptionList().css(halComponent(HalClasses.resource, HalClasses.view)).element();
-            for (ViewItem item : items) {
-                dl.appendChild(item.element());
-            }
-            return dl;
-        }
-    }
-
-    // ------------------------------------------------------ build form
-
-    private HTMLElement buildFormElement(List<FormItem> items) {
-        currentForm = form().css(halComponent(resource, HalClasses.form)).horizontal();
-        if (grouped && supportsGrouping) {
-            Map<String, List<FormItem>> itemGroups = groupByMetadata(items);
-            for (Map.Entry<String, List<FormItem>> entry : itemGroups.entrySet()) {
-                String groupName = entry.getKey();
-                List<FormItem> groupItems = entry.getValue();
-                if (UNGROUPED.equals(groupName)) {
-                    for (FormItem item : groupItems) {
-                        currentForm.add(item.element());
-                    }
-                } else {
-                    HTMLContainerBuilder<HTMLDivElement> groupContent = div()
-                            .css(halComponent(HalClasses.resource, groupBody));
-                    for (FormItem item : groupItems) {
-                        groupContent.add(item.element());
-                    }
-                    ExpandableSection es = expandableSection()
-                            .css(halComponent(HalClasses.resource, group))
-                            .addToggle(expandableSectionToggle(capitalCase(groupName)))
-                            .addContent(expandableSectionContent().add(groupContent));
-                    currentForm.add(es);
-                    groupContainers.add(es.element());
-                }
-            }
-        } else {
-            for (FormItem item : items) {
-                currentForm.add(item.element());
-            }
-        }
-        return currentForm.element();
-    }
-
-    // ------------------------------------------------------ grouping
-
-    private <T extends IsElement<HTMLElement>> boolean hasGroups(List<T> items) {
-        if (items.isEmpty()) {
-            return false;
-        }
-        // check if there are items which implement ViewItem or FormItem with a non-null group
-        for (T item : items) {
-            String grp = itemGroup(item);
-            if (grp != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private <T extends IsElement<HTMLElement>> Map<String, List<T>> groupByMetadata(List<T> items) {
-        List<T> ungrouped = new ArrayList<>();
-        TreeMap<String, List<T>> namedGroups = new TreeMap<>();
-        for (T item : items) {
-            String grp = itemGroup(item);
-            if (grp == null) {
-                ungrouped.add(item);
-            } else {
-                namedGroups.computeIfAbsent(grp, k -> new ArrayList<>()).add(item);
-            }
-        }
-        LinkedHashMap<String, List<T>> result = new LinkedHashMap<>();
-        if (!ungrouped.isEmpty()) {
-            result.put(UNGROUPED, ungrouped);
-        }
-        result.putAll(namedGroups);
-        return result;
-    }
-
-    private <T> String itemGroup(T item) {
-        if (item instanceof ViewItem) {
-            return ((ViewItem) item).attribute().description().group();
-        } else if (item instanceof FormItem) {
-            return ((FormItem) item).attribute().description().group();
-        }
-        return null;
     }
 
     // ------------------------------------------------------ filtering
@@ -400,6 +262,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
             int matchingItems = 0;
 
             List<? extends IsElement<HTMLElement>> items = state == VIEW ? viewItems : formItems;
+            List<HTMLElement> containers = groupContainers();
 
             if (filter.defined()) {
                 for (IsElement<HTMLElement> item : items) {
@@ -412,7 +275,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         }
                     }
                 }
-                for (HTMLElement container : groupContainers) {
+                for (HTMLElement container : containers) {
                     boolean hasVisibleItem = false;
                     for (IsElement<HTMLElement> item : items) {
                         if (container.contains(item.element())
@@ -430,7 +293,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                 for (IsElement<HTMLElement> item : items) {
                     item.element().classList.remove(modifier(filtered));
                 }
-                for (HTMLElement container : groupContainers) {
+                for (HTMLElement container : containers) {
                     setVisible(container, true);
                 }
             }
@@ -481,31 +344,22 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     }
 
     void save() {
-        if (state == EDIT && !formItems.isEmpty()) {
-            formItems.forEach(FormItem::resetValidation);
-            boolean valid = formItems.stream().allMatch(FormItem::validate);
-            if (valid) {
-                List<Operation> ops = formItems.stream()
-                        .filter(FormItem::isModified)
-                        .flatMap(fi -> fi.operations(template.resolve()).stream())
-                        .collect(Collectors.toList());
+        if (state == EDIT && resourceForm != null) {
+            resourceForm.resetValidation();
+            if (resourceForm.validate()) {
+                List<Operation> ops = resourceForm.operations(template.resolve());
                 uic().crud().update(template, ops)
                         .then(__ -> {
                             load(VIEW);
                             return null;
                         })
                         .catch_(error -> {
-                            if (currentForm != null) {
-                                currentForm.add(alert(danger, "Update failed").inline()
-                                        .addDescription(String.valueOf(error)));
-                            }
+                            resourceForm.addAlert(alert(danger, "Update failed").inline()
+                                    .addDescription(String.valueOf(error)));
                             return null;
                         });
             } else {
-                if (currentForm != null) {
-                    currentForm.add(alert(danger, "Update failed").inline()
-                            .addDescription("Please fix the validation errors before saving."));
-                }
+                resourceForm.validationAlert("Update failed");
             }
         }
     }
@@ -532,13 +386,21 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     // ------------------------------------------------------ internal
 
+    private List<HTMLElement> groupContainers() {
+        if (state == VIEW && resourceView != null) {
+            return resourceView.groupContainers();
+        } else if (state == EDIT && resourceForm != null) {
+            return resourceForm.groupContainers();
+        }
+        return List.of();
+    }
+
     private void changeState(State state) {
         boolean stateChange = state != this.state;
         boolean viewOrEdit = (state == VIEW || state == EDIT) && (this.state == VIEW || this.state == EDIT);
         this.state = state;
         if (stateChange) {
             removeChildrenFrom(rootContainer);
-            groupContainers.clear();
             setVisible(toolbar, viewOrEdit);
         }
     }

@@ -30,7 +30,7 @@ import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.PipelineForm;
+import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.form.StringFormItem;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
@@ -156,7 +156,7 @@ class AddResourceDialogs {
                                             .get(ADD);
                                     removeChildrenFrom(step);
                                     if (operationDescription.isDefined()) {
-                                        PipelineForm pipelineForm = resourceForm(template, metadata, operationDescription,
+                                        ResourceForm pipelineForm = resourceForm(template, metadata, operationDescription,
                                                 resource, false);
                                         step.add(div().css(halComponent(HalClasses.resource)).add(pipelineForm));
                                         wzd.context().store(Keys.RESOURCE_FORM, pipelineForm);
@@ -172,7 +172,7 @@ class AddResourceDialogs {
                                 })
                                 .nextIfPromised((wzd, current, next) -> {
                                     AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);
-                                    PipelineForm pipelineForm = wizard.context().get(Keys.RESOURCE_FORM);
+                                    ResourceForm pipelineForm = wizard.context().get(Keys.RESOURCE_FORM);
                                     return addResource(template, pipelineForm)
                                             .then(modelNode -> {
                                                 wzd.context().store(Keys.MODEL_NODE, modelNode);
@@ -211,7 +211,7 @@ class AddResourceDialogs {
                 .then(metadata -> {
                     OperationDescription operationDescription = metadata.resourceDescription().operations().get(ADD);
                     if (operationDescription.isDefined()) {
-                        PipelineForm pipelineForm = resourceForm(resolved, metadata, operationDescription, resource, singleton);
+                        ResourceForm pipelineForm = resourceForm(resolved, metadata, operationDescription, resource, singleton);
                         modal().size(lg).top()
                                 .ouiaId(OuiaIds.ADD_MODAL)
                                 .addHeader(modalHeader()
@@ -248,13 +248,13 @@ class AddResourceDialogs {
                 }));
     }
 
-    private static PipelineForm resourceForm(AddressTemplate template, Metadata metadata,
+    private static ResourceForm resourceForm(AddressTemplate template, Metadata metadata,
             OperationDescription operationDescription,
             String value, boolean singleton) {
         PipelineContext context = new PipelineContext(template, metadata, new ModelNode(),
                 new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
         List<FormItem> items = Pipeline.create().formItems(context, operationDescription.parameters());
-        PipelineForm pipelineForm = new PipelineForm();
+        ResourceForm pipelineForm = new ResourceForm();
         if (!singleton) {
             pipelineForm.addItem(nameFormItem(metadata, value, context));
         }
@@ -286,7 +286,7 @@ class AddResourceDialogs {
         return nameItem;
     }
 
-    private static Promise<ModelNode> addResource(AddressTemplate template, PipelineForm pipelineForm) {
+    private static Promise<ModelNode> addResource(AddressTemplate template, ResourceForm pipelineForm) {
         pipelineForm.resetValidation();
         if (pipelineForm.validate()) {
             AddressTemplate resolved;

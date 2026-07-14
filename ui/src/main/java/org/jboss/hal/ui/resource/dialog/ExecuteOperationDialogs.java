@@ -25,7 +25,7 @@ import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.PipelineForm;
+import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
@@ -64,7 +64,7 @@ class ExecuteOperationDialogs {
                         String title = template.template + ":" + operation + "()";
                         boolean parameters = !operationDescription.parameters().isEmpty();
                         StackItem resultContainer = stackItem();
-                        PipelineForm pipelineForm = operationForm(template, metadata, operationDescription);
+                        ResourceForm pipelineForm = operationForm(template, metadata, operationDescription);
                         modal().size(lg).top()
                                 .ouiaId(OuiaIds.EXECUTE_MODAL)
                                 .addHeader(modalHeader()
@@ -99,12 +99,12 @@ class ExecuteOperationDialogs {
                 });
     }
 
-    private static PipelineForm operationForm(AddressTemplate template, Metadata metadata,
+    private static ResourceForm operationForm(AddressTemplate template, Metadata metadata,
             OperationDescription operationDescription) {
         PipelineContext context = new PipelineContext(template, metadata, new ModelNode(),
                 new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
         List<FormItem> items = Pipeline.create().formItems(context, operationDescription.parameters());
-        PipelineForm pipelineForm = new PipelineForm();
+        ResourceForm pipelineForm = new ResourceForm();
         for (FormItem item : items) {
             if (!item.attribute().description().deprecation().isDefined()) {
                 pipelineForm.addItem(item);
@@ -114,7 +114,7 @@ class ExecuteOperationDialogs {
     }
 
     private static void executeOperation(AddressTemplate template, OperationDescription operationDescription,
-            PipelineForm pipelineForm, StackItem resultContainer) {
+            ResourceForm pipelineForm, StackItem resultContainer) {
         boolean execute = true;
         boolean parameters = !operationDescription.parameters().isEmpty();
         int lines = parameters ? 7 : 5;

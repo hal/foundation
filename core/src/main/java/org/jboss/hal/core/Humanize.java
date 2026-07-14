@@ -84,6 +84,18 @@ public class Humanize {
         return new Humanize(CAPITAL).enumeration(names, conjunction);
     }
 
+    public static String abbreviate(String text, int maxLength) {
+        if (text == null || text.length() <= maxLength) {
+            return text;
+        }
+        // try to break at a word boundary
+        int breakAt = text.lastIndexOf(' ', maxLength);
+        if (breakAt <= 0) {
+            breakAt = maxLength;
+        }
+        return text.substring(0, breakAt) + " …";
+    }
+
     // ------------------------------------------------------ instance
 
     /**
