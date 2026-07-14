@@ -15,20 +15,11 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import elemental2.dom.HTMLElement;
-
-import org.jboss.elemento.IsElement;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResourceItem;
 
 /**
  * A read-only view item produced by the pipeline. Implementations wrap a PatternFly {@code DescriptionListGroup} or similar
  * component for displaying attribute values.
  */
-public interface ViewItem extends IsElement<HTMLElement> {
-
-    /** Returns a unique identifier for this view item, suitable for use as a DOM element ID. */
-    String identifier();
-
-    /** Returns the primary resolved attribute this view item displays. Used for filtering and grouping. */
-    ResolvedAttribute attribute();
+public interface ViewItem extends ResourceItem {
 }

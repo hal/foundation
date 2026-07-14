@@ -13,7 +13,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Add self-contained view and form item base classes (`AbstractViewItem`, `AbstractFormItem`) that build their complete UI (label + value/input) from a `ResolvedAttribute` — eliminates factory-item coupling
 - Add type-specific view items: `DefaultViewItem` (boolean switch, text, unit, allowed values, capability reference, list, JSON), `TimeUnitViewItem`, `CredentialReferenceViewItem`, `FileViewItem`, `PathRelativeToViewItem`
 - Add type-specific form items: `StringFormItem`, `BooleanFormItem`, `NumberFormItem`, `SelectFormItem`, `CapabilityReferenceFormItem` (typeahead), `CapabilityReferencesFormItem` (multi-select typeahead), `StringListFormItem` (label-based multi-value), `TimeUnitFormItem`, `CredentialReferenceFormItem` (radio mode selection with store typeahead), `FileFormItem`, `PathRelativeToFormItem`, `RestrictedFormItem`, `UnsupportedFormItem`
-- Add `PipelineForm` as lightweight form wrapper for pipeline form items with validation, model node collection, and alert display
+- Add `ResourceItem` interface as shared contract for `ViewItem` and `FormItem` — provides `identifier()` and `attribute()` for filtering and grouping
+- Add `GroupingSupport` utility for metadata-based and auto-grouping of resource items — consolidates duplicated grouping logic from `ResourceView` and `ResourceForm`
+- Add `ResourceView` and `ResourceForm` as dedicated view/form builders with built-in filtering and grouping support
 - Add pipeline entry point for operation parameters — `Pipeline.formItems(context, parameters)` for dialog classes
 - Add `previewView()` helper in `FinderBricks` for pipeline-based finder previews
 - Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
@@ -21,10 +23,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Wire pipeline into `ResourceData` — replaces old `ResourceAttribute.resourceAttributes()` → factory → item loop with `Pipeline.viewItems()`/`formItems()` calls
-- Wire pipeline into dialog classes — `ExecuteOperationDialogs` and `AddResourceDialogs` now use `Pipeline` and `PipelineForm` instead of old `ResourceForm` and `FormItemFactory`
+- Wire pipeline into dialog classes — `ExecuteOperationDialogs` and `AddResourceDialogs` now use `Pipeline` and `ResourceForm` instead of old form and factory classes
 - Migrate `ResourceFilter` from `Filter<ResourceAttribute>` to `Filter<ResolvedAttribute>`
 - Refactor `CapabilityReference` to accept `String attributeValue` instead of `ResourceAttribute`
-- Inline attribute grouping logic in `ResourceData` — replaces `GroupingStrategy`/`MetadataGrouping`/`AutoGrouping`
+- Consolidate attribute grouping into `GroupingSupport` — replaces `GroupingStrategy`/`MetadataGrouping` and duplicated grouping logic in `ResourceView`/`ResourceForm`
+- Change `Pipeline` to expose a shared `DEFAULT` singleton instead of `create()` factory — prevents registration-order drift across call sites
+- Delegate filter CSS toggling from `ResourceData` to `ResourceView.applyFilter()`/`ResourceForm.applyFilter()` — each class now owns its own DOM manipulation
 - Extract OUIA component type strings to OuiaIds constants for consistent test identifiers
 - Rename statistics ResourceData to StatisticsEnabledState for clarity
 - Refactor model browser detail panel to use reusable resource components (ResourceShell, ResourceBreadcrumb, ResourceHeader, ResourceTabs, ResourceList)
@@ -32,11 +36,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Remove `ResourceAttribute`, `ResourceItem`, `ItemIdentifier` — replaced by `ResolvedAttribute` record
-- Remove `ViewItemFactory`, `ViewItemProvider`, `ViewItemProviders`, `ResourceView` — replaced by pipeline view items
-- Remove `FormItemFactory`, `FormItemProvider`, `FormItemProviders`, `ResourceForm` — replaced by pipeline form items and `PipelineForm`
+- Remove `ResourceAttribute`, `ItemIdentifier` — replaced by `ResolvedAttribute` record
+- Remove `ViewItemFactory`, `ViewItemProvider`, `ViewItemProviders` — replaced by pipeline view items
+- Remove `FormItemFactory`, `FormItemProvider`, `FormItemProviders` — replaced by pipeline form items
 - Remove `FormItemFlags`, `FormItemInputMode`, `HelperTexts` — replaced by `PipelineFlags`, `InputMode`, inline helpers
-- Remove `GroupingStrategy`, `MetadataGrouping`, `AutoGrouping` — grouping logic inlined in `ResourceData`
+- Remove `GroupingStrategy`, `MetadataGrouping` — replaced by `GroupingSupport`
 - Remove `CredentialReferenceView`, `TimeUnitView` — replaced by pipeline view items
 - Remove all old form item implementations (13 `Old*` classes)
 

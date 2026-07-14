@@ -17,28 +17,20 @@ package org.jboss.hal.ui.resource.form;
 
 import java.util.List;
 
-import elemental2.dom.HTMLElement;
-
-import org.jboss.elemento.IsElement;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResourceItem;
 
 /**
  * An editable form item produced by the pipeline. Each form item knows how to produce 1..n DMR operations that are flat-mapped
  * into a single composite operation for the resource write.
  * <p>
- * The {@link #operations(ResourceAddress)} method is the key difference from the existing {@code OldFormItem} class, where
- * operations were produced by the form, not the item.
+ * The {@link #operations(ResourceAddress)} method is a key design choice: operations are produced by the item, not the form.
+ * This allows composite items (e.g. credential-reference, path+relative-to) to generate multiple operations from a single
+ * form group.
  */
-public interface FormItem extends IsElement<HTMLElement> {
-
-    /** Returns a unique identifier for this form item, suitable for use as a DOM element ID. */
-    String identifier();
-
-    /** Returns the primary resolved attribute this form item edits. Used for filtering and grouping. */
-    ResolvedAttribute attribute();
+public interface FormItem extends ResourceItem {
 
     /** Returns the current value of this form item as a DMR model node. Used for building operation payloads. */
     ModelNode modelNode();

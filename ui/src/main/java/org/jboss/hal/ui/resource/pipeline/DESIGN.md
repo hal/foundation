@@ -28,7 +28,7 @@ No upfront filtering of attributes; every attribute from `metadata.resourceDescr
 **Shape:** One pipeline with two entry points:
 
 ```
-Pipeline pipeline = Pipeline.create();
+Pipeline pipeline = Pipeline.DEFAULT;
 pipeline.viewItems(context) → List<ViewItem>
 pipeline.formItems(context) → List<FormItem>
 ```

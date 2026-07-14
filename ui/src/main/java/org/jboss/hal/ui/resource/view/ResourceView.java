@@ -16,22 +16,22 @@
 package org.jboss.hal.ui.resource.view;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.data.AutoGrouping;
+import org.jboss.hal.ui.resource.GroupingSupport;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 import org.patternfly.component.expandable.ExpandableSection;
+import org.patternfly.filter.Filter;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.hal.core.Humanize.capitalCase;
-import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.patternfly.component.expandable.ExpandableSection.expandableSection;
 import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
@@ -43,7 +43,9 @@ import static org.patternfly.style.Breakpoint.md;
 import static org.patternfly.style.Breakpoint.sm;
 import static org.patternfly.style.Breakpoint.xl;
 import static org.patternfly.style.Breakpoints.breakpoints;
+import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.group;
+import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Orientation.horizontal;
 import static org.patternfly.style.Orientation.vertical;
 
@@ -53,33 +55,25 @@ import static org.patternfly.style.Orientation.vertical;
  */
 public class ResourceView {
 
-    private static final String UNGROUPED = "ungrouped";
-
+    private final List<ViewItem> items;
     private final List<HTMLElement> groupContainers;
 
     public ResourceView() {
+        this.items = new ArrayList<>();
         this.groupContainers = new ArrayList<>();
     }
 
-    public HTMLElement build(List<ViewItem> items, boolean grouped) {
+    public HTMLElement build(List<ViewItem> viewItems, boolean grouped) {
+        items.clear();
+        items.addAll(viewItems);
         groupContainers.clear();
-        if (grouped) {
-            Map<String, List<ViewItem>> itemGroups;
-            if (hasGroups(items)) {
-                itemGroups = groupByMetadata(items);
-            } else if (items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD) {
-                itemGroups = AutoGrouping.group(items,
-                        item -> item.attribute().fqn(),
-                        item -> sentenceCase(item.attribute().name()));
-            } else {
-                itemGroups = null;
-            }
-            if (itemGroups != null) {
-                return buildGrouped(itemGroups);
-            }
+
+        Map<String, List<ViewItem>> itemGroups = GroupingSupport.resolveGroups(viewItems, grouped);
+        if (itemGroups != null) {
+            return buildGrouped(itemGroups);
         }
         HTMLElement dl = createDescriptionList();
-        for (ViewItem item : items) {
+        for (ViewItem item : viewItems) {
             dl.appendChild(item.element());
         }
         return dl;
@@ -95,7 +89,7 @@ public class ResourceView {
             for (ViewItem item : groupItems) {
                 dl.appendChild(item.element());
             }
-            if (UNGROUPED.equals(groupName)) {
+            if (GroupingSupport.UNGROUPED.equals(groupName)) {
                 container.add(dl);
             } else {
                 ExpandableSection es = expandableSection()
@@ -109,46 +103,48 @@ public class ResourceView {
         return container.element();
     }
 
-    public List<HTMLElement> groupContainers() {
-        return groupContainers;
+    // ------------------------------------------------------ filtering
+
+    /** Applies the filter to all items, toggling visibility. Returns the number of matching items. */
+    public int applyFilter(Filter<ResolvedAttribute> filter) {
+        int matchingItems = 0;
+        for (ViewItem item : items) {
+            boolean match = filter.match(item.attribute());
+            item.element().classList.toggle(modifier(filtered), !match);
+            if (match) {
+                matchingItems++;
+            }
+        }
+        for (HTMLElement container : groupContainers) {
+            boolean hasVisibleItem = false;
+            for (ViewItem item : items) {
+                if (container.contains(item.element())
+                        && !item.element().classList.contains(modifier(filtered))) {
+                    hasVisibleItem = true;
+                    break;
+                }
+            }
+            setVisible(container, hasVisibleItem);
+        }
+        return matchingItems;
+    }
+
+    /** Clears all filter state, making all items and group containers visible. */
+    public void clearFilter() {
+        for (ViewItem item : items) {
+            item.element().classList.remove(modifier(filtered));
+        }
+        for (HTMLElement container : groupContainers) {
+            setVisible(container, true);
+        }
     }
 
     // ------------------------------------------------------ static helpers
-
-    public static boolean hasGroups(List<ViewItem> items) {
-        for (ViewItem item : items) {
-            if (item.attribute().description().group() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public static HTMLElement createDescriptionList() {
         return descriptionList()
                 .orientation(breakpoints(sm, vertical, md, horizontal, lg, horizontal, xl, horizontal, _2xl, horizontal))
                 .css(halComponent(HalClasses.resource, HalClasses.view))
                 .element();
-    }
-
-    // ------------------------------------------------------ internal
-
-    private static Map<String, List<ViewItem>> groupByMetadata(List<ViewItem> items) {
-        List<ViewItem> ungrouped = new ArrayList<>();
-        TreeMap<String, List<ViewItem>> namedGroups = new TreeMap<>();
-        for (ViewItem item : items) {
-            String grp = item.attribute().description().group();
-            if (grp == null) {
-                ungrouped.add(item);
-            } else {
-                namedGroups.computeIfAbsent(grp, k -> new ArrayList<>()).add(item);
-            }
-        }
-        LinkedHashMap<String, List<ViewItem>> result = new LinkedHashMap<>();
-        if (!ungrouped.isEmpty()) {
-            result.put(UNGROUPED, ungrouped);
-        }
-        result.putAll(namedGroups);
-        return result;
     }
 }

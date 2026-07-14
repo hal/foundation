@@ -16,10 +16,8 @@
 package org.jboss.hal.ui.resource.form;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jboss.elemento.HTMLContainerBuilder;
@@ -28,16 +26,18 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.data.AutoGrouping;
+import org.jboss.hal.ui.resource.GroupingSupport;
+import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 import org.patternfly.component.alert.Alert;
 import org.patternfly.component.expandable.ExpandableSection;
+import org.patternfly.filter.Filter;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.hal.core.Humanize.capitalCase;
-import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.patternfly.component.Severity.danger;
@@ -46,7 +46,9 @@ import static org.patternfly.component.expandable.ExpandableSection.expandableSe
 import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
 import static org.patternfly.component.form.Form.form;
+import static org.patternfly.style.Classes.filtered;
 import static org.patternfly.style.Classes.group;
+import static org.patternfly.style.Classes.modifier;
 
 /**
  * Builds and manages the editable form for resource attributes. Handles both flat and grouped layouts using expandable
@@ -55,8 +57,6 @@ import static org.patternfly.style.Classes.group;
  * Used by dialog classes (add resource, execute operation) and by {@code ResourceData} for inline editing.
  */
 public class ResourceForm implements IsElement<HTMLElement> {
-
-    private static final String UNGROUPED = "ungrouped";
 
     private final List<FormItem> items;
     private final List<HTMLElement> groupContainers;
@@ -79,21 +79,11 @@ public class ResourceForm implements IsElement<HTMLElement> {
     public ResourceForm addItems(List<FormItem> formItems, boolean grouped) {
         items.addAll(formItems);
         groupContainers.clear();
-        if (grouped) {
-            Map<String, List<FormItem>> itemGroups;
-            if (hasGroups(formItems)) {
-                itemGroups = groupByMetadata(formItems);
-            } else if (formItems.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD) {
-                itemGroups = AutoGrouping.group(formItems,
-                        item -> item.attribute().fqn(),
-                        item -> sentenceCase(item.attribute().name()));
-            } else {
-                itemGroups = null;
-            }
-            if (itemGroups != null) {
-                addGrouped(itemGroups);
-                return this;
-            }
+
+        Map<String, List<FormItem>> itemGroups = GroupingSupport.resolveGroups(formItems, grouped);
+        if (itemGroups != null) {
+            addGrouped(itemGroups);
+            return this;
         }
         for (FormItem item : formItems) {
             pfForm.add(item.element());
@@ -105,7 +95,7 @@ public class ResourceForm implements IsElement<HTMLElement> {
         for (Map.Entry<String, List<FormItem>> entry : itemGroups.entrySet()) {
             String groupName = entry.getKey();
             List<FormItem> groupItems = entry.getValue();
-            if (UNGROUPED.equals(groupName)) {
+            if (GroupingSupport.UNGROUPED.equals(groupName)) {
                 for (FormItem item : groupItems) {
                     pfForm.add(item.element());
                 }
@@ -166,48 +156,50 @@ public class ResourceForm implements IsElement<HTMLElement> {
                 .addDescription("Please fix the validation errors before saving."));
     }
 
+    // ------------------------------------------------------ filtering
+
+    /** Applies the filter to all items, toggling visibility. Returns the number of matching items. */
+    public int applyFilter(Filter<ResolvedAttribute> filter) {
+        int matchingItems = 0;
+        for (FormItem item : items) {
+            boolean match = filter.match(item.attribute());
+            item.element().classList.toggle(modifier(filtered), !match);
+            if (match) {
+                matchingItems++;
+            }
+        }
+        for (HTMLElement container : groupContainers) {
+            boolean hasVisibleItem = false;
+            for (FormItem item : items) {
+                if (container.contains(item.element())
+                        && !item.element().classList.contains(modifier(filtered))) {
+                    hasVisibleItem = true;
+                    break;
+                }
+            }
+            setVisible(container, hasVisibleItem);
+        }
+        return matchingItems;
+    }
+
+    /** Clears all filter state, making all items and group containers visible. */
+    public void clearFilter() {
+        for (FormItem item : items) {
+            item.element().classList.remove(modifier(filtered));
+        }
+        for (HTMLElement container : groupContainers) {
+            setVisible(container, true);
+        }
+    }
+
     // ------------------------------------------------------ accessors
 
     public List<FormItem> items() {
         return items;
     }
 
-    public List<HTMLElement> groupContainers() {
-        return groupContainers;
-    }
-
     @Override
     public HTMLElement element() {
         return pfForm.element();
-    }
-
-    // ------------------------------------------------------ grouping
-
-    public static boolean hasGroups(List<FormItem> items) {
-        for (FormItem item : items) {
-            if (item.attribute().description().group() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static Map<String, List<FormItem>> groupByMetadata(List<FormItem> items) {
-        List<FormItem> ungrouped = new ArrayList<>();
-        TreeMap<String, List<FormItem>> namedGroups = new TreeMap<>();
-        for (FormItem item : items) {
-            String grp = item.attribute().description().group();
-            if (grp == null) {
-                ungrouped.add(item);
-            } else {
-                namedGroups.computeIfAbsent(grp, k -> new ArrayList<>()).add(item);
-            }
-        }
-        LinkedHashMap<String, List<FormItem>> result = new LinkedHashMap<>();
-        if (!ungrouped.isEmpty()) {
-            result.put(UNGROUPED, ungrouped);
-        }
-        result.putAll(namedGroups);
-        return result;
     }
 }

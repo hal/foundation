@@ -28,6 +28,8 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.ui.resource.GroupingSupport;
+import org.jboss.hal.ui.resource.ResourceItem;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
@@ -77,12 +79,14 @@ import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateAc
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
 import static org.patternfly.core.ObservableValue.ov;
-import static org.patternfly.style.Classes.filtered;
-import static org.patternfly.style.Classes.modifier;
 
 /**
  * Central state machine that orchestrates viewing and editing of WildFly management resource attributes. Uses the pipeline to
- * produce view and form items from resource metadata.
+ * produce view and form items from resource metadata, and delegates filtering and grouping to
+ * {@link org.jboss.hal.ui.resource.view.ResourceView} and {@link ResourceForm}.
+ *
+ * @see org.jboss.hal.ui.resource.ResourceItem
+ * @see org.jboss.hal.ui.resource.GroupingSupport
  */
 public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, IsElement<HTMLElement>, Attachable {
 
@@ -136,7 +140,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
-        this.pipeline = Pipeline.create();
+        this.pipeline = Pipeline.DEFAULT;
         this.viewItems = new ArrayList<>();
         this.formItems = new ArrayList<>();
         this.root = div().css(halComponent(resource))
@@ -198,7 +202,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         List<ViewItem> items = pipeline.viewItems(context);
                         items = filterByIncludes(items);
                         viewItems.addAll(items);
-                        supportsGrouping = ResourceView.hasGroups(items)
+                        supportsGrouping = GroupingSupport.hasGroups(items)
                                 || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
                         resourceView = new ResourceView();
                         rootElement = resourceView.build(items, grouped && supportsGrouping);
@@ -207,7 +211,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                         List<FormItem> items = pipeline.formItems(context);
                         items = filterByIncludes(items);
                         formItems.addAll(items);
-                        supportsGrouping = ResourceForm.hasGroups(items)
+                        supportsGrouping = GroupingSupport.hasGroups(items)
                                 || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
                         resourceForm = new ResourceForm();
                         resourceForm.addItems(items, grouped && supportsGrouping);
@@ -237,64 +241,31 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     // ------------------------------------------------------ filtering
 
-    private <T extends IsElement<HTMLElement>> List<T> filterByIncludes(List<T> items) {
+    private <T extends ResourceItem> List<T> filterByIncludes(List<T> items) {
         if (attributes.isEmpty()) {
             return items;
         }
-        return items.stream().filter(item -> {
-            ResolvedAttribute ra = itemAttribute(item);
-            return ra != null && attributes.contains(ra.fqn());
-        }).collect(Collectors.toList());
-    }
-
-    private <T> ResolvedAttribute itemAttribute(T item) {
-        if (item instanceof ViewItem) {
-            return ((ViewItem) item).attribute();
-        } else if (item instanceof FormItem) {
-            return ((FormItem) item).attribute();
-        }
-        return null;
+        return items.stream()
+                .filter(item -> attributes.contains(item.attribute().fqn()))
+                .collect(Collectors.toList());
     }
 
     private void onFilterChanged(Filter<ResolvedAttribute> filter, String origin) {
         if ((state == VIEW || state == EDIT) && isAttached(element())) {
             logger.debug("Filter attributes: %s", filter);
-            int matchingItems = 0;
-
-            List<? extends IsElement<HTMLElement>> items = state == VIEW ? viewItems : formItems;
-            List<HTMLElement> containers = groupContainers();
-
+            int matchingItems;
             if (filter.defined()) {
-                for (IsElement<HTMLElement> item : items) {
-                    ResolvedAttribute ra = itemAttribute(item);
-                    if (ra != null) {
-                        boolean match = filter.match(ra);
-                        item.element().classList.toggle(modifier(filtered), !match);
-                        if (match) {
-                            matchingItems++;
-                        }
-                    }
-                }
-                for (HTMLElement container : containers) {
-                    boolean hasVisibleItem = false;
-                    for (IsElement<HTMLElement> item : items) {
-                        if (container.contains(item.element())
-                                && !item.element().classList.contains(modifier(filtered))) {
-                            hasVisibleItem = true;
-                            break;
-                        }
-                    }
-                    setVisible(container, hasVisibleItem);
-                }
+                matchingItems = state == VIEW
+                        ? resourceView.applyFilter(filter)
+                        : resourceForm.applyFilter(filter);
                 toggle(noMatch, rootContainer.element(), matchingItems == 0);
             } else {
                 matchingItems = total.get();
                 toggle(noMatch, rootContainer.element(), false);
-                for (IsElement<HTMLElement> item : items) {
-                    item.element().classList.remove(modifier(filtered));
-                }
-                for (HTMLElement container : containers) {
-                    setVisible(container, true);
+                if (state == VIEW) {
+                    resourceView.clearFilter();
+                } else {
+                    resourceForm.clearFilter();
                 }
             }
             visible.set(matchingItems);
@@ -385,15 +356,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     }
 
     // ------------------------------------------------------ internal
-
-    private List<HTMLElement> groupContainers() {
-        if (state == VIEW && resourceView != null) {
-            return resourceView.groupContainers();
-        } else if (state == EDIT && resourceForm != null) {
-            return resourceForm.groupContainers();
-        }
-        return List.of();
-    }
 
     private void changeState(State state) {
         boolean stateChange = state != this.state;

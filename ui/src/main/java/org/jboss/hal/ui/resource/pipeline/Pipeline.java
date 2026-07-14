@@ -46,6 +46,9 @@ import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
  */
 public final class Pipeline {
 
+    /** Shared pipeline instance with all matchers and providers registered in the correct priority order. */
+    public static final Pipeline DEFAULT = create();
+
     /**
      * Creates a pipeline with all matchers and providers registered in the correct priority order.
      * <p>
@@ -55,7 +58,7 @@ public final class Pipeline {
      * Provider order (stage 2): specific providers first (credential-reference, time-unit, file, path+relative-to, standalone
      * relative-to), then the default catch-all.
      */
-    public static Pipeline create() {
+    static Pipeline create() {
         // Order is important!
         List<AttributeMatcher> matchers = List.of(
                 new CredentialReferenceMatcher(),

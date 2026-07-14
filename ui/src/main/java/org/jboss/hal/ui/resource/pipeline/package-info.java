@@ -24,8 +24,8 @@
  *     <li><b>Itemize</b> — {@link org.jboss.hal.ui.resource.pipeline.ItemProvider}s resolve each group against the
  *         {@link org.jboss.hal.ui.resource.pipeline.PipelineContext} into
  *         {@link org.jboss.hal.ui.resource.pipeline.ResolvedAttribute}s and create
- *         {@link org.jboss.hal.ui.resource.pipeline.ViewItem}s or
- *         {@link org.jboss.hal.ui.resource.pipeline.FormItem}s. Providers are tried in registration order; first match
+ *         {@link org.jboss.hal.ui.resource.view.ViewItem}s or
+ *         {@link org.jboss.hal.ui.resource.form.FormItem}s. Providers are tried in registration order; first match
  *         wins.</li>
  * </ol>
  *
@@ -49,8 +49,8 @@
  *         ↓ stage 2 providers resolve against PipelineContext
  * ResolvedAttribute     — 1 description + its current value + readable/writable (snapshot)
  *         ↓ passed to item constructors
- * OldFormItem      — holds 1..n ResolvedAttributes, renders UI, produces operations
- * OldViewItem      — holds 1..n ResolvedAttributes, renders read-only display
+ * FormItem         — holds 1..n ResolvedAttributes, renders UI, produces operations
+ * ViewItem         — holds 1..n ResolvedAttributes, renders read-only display
  * </pre>
  * <p>
  * {@link org.jboss.hal.ui.resource.pipeline.AttributeGroup} is the stage 1 → stage 2 contract (descriptions only).
@@ -109,7 +109,7 @@
  * </table>
  *
  * <p>
- * Entry point: {@link org.jboss.hal.ui.resource.pipeline.Pipeline#create()}.
+ * Entry point: {@link org.jboss.hal.ui.resource.pipeline.Pipeline#DEFAULT}.
  *
  * @see org.jboss.hal.ui.resource.pipeline.Pipeline
  */
