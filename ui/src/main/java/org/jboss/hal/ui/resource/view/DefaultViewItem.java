@@ -15,9 +15,6 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.List;
 
 import org.jboss.elemento.Id;
@@ -25,6 +22,8 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.patternfly.component.label.Label;
 
 import elemental2.dom.HTMLElement;
@@ -36,7 +35,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
-import static org.jboss.hal.ui.resource.view.CapabilityReference.capabilityReference;
 import static org.jboss.hal.dmr.ModelType.BOOLEAN;
 import static org.jboss.hal.dmr.ModelType.LIST;
 import static org.jboss.hal.dmr.ModelType.OBJECT;
@@ -44,16 +42,18 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
 import static org.jboss.hal.ui.brick.CodeBricks.modelNodeCode;
+import static org.jboss.hal.ui.resource.view.CapabilityReference.capabilityReference;
+import static org.jboss.hal.ui.resource.view.ViewItemDefaults.NUM_LABELS;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
-import static org.patternfly.component.list.List.list;
-import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.switch_.Switch.switch_;
+import static org.patternfly.style.Color.blue;
 import static org.patternfly.style.Color.grey;
 
 /**
  * Default view item for single attributes. Handles all standard types: BOOLEAN (switch), simple types (plain text, unit,
- * allowed values), LIST (inline list or JSON), and OBJECT (JSON). Used by {@link DefaultItemProvider} and
- * {@link FlatteningProvider}.
+ * allowed values), LIST (inline list or JSON), and OBJECT (JSON). Used by
+ * {@code org.jboss.hal.ui.resource.pipeline.DefaultItemProvider} and
+ * {@code org.jboss.hal.ui.resource.pipeline.FlatteningProvider}.
  */
 public class DefaultViewItem extends AbstractViewItem {
 
@@ -128,9 +128,10 @@ public class DefaultViewItem extends AbstractViewItem {
                 ? attribute.description().get(VALUE_TYPE).asType()
                 : null;
         if (valueType != null && valueType.simple()) {
-            return list().plain().inline()
+            return labelGroup()
+                    .numLabels(NUM_LABELS)
                     .addItems(attribute.value().asList().stream().map(ModelNode::asString).collect(toList()),
-                            v -> listItem(Id.build(v, "value")).text(v))
+                            v -> Label.label(Id.build(v), v, blue))
                     .element();
         } else {
             return modelNodeCode(attribute.value()).element();

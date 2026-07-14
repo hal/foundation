@@ -16,21 +16,12 @@
 package org.jboss.hal.ui.resource.grouping;
 
 import java.util.ArrayList;
-
-import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.LinkedHashMap;
-
-import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.List;
-
-import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.Map;
-
-import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.TreeMap;
 
 import org.jboss.hal.ui.resource.ResourceItem;
-
 
 import static org.jboss.hal.core.Humanize.sentenceCase;
 
@@ -56,8 +47,8 @@ public final class GroupingSupport {
     }
 
     /**
-     * Resolves the grouping strategy for the given items. Returns {@code null} if items should be rendered flat (either grouping
-     * is disabled or no grouping strategy applies). Otherwise returns a map of group name to items, with the
+     * Resolves the grouping strategy for the given items. Returns {@code null} if items should be rendered flat (either
+     * grouping is disabled or no grouping strategy applies). Otherwise, returns a map of group name to items, with the
      * {@link #UNGROUPED} key first (if present) followed by alphabetically sorted named groups.
      */
     public static <T extends ResourceItem> Map<String, List<T>> resolveGroups(List<T> items, boolean grouped) {
@@ -67,7 +58,9 @@ public final class GroupingSupport {
             } else if (items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD) {
                 return AutoGrouping.group(items,
                         item -> item.attribute().fqn(),
-                        item -> sentenceCase(item.attribute().name()));
+                        item -> sentenceCase(item.attribute().description().parent() != null
+                                ? item.attribute().description().parent().name()
+                                : item.attribute().description().name()));
             }
         }
         return null;

@@ -15,20 +15,20 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.elemento.Id;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-
-import org.jboss.hal.dmr.Property;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.hal.ui.resource.view.ViewItemDefaults.NUM_LABELS;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
-import static org.patternfly.style.Color.grey;
+import static org.patternfly.style.Color.teal;
 
 /**
- * View item for free-form key-value map attributes. Renders the map entries as a compact PatternFly Label Group
- * with {@code key=value} labels.
+ * View item for free-form key-value map attributes. Renders the map entries as a compact PatternFly Label Group with
+ * {@code key=value} labels.
  */
 public class MapViewItem extends AbstractViewItem {
 
@@ -39,10 +39,10 @@ public class MapViewItem extends AbstractViewItem {
     @Override
     protected HTMLElement definedValue() {
         return labelGroup()
-                .numLabels(5)
+                .numLabels(NUM_LABELS)
                 .addItems(attribute.value().asPropertyList(),
-                        (Property entry) -> label(entry.getName() + "=" + entry.getValue().asString(), grey)
-                                .compact())
+                        p -> label(Id.build(p.getName(), p.getValue().asString()),
+                                p.getName() + " ⇒ " + p.getValue().asString(), teal))
                 .element();
     }
 }
