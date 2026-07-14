@@ -106,6 +106,29 @@ public interface AttributeMatcher {
     }
 
     /**
+     * Tests whether the given attribute is an OBJECT whose VALUE_TYPE is a simple scalar type (STRING, INT, LONG, etc.).
+     * This identifies free-form key-value map attributes — the complement of {@link #hasObjectValueType}.
+     */
+    static boolean hasSimpleValueType(AttributeDescription description) {
+        try {
+            ModelType type = description.get(TYPE).asType();
+            if (type != ModelType.OBJECT) {
+                return false;
+            }
+            if (!description.hasDefined(VALUE_TYPE)) {
+                return false;
+            }
+            ModelNode valueTypeNode = description.get(VALUE_TYPE);
+            if (valueTypeNode.getType() != ModelType.TYPE) {
+                return false;
+            }
+            return valueTypeNode.asType().simple();
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
      * Scans the given pool of attributes and claims groups of related attributes.
      *
      * @param pool the attributes available for claiming (not yet claimed by higher-priority matchers)

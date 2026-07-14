@@ -89,6 +89,13 @@ final class TestData {
         return new AttributeDescription(new Property(name, desc));
     }
 
+    static AttributeDescription mapAttribute(String name) {
+        ModelNode desc = new ModelNode();
+        desc.get(TYPE).set("OBJECT");
+        desc.get(VALUE_TYPE).set("STRING");
+        return new AttributeDescription(new Property(name, desc));
+    }
+
     /** Builds a pool of attribute descriptions from varargs. */
     static List<AttributeDescription> pool(AttributeDescription... descriptions) {
         List<AttributeDescription> list = new ArrayList<>();
