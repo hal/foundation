@@ -139,7 +139,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
-        this.pipeline = Pipeline.DEFAULT;
+        this.pipeline = Pipeline.instance();
         this.viewItems = new ArrayList<>();
         this.formItems = new ArrayList<>();
         this.root = div().css(halComponent(resource))

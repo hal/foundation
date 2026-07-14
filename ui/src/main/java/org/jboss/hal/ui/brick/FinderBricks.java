@@ -177,7 +177,7 @@ public final class FinderBricks {
             List<String> attributes) {
         PipelineContext context = new PipelineContext(template, metadata, resource,
                 new PipelineFlags(PipelineFlags.Scope.EXISTING_RESOURCE, PipelineFlags.Placeholder.NONE));
-        List<ViewItem> items = Pipeline.DEFAULT.viewItems(context);
+        List<ViewItem> items = Pipeline.instance().viewItems(context);
         HTMLElement dl = ResourceView.createDescriptionList();
         for (ViewItem item : items) {
             if (attributes.isEmpty() || attributes.contains(item.attribute().fqn())) {

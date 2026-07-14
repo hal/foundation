@@ -253,7 +253,7 @@ class AddResourceDialogs {
             String value, boolean singleton) {
         PipelineContext context = new PipelineContext(template, metadata, new ModelNode(),
                 new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
-        List<FormItem> items = Pipeline.DEFAULT.formItems(context, operationDescription.parameters());
+        List<FormItem> items = Pipeline.instance().formItems(context, operationDescription.parameters());
         ResourceForm pipelineForm = new ResourceForm();
         if (!singleton) {
             pipelineForm.addItem(nameFormItem(metadata, value, context));

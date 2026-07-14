@@ -103,7 +103,7 @@ class ExecuteOperationDialogs {
             OperationDescription operationDescription) {
         PipelineContext context = new PipelineContext(template, metadata, new ModelNode(),
                 new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
-        List<FormItem> items = Pipeline.DEFAULT.formItems(context, operationDescription.parameters());
+        List<FormItem> items = Pipeline.instance().formItems(context, operationDescription.parameters());
         ResourceForm pipelineForm = new ResourceForm();
         for (FormItem item : items) {
             if (!item.attribute().description().deprecation().isDefined()) {

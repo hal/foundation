@@ -45,8 +45,15 @@ import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
  */
 public final class Pipeline {
 
-    /** Shared pipeline instance with all matchers and providers registered in the correct priority order. */
-    public static final Pipeline DEFAULT = create();
+    private static Pipeline instance;
+
+    /** Returns the shared pipeline instance with all matchers and providers registered in the correct priority order. */
+    public static Pipeline instance() {
+        if (instance == null) {
+            instance = create();
+        }
+        return instance;
+    }
 
     /**
      * Creates a pipeline with all matchers and providers registered in the correct priority order.
