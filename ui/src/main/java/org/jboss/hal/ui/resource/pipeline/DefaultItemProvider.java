@@ -16,15 +16,16 @@
 package org.jboss.hal.ui.resource.pipeline;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.BooleanFormItem;
-import org.jboss.hal.ui.resource.form.CapabilityReferenceFormItem;
-import org.jboss.hal.ui.resource.form.CapabilityReferencesFormItem;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.NumberFormItem;
+import org.jboss.hal.ui.resource.form.MultiTypeaheadControl;
+import org.jboss.hal.ui.resource.form.NumberInputControl;
 import org.jboss.hal.ui.resource.form.RestrictedFormItem;
-import org.jboss.hal.ui.resource.form.SelectFormItem;
+import org.jboss.hal.ui.resource.form.SelectControl;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.form.StringFormItem;
-import org.jboss.hal.ui.resource.form.StringListFormItem;
+import org.jboss.hal.ui.resource.form.StringListControl;
+import org.jboss.hal.ui.resource.form.SwitchControl;
+import org.jboss.hal.ui.resource.form.TypeaheadControl;
 import org.jboss.hal.ui.resource.form.UnsupportedFormItem;
 import org.jboss.hal.ui.resource.view.DefaultViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -76,18 +77,18 @@ class DefaultItemProvider implements ItemProvider {
         ModelType type = ra.description().get(TYPE).asType();
         switch (type) {
             case BOOLEAN:
-                return new BooleanFormItem(identifier, ra, context);
+                return new StandardFormItem<>(identifier, ra, context, new SwitchControl());
 
             case INT:
             case LONG:
             case DOUBLE:
-                return new NumberFormItem(identifier, ra, context);
+                return new StandardFormItem<>(identifier, ra, context, new NumberInputControl());
 
             case STRING:
                 if (ra.description().hasDefined(ALLOWED)) {
-                    return new SelectFormItem(identifier, ra, context);
+                    return new StandardFormItem<>(identifier, ra, context, new SelectControl());
                 } else if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                    return new CapabilityReferenceFormItem(identifier, ra, context);
+                    return new StandardFormItem<>(identifier, ra, context, new TypeaheadControl());
                 } else {
                     return new StringFormItem(identifier, ra, context);
                 }
@@ -99,9 +100,9 @@ class DefaultItemProvider implements ItemProvider {
                         : null;
                 if (valueType == ModelType.STRING) {
                     if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                        return new CapabilityReferencesFormItem(identifier, ra, context);
+                        return new StandardFormItem<>(identifier, ra, context, new MultiTypeaheadControl());
                     } else {
-                        return new StringListFormItem(identifier, ra, context);
+                        return new StandardFormItem<>(identifier, ra, context, new StringListControl());
                     }
                 }
                 return new UnsupportedFormItem(identifier, ra, context);

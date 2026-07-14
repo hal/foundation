@@ -17,7 +17,9 @@ package org.jboss.hal.ui.resource.pipeline;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.MapFormItem;
+import org.jboss.hal.ui.resource.form.MapControl;
+import org.jboss.hal.ui.resource.form.MapOperationStrategy;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.view.MapViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
@@ -28,7 +30,8 @@ import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasSimpleValue
 
 /**
  * Provider for free-form key-value map attributes. Matches OBJECT attributes with a simple VALUE_TYPE (detected by
- * {@link MapMatcher} in stage 1). Creates {@link MapViewItem} for read-only display and {@link MapFormItem} for editing.
+ * {@link MapMatcher} in stage 1). Creates {@link MapViewItem} for read-only display and a {@link StandardFormItem} with
+ * {@link MapControl} for editing.
  */
 class MapProvider implements ItemProvider {
 
@@ -46,6 +49,7 @@ class MapProvider implements ItemProvider {
     @Override
     public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
-        return singletonList(new MapFormItem(ra.fqn(), ra, context));
+        return singletonList(new StandardFormItem<>(ra.fqn(), ra, context,
+                new MapControl(), MapOperationStrategy.INSTANCE));
     }
 }

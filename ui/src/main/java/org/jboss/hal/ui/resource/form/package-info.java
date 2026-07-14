@@ -16,58 +16,94 @@
 
 /**
  * Editable form items for WildFly management resource attributes.
+ *
+ * <h2>Architecture</h2>
  * <p>
- * This package contains the abstract {@link org.jboss.hal.ui.resource.form.OldFormItem} base class and all concrete form
- * item implementations for different attribute types (boolean, numeric, string, select, capability references, etc.),
- * along with the {@link org.jboss.hal.ui.resource.form.FormItemFactory} that creates the appropriate form item based on
- * attribute metadata, and the {@link org.jboss.hal.ui.resource.form.ResourceForm} container that manages form layout,
- * validation, and modification tracking.
+ * Form items use a composition-based architecture with four building blocks:
+ * <ol>
+ *   <li>{@link org.jboss.hal.ui.resource.form.NativeControl NativeControl&lt;C&gt;} — strategy interface that captures the
+ *       widget type and its value semantics (creation, reading, modification detection, validation). One implementation per
+ *       control type (switch, select, number input, typeahead, filter input, etc.).</li>
+ *   <li>{@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} — encapsulates expression/native mode
+ *       switching, managing the {@link org.jboss.hal.ui.resource.form.InputMode InputMode}, the expression text input,
+ *       container swapping on the {@code FormGroupControl}, and tooltip lifecycle.</li>
+ *   <li>{@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks} — static factory methods (brick pattern) for
+ *       shared UI fragments: labels with description popovers, read-only controls, placeholders, and validation helper
+ *       text.</li>
+ *   <li>{@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy} — functional interface for producing DMR
+ *       operations from a form item's current state. Most items use the default
+ *       {@link org.jboss.hal.ui.resource.form.OperationStrategy#WRITE_ATTRIBUTE WRITE_ATTRIBUTE} strategy;
+ *       {@link org.jboss.hal.ui.resource.form.MapOperationStrategy MapOperationStrategy} provides granular
+ *       {@code map-put}/{@code map-remove} operations.</li>
+ * </ol>
  * <p>
- * Key components:
+ * {@link org.jboss.hal.ui.resource.form.StandardFormItem StandardFormItem&lt;C&gt;} is the single {@code final} class that
+ * composes all four building blocks. It handles the three assembly paths (read-only, expression-allowed, native-only),
+ * mode-aware helper text lifecycle, modification tracking, validation, and DMR operation generation — with no template methods
+ * and no subclassing.
+ *
+ * <h2>Item Categories</h2>
+ * <p>
+ * Form items fall into two categories:
+ *
+ * <h3>Category A — Standard single-attribute items</h3>
+ * <p>
+ * These follow a uniform pattern (single attribute, native control + optional expression toggle) and are created as
+ * {@code StandardFormItem} instances composed with a {@code NativeControl} implementation:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldFormItem}</dt>
- * <dd>Abstract base class for all form items with expression mode support, validation, and a template method for
- * modification detection ({@link org.jboss.hal.ui.resource.form.OldFormItem#isModified()}).</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.FormItemFactory}</dt>
- * <dd>Creates the appropriate form item subclass based on attribute type and constraints.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.ResourceForm}</dt>
- * <dd>Horizontal form container with validation and DMR operation generation.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldBooleanFormItem}</dt>
- * <dd>Toggle switch for boolean attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldNumberFormItem}</dt>
- * <dd>Numeric input with range validation.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldStringFormItem}</dt>
- * <dd>Text input for string attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldSelectFormItem}</dt>
- * <dd>Dropdown select for attributes with predefined allowed values.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldCapabilityReferenceFormItem}</dt>
- * <dd>Typeahead for single capability reference attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldCapabilityReferencesFormItem}</dt>
- * <dd>Multi-select typeahead for list-valued capability reference attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldStringListFormItem}</dt>
- * <dd>Label-based multi-value input for LIST-type string attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.FormItemFlags}</dt>
- * <dd>Configuration flags controlling scope and placeholder behavior.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.FormItemInputMode}</dt>
- * <dd>Enumeration of input modes: native, expression, or mixed.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.FormItemProvider}</dt>
- * <dd>Strategy interface for custom form item creation based on address template and attribute metadata.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.FormItemProviders}</dt>
- * <dd>Registry of special-case form item providers consulted before default creation.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldRestrictedFormItem}</dt>
- * <dd>Locked form item shown when the user lacks read permission for the attribute.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.OldUnsupportedFormItem}</dt>
- * <dd>Read-only fallback for attribute types not yet supported.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.HelperTexts}</dt>
- * <dd>Factory methods for validation helper text messages.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.CapabilityReferenceSupport}</dt>
- * <dd>Shared helpers for loading capability suggestions and creating new provider resources.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.StringListSupport}</dt>
- * <dd>Shared helpers for modification detection and model node conversion for string list attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.SearchReloadInput}</dt>
- * <dd>Search input with reload button for single-select capability typeaheads.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.form.FilterReloadInput}</dt>
- * <dd>Filter input with reload button for multi-select capability typeaheads.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.SwitchControl SwitchControl}</dt>
+ *   <dd>Toggle switch for boolean attributes. Uses a flex layout for the expression-toggle container.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.NumberInputControl NumberInputControl}</dt>
+ *   <dd>Number input with min/max validation (INT, LONG, DOUBLE) or allowed-values select.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.SelectControl SelectControl}</dt>
+ *   <dd>Dropdown select for string attributes with predefined allowed values.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.TypeaheadControl TypeaheadControl}</dt>
+ *   <dd>Single-select typeahead for string attributes with a capability reference.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.MultiTypeaheadControl MultiTypeaheadControl}</dt>
+ *   <dd>Multi-select typeahead for list-of-string attributes with a capability reference.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.StringListControl StringListControl}</dt>
+ *   <dd>Label-based multi-value input for list-of-string attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.MapControl MapControl}</dt>
+ *   <dd>Key=value filter input for free-form map attributes. Paired with
+ *       {@link org.jboss.hal.ui.resource.form.MapOperationStrategy MapOperationStrategy} for granular operations.</dd>
  * </dl>
+ *
+ * <h3>Category B — Composite and special-case items</h3>
+ * <p>
+ * These implement {@link org.jboss.hal.ui.resource.form.FormItem FormItem} directly (with or without
+ * {@link org.jboss.hal.ui.resource.form.AbstractFormItem AbstractFormItem}) and use
+ * {@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks} for shared fragments:
+ * <dl>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.StringFormItem StringFormItem}</dt>
+ *   <dd>Text input for plain string attributes, using MIXED mode (no expression toggle).</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.FileFormItem FileFormItem}</dt>
+ *   <dd>Composite form item for path + relative-to OBJECT attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.TimeUnitFormItem TimeUnitFormItem}</dt>
+ *   <dd>Composite form item for time + unit OBJECT attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.CredentialReferenceFormItem CredentialReferenceFormItem}</dt>
+ *   <dd>Multi-mode composite for credential-reference OBJECT attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.RestrictedFormItem RestrictedFormItem}</dt>
+ *   <dd>Locked sentinel for permission-restricted attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.UnsupportedFormItem UnsupportedFormItem}</dt>
+ *   <dd>Read-only fallback for unsupported attribute types.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem}</dt>
+ *   <dd>Sibling-attribute form item for path + relative-to STRING pairs.</dd>
+ * </dl>
+ *
+ * <h2>Helper Text</h2>
+ * <p>
+ * Native and expression modes manage helper text independently. {@link org.jboss.hal.ui.resource.form.NativeControl#helperText()
+ * NativeControl.helperText()} provides helper text for native mode, and
+ * {@link org.jboss.hal.ui.resource.form.NativeControl#expressionHelperText() NativeControl.expressionHelperText()} provides
+ * helper text for expression mode. Both return {@link org.patternfly.component.help.HelperText HelperText} components, which
+ * support rich content with nested elements and markup. {@code StandardFormItem} applies the correct helper text when switching
+ * modes and after resetting validation.
+ *
+ * <h2>Pipeline Integration</h2>
+ * <p>
+ * Form items are created by the pipeline's item providers. The
+ * {@link org.jboss.hal.ui.resource.pipeline.DefaultItemProvider DefaultItemProvider} dispatches by attribute type to the
+ * appropriate {@code NativeControl} implementation. Specialized providers (e.g.
+ * {@link org.jboss.hal.ui.resource.pipeline.MapProvider MapProvider}) handle composite matches.
  */
 package org.jboss.hal.ui.resource.form;

@@ -15,12 +15,11 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MultiTypeahead;
@@ -35,68 +34,41 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
 import static org.jboss.hal.ui.resource.form.FilterReloadInput.filterReloadInput;
-import static org.jboss.hal.ui.resource.form.InputMode.EXPRESSION;
-import static org.jboss.hal.ui.resource.form.InputMode.NATIVE;
 import static org.jboss.hal.ui.resource.form.StringListSupport.defaultValues;
 import static org.jboss.hal.ui.resource.form.StringListSupport.isExistingModified;
 import static org.jboss.hal.ui.resource.form.StringListSupport.isNewModified;
 import static org.jboss.hal.ui.resource.form.StringListSupport.modelValues;
 import static org.jboss.hal.ui.resource.form.StringListSupport.valuesModelNode;
 import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.form.FormGroupControl.formGroupControl;
-import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
-import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectMenu;
 import static org.patternfly.component.menu.MultiTypeahead.multiTypeahead;
 
-/** Form item for LIST-of-STRING attributes with a capability reference, rendered as a multi-select typeahead. */
-public class CapabilityReferencesFormItem extends AbstractFormItem {
+/**
+ * {@link NativeControl} for LIST-of-STRING attributes with a capability reference, rendered as a multi-select typeahead.
+ */
+public final class MultiTypeaheadControl implements NativeControl<MultiTypeahead> {
 
-    private final String capability;
-    private /*final*/ MultiTypeahead typeahead;
-
-    public CapabilityReferencesFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
-        this.capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
-        defaultSetup();
-    }
+    private String capability;
 
     @Override
-    FormGroupControl readOnlyGroup() {
-        return readOnlyGroupWithExpressionSwitch();
-    }
-
-    @Override
-    FormGroupControl nativeGroup() {
-        return formGroupControl().add(typeaheadControl());
-    }
-
-    @Override
-    HTMLElement nativeContainer() {
-        nativeContainer = inputGroup()
-                .addItem(inputGroupItem().addButton(switchToExpressionModeButton()))
-                .addItem(inputGroupItem().fill().add(typeaheadControl()))
-                .element();
-        return nativeContainer;
-    }
-
-    private MultiTypeahead typeaheadControl() {
+    public MultiTypeahead create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
         FilterReloadInput fri = filterReloadInput(identifier)
                 .plain()
-                .placeholder("")
-                .onReload((e, c) -> typeahead.menu().reload());
-        typeahead = multiTypeahead(fri)
+                .placeholder("");
+        MultiTypeahead typeahead = multiTypeahead(fri)
                 .applyToMenuToggle(FullWidth::fullWidth)
                 .allowNewItems(value -> "Add \"" + value + "\"...", value -> newItem(value, capability))
                 .addMenu(multiSelectMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
                                         .addItems(capabilityItems(context.template(), capability)))));
+        fri.onReload((e, c) -> typeahead.menu().reload());
 
         if (attribute.value().isDefined()) {
-            values(modelValues(attribute));
+            setValues(typeahead, modelValues(attribute));
         } else if (attribute.description().hasDefault()) {
             typeahead.menuToggle().filterInput().placeholder(attribute.description().get(DEFAULT).asString());
         } else if (attribute.description().nillable()) {
@@ -105,72 +77,57 @@ public class CapabilityReferencesFormItem extends AbstractFormItem {
         return typeahead;
     }
 
-    // ------------------------------------------------------ validation
-
     @Override
-    public void resetValidation() {
-        super.resetValidation();
-        if (typeahead != null) {
-            typeahead.menuToggle().resetValidation();
-        }
+    public HTMLElement element(MultiTypeahead control) {
+        return control.element();
     }
 
     @Override
-    public boolean validate() {
-        if (inputMode == NATIVE) {
-            if (requiredOnItsOwn() && values().isEmpty()) {
-                typeahead.menuToggle().validated(error);
-                formGroupControl.addHelperText(requiredHelperText());
-                return false;
-            }
-        } else if (inputMode == EXPRESSION) {
-            return validateExpressionMode();
+    public ModelNode modelNode(MultiTypeahead control, ResolvedAttribute attribute) {
+        return valuesModelNode(getValues(control));
+    }
+
+    @Override
+    public boolean isModifiedForNew(MultiTypeahead control, ResolvedAttribute attribute) {
+        return isNewModified(attribute, getValues(control));
+    }
+
+    @Override
+    public boolean isModifiedForExisting(MultiTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
+        return isExistingModified(attribute, getValues(control), wasDefined);
+    }
+
+    @Override
+    public boolean validate(MultiTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+        if (FormItemBricks.requiredOnItsOwn(attribute) && getValues(control).isEmpty()) {
+            control.menuToggle().validated(error);
+            formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
+            return false;
         }
         return true;
     }
 
-    // ------------------------------------------------------ data
-
     @Override
-    boolean isNativeModifiedForNew() {
-        return isNewModified(attribute, values());
+    public void resetValidation(MultiTypeahead control) {
+        control.menuToggle().resetValidation();
     }
 
     @Override
-    boolean isNativeModifiedForExisting(boolean wasDefined) {
-        return isExistingModified(attribute, values(), wasDefined);
-    }
-
-    @Override
-    public ModelNode modelNode() {
-        if (inputMode == NATIVE) {
-            return valuesModelNode(values());
-        } else if (inputMode == EXPRESSION) {
-            return expressionModelNode();
-        }
-        return new ModelNode();
-    }
-
-    // ------------------------------------------------------ events
-
-    @Override
-    void afterSwitchedToNativeMode() {
+    public void afterSwitchedToNativeMode(MultiTypeahead control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
-            values(modelValues(attribute));
+            setValues(control, modelValues(attribute));
         } else {
             if (attribute.description().hasDefault()) {
                 List<String> dv = defaultValues(attribute);
-                typeahead.menuToggle().searchInput().placeholder(String.join(" ", dv));
-                values(dv);
+                control.menuToggle().searchInput().placeholder(String.join(" ", dv));
+                setValues(control, dv);
             } else if (attribute.description().nillable()) {
-                typeahead.menuToggle().searchInput().placeholder(UNDEFINED);
+                control.menuToggle().searchInput().placeholder(UNDEFINED);
             }
         }
     }
 
-    // ------------------------------------------------------ internal
-
-    private void values(List<String> values) {
+    private void setValues(MultiTypeahead typeahead, List<String> values) {
         if (typeahead.menu().hasAsyncItems()) {
             typeahead.menu().load().then(__ -> {
                 typeahead.selectIdentifiers(values);
@@ -182,7 +139,7 @@ public class CapabilityReferencesFormItem extends AbstractFormItem {
         }
     }
 
-    private List<String> values() {
-        return typeahead.menu().items().stream().map(MenuItem::text).collect(toList());
+    private List<String> getValues(MultiTypeahead control) {
+        return control.menu().items().stream().map(MenuItem::text).collect(toList());
     }
 }
