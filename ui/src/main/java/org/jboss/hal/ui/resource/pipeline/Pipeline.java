@@ -15,28 +15,28 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.view.ViewItem;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
+import org.jboss.hal.ui.resource.view.ViewItem;
 
 /**
  * Transforms resource metadata into view or form items through a two-stage pipeline:
  * <ol>
- *     <li><b>Group</b> — registered {@link AttributeMatcher}s scan the attribute pool in priority order,
- *         claiming groups of related attributes. Unclaimed attributes become single-attribute groups.</li>
+ *     <li><b>Match</b> — registered {@link AttributeMatcher}s scan the attribute pool in priority order,
+ *         claiming {@link AttributeMatch}es of related attributes. Unclaimed attributes become single-attribute matches.</li>
  *     <li><b>Itemize</b> — for each {@link AttributeMatch}, registered {@link ItemProvider}s are tried in order. The first
- *         match creates the item(s). Unmatched groups are handled by the {@link DefaultItemProvider} catch-all.</li>
+ *         provider that matches creates the item(s). Unmatched attributes are handled by the {@link DefaultItemProvider}
+ *         catch-all.</li>
  * </ol>
  * <p>
  * One pipeline, two entry points: {@link #viewItems(PipelineContext)} and {@link #formItems(PipelineContext)}. Stage 1
- * (grouping) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(AttributeMatch, PipelineContext)} or
+ * (matching) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(AttributeMatch, PipelineContext)} or
  * {@link ItemProvider#formItems(AttributeMatch, PipelineContext)} depending on the entry point.
  *
  * @see AttributeMatcher
@@ -45,26 +45,9 @@ import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
  */
 public final class Pipeline {
 
-    private static Pipeline instance;
+    private static final Pipeline instance;
 
-    /** Returns the shared pipeline instance with all matchers and providers registered in the correct priority order. */
-    public static Pipeline instance() {
-        if (instance == null) {
-            instance = create();
-        }
-        return instance;
-    }
-
-    /**
-     * Creates a pipeline with all matchers and providers registered in the correct priority order.
-     * <p>
-     * Matcher order (stage 1): composite matchers first (credential-reference, time-unit, file), then sibling matchers
-     * (path+relative-to), then map matcher (free-form key-value maps).
-     * <p>
-     * Provider order (stage 2): specific providers first (credential-reference, time-unit, file, path+relative-to, standalone
-     * relative-to, map), then flattening for simpleRecord OBJECTs, then the default catch-all.
-     */
-    static Pipeline create() {
+    static {
         // Order is important!
         List<AttributeMatcher> matchers = List.of(
                 new CredentialReferenceMatcher(),
@@ -84,7 +67,12 @@ public final class Pipeline {
                 new FlatteningProvider(),
                 new DefaultItemProvider()
         );
-        return new Pipeline(matchers, providers);
+        instance = new Pipeline(matchers, providers);
+    }
+
+    /** Returns the shared pipeline instance with all matchers and providers registered in the correct priority order. */
+    public static Pipeline instance() {
+        return instance;
     }
 
     private final List<AttributeMatcher> matchers;
@@ -113,7 +101,7 @@ public final class Pipeline {
         return itemizeForm(groups, context);
     }
 
-    // ------------------------------------------------------ stage 1: group
+    // ------------------------------------------------------ stage 1: match
 
     private List<AttributeMatch> group(Iterable<AttributeDescription> attributes) {
         List<AttributeDescription> pool = new ArrayList<>();
