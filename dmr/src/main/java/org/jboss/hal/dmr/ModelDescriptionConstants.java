@@ -497,6 +497,7 @@ public interface ModelDescriptionConstants {
     String JSR77 = "jsr77";
     String JVM = "jvm";
     String KERBEROS_SECURITY_FACTORY = "kerberos-security-factory";
+    String KEY = "key";
     String KEY_ALIAS = "key-alias";
     String KEY_MANAGER = "key-manager";
     String KEY_OVERRIDES = "key-overrides";
