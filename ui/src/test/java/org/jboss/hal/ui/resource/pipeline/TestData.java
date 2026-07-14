@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.dmr.Property;
 import org.jboss.hal.meta.description.AttributeDescription;
 
@@ -92,7 +93,7 @@ final class TestData {
     static AttributeDescription mapAttribute(String name) {
         ModelNode desc = new ModelNode();
         desc.get(TYPE).set("OBJECT");
-        desc.get(VALUE_TYPE).set("STRING");
+        desc.get(VALUE_TYPE).set(ModelType.STRING);
         return new AttributeDescription(new Property(name, desc));
     }
 
