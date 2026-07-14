@@ -9,44 +9,38 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add attribute-to-item pipeline for resource view/form rendering — two-stage architecture with matchers (grouping) and providers (itemization) that replaces the old factory-based approach
-- Add self-contained view and form item base classes (`AbstractViewItem`, `AbstractFormItem`) that build their complete UI (label + value/input) from a `ResolvedAttribute` — eliminates factory-item coupling
-- Add type-specific view items: `DefaultViewItem` (boolean switch, text, unit, allowed values, capability reference, list, JSON), `TimeUnitViewItem`, `CredentialReferenceViewItem`, `FileViewItem`, `PathRelativeToViewItem`
-- Add type-specific form items: `StringFormItem`, `BooleanFormItem`, `NumberFormItem`, `SelectFormItem`, `CapabilityReferenceFormItem` (typeahead), `CapabilityReferencesFormItem` (multi-select typeahead), `StringListFormItem` (label-based multi-value), `TimeUnitFormItem`, `CredentialReferenceFormItem` (radio mode selection with store typeahead), `FileFormItem`, `PathRelativeToFormItem`, `RestrictedFormItem`, `UnsupportedFormItem`
-- Add `ResourceItem` interface as shared contract for `ViewItem` and `FormItem` — provides `identifier()` and `attribute()` for filtering and grouping
-- Add `GroupingSupport` utility for metadata-based and auto-grouping of resource items — consolidates duplicated grouping logic from `ResourceView` and `ResourceForm`
-- Add `ResourceView` and `ResourceForm` as dedicated view/form builders with built-in filtering and grouping support
+- Add attribute-to-item pipeline for resource view/form rendering — two-stage architecture with matchers and providers that replaces the old factory-based approach
+- Add map attribute support — `MapMatcher`, `MapViewItem` (label group), and `MapFormItem` (key=value editing with map-put/map-remove operations)
+- Add composite attribute infrastructure — credential-reference view/form items with mode-based editing, time-unit composite attribute
+- Add self-contained view and form item base classes (`AbstractViewItem`, `AbstractFormItem`) that build their complete UI from a `ResolvedAttribute`
+- Add `ResourceView` and `ResourceForm` as dedicated builders with built-in filtering and grouping support
+- Add grouped layout toggle for resources with many attributes (metadata-based and auto-grouping)
 - Add pipeline entry point for operation parameters — `Pipeline.formItems(context, parameters)` for dialog classes
-- Add `previewView()` helper in `FinderBricks` for pipeline-based finder previews
 - Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
 
 ### Changed
 
-- Wire pipeline into `ResourceData` — replaces old `ResourceAttribute.resourceAttributes()` → factory → item loop with `Pipeline.viewItems()`/`formItems()` calls
-- Wire pipeline into dialog classes — `ExecuteOperationDialogs` and `AddResourceDialogs` now use `Pipeline` and `ResourceForm` instead of old form and factory classes
-- Migrate `ResourceFilter` from `Filter<ResourceAttribute>` to `Filter<ResolvedAttribute>`
-- Refactor `CapabilityReference` to accept `String attributeValue` instead of `ResourceAttribute`
-- Consolidate attribute grouping into `GroupingSupport` — replaces `GroupingStrategy`/`MetadataGrouping` and duplicated grouping logic in `ResourceView`/`ResourceForm`
-- Change `Pipeline` to expose a shared `DEFAULT` singleton instead of `create()` factory — prevents registration-order drift across call sites
-- Delegate filter CSS toggling from `ResourceData` to `ResourceView.applyFilter()`/`ResourceForm.applyFilter()` — each class now owns its own DOM manipulation
-- Extract OUIA component type strings to OuiaIds constants for consistent test identifiers
-- Rename statistics ResourceData to StatisticsEnabledState for clarity
-- Refactor model browser detail panel to use reusable resource components (ResourceShell, ResourceBreadcrumb, ResourceHeader, ResourceTabs, ResourceList)
+- Replace form item inheritance hierarchy with composition-based architecture — `FormItemBricks` provides shared building blocks, `NativeControl` interface decouples input widgets from form item lifecycle
+- Reorganize brick classes — domain-specific bricks now live alongside their subsystem (`FinderBricks` → `o.j.h.ui.finder`, `ResourceDialogs` → `DialogBricks`); document the brick pattern in `org.jboss.hal.ui` package-info
+- Move finder package from `o.j.h.ui.resource.finder` to `o.j.h.ui.finder` as a top-level UI concern
+- Wire pipeline into `ResourceData` and dialog classes — replaces old factory-based rendering
+- Consolidate attribute grouping into `GroupingSupport` — replaces `GroupingStrategy`/`MetadataGrouping`
+- Change `Pipeline` to singleton pattern instead of `create()` factory
+- Refactor model browser detail panel to use reusable resource components
 - Improve resource package architecture — rename manager subpackage to data, consolidate context keys into Keys interface
+- Extract OUIA component type strings to OuiaIds constants
 
 ### Removed
 
-- Remove `ResourceAttribute`, `ItemIdentifier` — replaced by `ResolvedAttribute` record
-- Remove `ViewItemFactory`, `ViewItemProvider`, `ViewItemProviders` — replaced by pipeline view items
-- Remove `FormItemFactory`, `FormItemProvider`, `FormItemProviders` — replaced by pipeline form items
+- Remove `ResourceAttribute`, `ItemIdentifier` — replaced by `ResolvedAttribute`
+- Remove old view item factories (`ViewItemFactory`, `ViewItemProvider`, `ViewItemProviders`) and form item factories (`FormItemFactory`, `FormItemProvider`, `FormItemProviders`)
 - Remove `FormItemFlags`, `FormItemInputMode`, `HelperTexts` — replaced by `PipelineFlags`, `InputMode`, inline helpers
 - Remove `GroupingStrategy`, `MetadataGrouping` — replaced by `GroupingSupport`
-- Remove `CredentialReferenceView`, `TimeUnitView` — replaced by pipeline view items
-- Remove all old form item implementations (13 `Old*` classes)
+- Remove old form item inheritance tree (13 `Old*` classes, `CredentialReferenceView`, `TimeUnitView`)
 
 ### Fixed
 
-- Fix non-existing singleton popover in model browser — attach popover at item creation time instead of in parent's onToggle handler, which fired before async children loaded
+- Fix non-existing singleton popover in model browser — attach popover at creation time instead of in onToggle handler
 - Fix tooltip placement for model browser back/forward buttons
 - Fix missing remove button for singleton folder children in model browser resource list
 - Fix missing Add button in empty state for non-singleton folders in model browser
