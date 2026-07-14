@@ -22,10 +22,13 @@
  * <p>
  * Key components:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.finder.FinderPage}</dt>
+ * <dt>{@link org.jboss.hal.ui.finder.FinderBricks}</dt>
+ * <dd>Brick class with factory methods for finder columns, CRUD actions, and preview panel layouts (see
+ * {@linkplain org.jboss.hal.ui brick pattern}).</dd>
+ * <dt>{@link org.jboss.hal.ui.finder.FinderPage}</dt>
  * <dd>Base page for top-level finder-based navigation with URL synchronisation and path restoration.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.finder.FinderSupport}</dt>
+ * <dt>{@link org.jboss.hal.ui.finder.FinderSupport}</dt>
  * <dd>Helpers for child resource loading and metadata-based preview generation in finder columns.</dd>
  * </dl>
  */
-package org.jboss.hal.ui.resource.finder;
+package org.jboss.hal.ui.finder;

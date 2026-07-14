@@ -55,7 +55,7 @@ import static org.jboss.hal.ui.brick.DescriptionBricks.operationDescription;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.table.OperationsToolbar.operationsToolbar;
-import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.executeOperationModal;
+import static org.jboss.hal.ui.resource.dialog.DialogBricks.executeOperationModal;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;

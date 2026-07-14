@@ -23,10 +23,9 @@ import org.jboss.hal.meta.AddressTemplate;
 import elemental2.promise.Promise;
 
 /**
- * Facade for resource management dialogs.
- * <p>
- * Provides static entry points for adding, deleting, and executing operations on management resources. Each method delegates
- * to a dedicated dialog class:
+ * Reusable UI fragments ("bricks") for resource management dialogs. Following the
+ * {@linkplain org.jboss.hal.ui brick pattern}, this class provides static factory methods for opening add, delete, and
+ * execute-operation dialogs. Each method delegates to a dedicated dialog class:
  * <ul>
  * <li>{@link AddResourceDialogs} — add wizard and add modal</li>
  * <li>{@link DeleteResourceDialog} — delete confirmation</li>
@@ -35,7 +34,10 @@ import elemental2.promise.Promise;
  * All dialogs return promises that resolve to {@link ModelNode} values or undefined (empty {@code ModelNode}) if the operation
  * was canceled.
  */
-public class ResourceDialogs {
+public final class DialogBricks {
+
+    private DialogBricks() {
+    }
 
     // ------------------------------------------------------ add
 

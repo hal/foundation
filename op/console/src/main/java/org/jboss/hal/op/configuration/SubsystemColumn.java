@@ -26,9 +26,9 @@ import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.op.navigation.KnownRoutes.SUBSYSTEM_ROUTE;
-import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.metadataPreview;
+import static org.jboss.hal.ui.finder.FinderBricks.stackPreview;
+import static org.jboss.hal.ui.finder.FinderSupport.childResources;
+import static org.jboss.hal.ui.finder.FinderSupport.metadataPreview;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;

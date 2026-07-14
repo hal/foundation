@@ -54,7 +54,7 @@ import static org.patternfly.core.Tuple.tuple;
  * AddressTemplate objects. It uses the {@link Dispatcher} to execute operations.
  * <p>
  * Other than emitting {@linkplain Notification notifications} for success and error, no UI is provided by this class. If you're
- * looking for modals for creating or deleting resources, refer to {@code org.jboss.hal.ui.resource.ResourceDialogs}.
+ * looking for modals for creating or deleting resources, refer to {@code org.jboss.hal.ui.resource.dialog.DialogBricks}.
  */
 @ApplicationScoped
 public class CrudOperations {

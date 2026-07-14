@@ -25,7 +25,7 @@ import org.jboss.hal.op.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;
-import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 
 /** Finder column that lists socket binding groups. Selecting a group navigates to the {@link SocketBindingTypeColumn}. */
 @Dependent

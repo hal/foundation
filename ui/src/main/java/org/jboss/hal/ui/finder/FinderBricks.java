@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.brick;
+package org.jboss.hal.ui.finder;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -24,7 +24,6 @@ import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
@@ -38,16 +37,14 @@ import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
 import org.patternfly.extension.finder.FinderPreview;
 import org.patternfly.extension.finder.ResolvedFinderPath;
-import org.patternfly.filter.Filter;
 import org.patternfly.layout.stack.Stack;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
-import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.deleteResourceModal;
-import static org.jboss.hal.ui.resource.finder.FinderSupport.childResources;
+import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceModal;
+import static org.jboss.hal.ui.resource.dialog.DialogBricks.deleteResourceModal;
+import static org.jboss.hal.ui.finder.FinderSupport.childResources;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;

@@ -31,7 +31,7 @@ import static org.jboss.hal.op.configuration.ConfigurationDescriptions.PATH_DESC
 import static org.jboss.hal.op.configuration.ConfigurationDescriptions.SOCKET_BINDING_DESCRIPTION;
 import static org.jboss.hal.op.configuration.ConfigurationDescriptions.SUBSYSTEM_DESCRIPTION;
 import static org.jboss.hal.op.configuration.ConfigurationDescriptions.SYSTEM_PROPERTY_DESCRIPTION;
-import static org.jboss.hal.ui.brick.FinderBricks.stackPreview;
+import static org.jboss.hal.ui.finder.FinderBricks.stackPreview;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;

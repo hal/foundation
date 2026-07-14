@@ -26,7 +26,7 @@ import elemental2.promise.Promise;
  * Opens a modal dialog that dynamically generates form inputs based on the operation's parameter metadata. After the user
  * fills in the parameters and executes the operation, the dialog displays the result or error.
  *
- * @see ResourceDialogs#executeOperationModal(AddressTemplate, String)
+ * @see DialogBricks#executeOperationModal(AddressTemplate, String)
  */
 public class ExecuteOperationDialog {
 

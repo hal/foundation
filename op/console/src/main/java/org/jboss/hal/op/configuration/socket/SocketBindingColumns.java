@@ -21,7 +21,7 @@ import org.patternfly.extension.finder.ResolvedFinderSegment;
 
 import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
-import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 import static org.jboss.hal.resources.Keys.RESOURCE_NAME;
 
 /**

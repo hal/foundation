@@ -22,8 +22,8 @@
  * <p>
  * Key components:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.dialog.ResourceDialogs}</dt>
- * <dd>Public facade with static entry points for all resource dialogs.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.dialog.DialogBricks}</dt>
+ * <dd>Brick class with static entry points for all resource dialogs (see {@linkplain org.jboss.hal.ui brick pattern}).</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog.AddResourceDialogs}</dt>
  * <dd>Add resource wizard and modal dialogs.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog.DeleteResourceDialog}</dt>

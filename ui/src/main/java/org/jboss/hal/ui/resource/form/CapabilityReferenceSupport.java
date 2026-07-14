@@ -41,8 +41,8 @@ import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceModal;
-import static org.jboss.hal.ui.resource.dialog.ResourceDialogs.addResourceWizard;
+import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceModal;
+import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceWizard;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 
 /**

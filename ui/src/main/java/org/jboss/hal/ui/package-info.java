@@ -34,6 +34,15 @@
  * <dd>J2CL bindings for the marked Markdown parser, with built-in sanitization via DOMPurify.</dd>
  * </dl>
  *
+ * <h2>Brick Pattern</h2>
+ * A <em>brick</em> is a {@code final} utility class with a {@code private} constructor and only {@code static} factory methods.
+ * Each brick groups related methods by domain, producing small, reusable PatternFly-based UI elements. The naming convention is
+ * {@code <Domain>Bricks} (e.g. {@link org.jboss.hal.ui.brick.AttributeBricks}, {@link org.jboss.hal.ui.brick.CodeBricks}).
+ * <p>
+ * Brick classes that are used across multiple packages live in the central {@link org.jboss.hal.ui.brick} package. Brick classes
+ * that are tightly coupled to a specific subsystem live alongside their domain — for example
+ * {@code org.jboss.hal.ui.resource.form.FormItemBricks} or {@code org.jboss.hal.ui.resource.finder.FinderBricks}.
+ *
  * <h2>Example Usage</h2>
  * {@snippet :
  *     // Format a file size

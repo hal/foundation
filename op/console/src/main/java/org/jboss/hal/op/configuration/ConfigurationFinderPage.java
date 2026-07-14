@@ -21,7 +21,7 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.op.finder.ColumnRegistry;
-import org.jboss.hal.ui.resource.finder.FinderPage;
+import org.jboss.hal.ui.finder.FinderPage;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.extension.finder.Finder;
 

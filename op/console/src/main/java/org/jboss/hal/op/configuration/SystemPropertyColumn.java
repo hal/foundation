@@ -22,7 +22,7 @@ import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Collections.singletonList;
-import static org.jboss.hal.ui.brick.FinderBricks.crudColumn;
+import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 
 /** Finder column listing the system properties defined in the WildFly configuration. */
 @Dependent
