@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.jboss.hal.core.Humanize.abbreviate;
+import org.jboss.hal.core.Humanize;
 
 /**
  * Groups items into alphabetical chunks based on first letter boundaries. Used for resources that have many items but no
@@ -64,8 +64,8 @@ public class AutoGrouping {
     }
 
     private static <T> String groupName(List<T> chunk, Function<T, String> labelFn) {
-        String first = abbreviate(labelFn.apply(chunk.get(0)), MAX_LABEL_LENGTH);
-        String last = abbreviate(labelFn.apply(chunk.get(chunk.size() - 1)), MAX_LABEL_LENGTH);
+        String first = Humanize.abbreviate(labelFn.apply(chunk.get(0)), MAX_LABEL_LENGTH);
+        String last = Humanize.abbreviate(labelFn.apply(chunk.get(chunk.size() - 1)), MAX_LABEL_LENGTH);
         if (first.equals(last)) {
             return first;
         }
