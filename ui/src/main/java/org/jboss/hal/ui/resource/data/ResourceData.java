@@ -65,7 +65,7 @@ import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.error;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
+import static org.jboss.hal.ui.brick.DomBricks.toggle;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.ERROR;
 import static org.jboss.hal.ui.resource.data.ResourceData.State.NO_ATTRIBUTES;

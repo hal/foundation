@@ -51,7 +51,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescription;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeName;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.brick.OperationBricks.operationDescription;
+import static org.jboss.hal.ui.brick.DescriptionBricks.operationDescription;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.table.OperationsToolbar.operationsToolbar;

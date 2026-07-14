@@ -15,14 +15,9 @@
  */
 package org.jboss.hal.ui.brick;
 
-import org.jboss.elemento.IsElement;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.filter.Filter;
 
-import elemental2.dom.HTMLElement;
-
-import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.elemento.Elements.setVisible;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
@@ -33,7 +28,7 @@ import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 
 /**
- * Factory methods for common empty-state components and toggle utilities.
+ * Factory methods for common empty-state components.
  * <p>
  * Provides reusable empty states for "no results" (search/filter misses), "no match" (filter misses with a clear button), and
  * "no items" (empty collections). All factory methods return {@link EmptyState}, which is a builder — callers can chain
@@ -92,25 +87,6 @@ public final class EmptyStateBricks {
                 .status(danger)
                 .text(title)
                 .addBody(emptyStateBody().text(body));
-    }
-
-    /**
-     * Shows or hides an element within a container. Appends the element on first show; removes it on hide.
-     *
-     * @param element   the element to show or hide
-     * @param container the container element
-     * @param show      {@code true} to show, {@code false} to hide
-     */
-    public static void toggle(IsElement<HTMLElement> element, HTMLElement container, boolean show) {
-        if (show) {
-            if (container.contains(element.element())) {
-                setVisible(element, true);
-            } else {
-                container.appendChild(element.element());
-            }
-        } else {
-            failSafeRemoveFromParent(element);
-        }
     }
 
     private EmptyStateBricks() {

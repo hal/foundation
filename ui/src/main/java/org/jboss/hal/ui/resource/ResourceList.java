@@ -64,7 +64,7 @@ import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.brick.EmptyStateBricks.toggle;
+import static org.jboss.hal.ui.brick.DomBricks.toggle;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.patternfly.component.button.Button.button;

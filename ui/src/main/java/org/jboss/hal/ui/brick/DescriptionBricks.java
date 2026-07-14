@@ -21,6 +21,7 @@ import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.Deprecation;
 import org.jboss.hal.meta.description.Description;
+import org.jboss.hal.meta.description.OperationDescription;
 import org.patternfly.component.list.ListItem;
 
 import elemental2.dom.HTMLDivElement;
@@ -31,8 +32,8 @@ import static org.jboss.elemento.Elements.div;
 import static org.patternfly.style.Classes.util;
 
 /**
- * Shared description rendering foundation used by {@link AttributeBricks} and {@link OperationBricks}. Provides the
- * common logic for rendering description text and deprecation notices from the management model metadata.
+ * Shared description rendering foundation used by {@link AttributeBricks}. Provides the common logic for rendering
+ * description text and deprecation notices from the management model metadata.
  */
 public final class DescriptionBricks {
 
@@ -47,6 +48,16 @@ public final class DescriptionBricks {
 
         /** Only the description text and deprecation notice — no metadata list. */
         descriptionOnly;
+    }
+
+    /**
+     * Renders an operation description including its text and optional deprecation notice.
+     *
+     * @param operation the operation description from the management model
+     * @return a div element containing the formatted description
+     */
+    public static HTMLContainerBuilder<HTMLDivElement> operationDescription(OperationDescription operation) {
+        return description(operation);
     }
 
     /**

@@ -23,12 +23,12 @@
  * <dt>{@link org.jboss.hal.ui.brick.AttributeBricks}</dt>
  * <dd>Attribute name rendering (with stability labels and deprecation indicators), detailed metadata descriptions, and
  * description popovers.</dd>
- * <dt>{@link org.jboss.hal.ui.brick.OperationBricks}</dt>
- * <dd>Operation description rendering with deprecation notices.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.DescriptionBricks}</dt>
- * <dd>Shared description and deprecation rendering foundation used by {@code AttributeBricks} and
- * {@code OperationBricks}. Also defines {@link org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent}
- * to control the level of detail in attribute descriptions.</dd>
+ * <dd>Shared description and deprecation rendering foundation used by {@code AttributeBricks}. Also provides
+ * {@link org.jboss.hal.ui.brick.DescriptionBricks#operationDescription(org.jboss.hal.meta.description.OperationDescription)
+ * operationDescription()} for operation descriptions and defines
+ * {@link org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent} to control the level of detail in
+ * attribute descriptions.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.CodeBricks}</dt>
  * <dd>Truncatable code blocks for error messages and {@code ModelNode} JSON output.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.ExpressionBricks}</dt>
@@ -42,8 +42,9 @@
  * <dt>{@link org.jboss.hal.ui.brick.FinderBricks}</dt>
  * <dd>Finder column construction with CRUD actions and preview panel layouts.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.EmptyStateBricks}</dt>
- * <dd>Reusable empty-state components for "no results", "no match", "no items", and "error" scenarios, plus a toggle
- * utility for showing/hiding empty states in containers.</dd>
+ * <dd>Reusable empty-state components for "no results", "no match", "no items", and "error" scenarios.</dd>
+ * <dt>{@link org.jboss.hal.ui.brick.DomBricks}</dt>
+ * <dd>General-purpose DOM manipulation utilities such as element toggling.</dd>
  * </dl>
  *
  * @see org.jboss.hal.ui
