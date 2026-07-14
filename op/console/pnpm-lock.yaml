@@ -4,37 +4,25 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-catalogs:
-  pfj:
-    '@patternfly-java/charts':
-      specifier: ^0.9.4
-      version: 0.9.4
-    '@patternfly-java/core':
-      specifier: ^0.9.4
-      version: 0.9.4
-    '@patternfly-java/finder':
-      specifier: ^0.9.4
-      version: 0.9.4
-
 importers:
 
   .:
     dependencies:
       '@patternfly-java/charts':
-        specifier: catalog:pfj
-        version: 0.9.4
+        specifier: 0.9.5
+        version: 0.9.5
       '@patternfly-java/core':
-        specifier: catalog:pfj
-        version: 0.9.4(@patternfly/patternfly@6.6.0)
+        specifier: 0.9.5
+        version: 0.9.5(@patternfly/patternfly@6.6.0)
       '@patternfly-java/finder':
-        specifier: catalog:pfj
-        version: 0.9.4(@patternfly/patternfly@6.6.0)
+        specifier: 0.9.5
+        version: 0.9.5(@patternfly/patternfly@6.6.0)
       '@patternfly/patternfly':
         specifier: ^6.6.0
         version: 6.6.0
       dompurify:
-        specifier: ^3.4.11
-        version: 3.4.11
+        specifier: ^3.4.12
+        version: 3.4.12
     devDependencies:
       '@cyclonedx/cdxgen':
         specifier: ^12.7.1
@@ -429,16 +417,16 @@ packages:
   '@oxc-project/types@0.139.0':
     resolution: {integrity: sha512-r9gHphtCs+1M7J0pw6Sn/hh/Wpa/iQrOOkrNAlVLF/gHq+/CJmHIWKKUUhdWjcD6CIa8idarspCsASiXCXvFUw==}
 
-  '@patternfly-java/charts@0.9.4':
-    resolution: {integrity: sha512-SyMjJHhUw0UtFa/ZD8rVUMHRxrow9qVEoTmhsgLlZz0KZ3LxBlHrj237339YWSefJh7+2x6FAZhllFK4hAvY2w==}
+  '@patternfly-java/charts@0.9.5':
+    resolution: {integrity: sha512-kl9nhgKT0N2IFrOmc44hmSZNJatdc0AEWvOFzH+t+Tjk3TR07XdVQWeHNvCvjSOLAqk2PdB2bVSwgSTm6ia7ig==}
 
-  '@patternfly-java/core@0.9.4':
-    resolution: {integrity: sha512-FCDy1BHomM0wblwyUSC0k75sqmStc6VZaFebKiRjTBIteOt5aga5zOkxbMd/hJOv6wvfXOBQH25j2fHP3hXqhA==}
+  '@patternfly-java/core@0.9.5':
+    resolution: {integrity: sha512-tMBsP0H+VycFbbk44B+yoL2KFTlCqhSd9JyUUlEOgAWL7G2q75QqJ10GKAWGFrbNu9rMl28CMl4bh5nU6lPPAg==}
     peerDependencies:
       '@patternfly/patternfly': ^6.5.2
 
-  '@patternfly-java/finder@0.9.4':
-    resolution: {integrity: sha512-EMiviI74+HPZ8sr4kY1dqawKQjq29uPzDhU8jWmPMnMqZqmxhwhVBvk5UMXxKDCRExYVXz884GJWBQXYntYA7w==}
+  '@patternfly-java/finder@0.9.5':
+    resolution: {integrity: sha512-5p69EXmTcfICxPAS7/OsaknZEWpTpFI9BpBv/sYDJsuHhn1v9FcTMHgLJZdG10cOxrizFZJHd6aflyyPAapgBg==}
     peerDependencies:
       '@patternfly/patternfly': ^6.5.2
 
@@ -815,8 +803,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.11:
-    resolution: {integrity: sha512-zhlUV12GsaRzMsf9q5M254YhA4+VuF0fG+QFqu6aYpoGlKtz+w8//jBcGVYBgQkR5GHjUomejY84AV+/uPbWdw==}
+  dompurify@3.4.12:
+    resolution: {integrity: sha512-zQvGet8Z2sWbQhCmfFz/T5QWH2oBmjnqK3qvOjaqaNLrLEF912WamU+ohnTp0TCep/MFVHpdJuCZEdFOdTnEFg==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -1951,7 +1939,7 @@ snapshots:
 
   '@oxc-project/types@0.139.0': {}
 
-  '@patternfly-java/charts@0.9.4':
+  '@patternfly-java/charts@0.9.5':
     dependencies:
       '@patternfly/react-charts': 8.6.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(victory-area@37.3.6(react@19.2.7))(victory-axis@37.3.6(react@19.2.7))(victory-bar@37.3.6(react@19.2.7))(victory-box-plot@37.3.6(react@19.2.7))(victory-chart@37.3.6(react@19.2.7))(victory-core@37.3.6(react@19.2.7))(victory-create-container@37.3.6(react@19.2.7))(victory-cursor-container@37.3.6(react@19.2.7))(victory-group@37.3.6(react@19.2.7))(victory-legend@37.3.6(react@19.2.7))(victory-line@37.3.6(react@19.2.7))(victory-pie@37.3.6(react@19.2.7))(victory-scatter@37.3.6(react@19.2.7))(victory-stack@37.3.6(react@19.2.7))(victory-tooltip@37.3.6(react@19.2.7))(victory-voronoi-container@37.3.6(react@19.2.7))(victory-zoom-container@37.3.6(react@19.2.7))
       '@patternfly/react-styles': 6.6.0
@@ -1982,11 +1970,11 @@ snapshots:
     transitivePeerDependencies:
       - echarts
 
-  '@patternfly-java/core@0.9.4(@patternfly/patternfly@6.6.0)':
+  '@patternfly-java/core@0.9.5(@patternfly/patternfly@6.6.0)':
     dependencies:
       '@patternfly/patternfly': 6.6.0
 
-  '@patternfly-java/finder@0.9.4(@patternfly/patternfly@6.6.0)':
+  '@patternfly-java/finder@0.9.5(@patternfly/patternfly@6.6.0)':
     dependencies:
       '@patternfly/patternfly': 6.6.0
 
@@ -2303,7 +2291,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.11:
+  dompurify@3.4.12:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 

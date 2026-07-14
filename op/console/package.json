@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "@patternfly-java/charts": "catalog:pfj",
-    "@patternfly-java/core": "catalog:pfj",
-    "@patternfly-java/finder": "catalog:pfj",
+    "@patternfly-java/charts": "0.9.5",
+    "@patternfly-java/core": "0.9.5",
+    "@patternfly-java/finder": "0.9.5",
     "@patternfly/patternfly": "^6.6.0",
-    "dompurify": "^3.4.11"
+    "dompurify": "^3.4.12"
   },
   "devDependencies": {
     "@cyclonedx/cdxgen": "^12.7.1",
