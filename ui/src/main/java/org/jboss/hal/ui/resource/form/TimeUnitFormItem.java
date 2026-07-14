@@ -16,7 +16,7 @@
 package org.jboss.hal.ui.resource.form;
 
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
-import org.jboss.hal.ui.resource.composite.TimeUnitAttribute;
+import org.jboss.hal.ui.resource.pipeline.TimeUnitProvider;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
 
@@ -55,8 +55,8 @@ public class TimeUnitFormItem extends AbstractFormItem {
 
     public TimeUnitFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
         super(identifier, attribute, context);
-        this.originalTime = TimeUnitAttribute.time(attribute.value());
-        this.originalUnit = TimeUnitAttribute.unit(attribute.value());
+        this.originalTime = TimeUnitProvider.time(attribute.value());
+        this.originalUnit = TimeUnitProvider.unit(attribute.value());
 
         timeInput = textInput(number, Id.build(identifier, "time"))
                 .run(ti -> {

@@ -16,10 +16,10 @@
 package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
-import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute;
-import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute.Mode;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider.Mode;
 
 import elemental2.dom.HTMLElement;
 
@@ -54,7 +54,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
 
     @Override
     protected HTMLElement definedValue() {
-        Mode mode = CredentialReferenceAttribute.mode(attribute.value());
+        Mode mode = CredentialReferenceProvider.mode(attribute.value());
         HTMLElement root = flex().css(halComponent(resource, view, credentialReference))
                 .alignItems(center).columnGap(sm)
                 .element();

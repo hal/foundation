@@ -13,8 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.data;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+package org.jboss.hal.ui.resource;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
@@ -30,11 +30,12 @@ import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
-import org.jboss.hal.ui.resource.data.ResourceData.State;
 
 import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
-import static org.jboss.hal.ui.resource.data.ResourceData.State.EDIT;
-import static org.jboss.hal.ui.resource.data.ResourceData.State.VIEW;
+import static org.jboss.hal.ui.resource.ResourceData.State.EDIT;
+import static org.jboss.hal.ui.resource.ResourceData.State.VIEW;
+
+import org.jboss.hal.ui.resource.ResourceData.State;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarContent;
 import org.patternfly.component.toolbar.ToolbarGroup;

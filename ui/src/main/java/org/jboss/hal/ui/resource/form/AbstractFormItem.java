@@ -17,7 +17,7 @@ package org.jboss.hal.ui.resource.form;
 
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import java.util.Collections;
 import java.util.List;

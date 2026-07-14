@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
 
 /**
@@ -32,17 +31,17 @@ import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
  * <ol>
  *     <li><b>Group</b> — registered {@link AttributeMatcher}s scan the attribute pool in priority order,
  *         claiming groups of related attributes. Unclaimed attributes become single-attribute groups.</li>
- *     <li><b>Itemize</b> — for each {@link AttributeGroup}, registered {@link ItemProvider}s are tried in order. The first
+ *     <li><b>Itemize</b> — for each {@link AttributeMatch}, registered {@link ItemProvider}s are tried in order. The first
  *         match creates the item(s). Unmatched groups are handled by the {@link DefaultItemProvider} catch-all.</li>
  * </ol>
  * <p>
  * One pipeline, two entry points: {@link #viewItems(PipelineContext)} and {@link #formItems(PipelineContext)}. Stage 1
- * (grouping) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(AttributeGroup, PipelineContext)} or
- * {@link ItemProvider#formItems(AttributeGroup, PipelineContext)} depending on the entry point.
+ * (grouping) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(AttributeMatch, PipelineContext)} or
+ * {@link ItemProvider#formItems(AttributeMatch, PipelineContext)} depending on the entry point.
  *
  * @see AttributeMatcher
  * @see ItemProvider
- * @see AttributeGroup
+ * @see AttributeMatch
  */
 public final class Pipeline {
 
@@ -89,25 +88,25 @@ public final class Pipeline {
 
     /** Runs the pipeline and produces view items for all attributes in the resource metadata. */
     public List<ViewItem> viewItems(PipelineContext context) {
-        List<AttributeGroup> groups = group(context.resourceDescription().attributes());
+        List<AttributeMatch> groups = group(context.resourceDescription().attributes());
         return itemizeView(groups, context);
     }
 
     /** Runs the pipeline and produces form items for all attributes in the resource metadata. */
     public List<FormItem> formItems(PipelineContext context) {
-        List<AttributeGroup> groups = group(context.resourceDescription().attributes());
+        List<AttributeMatch> groups = group(context.resourceDescription().attributes());
         return itemizeForm(groups, context);
     }
 
     /** Runs the pipeline and produces form items for operation parameters (used by dialog classes). */
     public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> parameters) {
-        List<AttributeGroup> groups = group(parameters);
+        List<AttributeMatch> groups = group(parameters);
         return itemizeForm(groups, context);
     }
 
     // ------------------------------------------------------ stage 1: group
 
-    private List<AttributeGroup> group(Iterable<AttributeDescription> attributes) {
+    private List<AttributeMatch> group(Iterable<AttributeDescription> attributes) {
         List<AttributeDescription> pool = new ArrayList<>();
         Map<String, Integer> originalOrder = new HashMap<>();
         int index = 0;
@@ -116,7 +115,7 @@ public final class Pipeline {
             originalOrder.put(ad.name(), index++);
         }
 
-        List<AttributeGroup> groups = new ArrayList<>();
+        List<AttributeMatch> groups = new ArrayList<>();
         List<AttributeDescription> remaining = pool;
         for (AttributeMatcher matcher : matchers) {
             MatchResult result = matcher.match(remaining);
@@ -125,7 +124,7 @@ public final class Pipeline {
         }
 
         for (AttributeDescription ad : remaining) {
-            groups.add(AttributeGroup.single(ad));
+            groups.add(AttributeMatch.single(ad));
         }
 
         groups.sort((g1, g2) -> {
@@ -139,9 +138,9 @@ public final class Pipeline {
 
     // ------------------------------------------------------ stage 2: itemize
 
-    private List<ViewItem> itemizeView(List<AttributeGroup> groups, PipelineContext context) {
+    private List<ViewItem> itemizeView(List<AttributeMatch> groups, PipelineContext context) {
         List<ViewItem> items = new ArrayList<>();
-        for (AttributeGroup group : groups) {
+        for (AttributeMatch group : groups) {
             for (ItemProvider provider : providers) {
                 if (provider.matches(group)) {
                     List<ViewItem> result = provider.viewItems(group, context);
@@ -155,9 +154,9 @@ public final class Pipeline {
         return items;
     }
 
-    private List<FormItem> itemizeForm(List<AttributeGroup> groups, PipelineContext context) {
+    private List<FormItem> itemizeForm(List<AttributeMatch> groups, PipelineContext context) {
         List<FormItem> items = new ArrayList<>();
-        for (AttributeGroup group : groups) {
+        for (AttributeMatch group : groups) {
             for (ItemProvider provider : providers) {
                 if (provider.matches(group)) {
                     List<FormItem> result = provider.formItems(group, context);

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.data;
+package org.jboss.hal.ui.resource;
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;
@@ -22,7 +22,7 @@ import org.jboss.hal.model.filter.NameAttribute;
 import org.jboss.hal.model.filter.RequiredAttribute;
 import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
 

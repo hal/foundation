@@ -29,7 +29,7 @@ import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.ui.resource.data.ResourceData.resourceData;
+import static org.jboss.hal.ui.resource.ResourceData.resourceData;
 import static org.patternfly.component.tabs.Tab.tab;
 import static org.patternfly.component.tabs.TabContent.tabContent;
 import static org.patternfly.component.tabs.Tabs.tabs;
@@ -41,7 +41,7 @@ import static org.patternfly.style.Classes.util;
  * Assembles four tabs:
  * <dl>
  * <dt>Data</dt>
- * <dd>View and edit resource attribute values via {@link org.jboss.hal.ui.resource.data.ResourceData}.</dd>
+ * <dd>View and edit resource attribute values via {@link ResourceData}.</dd>
  * <dt>Attributes</dt>
  * <dd>Read-only metadata table of attribute descriptions (shown only when the resource has attributes).</dd>
  * <dt>Operations</dt>

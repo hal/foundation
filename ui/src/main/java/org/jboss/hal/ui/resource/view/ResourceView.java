@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.GroupingSupport;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.grouping.GroupingSupport;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.expandable.ExpandableSection;
 import org.patternfly.filter.Filter;
 

@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.view.DefaultViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -35,17 +36,17 @@ import org.jboss.hal.meta.description.AttributeDescriptions;
 class FlatteningProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeGroup group) {
+    public boolean matches(AttributeMatch group) {
         return group.isSingle() && group.primary().simpleRecord();
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
         return flattenViewItems(group.primary(), context);
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         return flattenFormItems(group.primary(), context);
     }
 

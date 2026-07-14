@@ -16,7 +16,6 @@
 package org.jboss.hal.ui.resource;
 
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
 
 import elemental2.dom.HTMLElement;
 
@@ -32,6 +31,6 @@ public interface ResourceItem extends IsElement<HTMLElement> {
     /** Returns a unique identifier for this item, suitable for use as a DOM element ID. */
     String identifier();
 
-    /** Returns the primary resolved attribute this item represents. Used for filtering and grouping. */
+    /** Returns the primary-resolved attribute this item represents. Used for filtering and grouping. */
     ResolvedAttribute attribute();
 }

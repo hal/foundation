@@ -22,26 +22,26 @@ import java.util.List;
 
 /**
  * Stage 2 of the pipeline: creates view and form items for matched attribute groups. Providers are tried in registration order;
- * the first one whose {@link #matches(AttributeGroup)} returns {@code true} handles the group.
+ * the first one whose {@link #matches(AttributeMatch)} returns {@code true} handles the group.
  * <p>
  * Default methods return {@code null}, which signals "use default rendering for this mode." This allows a provider to be
  * "FIP only" (custom form item, default view item) or "VIP only" (custom view item, default form item).
  * <p>
- * The {@link #viewItems(AttributeGroup, PipelineContext)} and {@link #formItems(AttributeGroup, PipelineContext)} methods
+ * The {@link #viewItems(AttributeMatch, PipelineContext)} and {@link #formItems(AttributeMatch, PipelineContext)} methods
  * return lists because a provider may produce multiple items from a single group (e.g. the default provider flattens OBJECT
  * simpleRecords into n items).
  */
 public interface ItemProvider {
 
     /** Tests whether this provider handles the given attribute group. */
-    boolean matches(AttributeGroup group);
+    boolean matches(AttributeMatch group);
 
     /**
      * Creates view items for the given group. Returns {@code null} to fall through to the next provider or default rendering.
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    default List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
         return null;
     }
 
@@ -50,7 +50,7 @@ public interface ItemProvider {
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    default List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         return null;
     }
 }

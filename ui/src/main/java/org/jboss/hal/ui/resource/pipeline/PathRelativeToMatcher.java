@@ -44,7 +44,7 @@ class PathRelativeToMatcher implements AttributeMatcher {
 
     @Override
     public MatchResult match(List<AttributeDescription> pool) {
-        List<AttributeGroup> groups = new ArrayList<>();
+        List<AttributeMatch> groups = new ArrayList<>();
         Set<String> claimed = new HashSet<>();
 
         for (AttributeDescription ad : pool) {
@@ -64,7 +64,7 @@ class PathRelativeToMatcher implements AttributeMatcher {
             }
 
             if (pathAttr != null && !claimed.contains(pathAttr.name())) {
-                groups.add(AttributeGroup.of(pathAttr.name(),
+                groups.add(AttributeMatch.of(pathAttr.name(),
                         Arrays.asList(pathAttr, ad)));
                 claimed.add(pathAttr.name());
                 claimed.add(ad.name());

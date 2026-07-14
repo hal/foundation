@@ -37,7 +37,7 @@ import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.modal.ModalHeaderTitle;
 import org.patternfly.component.wizard.Wizard;

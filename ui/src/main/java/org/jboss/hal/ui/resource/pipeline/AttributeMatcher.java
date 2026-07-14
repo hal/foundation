@@ -41,16 +41,16 @@ public interface AttributeMatcher {
     /** The result of a matcher's scan: claimed groups and the remaining unclaimed attributes. */
     final class MatchResult {
 
-        private final List<AttributeGroup> groups;
+        private final List<AttributeMatch> groups;
         private final List<AttributeDescription> remaining;
 
-        public MatchResult(List<AttributeGroup> groups, List<AttributeDescription> remaining) {
+        public MatchResult(List<AttributeMatch> groups, List<AttributeDescription> remaining) {
             this.groups = unmodifiableList(groups);
             this.remaining = unmodifiableList(remaining);
         }
 
         /** Returns the groups claimed by this matcher. May be empty if nothing matched. */
-        public List<AttributeGroup> groups() {
+        public List<AttributeMatch> groups() {
             return groups;
         }
 
@@ -65,11 +65,11 @@ public interface AttributeMatcher {
      * this for composite matchers that claim individual attributes based on their structure.
      */
     static MatchResult partition(List<AttributeDescription> pool, Predicate<AttributeDescription> predicate) {
-        List<AttributeGroup> groups = new ArrayList<>();
+        List<AttributeMatch> groups = new ArrayList<>();
         List<AttributeDescription> remaining = new ArrayList<>();
         for (AttributeDescription ad : pool) {
             if (predicate.test(ad)) {
-                groups.add(AttributeGroup.single(ad));
+                groups.add(AttributeMatch.single(ad));
             } else {
                 remaining.add(ad);
             }

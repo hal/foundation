@@ -13,15 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.grouping;
 
 import java.util.ArrayList;
+
+import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.LinkedHashMap;
+
+import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.List;
+
+import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.Map;
+
+import org.jboss.hal.ui.resource.ResourceItem;
 import java.util.TreeMap;
 
-import org.jboss.hal.ui.resource.data.AutoGrouping;
+import org.jboss.hal.ui.resource.ResourceItem;
+
 
 import static org.jboss.hal.core.Humanize.sentenceCase;
 

@@ -39,7 +39,7 @@ class PathRelativeToMatcherTest {
         MatchResult result = matcher.match(pool);
 
         assertEquals(1, result.groups().size());
-        AttributeGroup group = result.groups().get(0);
+        AttributeMatch group = result.groups().get(0);
         assertEquals(2, group.size());
         assertEquals("path", group.primary().name());
         assertEquals("relative-to", group.attributes().get(1).name());
@@ -56,7 +56,7 @@ class PathRelativeToMatcherTest {
         MatchResult result = matcher.match(pool);
 
         assertEquals(1, result.groups().size());
-        AttributeGroup group = result.groups().get(0);
+        AttributeMatch group = result.groups().get(0);
         assertEquals("keystore-path", group.primary().name());
         assertEquals("keystore-relative-to", group.attributes().get(1).name());
         assertEquals(1, result.remaining().size());
@@ -84,7 +84,7 @@ class PathRelativeToMatcherTest {
         MatchResult result = matcher.match(pool);
 
         assertEquals(1, result.groups().size());
-        AttributeGroup group = result.groups().get(0);
+        AttributeMatch group = result.groups().get(0);
         assertEquals("directory", group.primary().name());
         assertEquals("relative-to", group.attributes().get(1).name());
         assertEquals(1, result.remaining().size());

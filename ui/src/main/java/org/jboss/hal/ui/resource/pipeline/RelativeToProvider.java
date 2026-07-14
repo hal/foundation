@@ -15,9 +15,9 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.StringFormItem;
-import org.jboss.hal.ui.resource.view.ViewItem;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 class RelativeToProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeGroup group) {
+    public boolean matches(AttributeMatch group) {
         if (!group.isSingle()) {
             return false;
         }
@@ -42,7 +42,7 @@ class RelativeToProvider implements ItemProvider {
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new StringFormItem(ra.fqn(), ra, context));
     }

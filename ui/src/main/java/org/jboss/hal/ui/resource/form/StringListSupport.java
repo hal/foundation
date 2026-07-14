@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jboss.hal.dmr.ModelDescriptionConstants;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;

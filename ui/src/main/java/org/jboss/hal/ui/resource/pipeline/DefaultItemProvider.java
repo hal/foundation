@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.BooleanFormItem;
 import org.jboss.hal.ui.resource.form.CapabilityReferenceFormItem;
 import org.jboss.hal.ui.resource.form.CapabilityReferencesFormItem;
@@ -48,18 +49,18 @@ class DefaultItemProvider implements ItemProvider {
     private static final Logger logger = Logger.getLogger(DefaultItemProvider.class.getName());
 
     @Override
-    public boolean matches(AttributeGroup group) {
+    public boolean matches(AttributeMatch group) {
         return true;
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new DefaultViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(formItem(ra, context));
     }

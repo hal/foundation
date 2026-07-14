@@ -13,24 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.pipeline;
-
-import java.util.List;
+package org.jboss.hal.ui.resource;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.description.AttributeDescription;
-
-import static java.util.stream.Collectors.toList;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 /**
  * A snapshot of an attribute's description, current value, and security state. Created by resolving an
  * {@link AttributeDescription} against a {@link PipelineContext}. This is the data that flows into
- * {@link ViewItem} and {@link FormItem} constructors.
+ * {@link org.jboss.hal.ui.resource.view.ViewItem} and {@link org.jboss.hal.ui.resource.form.FormItem} constructors.
  * <p>
  * For single attributes and composites, items hold one {@code ResolvedAttribute}. For sibling groups, items hold a list.
  *
- * @see AttributeGroup
  * @see PipelineContext
  */
 public record ResolvedAttribute(
@@ -39,20 +35,17 @@ public record ResolvedAttribute(
         boolean readable,
         boolean writable) {
 
-    /** Resolves a single attribute description against the pipeline context. */
+    /**
+     * Resolves a single {@link AttributeDescription} against the given {@link PipelineContext}: looks up the attribute's current
+     * value and RBAC state (readable/writable) to produce an immutable snapshot. This is the low-level primitive used by pipeline
+     * providers and by {@code AttributeMatch#resolveAll(PipelineContext)} for batch resolution.
+     */
     public static ResolvedAttribute resolve(AttributeDescription description, PipelineContext context) {
         return new ResolvedAttribute(
                 description,
                 context.value(description),
                 context.readable(description),
                 context.writable(description));
-    }
-
-    /** Resolves all attribute descriptions in the group against the pipeline context. */
-    public static List<ResolvedAttribute> resolveAll(AttributeGroup group, PipelineContext context) {
-        return group.attributes().stream()
-                .map(ad -> resolve(ad, context))
-                .collect(toList());
     }
 
     /** Returns the dot-separated fully qualified name, used for DMR write-attribute operations. */

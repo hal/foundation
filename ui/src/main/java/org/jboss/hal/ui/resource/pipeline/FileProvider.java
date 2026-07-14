@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FileFormItem;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.view.FileViewItem;
@@ -22,55 +23,33 @@ import org.jboss.hal.ui.resource.view.ViewItem;
 
 import java.util.List;
 
-import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.dmr.ModelType;
-import org.jboss.hal.meta.description.AttributeDescription;
-
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
+import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValueType;
 
 /**
  * Provider for the composite {@code file} attribute ({@code {path: STRING, relative-to: STRING}}). Used in the logging
  * subsystem. Renders path and relative-to as a single visual unit.
  * <p>
  * This is the composite counterpart to {@link PathRelativeToProvider}, which handles the same concept at the sibling attribute
- * level. Both can share UI components.
- * <p>
+ * level.
  */
 class FileProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeGroup group) {
-        if (!group.isSingle()) {
-            return false;
-        }
-        AttributeDescription ad = group.primary();
-        try {
-            ModelType type = ad.get(TYPE).asType();
-            if (type != ModelType.OBJECT || !ad.hasDefined(VALUE_TYPE)) {
-                return false;
-            }
-            if (ad.get(VALUE_TYPE).getType() != ModelType.OBJECT) {
-                return false;
-            }
-            ModelNode valueType = ad.get(VALUE_TYPE);
-            return valueType.has(PATH) && valueType.has(RELATIVE_TO);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+    public boolean matches(AttributeMatch group) {
+        return group.isSingle() && hasObjectValueType(group.primary(), PATH, RELATIVE_TO);
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new FileViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new FileFormItem(ra.fqn(), ra, context));
     }

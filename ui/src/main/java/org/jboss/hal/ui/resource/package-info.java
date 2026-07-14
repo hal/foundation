@@ -38,8 +38,6 @@
  * <p>
  * Sub-packages by concern:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.data}</dt>
- * <dd>View/edit state machine for resource attribute values.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.view}</dt>
  * <dd>Read-only display of resource attributes using description lists.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.form}</dt>
@@ -48,20 +46,25 @@
  * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.table}</dt>
  * <dd>Read-only metadata tables for attributes, operations, and capabilities.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.composite}</dt>
- * <dd>Composite attribute detection for structured OBJECT attributes rendered as single components.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.pipeline}</dt>
+ * <dd>Attribute-to-item pipeline that transforms resource metadata into view and form items. Includes matchers for
+ * composite attributes (credential-reference, time-unit, file) and providers that create the corresponding items.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.grouping}</dt>
+ * <dd>Grouping strategies for organizing resource items into named sections.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>
  * <dd>Finder navigation support.</dd>
  * </dl>
  * <p>
- * Shared data types in this package:
+ * Shared types and orchestration in this package:
  * <dl>
- * <dt>{@link org.jboss.hal.ui.resource.ItemIdentifier}</dt>
- * <dd>Utility for generating stable HTML element IDs for form and view items.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ResourceAttribute}</dt>
- * <dd>Data holder for an attribute's fully-qualified name, value, description, and security context.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.ResourceItem}</dt>
- * <dd>Shared interface for form and view items with component context and identifier support.</dd>
+ * <dd>Shared interface for form and view items with identifier and resolved attribute support.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResolvedAttribute}</dt>
+ * <dd>Snapshot of an attribute's description, current value, and security state. Shared data carrier produced by the
+ * {@linkplain org.jboss.hal.ui.resource.pipeline pipeline} and consumed by
+ * {@linkplain org.jboss.hal.ui.resource.view view} and {@linkplain org.jboss.hal.ui.resource.form form} items.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceData}</dt>
+ * <dd>State machine orchestrating the view/edit/error lifecycle for resource attributes.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource;

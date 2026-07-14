@@ -16,14 +16,14 @@
 package org.jboss.hal.ui.resource.form;
 
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
-import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute;
-import org.jboss.hal.ui.resource.composite.CredentialReferenceAttribute.Mode;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider.Mode;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.menu.SingleTypeahead;
 import org.patternfly.style.Modifiers.FullWidth;
@@ -79,7 +79,7 @@ public class CredentialReferenceFormItem extends AbstractFormItem {
 
     public CredentialReferenceFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
         super(identifier, attribute, context);
-        this.originalMode = CredentialReferenceAttribute.mode(attribute.value());
+        this.originalMode = CredentialReferenceProvider.mode(attribute.value());
 
         AttributeDescriptions nested = attribute.description().valueTypeAttributeDescriptions();
         AttributeDescription storeDescription = nested.get(STORE);

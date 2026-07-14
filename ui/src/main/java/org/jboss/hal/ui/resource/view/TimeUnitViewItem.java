@@ -16,9 +16,9 @@
 package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.ResolvedAttribute;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
-import org.jboss.hal.ui.resource.composite.TimeUnitAttribute;
+import org.jboss.hal.ui.resource.pipeline.TimeUnitProvider;
 
 import elemental2.dom.HTMLElement;
 
@@ -40,8 +40,8 @@ public class TimeUnitViewItem extends AbstractViewItem {
 
     @Override
     protected HTMLElement definedValue() {
-        long time = TimeUnitAttribute.time(attribute.value());
-        String unit = TimeUnitAttribute.unit(attribute.value());
+        long time = TimeUnitProvider.time(attribute.value());
+        String unit = TimeUnitProvider.unit(attribute.value());
 
         HTMLElement root = flex().css(halComponent(resource, view, timeUnit))
                 .alignItems(center).columnGap(sm)

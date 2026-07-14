@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.TimeUnitFormItem;
 import org.jboss.hal.ui.resource.view.TimeUnitViewItem;
@@ -23,51 +24,47 @@ import org.jboss.hal.ui.resource.view.ViewItem;
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.dmr.ModelType;
-import org.jboss.hal.meta.description.AttributeDescription;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TIME;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
+import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValueType;
 
 /**
  * Provider for time-unit composite attributes (e.g. {@code keepalive-time}). Matches groups containing a single OBJECT attribute
  * with the time-unit structure ({@code time} + {@code unit}).
- * <p>
  */
-class TimeUnitProvider implements ItemProvider {
+public class TimeUnitProvider implements ItemProvider {
 
-    @Override
-    public boolean matches(AttributeGroup group) {
-        if (!group.isSingle()) {
-            return false;
+    /** Returns the time value from a keepalive-time model node, or -1 if undefined. */
+    public static long time(ModelNode value) {
+        if (value.isDefined() && value.hasDefined(TIME)) {
+            return value.get(TIME).asLong();
         }
-        AttributeDescription ad = group.primary();
-        try {
-            ModelType type = ad.get(TYPE).asType();
-            if (type != ModelType.OBJECT || !ad.hasDefined(VALUE_TYPE)) {
-                return false;
-            }
-            if (ad.get(VALUE_TYPE).getType() != ModelType.OBJECT) {
-                return false;
-            }
-            ModelNode valueType = ad.get(VALUE_TYPE);
-            return valueType.has(TIME) && valueType.has(UNIT);
-        } catch (IllegalArgumentException e) {
-            return false;
+        return -1;
+    }
+
+    /** Returns the unit value from a keepalive-time model node, or {@code null} if undefined. */
+    public static String unit(ModelNode value) {
+        if (value.isDefined() && value.hasDefined(UNIT)) {
+            return value.get(UNIT).asString();
         }
+        return null;
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public boolean matches(AttributeMatch group) {
+        return group.isSingle() && hasObjectValueType(group.primary(), TIME, UNIT);
+    }
+
+    @Override
+    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new TimeUnitViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new TimeUnitFormItem(ra.fqn(), ra, context));
     }

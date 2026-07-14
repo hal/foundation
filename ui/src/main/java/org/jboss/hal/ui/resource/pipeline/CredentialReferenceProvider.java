@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.CredentialReferenceFormItem;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.view.CredentialReferenceViewItem;
@@ -23,52 +24,64 @@ import org.jboss.hal.ui.resource.view.ViewItem;
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.dmr.ModelType;
-import org.jboss.hal.meta.description.AttributeDescription;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALIAS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
+import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValueType;
 
 /**
  * Provider for credential reference composite attributes. Matches groups containing a single OBJECT attribute with the
  * credential reference structure ({@code store}, {@code alias}, {@code clear-text}).
  * <p>
+ * A credential reference operates in one of three {@linkplain Mode modes}:
+ * <ol>
+ *     <li><b>Store reference</b> — {@code store} + {@code alias} are set, referencing an entry in a credential store.</li>
+ *     <li><b>Clear text</b> — only {@code clear-text} is set. The password is visible in the server configuration.</li>
+ *     <li><b>Undefined</b> — no sub-attributes are set.</li>
+ * </ol>
  */
-class CredentialReferenceProvider implements ItemProvider {
+public class CredentialReferenceProvider implements ItemProvider {
 
-    @Override
-    public boolean matches(AttributeGroup group) {
-        if (!group.isSingle()) {
-            return false;
-        }
-        AttributeDescription ad = group.primary();
-        try {
-            ModelType type = ad.get(TYPE).asType();
-            if (type != ModelType.OBJECT || !ad.hasDefined(VALUE_TYPE)) {
-                return false;
+    /** The credential reference mode derived from which sub-attributes have values. */
+    public enum Mode {
+        /** {@code store} and {@code alias} are set — references a credential store entry. */
+        STORE_REFERENCE,
+        /** Only {@code clear-text} is set — password visible in configuration. */
+        CLEAR_TEXT,
+        /** No sub-attributes are set. */
+        UNDEFINED
+    }
+
+    /** Detects the credential reference mode from the attribute's current value. */
+    public static Mode mode(ModelNode value) {
+        if (value.isDefined()) {
+            boolean hasStore = value.hasDefined(STORE);
+            boolean hasAlias = value.hasDefined(ALIAS);
+            boolean hasClearText = value.hasDefined(CLEAR_TEXT);
+            if (hasStore || hasAlias) {
+                return Mode.STORE_REFERENCE;
+            } else if (hasClearText) {
+                return Mode.CLEAR_TEXT;
             }
-            if (ad.get(VALUE_TYPE).getType() != ModelType.OBJECT) {
-                return false;
-            }
-            ModelNode valueType = ad.get(VALUE_TYPE);
-            return valueType.has(STORE) && valueType.has(ALIAS) && valueType.has(CLEAR_TEXT);
-        } catch (IllegalArgumentException e) {
-            return false;
         }
+        return Mode.UNDEFINED;
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
+    public boolean matches(AttributeMatch group) {
+        return group.isSingle() && hasObjectValueType(group.primary(), STORE, ALIAS, CLEAR_TEXT);
+    }
+
+    @Override
+    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new CredentialReferenceViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
         return singletonList(new CredentialReferenceFormItem(ra.fqn(), ra, context));
     }

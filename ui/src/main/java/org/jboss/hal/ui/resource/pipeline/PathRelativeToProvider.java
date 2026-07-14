@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.PathRelativeToFormItem;
 import org.jboss.hal.ui.resource.view.PathRelativeToViewItem;
@@ -36,7 +37,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 class PathRelativeToProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeGroup group) {
+    public boolean matches(AttributeMatch group) {
         if (group.size() != 2) {
             return false;
         }
@@ -45,14 +46,14 @@ class PathRelativeToProvider implements ItemProvider {
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeGroup group, PipelineContext context) {
-        List<ResolvedAttribute> resolved = ResolvedAttribute.resolveAll(group, context);
+    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
+        List<ResolvedAttribute> resolved = group.resolveAll(context);
         return singletonList(new PathRelativeToViewItem(group.name(), resolved, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeGroup group, PipelineContext context) {
-        List<ResolvedAttribute> resolved = ResolvedAttribute.resolveAll(group, context);
+    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
+        List<ResolvedAttribute> resolved = group.resolveAll(context);
         return singletonList(new PathRelativeToFormItem(group.name(), resolved, context));
     }
 }
