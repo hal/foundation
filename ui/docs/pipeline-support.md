@@ -8,18 +8,18 @@ Total attributes: **5,803** (4,118 configuration + 1,685 runtime)
 
 | | Handler | Pattern | Count | Priority |
 |---|---|---|---|---|
-| :white_check_mark: | [Default Item Provider](pipeline/default-item-provider.md) | STRING, BOOLEAN, INT, LONG, DOUBLE, BYTES, LIST of simple type | 5,384 | — |
-| :white_check_mark: | [Credential Reference](pipeline/credential-reference.md) | credential-reference family | 49 | — |
-| :white_check_mark: | [Time Unit](pipeline/time-unit.md) | keepalive-time | 8 | — |
-| :white_check_mark: | [File](pipeline/file.md) | file (logging) | 8 | — |
-| :white_check_mark: | [Path / Relative-To](pipeline/path-relative-to.md) | path + relative-to siblings | 31 | — |
-| :white_check_mark: | [Relative-To](pipeline/relative-to.md) | standalone relative-to | 1 | — |
-| :white_check_mark: | [Map](pipeline/map.md) | free-form key-value maps | 222 | — |
-| :white_check_mark: | [Flattening](pipeline/flattening.md) | \*-column (Infinispan JDBC) + other simpleRecord OBJECTs | ~80 | — |
-| | [List of Simple Records](pipeline/list-of-simple-records.md) | LIST of OBJECT with simple-type sub-attributes | 19 | HIGH |
-| | [List of Nested Lists](pipeline/list-of-nested-lists.md) | LIST of OBJECT with nested LIST sub-attributes | 8 | MEDIUM |
-| | [List of Nested Objects](pipeline/list-of-nested-objects.md) | LIST of OBJECT with nested OBJECT sub-attributes | 1 | MEDIUM |
-| | [Complex Object](pipeline/complex-object.md) | Complex/recursive OBJECTs (not lists) | 7 | LOW |
+| :white_check_mark: | [Default Item Provider](handler/default-item-provider.md) | STRING, BOOLEAN, INT, LONG, DOUBLE, BYTES, LIST of simple type | 5,384 | — |
+| :white_check_mark: | [Credential Reference](handler/credential-reference.md) | credential-reference family | 49 | — |
+| :white_check_mark: | [Time Unit](handler/time-unit.md) | keepalive-time | 8 | — |
+| :white_check_mark: | [File](handler/file.md) | file (logging) | 8 | — |
+| :white_check_mark: | [Path / Relative-To](handler/path-relative-to.md) | path + relative-to siblings | 31 | — |
+| :white_check_mark: | [Relative-To](handler/relative-to.md) | standalone relative-to | 1 | — |
+| :white_check_mark: | [Map](handler/map.md) | free-form key-value maps | 222 | — |
+| :white_check_mark: | [Flattening](handler/flattening.md) | \*-column (Infinispan JDBC) + other simpleRecord OBJECTs | ~80 | — |
+| | [List of Simple Records](handler/list-of-simple-records.md) | LIST of OBJECT with simple-type sub-attributes | 19 | HIGH |
+| | [List of Nested Lists](handler/list-of-nested-lists.md) | LIST of OBJECT with nested LIST sub-attributes | 8 | MEDIUM |
+| | [List of Nested Objects](handler/list-of-nested-objects.md) | LIST of OBJECT with nested OBJECT sub-attributes | 1 | MEDIUM |
+| | [Complex Object](handler/complex-object.md) | Complex/recursive OBJECTs (not lists) | 7 | LOW |
 
 ## Coverage
 
