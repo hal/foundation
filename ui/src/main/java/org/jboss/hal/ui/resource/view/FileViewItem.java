@@ -15,8 +15,9 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
@@ -33,23 +34,20 @@ public class FileViewItem extends AbstractViewItem {
 
     @Override
     protected HTMLElement definedValue() {
-        return pathRelativeToValue(attribute);
-    }
-
-    static HTMLElement pathRelativeToValue(ResolvedAttribute attribute) {
-        String path = attribute.value().hasDefined(PATH) ? attribute.value().get(PATH).asString() : null;
-        String relativeTo = attribute.value().hasDefined(RELATIVE_TO) ? attribute.value().get(RELATIVE_TO).asString() : null;
-
-        if (path != null && relativeTo != null) {
+        ResolvedAttribute path = attribute.child(PATH);
+        ResolvedAttribute relativeTo = attribute.child(RELATIVE_TO);
+        HTMLElement pathEl = Pipeline.instance().viewItem(path, context).valueElement();
+        HTMLElement rtEl = Pipeline.instance().viewItem(relativeTo, context).valueElement();
+        if (path.value().isDefined() && relativeTo.value().isDefined()) {
             return span()
-                    .add(span().text(path))
-                    .add(span().text(" relative to ").style("color", "var(--pf-t--global--color--subtle)"))
-                    .add(span().text(relativeTo))
+                    .add(pathEl)
+                    .add(span().text(" relative to ").style("color", "var(--pf-t--global--text--color--placeholder)"))
+                    .add(rtEl)
                     .element();
-        } else if (path != null) {
-            return span().text(path).element();
+        } else if (path.value().isDefined()) {
+            return pathEl;
         } else {
-            return span().text(attribute.value().asString()).element();
+            return plainText(attribute);
         }
     }
 }

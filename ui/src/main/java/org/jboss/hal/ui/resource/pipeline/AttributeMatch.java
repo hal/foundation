@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
  * @see AttributeMatcher
  * @see ItemProvider
  */
-record AttributeMatch(List<AttributeDescription> attributes, String name) {
+public record AttributeMatch(List<AttributeDescription> attributes, String name) {
 
     /** Creates a match containing a single attribute. */
     public static AttributeMatch single(AttributeDescription description) {

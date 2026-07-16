@@ -74,15 +74,20 @@ public abstract class AbstractViewItem implements ViewItem {
     final ResolvedAttribute attribute;
     final PipelineContext context;
     private final String identifier;
+    private final HTMLElement labelEl;
+    private final HTMLElement valueEl;
     private final HTMLElement root;
 
     protected AbstractViewItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
         this.identifier = identifier;
         this.attribute = attribute;
         this.context = context;
+        DescriptionListTerm term = label();
+        this.labelEl = term.element();
+        this.valueEl = value();
         this.root = descriptionListGroup(identifier)
-                .addTerm(label())
-                .addDescription(descriptionListDescription().add(value()))
+                .addTerm(term)
+                .addDescription(descriptionListDescription().add(valueEl))
                 .element();
     }
 
@@ -209,6 +214,11 @@ public abstract class AbstractViewItem implements ViewItem {
     @Override
     public ResolvedAttribute attribute() {
         return attribute;
+    }
+
+    @Override
+    public HTMLElement valueElement() {
+        return valueEl;
     }
 
     @Override

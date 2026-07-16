@@ -46,6 +46,8 @@ public class PathRelativeToViewItem implements ViewItem {
 
     private final String identifier;
     private final ResolvedAttribute primaryAttribute;
+    private final HTMLElement labelEl;
+    private final HTMLElement valueEl;
     private final HTMLElement root;
 
     public PathRelativeToViewItem(String identifier, List<ResolvedAttribute> attributes, PipelineContext context) {
@@ -59,17 +61,17 @@ public class PathRelativeToViewItem implements ViewItem {
         String label = sentenceCase(primaryDesc.name());
         DescriptionListTerm term = descriptionListTerm(label)
                 .help(attributeDescriptionPopover(label, primaryDesc, all));
+        this.labelEl = term.element();
 
-        HTMLElement valueElement;
         if (pathAttr != null && !pathAttr.readable()) {
-            valueElement = AbstractViewItem.restrictedValue();
+            this.valueEl = AbstractViewItem.restrictedValue();
         } else {
-            valueElement = buildValue(pathAttr, relativeToAttr);
+            this.valueEl = buildValue(pathAttr, relativeToAttr);
         }
 
         this.root = descriptionListGroup(identifier)
                 .addTerm(term)
-                .addDescription(descriptionListDescription().add(valueElement))
+                .addDescription(descriptionListDescription().add(valueEl))
                 .element();
     }
 
@@ -113,6 +115,11 @@ public class PathRelativeToViewItem implements ViewItem {
     @Override
     public ResolvedAttribute attribute() {
         return primaryAttribute;
+    }
+
+    @Override
+    public HTMLElement valueElement() {
+        return valueEl;
     }
 
     @Override

@@ -36,18 +36,18 @@ import org.jboss.hal.meta.description.AttributeDescriptions;
 class FlatteningProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch group) {
-        return group.isSingle() && group.primary().simpleRecord();
+    public boolean matches(AttributeMatch match) {
+        return match.isSingle() && match.primary().simpleRecord();
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
-        return flattenViewItems(group.primary(), context);
+    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+        return flattenViewItems(match.primary(), context);
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        return flattenFormItems(group.primary(), context);
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        return flattenFormItems(match.primary(), context);
     }
 
     private List<ViewItem> flattenViewItems(AttributeDescription parent, PipelineContext context) {

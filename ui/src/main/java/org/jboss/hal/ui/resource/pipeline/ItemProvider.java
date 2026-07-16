@@ -33,24 +33,24 @@ import java.util.List;
  */
 public interface ItemProvider {
 
-    /** Tests whether this provider handles the given attribute group. */
-    boolean matches(AttributeMatch group);
+    /** Tests whether this provider handles the given attribute match. */
+    boolean matches(AttributeMatch match);
 
     /**
-     * Creates view items for the given group. Returns {@code null} to fall through to the next provider or default rendering.
+     * Creates view items for the given match. Returns {@code null} to fall through to the next provider or default rendering.
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
+    default List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
         return null;
     }
 
     /**
-     * Creates form items for the given group. Returns {@code null} to fall through to the next provider or default rendering.
+     * Creates form items for the given match. Returns {@code null} to fall through to the next provider or default rendering.
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
+    default List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
         return null;
     }
 }

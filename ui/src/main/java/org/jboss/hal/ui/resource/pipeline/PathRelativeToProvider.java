@@ -37,23 +37,23 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 class PathRelativeToProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch group) {
-        if (group.size() != 2) {
+    public boolean matches(AttributeMatch match) {
+        if (match.size() != 2) {
             return false;
         }
-        return group.attributes().stream()
+        return match.attributes().stream()
                 .anyMatch(ad -> ad.name().endsWith(RELATIVE_TO));
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
-        List<ResolvedAttribute> resolved = group.resolveAll(context);
-        return singletonList(new PathRelativeToViewItem(group.name(), resolved, context));
+    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+        List<ResolvedAttribute> resolved = match.resolveAll(context);
+        return singletonList(new PathRelativeToViewItem(match.name(), resolved, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        List<ResolvedAttribute> resolved = group.resolveAll(context);
-        return singletonList(new PathRelativeToFormItem(group.name(), resolved, context));
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        List<ResolvedAttribute> resolved = match.resolveAll(context);
+        return singletonList(new PathRelativeToFormItem(match.name(), resolved, context));
     }
 }

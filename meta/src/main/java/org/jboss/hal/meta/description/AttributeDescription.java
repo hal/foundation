@@ -47,6 +47,10 @@ import static org.jboss.hal.dmr.ModelType.OBJECT;
  */
 public class AttributeDescription extends NamedNode implements Description {
 
+    public static AttributeDescription undefined() {
+        return new AttributeDescription();
+    }
+
     private final AttributeDescription parent;
 
     AttributeDescription() {

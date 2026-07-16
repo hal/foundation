@@ -17,9 +17,18 @@ package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.ResourceItem;
 
+import elemental2.dom.HTMLElement;
+
 /**
  * A read-only view item produced by the pipeline. Implementations wrap a PatternFly {@code DescriptionListGroup} or similar
  * component for displaying attribute values.
+ * <p>
+ * View items are decomposable: besides {@link #element()} (the full composed element), callers can access the
+ * {@link #valueElement()} individually. This allows composite view items to reuse pipeline-produced items for composition —
+ * e.g., embedding just the value element in a custom layout.
  */
 public interface ViewItem extends ResourceItem {
+
+    /** Returns the rendered value element (handles restricted, expression, defined, and undefined states). */
+    HTMLElement valueElement();
 }

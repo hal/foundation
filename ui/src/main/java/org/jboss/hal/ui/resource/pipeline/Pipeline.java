@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -87,6 +88,24 @@ public final class Pipeline {
     public List<ViewItem> viewItems(PipelineContext context) {
         List<AttributeMatch> groups = group(context.resourceDescription().attributes());
         return itemizeView(groups, context);
+    }
+
+    /**
+     * Produces a single view item for a resolved attribute by running it through the provider chain. Used by composite view
+     * items to get decomposable items for child or sibling attributes — callers typically use {@link ViewItem#valueElement()}
+     * to embed the rendered value in a custom layout.
+     */
+    public ViewItem viewItem(ResolvedAttribute attribute, PipelineContext context) {
+        AttributeMatch match = AttributeMatch.single(attribute.description());
+        for (ItemProvider provider : providers) {
+            if (provider.matches(match)) {
+                List<ViewItem> result = provider.viewItems(match, context);
+                if (result != null && !result.isEmpty()) {
+                    return result.get(0);
+                }
+            }
+        }
+        return null;
     }
 
     /** Runs the pipeline and produces form items for all attributes in the resource metadata. */

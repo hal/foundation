@@ -36,19 +36,19 @@ import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasSimpleValue
 class MapProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch group) {
-        return group.isSingle() && hasSimpleValueType(group.primary());
+    public boolean matches(AttributeMatch match) {
+        return match.isSingle() && hasSimpleValueType(match.primary());
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
         return singletonList(new MapViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
         return singletonList(new StandardFormItem<>(ra.fqn(), ra, context,
                 new MapControl(), MapOperationStrategy.INSTANCE));
     }
