@@ -31,3 +31,15 @@ Total attributes: **5,803** (4,118 configuration + 1,685 runtime)
 | Runtime (1,685) | ~1,478 | ~207 | ~88% |
 
 Runtime attributes are read-only, so even uncovered ones render acceptably as plain text or JSON display.
+
+## Multi-type Resources
+
+Resources with 5+ different attribute types — ideal for comprehensive testing across multiple handlers.
+
+| Resource | Types present | Notes |
+|---|---|---|
+| `/subsystem=datasources/data-source=ExampleDS` | STRING, BOOLEAN, INT, LONG, OBJECT | Credential-reference + maps + enums + simple types; available out of the box |
+| `/core-service=management/management-interface=http-interface` | STRING, BOOLEAN, INT, LIST, OBJECT | Includes `allowed-origins` (LIST), `http-upgrade` (simpleRecord), `console-enabled` (BOOLEAN) |
+| `/core-service=platform-mbean/type=runtime` | STRING, BOOLEAN, LONG, LIST, OBJECT | Read-only; includes `system-properties` (map), `input-arguments` (LIST) |
+| `/subsystem=jaxrs` | STRING, BOOLEAN, INT, LIST, OBJECT | JAX-RS subsystem with diverse attribute types |
+| `/subsystem=jgroups/channel=ee/protocol=UFC` | STRING, BOOLEAN, INT, LONG, DOUBLE | One of the few resources with DOUBLE attributes |
