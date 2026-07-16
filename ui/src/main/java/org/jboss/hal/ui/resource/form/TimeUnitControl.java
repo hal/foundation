@@ -15,26 +15,26 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.List;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.TimeUnitProvider;
+import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
+
+import elemental2.dom.HTMLElement;
 
 import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
 import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.form.FormGroup.formGroup;
-import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.form.FormSelect.formSelect;
 import static org.patternfly.component.form.FormSelectOption.formSelectOption;
 import static org.patternfly.component.form.TextInput.textInput;
@@ -42,21 +42,23 @@ import static org.patternfly.component.form.TextInputType.number;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 
-/** Form item for time-unit composite attributes. Combines a number input (time) with a unit dropdown. */
-public class TimeUnitFormItem extends AbstractFormItem {
+/**
+ * {@link NativeControl} for time-unit composite attributes. Combines a number input (time) with a unit dropdown.
+ */
+public final class TimeUnitControl implements NativeControl<HTMLElement> {
 
     private static final List<String> DEFAULT_UNITS = List.of(
             "NANOSECONDS", "MICROSECONDS", "MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS");
 
-    private final TextInput timeInput;
-    private final FormSelect unitSelect;
-    private final long originalTime;
-    private final String originalUnit;
+    private TextInput timeInput;
+    private FormSelect unitSelect;
+    private long originalTime;
+    private String originalUnit;
 
-    public TimeUnitFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
-        this.originalTime = TimeUnitProvider.time(attribute.value());
-        this.originalUnit = TimeUnitProvider.unit(attribute.value());
+    @Override
+    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        originalTime = TimeUnitProvider.time(attribute.value());
+        originalUnit = TimeUnitProvider.unit(attribute.value());
 
         timeInput = textInput(number, Id.build(identifier, "time"))
                 .run(ti -> {
@@ -78,15 +80,69 @@ public class TimeUnitFormItem extends AbstractFormItem {
                     }
                 });
 
-        formGroupControl = formGroupControl()
-                .addInputGroup(inputGroup()
-                        .addItem(inputGroupItem().fill().addControl(timeInput))
-                        .addItem(inputGroupItem().addControl(unitSelect)));
+        return inputGroup()
+                .addItem(inputGroupItem().fill().addControl(timeInput))
+                .addItem(inputGroupItem().addControl(unitSelect))
+                .element();
+    }
 
-        formGroup = formGroup(identifier)
-                .required(attribute.description().required())
-                .addLabel(label())
-                .addControl(formGroupControl);
+    @Override
+    public HTMLElement element(HTMLElement control) {
+        return control;
+    }
+
+    @Override
+    public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
+        String timeStr = timeValue();
+        if (timeStr.isEmpty()) {
+            return new ModelNode();
+        }
+        ModelNode result = new ModelNode();
+        result.get(TIME).set(Long.parseLong(timeStr));
+        result.get(UNIT).set(unitValue());
+        return result;
+    }
+
+    @Override
+    public boolean isModifiedForNew(HTMLElement control, ResolvedAttribute attribute) {
+        return !timeValue().isEmpty();
+    }
+
+    @Override
+    public boolean isModifiedForExisting(HTMLElement control, ResolvedAttribute attribute, boolean wasDefined) {
+        if (!wasDefined) {
+            return !timeValue().isEmpty();
+        }
+        String currentTimeStr = timeValue();
+        String currentUnit = unitValue();
+        long currentTime = currentTimeStr.isEmpty() ? -1 : Long.parseLong(currentTimeStr);
+        return currentTime != originalTime || !currentUnit.equals(originalUnit != null ? originalUnit : "");
+    }
+
+    @Override
+    public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+        String timeStr = timeValue();
+        if (FormItemBricks.requiredOnItsOwn(attribute) && timeStr.isEmpty()) {
+            timeInput.validated(error);
+            formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
+            return false;
+        }
+        if (!timeStr.isEmpty()) {
+            try {
+                Long.parseLong(timeStr);
+            } catch (NumberFormatException e) {
+                timeInput.validated(error);
+                formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void resetValidation(HTMLElement control) {
+        timeInput.resetValidation();
+        unitSelect.resetValidation();
     }
 
     private static List<String> allowedUnits(ResolvedAttribute attribute) {
@@ -98,67 +154,6 @@ public class TimeUnitFormItem extends AbstractFormItem {
                     .collect(toList());
         }
         return DEFAULT_UNITS;
-    }
-
-    // ------------------------------------------------------ validation
-
-    @Override
-    public void resetValidation() {
-        timeInput.resetValidation();
-        unitSelect.resetValidation();
-        if (formGroupControl != null) {
-            formGroupControl.removeHelperText();
-        }
-    }
-
-    @Override
-    public boolean validate() {
-        String timeValue = timeValue();
-        if (requiredOnItsOwn() && timeValue.isEmpty()) {
-            timeInput.validated(error);
-            formGroupControl.addHelperText(requiredHelperText());
-            return false;
-        }
-        if (!timeValue.isEmpty()) {
-            try {
-                Long.parseLong(timeValue);
-            } catch (NumberFormatException e) {
-                timeInput.validated(error);
-                formGroupControl.addHelperText(requiredHelperText());
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // ------------------------------------------------------ data
-
-    @Override
-    boolean isNativeModifiedForNew() {
-        return !timeValue().isEmpty();
-    }
-
-    @Override
-    boolean isNativeModifiedForExisting(boolean wasDefined) {
-        if (!wasDefined) {
-            return !timeValue().isEmpty();
-        }
-        String currentTimeStr = timeValue();
-        String currentUnit = unitValue();
-        long currentTime = currentTimeStr.isEmpty() ? -1 : Long.parseLong(currentTimeStr);
-        return currentTime != originalTime || !currentUnit.equals(originalUnit != null ? originalUnit : "");
-    }
-
-    @Override
-    public ModelNode modelNode() {
-        String timeStr = timeValue();
-        if (timeStr.isEmpty()) {
-            return new ModelNode();
-        }
-        ModelNode result = new ModelNode();
-        result.get(TIME).set(Long.parseLong(timeStr));
-        result.get(UNIT).set(unitValue());
-        return result;
     }
 
     private String timeValue() {

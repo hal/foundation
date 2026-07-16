@@ -15,37 +15,37 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
+
+import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
-import static org.patternfly.component.form.FormGroup.formGroup;
-import static org.patternfly.component.form.FormGroupControl.formGroupControl;
 import static org.patternfly.component.form.TextInput.textInput;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
 
 /**
- * Form item for file composite attributes ({@code {path, relative-to}}). Text input for path + text input for relative-to.
- * Produces a single write-attribute with the OBJECT value.
+ * {@link NativeControl} for file composite attributes ({@code {path, relative-to}}). Two text inputs side-by-side in an input
+ * group.
  */
-public class FileFormItem extends AbstractFormItem {
+public final class FileControl implements NativeControl<HTMLElement> {
 
-    private final TextInput pathInput;
-    private final TextInput relativeToInput;
-    private final String originalPath;
-    private final String originalRelativeTo;
+    private TextInput pathInput;
+    private TextInput relativeToInput;
+    private String originalPath;
+    private String originalRelativeTo;
 
-    public FileFormItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
-        this.originalPath = attribute.value().hasDefined(PATH) ? attribute.value().get(PATH).asString() : "";
-        this.originalRelativeTo = attribute.value().hasDefined(RELATIVE_TO)
+    @Override
+    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+        originalPath = attribute.value().hasDefined(PATH) ? attribute.value().get(PATH).asString() : "";
+        originalRelativeTo = attribute.value().hasDefined(RELATIVE_TO)
                 ? attribute.value().get(RELATIVE_TO).asString() : "";
 
         pathInput = textInput(Id.build(identifier, "path"))
@@ -65,46 +65,20 @@ public class FileFormItem extends AbstractFormItem {
                     }
                 });
 
-        formGroupControl = formGroupControl()
-                .addInputGroup(inputGroup()
-                        .addItem(inputGroupItem().fill().addControl(pathInput))
-                        .addText(inputGroupText().plain().text("relative to"))
-                        .addItem(inputGroupItem().fill().addControl(relativeToInput)));
-
-        formGroup = formGroup(identifier)
-                .required(attribute.description().required())
-                .addLabel(label())
-                .addControl(formGroupControl);
-    }
-
-    // ------------------------------------------------------ validation
-
-    @Override
-    public void resetValidation() {
-        pathInput.resetValidation();
-        relativeToInput.resetValidation();
-        if (formGroupControl != null) {
-            formGroupControl.removeHelperText();
-        }
-    }
-
-    // ------------------------------------------------------ data
-
-    @Override
-    boolean isNativeModifiedForNew() {
-        return !pathValue().isEmpty() || !relativeToValue().isEmpty();
+        return inputGroup()
+                .addItem(inputGroupItem().fill().addControl(pathInput))
+                .addText(inputGroupText().plain().text("relative to"))
+                .addItem(inputGroupItem().fill().addControl(relativeToInput))
+                .element();
     }
 
     @Override
-    boolean isNativeModifiedForExisting(boolean wasDefined) {
-        if (!wasDefined) {
-            return !pathValue().isEmpty() || !relativeToValue().isEmpty();
-        }
-        return !originalPath.equals(pathValue()) || !originalRelativeTo.equals(relativeToValue());
+    public HTMLElement element(HTMLElement control) {
+        return control;
     }
 
     @Override
-    public ModelNode modelNode() {
+    public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
         String path = pathValue();
         String relativeTo = relativeToValue();
         if (path.isEmpty() && relativeTo.isEmpty()) {
@@ -118,6 +92,25 @@ public class FileFormItem extends AbstractFormItem {
             result.get(RELATIVE_TO).set(relativeTo);
         }
         return result;
+    }
+
+    @Override
+    public boolean isModifiedForNew(HTMLElement control, ResolvedAttribute attribute) {
+        return !pathValue().isEmpty() || !relativeToValue().isEmpty();
+    }
+
+    @Override
+    public boolean isModifiedForExisting(HTMLElement control, ResolvedAttribute attribute, boolean wasDefined) {
+        if (!wasDefined) {
+            return !pathValue().isEmpty() || !relativeToValue().isEmpty();
+        }
+        return !originalPath.equals(pathValue()) || !originalRelativeTo.equals(relativeToValue());
+    }
+
+    @Override
+    public void resetValidation(HTMLElement control) {
+        pathInput.resetValidation();
+        relativeToInput.resetValidation();
     }
 
     private String pathValue() {

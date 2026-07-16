@@ -90,6 +90,15 @@ public interface NativeControl<C> {
     }
 
     /**
+     * Returns {@code true} if this control handles expression input internally (mixed mode). When {@code true},
+     * {@link StandardFormItem} will not create an {@link ExpressionToggle}, even if the attribute allows expressions.
+     * The control is responsible for rendering its own expression support (e.g. a resolve button in an InputGroup).
+     */
+    default boolean handlesMixedExpressions() {
+        return false;
+    }
+
+    /**
      * Builds a custom native container for use with the expression toggle. The container must include
      * the control element and a button to switch to expression mode (provided by
      * {@link ExpressionToggle#switchToExpressionButton()}). Returns {@code null} to use the default

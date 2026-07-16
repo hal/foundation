@@ -17,7 +17,8 @@ package org.jboss.hal.ui.resource.pipeline;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.TimeUnitFormItem;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.TimeUnitControl;
 import org.jboss.hal.ui.resource.view.TimeUnitViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
@@ -53,19 +54,19 @@ public class TimeUnitProvider implements ItemProvider {
     }
 
     @Override
-    public boolean matches(AttributeMatch group) {
-        return group.isSingle() && hasObjectValueType(group.primary(), TIME, UNIT);
+    public boolean matches(AttributeMatch match) {
+        return match.isSingle() && hasObjectValueType(match.primary(), TIME, UNIT);
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
         return singletonList(new TimeUnitViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
-        return singletonList(new TimeUnitFormItem(ra.fqn(), ra, context));
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
+        return singletonList(new StandardFormItem<>(ra.fqn(), ra, context, new TimeUnitControl()));
     }
 }

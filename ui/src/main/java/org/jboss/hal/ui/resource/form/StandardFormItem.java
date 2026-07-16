@@ -111,7 +111,7 @@ public final class StandardFormItem<C> implements FormItem {
         if (attribute.description().readOnly()) {
             this.expressionToggle = null;
             this.formGroupControl = FormItemBricks.readOnlyGroup(identifier, attribute, flags);
-        } else if (attribute.description().expressionAllowed()) {
+        } else if (attribute.description().expressionAllowed() && !nativeControl.handlesMixedExpressions()) {
             this.expressionToggle = new ExpressionToggle(identifier, attribute, flags);
             this.formGroupControl = formGroupControl();
             HTMLElement customContainer = nativeControl.nativeContainer(control, expressionToggle);

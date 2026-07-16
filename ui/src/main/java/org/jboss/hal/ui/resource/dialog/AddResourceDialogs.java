@@ -31,7 +31,8 @@ import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
-import org.jboss.hal.ui.resource.form.StringFormItem;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
@@ -279,9 +280,10 @@ class AddResourceDialogs {
         nameDescription.get(EXPRESSIONS_ALLOWED).set(false);
 
         ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, true);
-        StringFormItem nameItem = new StringFormItem(NAME, ra, context);
+        StringControl nameControl = new StringControl();
+        StandardFormItem<elemental2.dom.HTMLElement> nameItem = new StandardFormItem<>(NAME, ra, context, nameControl);
         if (value != null) {
-            nameItem.textControl().value(value);
+            nameControl.textInput().value(value);
         }
         return nameItem;
     }

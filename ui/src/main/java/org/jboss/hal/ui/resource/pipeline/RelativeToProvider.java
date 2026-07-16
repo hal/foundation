@@ -17,7 +17,8 @@ package org.jboss.hal.ui.resource.pipeline;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.StringFormItem;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.StringControl;
 
 import java.util.List;
 
@@ -34,16 +35,16 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 class RelativeToProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch group) {
-        if (!group.isSingle()) {
+    public boolean matches(AttributeMatch match) {
+        if (!match.isSingle()) {
             return false;
         }
-        return group.primary().name().endsWith(RELATIVE_TO);
+        return match.primary().name().endsWith(RELATIVE_TO);
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
-        return singletonList(new StringFormItem(ra.fqn(), ra, context));
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
+        return singletonList(new StandardFormItem<>(ra.fqn(), ra, context, new StringControl()));
     }
 }

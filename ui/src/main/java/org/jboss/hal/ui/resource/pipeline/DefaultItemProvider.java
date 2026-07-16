@@ -19,14 +19,14 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.MultiTypeaheadControl;
 import org.jboss.hal.ui.resource.form.NumberInputControl;
-import org.jboss.hal.ui.resource.form.RestrictedFormItem;
+import org.jboss.hal.ui.resource.form.RestrictedControl;
 import org.jboss.hal.ui.resource.form.SelectControl;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
-import org.jboss.hal.ui.resource.form.StringFormItem;
+import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.form.StringListControl;
 import org.jboss.hal.ui.resource.form.SwitchControl;
 import org.jboss.hal.ui.resource.form.TypeaheadControl;
-import org.jboss.hal.ui.resource.form.UnsupportedFormItem;
+import org.jboss.hal.ui.resource.form.UnsupportedControl;
 import org.jboss.hal.ui.resource.view.DefaultViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
@@ -50,29 +50,29 @@ class DefaultItemProvider implements ItemProvider {
     private static final Logger logger = Logger.getLogger(DefaultItemProvider.class.getName());
 
     @Override
-    public boolean matches(AttributeMatch group) {
+    public boolean matches(AttributeMatch match) {
         return true;
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
         return singletonList(new DefaultViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
         return singletonList(formItem(ra, context));
     }
 
     static FormItem formItem(ResolvedAttribute ra, PipelineContext context) {
         String identifier = ra.fqn();
         if (!ra.readable()) {
-            return new RestrictedFormItem(identifier, ra, context);
+            return new StandardFormItem<>(identifier, ra, context, new RestrictedControl());
         }
         if (!ra.description().hasDefined(TYPE)) {
-            return new UnsupportedFormItem(identifier, ra, context);
+            return new StandardFormItem<>(identifier, ra, context, new UnsupportedControl());
         }
         ModelType type = ra.description().get(TYPE).asType();
         switch (type) {
@@ -90,7 +90,7 @@ class DefaultItemProvider implements ItemProvider {
                 } else if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
                     return new StandardFormItem<>(identifier, ra, context, new TypeaheadControl());
                 } else {
-                    return new StringFormItem(identifier, ra, context);
+                    return new StandardFormItem<>(identifier, ra, context, new StringControl());
                 }
 
             case LIST:
@@ -105,11 +105,11 @@ class DefaultItemProvider implements ItemProvider {
                         return new StandardFormItem<>(identifier, ra, context, new StringListControl());
                     }
                 }
-                return new UnsupportedFormItem(identifier, ra, context);
+                return new StandardFormItem<>(identifier, ra, context, new UnsupportedControl());
 
             case OBJECT:
             default:
-                return new UnsupportedFormItem(identifier, ra, context);
+                return new StandardFormItem<>(identifier, ra, context, new UnsupportedControl());
         }
     }
 }

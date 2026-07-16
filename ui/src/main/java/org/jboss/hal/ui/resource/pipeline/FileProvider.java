@@ -16,8 +16,9 @@
 package org.jboss.hal.ui.resource.pipeline;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.FileFormItem;
+import org.jboss.hal.ui.resource.form.FileControl;
 import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.view.FileViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
@@ -38,19 +39,19 @@ import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValue
 class FileProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch group) {
-        return group.isSingle() && hasObjectValueType(group.primary(), PATH, RELATIVE_TO);
+    public boolean matches(AttributeMatch match) {
+        return match.isSingle() && hasObjectValueType(match.primary(), PATH, RELATIVE_TO);
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
+    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
         return singletonList(new FileViewItem(ra.fqn(), ra, context));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch group, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(group.primary(), context);
-        return singletonList(new FileFormItem(ra.fqn(), ra, context));
+    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
+        return singletonList(new StandardFormItem<>(ra.fqn(), ra, context, new FileControl()));
     }
 }

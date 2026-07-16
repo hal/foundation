@@ -61,8 +61,7 @@ import static org.patternfly.component.tooltip.Tooltip.tooltip;
  * helper text), and one after switching to expression mode (to apply expression helper text). Both callbacks fire on every mode
  * switch, not just during initialization.
  * <p>
- * Used by {@link StandardFormItem} for Category-A items. Category-B items that need partial expression support can also use
- * this component directly.
+ * Used by {@link StandardFormItem} for items whose attributes allow expressions.
  *
  * @see StandardFormItem
  * @see NativeControl

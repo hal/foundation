@@ -15,15 +15,12 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-/** Lists the input modes a form item can operate in: native controls, expression text input, or mixed. */
+/** Lists the input modes a form item can operate in: native controls or expression text input. */
 enum InputMode {
 
     /** The form item uses its native control (switch, select, number input, etc.). */
     NATIVE,
 
     /** The form item shows a text input for entering WildFly expressions ({@code $&#123;...&#125;}). */
-    EXPRESSION,
-
-    /** The form item accepts both literal values and expressions in a single text input. */
-    MIXED
+    EXPRESSION
 }

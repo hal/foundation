@@ -26,6 +26,7 @@ import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.help.HelperText;
+import org.patternfly.component.inputgroup.InputGroupText;
 import org.patternfly.core.Aria;
 import org.patternfly.core.Roles;
 import org.patternfly.style.Classes;
@@ -78,11 +79,11 @@ import static org.patternfly.style.Classes.text;
 import static org.patternfly.style.Classes.util;
 
 /**
- * Reusable UI fragments ("bricks") for composing form items. Following the brick pattern used throughout the console
- * (see {@link org.jboss.hal.ui.brick}), this is a {@code final} utility class with only {@code static} factory methods.
+ * Reusable UI fragments ("bricks") for composing form items. Following the brick pattern used throughout the console (see
+ * {@link org.jboss.hal.ui.brick}), this is a {@code final} utility class with only {@code static} factory methods.
  * <p>
- * Provides shared building blocks for both {@link StandardFormItem} (Category-A) and direct {@link FormItem} implementations
- * (Category-B): labels with description popovers and stability badges, read-only controls with expression resolve buttons,
+ * Provides shared building blocks for {@link StandardFormItem} and {@link NativeControl} implementations: labels with
+ * description popovers and stability badges, read-only controls with expression resolve buttons,
  * placeholder application, and validation helper text.
  *
  * @see StandardFormItem
@@ -195,7 +196,7 @@ public final class FormItemBricks {
     }
 
     /** Creates a unit text element for display in an InputGroup. */
-    public static org.patternfly.component.inputgroup.InputGroupText unitText(String unit) {
+    public static InputGroupText unitText(String unit) {
         return inputGroupText().plain().add(small().text(unit));
     }
 

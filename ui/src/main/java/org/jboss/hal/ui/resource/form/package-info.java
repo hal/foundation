@@ -42,14 +42,9 @@
  * mode-aware helper text lifecycle, modification tracking, validation, and DMR operation generation — with no template methods
  * and no subclassing.
  *
- * <h2>Item Categories</h2>
+ * <h2>NativeControl Implementations</h2>
  * <p>
- * Form items fall into two categories:
- *
- * <h3>Category A — Standard single-attribute items</h3>
- * <p>
- * These follow a uniform pattern (single attribute, native control + optional expression toggle) and are created as
- * {@code StandardFormItem} instances composed with a {@code NativeControl} implementation:
+ * Each {@code NativeControl} implementation captures one widget type and its value semantics:
  * <dl>
  *   <dt>{@link org.jboss.hal.ui.resource.form.SwitchControl SwitchControl}</dt>
  *   <dd>Toggle switch for boolean attributes. Uses a flex layout for the expression-toggle container.</dd>
@@ -57,6 +52,8 @@
  *   <dd>Number input with min/max validation (INT, LONG, DOUBLE) or allowed-values select.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.SelectControl SelectControl}</dt>
  *   <dd>Dropdown select for string attributes with predefined allowed values.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.StringControl StringControl}</dt>
+ *   <dd>Text input for plain string attributes, using mixed mode (handles both literals and expressions).</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.TypeaheadControl TypeaheadControl}</dt>
  *   <dd>Single-select typeahead for string attributes with a capability reference.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.MultiTypeaheadControl MultiTypeaheadControl}</dt>
@@ -66,31 +63,21 @@
  *   <dt>{@link org.jboss.hal.ui.resource.form.MapControl MapControl}</dt>
  *   <dd>Key=value filter input for free-form map attributes. Paired with
  *       {@link org.jboss.hal.ui.resource.form.MapOperationStrategy MapOperationStrategy} for granular operations.</dd>
- * </dl>
- *
- * <h3>Category B — Composite and special-case items</h3>
- * <p>
- * These implement {@link org.jboss.hal.ui.resource.form.FormItem FormItem} directly (with or without
- * {@link org.jboss.hal.ui.resource.form.AbstractFormItem AbstractFormItem}) and use
- * {@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks} for shared fragments:
- * <dl>
- *   <dt>{@link org.jboss.hal.ui.resource.form.StringFormItem StringFormItem}</dt>
- *   <dd>Text input for plain string attributes, using MIXED mode (no expression toggle).</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.FileFormItem FileFormItem}</dt>
- *   <dd>Composite form item for path + relative-to OBJECT attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.TimeUnitFormItem TimeUnitFormItem}</dt>
- *   <dd>Composite form item for time + unit OBJECT attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.CredentialReferenceFormItem CredentialReferenceFormItem}</dt>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.FileControl FileControl}</dt>
+ *   <dd>Composite control for path + relative-to OBJECT attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.TimeUnitControl TimeUnitControl}</dt>
+ *   <dd>Composite control for time + unit OBJECT attributes.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.CredentialReferenceControl CredentialReferenceControl}</dt>
  *   <dd>Multi-mode composite for credential-reference OBJECT attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.RestrictedFormItem RestrictedFormItem}</dt>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.RestrictedControl RestrictedControl}</dt>
  *   <dd>Locked sentinel for permission-restricted attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.UnsupportedFormItem UnsupportedFormItem}</dt>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.UnsupportedControl UnsupportedControl}</dt>
  *   <dd>Read-only fallback for unsupported attribute types.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem}</dt>
- *   <dd>Sibling-attribute form item for path + relative-to STRING pairs.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.RelativeToFormItem RelativeToFormItem}</dt>
- *   <dd>Standalone form item for relative-to STRING attributes (used in feature-in-profile scope).</dd>
  * </dl>
+ * <p>
+ * For multi-attribute form items (e.g. sibling path + relative-to STRING pairs),
+ * {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem} implements
+ * {@link org.jboss.hal.ui.resource.form.FormItem FormItem} directly.
  *
  * <h2>Helper Text</h2>
  * <p>
