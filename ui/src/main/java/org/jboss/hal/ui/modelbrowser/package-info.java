@@ -31,6 +31,7 @@
  *     <li>{@link org.jboss.hal.ui.modelbrowser.ModelBrowserEvents} - custom DOM events for tree interaction</li>
  *     <li>{@link org.jboss.hal.ui.modelbrowser.FindResource} - modal dialog for searching resources</li>
  *     <li>{@link org.jboss.hal.ui.modelbrowser.GotoResource} - modal dialog for navigating to a resource by address</li>
+ *     <li>{@link org.jboss.hal.ui.modelbrowser.History} - navigation history with back/forward tracking</li>
  * </ul>
  *
  * @see org.jboss.hal.ui.modelbrowser.ModelBrowser

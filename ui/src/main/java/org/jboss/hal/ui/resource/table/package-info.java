@@ -32,6 +32,12 @@
  * <dd>Toolbar with search and global operations filter for the operations table.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.table.CapabilitiesTable}</dt>
  * <dd>Table showing declared and referenced capabilities for a resource.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.table.AttributeRow}</dt>
+ * <dd>Row renderer that maps an {@code AttributeDescription} to a table row with type, storage, and constraint cells.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.table.AttributesFilter}</dt>
+ * <dd>Multi-criteria filter for attribute descriptions (name, type, deprecation, storage, access type).</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.table.OperationsFilter}</dt>
+ * <dd>Multi-criteria filter for operation descriptions (name, global operations toggle).</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.table;

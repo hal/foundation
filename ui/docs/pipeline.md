@@ -4,7 +4,7 @@ The pipeline transforms resource metadata from the WildFly management model into
 
 ## Pipeline Stages
 
-1. **Group** — `AttributeMatcher`s scan the attribute pool in priority order, claiming groups of related attributes into `AttributeMatch`es.
+1. **Match** — `AttributeMatcher`s scan the attribute pool in priority order, claiming groups of related attributes into `AttributeMatch`es.
 2. **Itemize** — `ItemProvider`s resolve each group against the `PipelineContext` into `ResolvedAttribute`s and create `ViewItem`s or `FormItem`s. Providers are tried in registration order; first match wins.
 
 ## Provider Chain

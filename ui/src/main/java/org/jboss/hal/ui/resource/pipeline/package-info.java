@@ -19,8 +19,8 @@
  *
  * <h2>Pipeline Stages</h2>
  * <ol>
- *     <li><b>Group</b> — {@link org.jboss.hal.ui.resource.pipeline.AttributeMatcher}s scan the attribute pool in priority
- *         order, claiming groups of related attributes into {@link org.jboss.hal.ui.resource.pipeline.AttributeMatch}s.</li>
+ *     <li><b>Match</b> — {@link org.jboss.hal.ui.resource.pipeline.AttributeMatcher}s scan the attribute pool in priority
+ *         order, claiming related attributes into {@link org.jboss.hal.ui.resource.pipeline.AttributeMatch}s.</li>
  *     <li><b>Itemize</b> — {@link org.jboss.hal.ui.resource.pipeline.ItemProvider}s resolve each group against the
  *         {@link org.jboss.hal.ui.resource.pipeline.PipelineContext} into
  *         {@link org.jboss.hal.ui.resource.ResolvedAttribute}s and create
@@ -29,11 +29,25 @@
  *         wins.</li>
  * </ol>
  *
+ * <h2>Matcher Chain</h2>
+ * <p>
+ * Concrete {@link org.jboss.hal.ui.resource.pipeline.AttributeMatcher} implementations that claim related attributes:
+ * <ol>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.CredentialReferenceMatcher} — matches credential-reference OBJECT
+ *         attributes</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.TimeUnitMatcher} — matches time + unit attribute pairs</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.FileMatcher} — matches path + relative-to OBJECT attributes</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.MapMatcher} — matches MAP-typed attributes</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.PathRelativeToMatcher} — matches sibling path + relative-to STRING
+ *         pairs</li>
+ * </ol>
+ *
  * <h2>Provider Chain</h2>
  * <ol>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider} — composite: credential-reference</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.TimeUnitProvider} — composite: time-unit</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.FileProvider} — composite: file</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.MapProvider} — composite: map attributes</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.PathRelativeToProvider} — sibling group: path + relative-to</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.RelativeToProvider} — standalone: relative-to (FIP only)</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.FlatteningProvider} — unclaimed simpleRecord OBJECTs → n sub-attribute
@@ -108,6 +122,11 @@
  *     <tr><td>Sibling group</td><td>n descs</td><td>n resolved</td><td>1 item, n resolved</td><td>n ops (separate attrs)</td></tr>
  * </table>
  *
+ * <p>
+ * <h2>Pipeline Configuration</h2>
+ * <p>
+ * {@link org.jboss.hal.ui.resource.pipeline.PipelineFlags} controls pipeline behaviour using a {@code Scope} (which attributes
+ * to include) and a {@code Placeholder} (how to display undefined values).
  * <p>
  * Entry point: {@link org.jboss.hal.ui.resource.pipeline.Pipeline#DEFAULT}.
  *

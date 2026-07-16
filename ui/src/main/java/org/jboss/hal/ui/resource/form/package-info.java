@@ -88,6 +88,8 @@
  *   <dd>Read-only fallback for unsupported attribute types.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem}</dt>
  *   <dd>Sibling-attribute form item for path + relative-to STRING pairs.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.RelativeToFormItem RelativeToFormItem}</dt>
+ *   <dd>Standalone form item for relative-to STRING attributes (used in feature-in-profile scope).</dd>
  * </dl>
  *
  * <h2>Helper Text</h2>
@@ -98,6 +100,20 @@
  * helper text for expression mode. Both return {@link org.patternfly.component.help.HelperText HelperText} components, which
  * support rich content with nested elements and markup. {@code StandardFormItem} applies the correct helper text when switching
  * modes and after resetting validation.
+ *
+ * <h2>Shared Support Types</h2>
+ * <dl>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm}</dt>
+ *   <dd>Container that orchestrates form items, validation, and DMR operation submission.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.CapabilityReferenceSupport CapabilityReferenceSupport}</dt>
+ *   <dd>Helper for loading capability reference options into typeahead controls.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.StringListSupport StringListSupport}</dt>
+ *   <dd>Shared logic for label-based multi-value string list inputs.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.SearchReloadInput SearchReloadInput}</dt>
+ *   <dd>Search input that reloads options on focus, for single-select typeahead controls.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.FilterReloadInput FilterReloadInput}</dt>
+ *   <dd>Filter input that reloads options on focus, for multi-select typeahead controls.</dd>
+ * </dl>
  *
  * <h2>Pipeline Integration</h2>
  * <p>

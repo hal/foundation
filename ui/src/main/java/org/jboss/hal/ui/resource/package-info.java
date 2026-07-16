@@ -51,8 +51,6 @@
  * composite attributes (credential-reference, time-unit, file) and providers that create the corresponding items.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.grouping}</dt>
  * <dd>Grouping strategies for organizing resource items into named sections.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.finder}</dt>
- * <dd>Finder navigation support.</dd>
  * </dl>
  * <p>
  * Shared types and orchestration in this package:
@@ -65,6 +63,11 @@
  * {@linkplain org.jboss.hal.ui.resource.view view} and {@linkplain org.jboss.hal.ui.resource.form form} items.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.ResourceData}</dt>
  * <dd>State machine orchestrating the view/edit/error lifecycle for resource attributes.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceDataToolbar}</dt>
+ * <dd>Toolbar with filter controls for resource data views.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.ResourceFilter}</dt>
+ * <dd>Multi-criteria attribute filter supporting name search, type, status, storage, access type, and expression
+ * filtering.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource;

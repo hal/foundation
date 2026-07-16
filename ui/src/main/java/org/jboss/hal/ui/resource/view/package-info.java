@@ -20,20 +20,39 @@
  * This package provides components for rendering resource attributes as read-only description lists. Each attribute is
  * displayed with type-appropriate formatting (booleans, expressions, capability references, complex types, etc.).
  * <p>
- * Key components:
+ * <h2>Type Hierarchy</h2>
+ * <dl>
+ * <dt>{@link org.jboss.hal.ui.resource.view.ViewItem}</dt>
+ * <dd>Core interface for read-only view items, extends {@code ResourceItem}.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemDefaults}</dt>
+ * <dd>Default constants and configurations shared across view item implementations.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.AbstractViewItem}</dt>
+ * <dd>Base class for pipeline view items. Self-contained: receives a {@code ResolvedAttribute} and builds the complete
+ * description list entry.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.DefaultViewItem}</dt>
+ * <dd>Default view item for standard single-attribute display with type-appropriate formatting.</dd>
+ * </dl>
+ *
+ * <h2>Composite View Items</h2>
+ * <dl>
+ * <dt>{@link org.jboss.hal.ui.resource.view.CredentialReferenceViewItem}</dt>
+ * <dd>Read-only display for credential-reference OBJECT attributes.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.FileViewItem}</dt>
+ * <dd>Read-only display for file (path + relative-to) OBJECT attributes.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.MapViewItem}</dt>
+ * <dd>Read-only display for MAP-typed attributes.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.PathRelativeToViewItem}</dt>
+ * <dd>Read-only display for sibling path + relative-to STRING pairs.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.view.TimeUnitViewItem}</dt>
+ * <dd>Read-only display for time + unit OBJECT attributes.</dd>
+ * </dl>
+ *
+ * <h2>Support</h2>
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.view.ResourceView}</dt>
  * <dd>Description list container for read-only attribute display with responsive layout.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view.OldViewItem}</dt>
- * <dd>Individual description list entry for a single attribute value.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemFactory}</dt>
- * <dd>Creates type-appropriate view items based on attribute metadata.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.view.CapabilityReference}</dt>
  * <dd>Interactive capability reference display with navigation to the providing resource(s).</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemProvider}</dt>
- * <dd>Strategy interface for creating specialised view items for specific attributes.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view.ViewItemProviders}</dt>
- * <dd>Registry of special view item providers consulted before the default rendering.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.view;
