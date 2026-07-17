@@ -62,7 +62,7 @@ public class SubsystemColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        FinderColumn column = finderColumn(ID);
+        FinderColumn column = finderColumn(ID).pinnable();
         return column.addHeader(finderColumnHeader("Subsystem").addActions(finderColumnActions()
                         .addButton(button(rotateRight()).plain().small().onClick((e, b) -> column.reload()))))
                 .addItems(childResources(__ -> TEMPLATE, node -> finderItem(Id.build(node.asString()))
