@@ -58,15 +58,15 @@ class PathRelativeToMatcher implements AttributeMatcher {
             String prefix = ad.name().substring(0, ad.name().length() - RELATIVE_TO_SUFFIX.length());
             String siblingPathName = prefix.isEmpty() ? "path" : prefix + "path";
 
-            AttributeDescription pathAttr = findInPool(pool, siblingPathName);
-            if (pathAttr == null && prefix.isEmpty()) {
-                pathAttr = findInPool(pool, DIRECTORY);
+            AttributeDescription path = findInPool(pool, siblingPathName);
+            if (path == null && prefix.isEmpty()) {
+                path = findInPool(pool, DIRECTORY);
             }
 
-            if (pathAttr != null && !claimed.contains(pathAttr.name())) {
-                groups.add(AttributeMatch.of(pathAttr.name(),
-                        Arrays.asList(pathAttr, ad)));
-                claimed.add(pathAttr.name());
+            if (path != null && !claimed.contains(path.name())) {
+                groups.add(AttributeMatch.of(path.name(),
+                        Arrays.asList(path, ad)));
+                claimed.add(path.name());
                 claimed.add(ad.name());
             }
         }

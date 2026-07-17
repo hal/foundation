@@ -18,14 +18,13 @@ package org.jboss.hal.ui.resource.form;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.switch_.Switch;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.resources.HalClasses.expression;
-import static org.jboss.hal.resources.HalClasses.form;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.patternfly.component.switch_.Switch.switch_;
@@ -33,6 +32,7 @@ import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.none;
+import static org.patternfly.style.Classes.form;
 import static org.patternfly.style.Classes.switch_;
 
 /**

@@ -43,8 +43,8 @@ class RelativeToProvider implements ItemProvider {
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
+    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
         return singletonList(new StandardFormItem<>(ra.fqn(), ra, context, new StringControl()));
     }
 }

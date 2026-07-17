@@ -31,7 +31,6 @@ import org.patternfly.component.form.TextInput;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
@@ -49,7 +48,6 @@ import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
 public class PathRelativeToFormItem implements FormItem {
 
     private final String identifier;
-    private final List<ResolvedAttribute> attributes;
     private final ResolvedAttribute pathAttr;
     private final ResolvedAttribute relativeToAttr;
     private final TextInput pathInput;
@@ -58,15 +56,14 @@ public class PathRelativeToFormItem implements FormItem {
     private final String originalRelativeTo;
     private final HTMLElement root;
 
-    public PathRelativeToFormItem(String identifier, List<ResolvedAttribute> attributes, PipelineContext context) {
+    public PathRelativeToFormItem(String identifier, ResolvedAttribute pathAttr, ResolvedAttribute relativeToAttr,
+            PipelineContext context) {
         this.identifier = identifier;
-        this.attributes = attributes;
-        this.pathAttr = findPath(attributes);
-        this.relativeToAttr = findRelativeTo(attributes);
+        this.pathAttr = pathAttr;
+        this.relativeToAttr = relativeToAttr;
 
-        this.originalPath = pathAttr != null && pathAttr.value().isDefined() ? pathAttr.value().asString() : "";
-        this.originalRelativeTo = relativeToAttr != null && relativeToAttr.value().isDefined()
-                ? relativeToAttr.value().asString() : "";
+        this.originalPath = pathAttr.value().isDefined() ? pathAttr.value().asString() : "";
+        this.originalRelativeTo = relativeToAttr.value().isDefined() ? relativeToAttr.value().asString() : "";
 
         pathInput = textInput(Id.build(identifier, "path"))
                 .run(ti -> {
@@ -86,9 +83,7 @@ public class PathRelativeToFormItem implements FormItem {
                     }
                 });
 
-        String label = pathAttr != null
-                ? org.jboss.hal.core.Humanize.sentenceCase(pathAttr.name())
-                : "Path";
+        String label = org.jboss.hal.core.Humanize.sentenceCase(pathAttr.name());
 
         this.root = formGroup(identifier)
                 .addLabel(org.patternfly.component.form.FormGroupLabel.formGroupLabel(label))
@@ -109,7 +104,7 @@ public class PathRelativeToFormItem implements FormItem {
 
     @Override
     public ResolvedAttribute attribute() {
-        return pathAttr != null ? pathAttr : attributes.get(0);
+        return pathAttr;
     }
 
     @Override
@@ -133,10 +128,10 @@ public class PathRelativeToFormItem implements FormItem {
         ModelNode result = new ModelNode();
         String path = pathValue();
         String relativeTo = relativeToValue();
-        if (!path.isEmpty() && pathAttr != null) {
+        if (!path.isEmpty()) {
             result.get(pathAttr.name()).set(path);
         }
-        if (!relativeTo.isEmpty() && relativeToAttr != null) {
+        if (!relativeTo.isEmpty()) {
             result.get(relativeToAttr.name()).set(relativeTo);
         }
         return result;
@@ -148,10 +143,10 @@ public class PathRelativeToFormItem implements FormItem {
             return Collections.emptyList();
         }
         List<Operation> ops = new ArrayList<>();
-        if (pathAttr != null && !originalPath.equals(pathValue())) {
+        if (!originalPath.equals(pathValue())) {
             ops.add(attributeOperation(address, pathAttr.name(), pathValue()));
         }
-        if (relativeToAttr != null && !originalRelativeTo.equals(relativeToValue())) {
+        if (!originalRelativeTo.equals(relativeToValue())) {
             ops.add(attributeOperation(address, relativeToAttr.name(), relativeToValue()));
         }
         return ops;
@@ -183,17 +178,5 @@ public class PathRelativeToFormItem implements FormItem {
 
     private String relativeToValue() {
         return relativeToInput.value() != null ? relativeToInput.value() : "";
-    }
-
-    private static ResolvedAttribute findPath(List<ResolvedAttribute> attributes) {
-        return attributes.stream()
-                .filter(ra -> !ra.name().endsWith(RELATIVE_TO))
-                .findFirst().orElse(null);
-    }
-
-    private static ResolvedAttribute findRelativeTo(List<ResolvedAttribute> attributes) {
-        return attributes.stream()
-                .filter(ra -> ra.name().endsWith(RELATIVE_TO))
-                .findFirst().orElse(null);
     }
 }

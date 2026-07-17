@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import java.util.List;
+
+import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.MultiTypeaheadControl;
@@ -30,11 +33,6 @@ import org.jboss.hal.ui.resource.form.UnsupportedControl;
 import org.jboss.hal.ui.resource.view.DefaultViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import java.util.List;
-
-import org.jboss.elemento.logger.Logger;
-import org.jboss.hal.dmr.ModelType;
-
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
@@ -42,12 +40,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 
 /**
- * Catch-all provider that handles all unmatched single-attribute groups with type-based rendering. Must be registered last in the
- * provider chain, after {@link FlatteningProvider} (which handles simpleRecord OBJECTs).
+ * Catch-all provider that handles all unmatched single-attribute groups with type-based rendering. Must be registered last in
+ * the provider chain, after {@link FlatteningProvider} (which handles simpleRecord OBJECTs).
  */
 class DefaultItemProvider implements ItemProvider {
-
-    private static final Logger logger = Logger.getLogger(DefaultItemProvider.class.getName());
 
     @Override
     public boolean matches(AttributeMatch match) {
@@ -55,14 +51,14 @@ class DefaultItemProvider implements ItemProvider {
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
-        return singletonList(new DefaultViewItem(ra.fqn(), ra, context));
+    public List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
+        return singletonList(new DefaultViewItem(context, ra.fqn(), ra));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
+    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
         return singletonList(formItem(ra, context));
     }
 

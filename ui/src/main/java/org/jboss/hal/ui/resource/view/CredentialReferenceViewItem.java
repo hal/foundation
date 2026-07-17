@@ -15,11 +15,10 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider.Mode;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
@@ -36,24 +35,32 @@ import static org.patternfly.component.Severity.success;
 import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
+import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
+import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.Gap.sm;
 
 /**
- * View item for credential reference composite attributes. Shows mode-dependent display: credential store reference with
- * store + alias, clear text with masked password, or "undefined".
+ * View item for credential reference composite attributes. Shows mode-dependent display: credential store reference with store
+ * + alias, clear text with masked password, or "undefined".
  */
 public class CredentialReferenceViewItem extends AbstractViewItem {
 
     private static final String MASKED = "••••••••";
+    private final HTMLElement valueElement;
+    private final HTMLElement root;
 
-    public CredentialReferenceViewItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
+    public CredentialReferenceViewItem(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+        super(identifier, attribute);
+        this.valueElement = ViewItemBricks.valueElement(context, attribute, this::definedValue);
+        this.root = descriptionListGroup(identifier)
+                .addTerm(ViewItemBricks.label(context, attribute.description()))
+                .addDescription(descriptionListDescription().add(valueElement))
+                .element();
     }
 
-    @Override
-    protected HTMLElement definedValue() {
+    private HTMLElement definedValue(PipelineContext context, ResolvedAttribute attribute) {
         Mode mode = CredentialReferenceProvider.mode(attribute.value());
         HTMLElement root = flex().css(halComponent(resource, view, credentialReference))
                 .alignItems(center).columnGap(sm)
@@ -61,10 +68,10 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
 
         switch (mode) {
             case STORE_REFERENCE:
-                buildStoreReference(root);
+                buildStoreReference(root, attribute);
                 break;
             case CLEAR_TEXT:
-                buildClearText(root);
+                buildClearText(root, attribute);
                 break;
             default:
                 root.appendChild(span().text("Not configured").element());
@@ -73,7 +80,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
         return root;
     }
 
-    private void buildStoreReference(HTMLElement root) {
+    private void buildStoreReference(HTMLElement root, ResolvedAttribute attribute) {
         String storeValue = attribute.value().get(STORE).asString();
         String aliasValue = attribute.value().hasDefined(ALIAS) ? attribute.value().get(ALIAS).asString() : null;
 
@@ -88,7 +95,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
         }
     }
 
-    private void buildClearText(HTMLElement root) {
+    private void buildClearText(HTMLElement root, ResolvedAttribute attribute) {
         String clearTextValue = attribute.value().get(CLEAR_TEXT).asString();
         HTMLElement maskedElement = span().text(MASKED).element();
         HTMLElement showButton = button("Show").link().inline()
@@ -106,5 +113,15 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
         root.appendChild(label("Clear text").status(warning).element());
         root.appendChild(maskedElement);
         root.appendChild(showButton);
+    }
+
+    @Override
+    public HTMLElement valueElement() {
+        return valueElement;
+    }
+
+    @Override
+    public HTMLElement element() {
+        return root;
     }
 }

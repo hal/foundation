@@ -213,8 +213,8 @@ public final class AttributeBricks {
                         .add(attributeDescription(attribute, content)));
     }
 
-    /** Returns a "/" separator element with horizontal margins, used between segments of nested attribute paths. */
-    public static HTMLElement nestedElementSeparator() {
+    /** Returns a "/" separator element with horizontal margins, used between segments of composite attribute paths. */
+    public static HTMLElement slashSeparator() {
         return span().css(util("mx-sm")).text("/").element();
     }
 

@@ -48,7 +48,7 @@ import static org.jboss.hal.resources.HalClasses.stabilityLevel;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
-import static org.jboss.hal.ui.brick.AttributeBricks.nestedElementSeparator;
+import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
 import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder.DEFAULT_VALUE;
@@ -101,7 +101,7 @@ public final class FormItemBricks {
             String parentLabel = sentenceCase(parentDescription.name());
             String nestedLabel = sentenceCase(description.name());
             fgl = formGroupLabel(nestedLabel)
-                    .css(halComponent(resource, HalClasses.nestedLabel))
+                    .css(halComponent(resource, HalClasses.compositeLabel))
                     .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, description, all));
             HTMLElement parentLabelElement = Elements.label().css(component(form, label))
                     .apply(l -> l.htmlFor = identifier)
@@ -117,7 +117,7 @@ public final class FormItemBricks {
                             .add(span().css(component(Classes.button, icon))
                                     .add(circleQuestion())))
                     .element();
-            insertFirst(fgl.element(), nestedElementSeparator());
+            insertFirst(fgl.element(), slashSeparator());
             insertFirst(fgl.element(), parentHelpButton);
             insertFirst(fgl.element(), parentLabelElement);
             fgl.add(attributeDescriptionPopover(parentLabel, parentDescription, all)

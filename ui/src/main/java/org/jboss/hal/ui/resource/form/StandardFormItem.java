@@ -15,10 +15,8 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
@@ -31,7 +29,6 @@ import org.patternfly.component.help.HelperText;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope.EXISTING_RESOURCE;
 import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope.NEW_RESOURCE;
 import static org.patternfly.component.form.FormGroup.formGroup;
@@ -77,8 +74,6 @@ import static org.patternfly.component.form.FormGroupControl.formGroupControl;
  * @see FormItemBricks
  */
 public final class StandardFormItem<C> implements FormItem {
-
-    private static final Logger logger = Logger.getLogger(StandardFormItem.class.getName());
 
     private final String identifier;
     private final ResolvedAttribute attribute;

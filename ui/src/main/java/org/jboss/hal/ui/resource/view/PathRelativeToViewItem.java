@@ -15,111 +15,35 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-
-import java.util.List;
-
-import org.jboss.hal.meta.description.AttributeDescription;
-import org.patternfly.component.list.DescriptionListTerm;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.span;
-import static org.jboss.hal.core.Humanize.sentenceCase;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
-import static org.jboss.hal.resources.HalClasses.halComponent;
-import static org.jboss.hal.resources.HalClasses.resource;
-import static org.jboss.hal.resources.HalClasses.undefined;
-import static org.jboss.hal.resources.HalClasses.view;
-import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
-import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
-import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
 
 /**
- * View item for sibling path + relative-to attribute groups. Shows "path relative to dir" as a single visual unit. Implements
- * {@link ViewItem} directly (not via {@link AbstractViewItem}) because it renders two attributes in a single group.
+ * View item for sibling path + relative-to attribute groups. Shows "path relative to dir" as a single visual unit.
  */
-public class PathRelativeToViewItem implements ViewItem {
+public class PathRelativeToViewItem extends AbstractViewItem {
 
-    private final String identifier;
-    private final ResolvedAttribute primaryAttribute;
-    private final HTMLElement labelEl;
-    private final HTMLElement valueEl;
+    private final HTMLElement valueElement;
     private final HTMLElement root;
 
-    public PathRelativeToViewItem(String identifier, List<ResolvedAttribute> attributes, PipelineContext context) {
-        this.identifier = identifier;
-
-        ResolvedAttribute pathAttr = findPath(attributes);
-        ResolvedAttribute relativeToAttr = findRelativeTo(attributes);
-        this.primaryAttribute = pathAttr != null ? pathAttr : attributes.get(0);
-        AttributeDescription primaryDesc = primaryAttribute.description();
-
-        String label = sentenceCase(primaryDesc.name());
-        DescriptionListTerm term = descriptionListTerm(label)
-                .help(attributeDescriptionPopover(label, primaryDesc, all));
-        this.labelEl = term.element();
-
-        if (pathAttr != null && !pathAttr.readable()) {
-            this.valueEl = AbstractViewItem.restrictedValue();
-        } else {
-            this.valueEl = buildValue(pathAttr, relativeToAttr);
-        }
-
+    public PathRelativeToViewItem(PipelineContext context, String identifier,
+            ResolvedAttribute path, ResolvedAttribute relativeTo) {
+        super(identifier, path);
+        this.valueElement = ViewItemBricks.fileValue(context, path, relativeTo);
         this.root = descriptionListGroup(identifier)
-                .addTerm(term)
-                .addDescription(descriptionListDescription().add(valueEl))
+                .addTerm(ViewItemBricks.compositeLabel(context, path.description(), relativeTo.description()))
+                .addDescription(descriptionListDescription().add(valueElement))
                 .element();
-    }
-
-    private HTMLElement buildValue(ResolvedAttribute pathAttr, ResolvedAttribute relativeToAttr) {
-        String path = pathAttr != null && pathAttr.value().isDefined() ? pathAttr.value().asString() : null;
-        String relativeTo = relativeToAttr != null && relativeToAttr.value().isDefined()
-                ? relativeToAttr.value().asString() : null;
-
-        if (path != null && relativeTo != null) {
-            return span()
-                    .add(span().text(path))
-                    .add(span().text(" relative to ").style("color", "var(--pf-t--global--color--subtle)"))
-                    .add(span().text(relativeTo))
-                    .element();
-        } else if (path != null) {
-            return span().text(path).element();
-        } else {
-            HTMLElement el = span().text("undefined").element();
-            el.classList.add(halComponent(resource, view, undefined));
-            return el;
-        }
-    }
-
-    private static ResolvedAttribute findPath(List<ResolvedAttribute> attributes) {
-        return attributes.stream()
-                .filter(ra -> !ra.name().endsWith(RELATIVE_TO))
-                .findFirst().orElse(null);
-    }
-
-    private static ResolvedAttribute findRelativeTo(List<ResolvedAttribute> attributes) {
-        return attributes.stream()
-                .filter(ra -> ra.name().endsWith(RELATIVE_TO))
-                .findFirst().orElse(null);
-    }
-
-    @Override
-    public String identifier() {
-        return identifier;
-    }
-
-    @Override
-    public ResolvedAttribute attribute() {
-        return primaryAttribute;
     }
 
     @Override
     public HTMLElement valueElement() {
-        return valueEl;
+        return valueElement;
     }
 
     @Override

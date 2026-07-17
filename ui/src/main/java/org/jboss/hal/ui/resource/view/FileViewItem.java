@@ -16,38 +16,38 @@
 package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
+import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
+import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 
 /** View item for file composite attributes ({@code {path, relative-to}}). Shows "path relative to dir" or just "path". */
 public class FileViewItem extends AbstractViewItem {
 
-    public FileViewItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
+    private final HTMLElement valueElement;
+    private final HTMLElement root;
+
+    public FileViewItem(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+        super(identifier, attribute);
+        this.valueElement = ViewItemBricks.valueElement(context, attribute,
+                (ctx, attr) -> ViewItemBricks.fileValue(ctx, attr.child(PATH), attr.child(RELATIVE_TO)));
+        this.root = descriptionListGroup(identifier)
+                .addTerm(ViewItemBricks.label(context, attribute.description()))
+                .addDescription(descriptionListDescription().add(valueElement))
+                .element();
     }
 
     @Override
-    protected HTMLElement definedValue() {
-        ResolvedAttribute path = attribute.child(PATH);
-        ResolvedAttribute relativeTo = attribute.child(RELATIVE_TO);
-        HTMLElement pathEl = Pipeline.instance().viewItem(path, context).valueElement();
-        HTMLElement rtEl = Pipeline.instance().viewItem(relativeTo, context).valueElement();
-        if (path.value().isDefined() && relativeTo.value().isDefined()) {
-            return span()
-                    .add(pathEl)
-                    .add(span().text(" relative to ").style("color", "var(--pf-t--global--text--color--placeholder)"))
-                    .add(rtEl)
-                    .element();
-        } else if (path.value().isDefined()) {
-            return pathEl;
-        } else {
-            return plainText(attribute);
-        }
+    public HTMLElement valueElement() {
+        return valueElement;
+    }
+
+    @Override
+    public HTMLElement element() {
+        return root;
     }
 }

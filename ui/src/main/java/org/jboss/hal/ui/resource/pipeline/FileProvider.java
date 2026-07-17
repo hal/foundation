@@ -44,14 +44,14 @@ class FileProvider implements ItemProvider {
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
-        return singletonList(new FileViewItem(ra.fqn(), ra, context));
+    public List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
+        return singletonList(new FileViewItem(context, ra.fqn(), ra));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(match.primary(), context);
+    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
         return singletonList(new StandardFormItem<>(ra.fqn(), ra, context, new FileControl()));
     }
 }

@@ -15,23 +15,21 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.view.DefaultViewItem;
-import org.jboss.hal.ui.resource.view.ViewItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
 
 /**
  * Provider for unclaimed OBJECT simpleRecord attributes. Flattens the OBJECT into n items, one per sub-attribute. Each
  * sub-attribute uses its {@link AttributeDescription#fullyQualifiedName()} for DMR writes (e.g. {@code "my-record.foo"}).
  * <p>
- * Must be registered after all composite providers (which claim known OBJECT structures) and before
- * {@link DefaultItemProvider} (which handles single non-OBJECT attributes).
+ * Must be registered after all composite providers (which claim known OBJECT structures) and before {@link DefaultItemProvider}
+ * (which handles single non-OBJECT attributes).
  */
 class FlatteningProvider implements ItemProvider {
 
@@ -41,31 +39,37 @@ class FlatteningProvider implements ItemProvider {
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
-        return flattenViewItems(match.primary(), context);
+    public List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
+        return flattenViewItems(context, match.primary());
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
-        return flattenFormItems(match.primary(), context);
+    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+        return flattenFormItems(context, match.primary());
     }
 
-    private List<ViewItem> flattenViewItems(AttributeDescription parent, PipelineContext context) {
+    private List<ViewItem> flattenViewItems(PipelineContext context, AttributeDescription parent) {
         AttributeDescriptions nested = parent.valueTypeAttributeDescriptions();
         List<ViewItem> items = new ArrayList<>();
         for (AttributeDescription nad : nested) {
-            ResolvedAttribute ra = ResolvedAttribute.resolve(nad, context);
-            items.add(new DefaultViewItem(ra.fqn(), ra, context));
+            ResolvedAttribute ra = ResolvedAttribute.resolve(context, nad);
+            ViewItem viewItem = Pipeline.instance().viewItem(ra, context);
+            if (viewItem != null) {
+                items.add(viewItem);
+            }
         }
         return items;
     }
 
-    private List<FormItem> flattenFormItems(AttributeDescription parent, PipelineContext context) {
+    private List<FormItem> flattenFormItems(PipelineContext context, AttributeDescription parent) {
         AttributeDescriptions nested = parent.valueTypeAttributeDescriptions();
         List<FormItem> items = new ArrayList<>();
         for (AttributeDescription nad : nested) {
-            ResolvedAttribute ra = ResolvedAttribute.resolve(nad, context);
-            items.add(DefaultItemProvider.formItem(ra, context));
+            ResolvedAttribute ra = ResolvedAttribute.resolve(context, nad);
+            FormItem formItem = Pipeline.instance().formItem(ra, context);
+            if (formItem != null) {
+                items.add(formItem);
+            }
         }
         return items;
     }

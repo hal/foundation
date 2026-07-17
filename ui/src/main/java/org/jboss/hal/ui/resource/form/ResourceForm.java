@@ -31,6 +31,7 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.alert.Alert;
 import org.patternfly.component.expandable.ExpandableSection;
 import org.patternfly.filter.Filter;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -47,6 +48,7 @@ import static org.patternfly.component.expandable.ExpandableSectionContent.expan
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.style.Classes.filtered;
+import static org.patternfly.style.Classes.form;
 import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.modifier;
 
@@ -65,7 +67,7 @@ public class ResourceForm implements IsElement<HTMLElement> {
     public ResourceForm() {
         this.items = new ArrayList<>();
         this.groupContainers = new ArrayList<>();
-        this.pfForm = form().css(halComponent(resource, HalClasses.form)).horizontal();
+        this.pfForm = form().css(halComponent(resource, form)).horizontal();
     }
 
     // ------------------------------------------------------ add items

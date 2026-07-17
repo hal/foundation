@@ -39,7 +39,7 @@ public record ResolvedAttribute(
         boolean writable) {
 
     /** Finds a resolved attribute by name from a list of siblings. Returns an undefined attribute if not found. */
-    public static ResolvedAttribute find(String name, List<ResolvedAttribute> attributes) {
+    public static ResolvedAttribute find(List<ResolvedAttribute> attributes, String name) {
         return attributes.stream()
                 .filter(ra -> ra.name().equals(name))
                 .findFirst()
@@ -51,12 +51,24 @@ public record ResolvedAttribute(
      * current value and RBAC state (readable/writable) to produce an immutable snapshot. This is the low-level primitive used
      * by pipeline providers and by {@code AttributeMatch#resolveAll(PipelineContext)} for batch resolution.
      */
-    public static ResolvedAttribute resolve(AttributeDescription description, PipelineContext context) {
+    public static ResolvedAttribute resolve(PipelineContext context, AttributeDescription description) {
         return new ResolvedAttribute(
                 description,
                 context.value(description),
                 context.readable(description),
                 context.writable(description));
+    }
+
+    public ResolvedAttribute child(String name) {
+        if (value.hasDefined(name) && description.simpleRecord()) {
+            ModelNode childNode = value.get(name);
+            AttributeDescriptions descriptions = description.valueTypeAttributeDescriptions();
+            AttributeDescription childDescription = descriptions.get(name);
+            if (childNode != null && childDescription != null) {
+                return new ResolvedAttribute(childDescription, childNode, readable, writable);
+            }
+        }
+        return new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, false);
     }
 
     /** Returns the dot-separated fully qualified name, used for DMR write-attribute operations. */
@@ -74,16 +86,8 @@ public record ResolvedAttribute(
         return value.isDefined() && value.getType() == ModelType.EXPRESSION;
     }
 
-    public ResolvedAttribute child(String name) {
-        if (value.hasDefined(name) && description.simpleRecord()) {
-            ModelNode childNode = value.get(name);
-            AttributeDescriptions descriptions = description.valueTypeAttributeDescriptions();
-            AttributeDescription childDescription = descriptions.get(name);
-            if (childNode != null && childDescription != null) {
-                return new ResolvedAttribute(childDescription, childNode, readable, writable);
-            }
-        }
-        return new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, false);
+    public boolean isDefined() {
+        return value.isDefined();
     }
 
     @Override

@@ -66,11 +66,10 @@ import static org.patternfly.component.tooltip.Tooltip.tooltip;
  * @see StandardFormItem
  * @see NativeControl
  */
-final class ExpressionToggle {
+public final class ExpressionToggle {
 
     private static final Logger logger = Logger.getLogger(ExpressionToggle.class.getName());
 
-    private final String identifier;
     private final ResolvedAttribute attribute;
     private final PipelineFlags flags;
     private final String switchToExpressionModeId;
@@ -89,7 +88,6 @@ final class ExpressionToggle {
     private HTMLElement switchToExpressionModeTooltip;
 
     ExpressionToggle(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
-        this.identifier = identifier;
         this.attribute = attribute;
         this.flags = flags;
         this.switchToExpressionModeId = Id.build(identifier, "switch-to-expression-mode");

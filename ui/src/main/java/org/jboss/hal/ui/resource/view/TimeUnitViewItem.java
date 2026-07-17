@@ -15,9 +15,8 @@
  */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.TimeUnitProvider;
 
 import elemental2.dom.HTMLElement;
@@ -27,6 +26,8 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.timeUnit;
 import static org.jboss.hal.resources.HalClasses.view;
+import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
+import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.Gap.sm;
@@ -34,12 +35,19 @@ import static org.patternfly.layout.flex.Gap.sm;
 /** View item for time-unit composite attributes. Shows time value + unit (e.g. "100 MILLISECONDS"). */
 public class TimeUnitViewItem extends AbstractViewItem {
 
-    public TimeUnitViewItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
+    private final HTMLElement valueElement;
+    private final HTMLElement root;
+
+    public TimeUnitViewItem(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+        super(identifier, attribute);
+        this.valueElement = ViewItemBricks.valueElement(context, attribute, this::definedValue);
+        this.root = descriptionListGroup(identifier)
+                .addTerm(ViewItemBricks.label(context, attribute.description()))
+                .addDescription(descriptionListDescription().add(valueElement))
+                .element();
     }
 
-    @Override
-    protected HTMLElement definedValue() {
+    private HTMLElement definedValue(PipelineContext context, ResolvedAttribute attribute) {
         long time = TimeUnitProvider.time(attribute.value());
         String unit = TimeUnitProvider.unit(attribute.value());
 
@@ -53,6 +61,16 @@ public class TimeUnitViewItem extends AbstractViewItem {
         } else {
             root.appendChild(span().text(attribute.value().asString()).element());
         }
+        return root;
+    }
+
+    @Override
+    public HTMLElement valueElement() {
+        return valueElement;
+    }
+
+    @Override
+    public HTMLElement element() {
         return root;
     }
 }

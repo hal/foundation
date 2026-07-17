@@ -27,7 +27,7 @@ import java.util.List;
  * Default methods return {@code null}, which signals "use default rendering for this mode." This allows a provider to be
  * "FIP only" (custom form item, default view item) or "VIP only" (custom view item, default form item).
  * <p>
- * The {@link #viewItems(AttributeMatch, PipelineContext)} and {@link #formItems(AttributeMatch, PipelineContext)} methods
+ * The {@link #viewItems(PipelineContext, AttributeMatch)} and {@link #formItems(PipelineContext, AttributeMatch)} methods
  * return lists because a provider may produce multiple items from a single group (e.g. the default provider flattens OBJECT
  * simpleRecords into n items).
  */
@@ -41,7 +41,7 @@ public interface ItemProvider {
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
+    default List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
         return null;
     }
 
@@ -50,7 +50,7 @@ public interface ItemProvider {
      * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
      * simpleRecords.
      */
-    default List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
+    default List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         return null;
     }
 }

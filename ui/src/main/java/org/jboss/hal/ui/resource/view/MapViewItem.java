@@ -24,6 +24,8 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.hal.ui.resource.view.ViewItemDefaults.NUM_LABELS;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
+import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
+import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.style.Color.teal;
 
 /**
@@ -32,17 +34,34 @@ import static org.patternfly.style.Color.teal;
  */
 public class MapViewItem extends AbstractViewItem {
 
-    public MapViewItem(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        super(identifier, attribute, context);
+    private final HTMLElement valueElement;
+    private final HTMLElement root;
+
+    public MapViewItem(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+        super(identifier, attribute);
+        this.valueElement = ViewItemBricks.valueElement(context, attribute, this::definedValue);
+        this.root = descriptionListGroup(identifier)
+                .addTerm(ViewItemBricks.label(context, attribute.description()))
+                .addDescription(descriptionListDescription().add(valueElement))
+                .element();
     }
 
-    @Override
-    protected HTMLElement definedValue() {
+    private HTMLElement definedValue(PipelineContext context, ResolvedAttribute attribute) {
         return labelGroup()
                 .numLabels(NUM_LABELS)
                 .addItems(attribute.value().asPropertyList(),
                         p -> label(Id.build(p.getName(), p.getValue().asString()),
                                 p.getName() + " ⇒ " + p.getValue().asString(), teal))
                 .element();
+    }
+
+    @Override
+    public HTMLElement valueElement() {
+        return valueElement;
+    }
+
+    @Override
+    public HTMLElement element() {
+        return root;
     }
 }

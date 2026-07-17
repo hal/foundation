@@ -27,13 +27,13 @@ public interface HalClasses {
     String capabilityReference = "capability-reference";
     String colon = "colon";
     String credentialReference = "credential-reference";
+    String compositeLabel = "composite-label";
     String content = "content";
     String copy = "copy";
     String curlyBraces = "curly-braces";
     String deprecated = "deprecated";
     String detail = "detail";
     String defaultValue = "default-value";
-    String form = "form";
     String dollar = "dollar";
     String expression = "expression";
     String goto_ = "goto";
@@ -41,8 +41,6 @@ public interface HalClasses {
     String groups = "groups";
     String modelBrowser = "model-browser";
     String name = "name";
-    String nestedLabel = "nested-label";
-    String providedBy = "provided-by";
     String rbacHidden = "rbac-hidden";
     String resource = "resource";
     String restricted = "restricted";
@@ -73,7 +71,8 @@ public interface HalClasses {
      * Builds a BEM-style modifier class name.
      *
      * @param modifier the modifier name
-     * @return a CSS class name in the format {@code hal-m-<modifier>}, or an empty string if the modifier is {@code null} or empty
+     * @return a CSS class name in the format {@code hal-m-<modifier>}, or an empty string if the modifier is {@code null} or
+     * empty
      */
     static String halModifier(String modifier) {
         return modifier != null && !modifier.isEmpty() ? "hal-m-" + modifier : "";

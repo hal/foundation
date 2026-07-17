@@ -37,8 +37,8 @@ import org.jboss.hal.ui.resource.view.ViewItem;
  * </ol>
  * <p>
  * One pipeline, two entry points: {@link #viewItems(PipelineContext)} and {@link #formItems(PipelineContext)}. Stage 1
- * (matching) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(AttributeMatch, PipelineContext)} or
- * {@link ItemProvider#formItems(AttributeMatch, PipelineContext)} depending on the entry point.
+ * (matching) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(PipelineContext, AttributeMatch)} or
+ * {@link ItemProvider#formItems(PipelineContext, AttributeMatch)} depending on the entry point.
  *
  * @see AttributeMatcher
  * @see ItemProvider
@@ -99,7 +99,7 @@ public final class Pipeline {
         AttributeMatch match = AttributeMatch.single(attribute.description());
         for (ItemProvider provider : providers) {
             if (provider.matches(match)) {
-                List<ViewItem> result = provider.viewItems(match, context);
+                List<ViewItem> result = provider.viewItems(context, match);
                 if (result != null && !result.isEmpty()) {
                     return result.get(0);
                 }
@@ -118,6 +118,19 @@ public final class Pipeline {
     public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> parameters) {
         List<AttributeMatch> groups = group(parameters);
         return itemizeForm(groups, context);
+    }
+
+    public FormItem formItem(ResolvedAttribute attribute, PipelineContext context) {
+        AttributeMatch match = AttributeMatch.single(attribute.description());
+        for (ItemProvider provider : providers) {
+            if (provider.matches(match)) {
+                List<FormItem> result = provider.formItems(context, match);
+                if (result != null && !result.isEmpty()) {
+                    return result.get(0);
+                }
+            }
+        }
+        return null;
     }
 
     // ------------------------------------------------------ stage 1: match
@@ -159,7 +172,7 @@ public final class Pipeline {
         for (AttributeMatch group : groups) {
             for (ItemProvider provider : providers) {
                 if (provider.matches(group)) {
-                    List<ViewItem> result = provider.viewItems(group, context);
+                    List<ViewItem> result = provider.viewItems(context, group);
                     if (result != null) {
                         items.addAll(result);
                         break;
@@ -175,7 +188,7 @@ public final class Pipeline {
         for (AttributeMatch group : groups) {
             for (ItemProvider provider : providers) {
                 if (provider.matches(group)) {
-                    List<FormItem> result = provider.formItems(group, context);
+                    List<FormItem> result = provider.formItems(context, group);
                     if (result != null) {
                         items.addAll(result);
                         break;

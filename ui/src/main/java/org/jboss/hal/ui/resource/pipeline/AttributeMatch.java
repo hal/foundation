@@ -76,12 +76,12 @@ public record AttributeMatch(List<AttributeDescription> attributes, String name)
 
     /**
      * Resolves all attribute descriptions in this match against the pipeline context. Delegates to
-     * {@link ResolvedAttribute#resolve(AttributeDescription, PipelineContext)} for each attribute. Used by providers that handle
+     * {@link ResolvedAttribute#resolve(PipelineContext, AttributeDescription)} for each attribute. Used by providers that handle
      * multi-attribute matches (e.g. sibling path + relative-to).
      */
     List<ResolvedAttribute> resolveAll(PipelineContext context) {
         return attributes.stream()
-                .map(ad -> ResolvedAttribute.resolve(ad, context))
+                .map(ad -> ResolvedAttribute.resolve(context, ad))
                 .collect(toList());
     }
 

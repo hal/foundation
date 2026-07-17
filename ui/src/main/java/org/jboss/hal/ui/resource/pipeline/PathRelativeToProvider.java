@@ -25,6 +25,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
+import static org.jboss.hal.ui.resource.ResolvedAttribute.resolve;
 
 /**
  * Provider for sibling path + relative-to attribute groups. Matches groups claimed by {@link PathRelativeToMatcher} — two
@@ -46,14 +47,16 @@ class PathRelativeToProvider implements ItemProvider {
     }
 
     @Override
-    public List<ViewItem> viewItems(AttributeMatch match, PipelineContext context) {
-        List<ResolvedAttribute> resolved = match.resolveAll(context);
-        return singletonList(new PathRelativeToViewItem(match.name(), resolved, context));
+    public List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute path = resolve(context, match.attributes().get(0));
+        ResolvedAttribute relativeTo = resolve(context, match.attributes().get(1));
+        return singletonList(new PathRelativeToViewItem(context, match.name(), path, relativeTo));
     }
 
     @Override
-    public List<FormItem> formItems(AttributeMatch match, PipelineContext context) {
-        List<ResolvedAttribute> resolved = match.resolveAll(context);
-        return singletonList(new PathRelativeToFormItem(match.name(), resolved, context));
+    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute path = resolve(context, match.attributes().get(0));
+        ResolvedAttribute relativeTo = resolve(context, match.attributes().get(1));
+        return singletonList(new PathRelativeToFormItem(match.name(), path, relativeTo, context));
     }
 }
