@@ -33,7 +33,7 @@ import static org.patternfly.icon.IconSets.fas.lock;
 public final class RestrictedControl implements NativeControl<HTMLElement> {
 
     @Override
-    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         return inputGroup()
                 .addItem(inputGroupItem().fill()
                         .addControl(textInput(identifier)

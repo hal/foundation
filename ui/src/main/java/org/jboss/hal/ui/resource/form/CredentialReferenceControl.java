@@ -75,7 +75,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
     private FormGroupControl formGroupControl;
 
     @Override
-    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         originalMode = CredentialReferenceProvider.mode(attribute.value());
 
         AttributeDescriptions nested = attribute.description().valueTypeAttributeDescriptions();

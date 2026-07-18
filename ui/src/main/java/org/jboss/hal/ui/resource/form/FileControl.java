@@ -19,7 +19,6 @@ import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 
 import elemental2.dom.HTMLElement;
@@ -43,7 +42,7 @@ public final class FileControl implements NativeControl<HTMLElement> {
     private String originalRelativeTo;
 
     @Override
-    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         originalPath = attribute.value().hasDefined(PATH) ? attribute.value().get(PATH).asString() : "";
         originalRelativeTo = attribute.value().hasDefined(RELATIVE_TO)
                 ? attribute.value().get(RELATIVE_TO).asString() : "";

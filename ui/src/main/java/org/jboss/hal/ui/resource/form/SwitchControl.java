@@ -19,7 +19,6 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.patternfly.component.switch_.Switch;
-import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
@@ -41,7 +40,7 @@ import static org.patternfly.style.Classes.switch_;
 public final class SwitchControl implements NativeControl<Switch> {
 
     @Override
-    public Switch create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public Switch create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         boolean value = false;
         if (attribute.value().isDefined()) {
             value = attribute.value().asBoolean(false);

@@ -29,7 +29,7 @@ import elemental2.dom.HTMLElement;
  * <p>
  * Each implementation captures:
  * <ul>
- *   <li><b>Widget creation</b> — {@link #create(String, ResolvedAttribute, PipelineContext)}</li>
+ *   <li><b>Widget creation</b> — {@link #create(PipelineContext, String, ResolvedAttribute)}</li>
  *   <li><b>DOM element</b> — {@link #element(Object)}</li>
  *   <li><b>Value reading</b> — {@link #modelNode(Object, ResolvedAttribute)}</li>
  *   <li><b>Modification detection</b> — {@link #isModifiedForNew(Object, ResolvedAttribute)} and
@@ -52,7 +52,7 @@ import elemental2.dom.HTMLElement;
 public interface NativeControl<C> {
 
     /** Creates the PatternFly control component. Called once during construction. */
-    C create(String identifier, ResolvedAttribute attribute, PipelineContext context);
+    C create(PipelineContext context, String identifier, ResolvedAttribute attribute);
 
     /** Returns the root element of the control for DOM insertion. */
     HTMLElement element(C control);

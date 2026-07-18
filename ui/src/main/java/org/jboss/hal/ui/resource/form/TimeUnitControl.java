@@ -56,7 +56,7 @@ public final class TimeUnitControl implements NativeControl<HTMLElement> {
     private String originalUnit;
 
     @Override
-    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         originalTime = TimeUnitProvider.time(attribute.value());
         originalUnit = TimeUnitProvider.unit(attribute.value());
 

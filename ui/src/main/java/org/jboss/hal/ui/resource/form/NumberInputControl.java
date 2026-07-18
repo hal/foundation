@@ -59,7 +59,7 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
     private TextInput minMaxControl;
 
     @Override
-    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         AttributeDescription desc = attribute.description();
         if (desc.hasDefined(ALLOWED)) {
             return createAllowedValues(identifier, attribute).element();

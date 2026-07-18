@@ -48,12 +48,12 @@ import static org.patternfly.component.menu.MultiTypeahead.multiTypeahead;
 /**
  * {@link NativeControl} for LIST-of-STRING attributes with a capability reference, rendered as a multi-select typeahead.
  */
-public final class MultiTypeaheadControl implements NativeControl<MultiTypeahead> {
+public final class CapabilitiesReferenceControl implements NativeControl<MultiTypeahead> {
 
     private String capability;
 
     @Override
-    public MultiTypeahead create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public MultiTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
         FilterReloadInput fri = filterReloadInput(identifier)
                 .plain()

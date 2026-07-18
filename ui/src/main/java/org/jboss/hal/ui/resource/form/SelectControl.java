@@ -40,7 +40,7 @@ import static org.patternfly.component.form.FormSelectOption.formSelectOption;
 public final class SelectControl implements NativeControl<FormSelect> {
 
     @Override
-    public FormSelect create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public FormSelect create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         List<String> allowedValues = attribute.description().get(ALLOWED)
                 .asList()
                 .stream()

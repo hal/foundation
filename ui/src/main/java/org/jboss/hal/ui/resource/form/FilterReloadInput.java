@@ -30,7 +30,7 @@ import static org.patternfly.icon.IconSets.fas.rotateRight;
 import static org.patternfly.icon.IconSets.fas.xmark;
 
 /**
- * Filter input with an additional reload button, used by {@link MultiTypeaheadControl} to refresh capability data.
+ * Filter input with an additional reload button, used by {@link CapabilitiesReferenceControl} to refresh capability data.
  * <p>
  * This class mirrors the structure of {@link SearchReloadInput}. The duplication exists because the PatternFly type hierarchy
  * requires separate subclasses: {@link SearchReloadInput} extends

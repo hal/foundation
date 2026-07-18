@@ -39,12 +39,12 @@ import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
 /**
  * {@link NativeControl} for single STRING attributes with a capability reference, rendered as a typeahead select.
  */
-public final class TypeaheadControl implements NativeControl<SingleTypeahead> {
+public final class CapabilityReferenceControl implements NativeControl<SingleTypeahead> {
 
     private String capability;
 
     @Override
-    public SingleTypeahead create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public SingleTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
         SearchReloadInput searchReloadInput = searchReloadInput(identifier)
                 .plain()

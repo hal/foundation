@@ -20,7 +20,7 @@ import java.util.List;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.MultiTypeaheadControl;
+import org.jboss.hal.ui.resource.form.CapabilitiesReferenceControl;
 import org.jboss.hal.ui.resource.form.NumberInputControl;
 import org.jboss.hal.ui.resource.form.RestrictedControl;
 import org.jboss.hal.ui.resource.form.SelectControl;
@@ -28,7 +28,7 @@ import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.form.StringListControl;
 import org.jboss.hal.ui.resource.form.SwitchControl;
-import org.jboss.hal.ui.resource.form.TypeaheadControl;
+import org.jboss.hal.ui.resource.form.CapabilityReferenceControl;
 import org.jboss.hal.ui.resource.form.UnsupportedControl;
 import org.jboss.hal.ui.resource.view.DefaultViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -84,7 +84,7 @@ class DefaultItemProvider implements ItemProvider {
                 if (ra.description().hasDefined(ALLOWED)) {
                     return new StandardFormItem<>(identifier, ra, context, new SelectControl());
                 } else if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                    return new StandardFormItem<>(identifier, ra, context, new TypeaheadControl());
+                    return new StandardFormItem<>(identifier, ra, context, new CapabilityReferenceControl());
                 } else {
                     return new StandardFormItem<>(identifier, ra, context, new StringControl());
                 }
@@ -96,7 +96,7 @@ class DefaultItemProvider implements ItemProvider {
                         : null;
                 if (valueType == ModelType.STRING) {
                     if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                        return new StandardFormItem<>(identifier, ra, context, new MultiTypeaheadControl());
+                        return new StandardFormItem<>(identifier, ra, context, new CapabilitiesReferenceControl());
                     } else {
                         return new StandardFormItem<>(identifier, ra, context, new StringListControl());
                     }

@@ -46,7 +46,7 @@ import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceWizard;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 
 /**
- * Shared helper methods for {@link TypeaheadControl} and {@link MultiTypeaheadControl} that load capability
+ * Shared helper methods for {@link CapabilityReferenceControl} and {@link CapabilitiesReferenceControl} that load capability
  * suggestions from the registry and handle creation of new capability provider resources.
  */
 public class CapabilityReferenceSupport {

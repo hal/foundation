@@ -43,7 +43,7 @@ import static org.patternfly.component.textinputgroup.FilterInput.filterInput;
 public final class StringListControl implements NativeControl<FilterInput> {
 
     @Override
-    public FilterInput create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public FilterInput create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         FilterInput fi = filterInput(identifier)
                 .applyTo(inputElement -> inputElement.autocomplete("off"))
                 .allowDuplicates(false);

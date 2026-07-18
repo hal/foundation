@@ -56,7 +56,7 @@ public final class StringControl implements NativeControl<HTMLElement> {
     }
 
     @Override
-    public HTMLElement create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         flags = context.flags();
         input = TextInput.textInput(identifier)
                 .run(ti -> {

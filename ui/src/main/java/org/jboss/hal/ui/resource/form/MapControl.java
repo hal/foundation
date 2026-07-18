@@ -33,7 +33,6 @@ import elemental2.dom.HTMLElement;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
 import static org.patternfly.component.ValidationStatus.error;
-import org.patternfly.component.help.HelperText;
 
 import static org.patternfly.component.textinputgroup.FilterInput.filterInput;
 
@@ -51,7 +50,7 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public FilterInput create(String identifier, ResolvedAttribute attribute, PipelineContext context) {
+    public FilterInput create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         originalEntries = new LinkedHashMap<>();
         if (attribute.value().isDefined()) {
             for (Property property : attribute.value().asPropertyList()) {
