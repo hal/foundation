@@ -92,6 +92,7 @@ import static org.patternfly.style.Size.lg;
 import static org.patternfly.token.Token.globalFontSizeXs;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
+/** Brick class that creates add-resource wizard and add-resource modal dialogs for WildFly management resources. */
 class AddResourceDialogs {
 
     static Promise<ModelNode> addResourceWizard(List<AddressTemplate> templates, String resource) {

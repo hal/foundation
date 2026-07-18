@@ -5,6 +5,7 @@ import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
+/** Functional interface for rendering a defined attribute value as an HTML element. */
 @FunctionalInterface
 interface DefinedValue {
 

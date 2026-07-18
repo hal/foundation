@@ -41,7 +41,7 @@
  * <p>
  * Brick classes that are used across multiple packages live in the central {@link org.jboss.hal.ui.brick} package. Brick classes
  * that are tightly coupled to a specific subsystem live alongside their domain — for example
- * {@code org.jboss.hal.ui.resource.form.FormItemBricks} or {@code org.jboss.hal.ui.resource.finder.FinderBricks}.
+ * {@code org.jboss.hal.ui.resource.form.FormItemBricks} or {@code org.jboss.hal.ui.finder.FinderBricks}.
  *
  * <h2>Example Usage</h2>
  * {@snippet :

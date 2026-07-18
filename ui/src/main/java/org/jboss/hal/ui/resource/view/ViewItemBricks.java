@@ -47,6 +47,7 @@ import static org.patternfly.style.Classes.text;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.token.Token.globalTextColorPlaceholder;
 
+/** Brick class for shared view item UI fragments such as attribute name rendering and value display. */
 class ViewItemBricks {
 
     // ------------------------------------------------------ label

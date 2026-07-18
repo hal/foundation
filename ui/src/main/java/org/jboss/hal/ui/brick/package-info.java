@@ -19,7 +19,7 @@
  * <p>
  * This package contains brick classes that are used across multiple subsystems. Brick classes tightly coupled to a specific
  * subsystem live in that subsystem's package instead (e.g. {@code org.jboss.hal.ui.resource.form.FormItemBricks},
- * {@code org.jboss.hal.ui.resource.finder.FinderBricks}, {@code org.jboss.hal.ui.resource.dialog.DialogBricks}). See the
+ * {@code org.jboss.hal.ui.finder.FinderBricks}, {@code org.jboss.hal.ui.resource.dialog.DialogBricks}). See the
  * {@linkplain org.jboss.hal.ui org.jboss.hal.ui} package documentation for the full brick pattern definition.
  * <p>
  * Classes in this package:

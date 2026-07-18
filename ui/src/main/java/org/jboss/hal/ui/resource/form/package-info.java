@@ -54,9 +54,9 @@
  *   <dd>Dropdown select for string attributes with predefined allowed values.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.StringControl StringControl}</dt>
  *   <dd>Text input for plain string attributes, using mixed mode (handles both literals and expressions).</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.TypeaheadControl TypeaheadControl}</dt>
+ *   <dt>{@link CapabilityReferenceControl}</dt>
  *   <dd>Single-select typeahead for string attributes with a capability reference.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.MultiTypeaheadControl MultiTypeaheadControl}</dt>
+ *   <dt>{@link CapabilitiesReferenceControl}</dt>
  *   <dd>Multi-select typeahead for list-of-string attributes with a capability reference.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.StringListControl StringListControl}</dt>
  *   <dd>Label-based multi-value input for list-of-string attributes.</dd>
@@ -105,8 +105,8 @@
  * <h2>Pipeline Integration</h2>
  * <p>
  * Form items are created by the pipeline's item providers. The
- * {@link org.jboss.hal.ui.resource.pipeline.DefaultItemProvider DefaultItemProvider} dispatches by attribute type to the
+ * {@code DefaultItemProvider} dispatches by attribute type to the
  * appropriate {@code NativeControl} implementation. Specialized providers (e.g.
- * {@link org.jboss.hal.ui.resource.pipeline.MapProvider MapProvider}) handle composite matches.
+ * {@code MapProvider}) handle composite matches.
  */
 package org.jboss.hal.ui.resource.form;

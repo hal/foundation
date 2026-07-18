@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 
 /**
- * Shared helper methods for {@link StringListFormItem} and {@link CapabilityReferencesFormItem} that handle modification
+ * Shared helper methods for {@link StringListControl} and {@link CapabilitiesReferenceControl} that handle modification
  * detection, default value extraction, and model node conversion for string list attributes.
  */
 public class StringListSupport {

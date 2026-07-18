@@ -54,6 +54,7 @@ import static org.patternfly.style.Size.lg;
 
 import static org.jboss.hal.core.Notification.error;
 
+/** Brick class that creates modal dialogs for executing WildFly management operations with parameter input. */
 class ExecuteOperationDialogs {
 
     static void executeOperationModal(AddressTemplate template, String operation) {

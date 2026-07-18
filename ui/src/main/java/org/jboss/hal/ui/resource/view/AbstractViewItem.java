@@ -17,6 +17,7 @@ package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 
+/** Base class for {@link ViewItem} implementations that stores the identifier and resolved attribute. */
 public abstract class AbstractViewItem implements ViewItem {
 
     private final String identifier;
