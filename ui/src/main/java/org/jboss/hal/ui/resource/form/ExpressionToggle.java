@@ -23,7 +23,6 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
-import org.patternfly.component.help.HelperText;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;

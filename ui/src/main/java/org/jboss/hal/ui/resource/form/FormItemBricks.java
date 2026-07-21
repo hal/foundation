@@ -24,9 +24,11 @@ import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
+import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.help.HelperText;
 import org.patternfly.component.inputgroup.InputGroupText;
+import org.patternfly.component.menu.SingleTypeahead;
 import org.patternfly.core.Aria;
 import org.patternfly.core.Roles;
 import org.patternfly.style.Classes;
@@ -251,6 +253,30 @@ public final class FormItemBricks {
     public static boolean requiredOnItsOwn(ResolvedAttribute attribute) {
         return attribute.description().required()
                 && !(attribute.description().hasDefined("alternatives") || attribute.description().hasDefined("requires"));
+    }
+
+    /** Selects a value in a {@link FormSelect}, falling back to the first value if the value is not available. */
+    public static void failSafeSelectValue(FormSelect formSelect, String value) {
+        if (formSelect.containsValue(value)) {
+            formSelect.value(value, false);
+        } else {
+            formSelect.selectFirstValue(false);
+        }
+    }
+
+    /** Selects a value in a {@link SingleTypeahead}, handling async items that may not be loaded yet. */
+    public static void failSafeSelectValue(SingleTypeahead typeahead, String value) {
+        if (typeahead.menu().hasAsyncItems()) {
+            typeahead.menuToggle().text(value);
+            typeahead.onLoaded((__, st) -> st.select(value));
+        } else {
+            typeahead.select(value);
+        }
+    }
+
+    /** Returns the text input's value, or an empty string if the input is {@code null} or its value is {@code null}. */
+    public static String safeValue(TextInput input) {
+        return input != null && input.value() != null ? input.value() : "";
     }
 
     private FormItemBricks() {

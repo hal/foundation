@@ -113,10 +113,10 @@ public final class FileControl implements NativeControl<HTMLElement> {
     }
 
     private String pathValue() {
-        return pathInput.value() != null ? pathInput.value() : "";
+        return FormItemBricks.safeValue(pathInput);
     }
 
     private String relativeToValue() {
-        return relativeToInput.value() != null ? relativeToInput.value() : "";
+        return FormItemBricks.safeValue(relativeToInput);
     }
 }

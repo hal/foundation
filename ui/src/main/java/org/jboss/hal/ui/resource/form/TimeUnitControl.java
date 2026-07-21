@@ -157,7 +157,7 @@ public final class TimeUnitControl implements NativeControl<HTMLElement> {
     }
 
     private String timeValue() {
-        return timeInput.value() != null ? timeInput.value() : "";
+        return FormItemBricks.safeValue(timeInput);
     }
 
     private String unitValue() {

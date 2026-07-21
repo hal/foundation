@@ -59,7 +59,7 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
         searchReloadInput.onReload((e, c) -> typeahead.menu().reload());
 
         if (attribute.value().isDefined()) {
-            failSafeSelectValue(typeahead, attribute.value().asString());
+            FormItemBricks.failSafeSelectValue(typeahead, attribute.value().asString());
         } else if (attribute.description().hasDefault()) {
             typeahead.menuToggle().searchInput().placeholder(attribute.description().get(DEFAULT).asString());
         } else if (attribute.description().nillable()) {
@@ -118,22 +118,13 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     @Override
     public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
-            failSafeSelectValue(control, attribute.value().asString());
+            FormItemBricks.failSafeSelectValue(control, attribute.value().asString());
         } else {
             if (attribute.description().hasDefault()) {
-                failSafeSelectValue(control, attribute.description().get(DEFAULT).asString());
+                FormItemBricks.failSafeSelectValue(control, attribute.description().get(DEFAULT).asString());
             } else if (attribute.description().nillable()) {
                 control.menuToggle().searchInput().placeholder(UNDEFINED);
             }
-        }
-    }
-
-    private void failSafeSelectValue(SingleTypeahead typeahead, String value) {
-        if (typeahead.menu().hasAsyncItems()) {
-            typeahead.menuToggle().text(value);
-            typeahead.onLoaded((__, st) -> st.select(value));
-        } else {
-            typeahead.select(value);
         }
     }
 

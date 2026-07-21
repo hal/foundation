@@ -173,12 +173,12 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
         boolean wasDefined = attribute.value().isDefined();
         if (allowedValuesControl != null) {
             if (wasDefined && !attribute.expression()) {
-                failSafeSelectValue(attribute.value().asString());
+                FormItemBricks.failSafeSelectValue(allowedValuesControl, attribute.value().asString());
             } else {
                 if (attribute.description().hasDefault()) {
-                    failSafeSelectValue(attribute.description().get(DEFAULT).asString());
+                    FormItemBricks.failSafeSelectValue(allowedValuesControl, attribute.description().get(DEFAULT).asString());
                 } else if (attribute.description().nillable()) {
-                    failSafeSelectValue(UNDEFINED);
+                    FormItemBricks.failSafeSelectValue(allowedValuesControl, UNDEFINED);
                 } else {
                     allowedValuesControl.selectFirstValue(false);
                 }
@@ -294,11 +294,4 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
         return new ModelNode();
     }
 
-    private void failSafeSelectValue(String value) {
-        if (allowedValuesControl.containsValue(value)) {
-            allowedValuesControl.value(value, false);
-        } else {
-            allowedValuesControl.selectFirstValue(false);
-        }
-    }
 }

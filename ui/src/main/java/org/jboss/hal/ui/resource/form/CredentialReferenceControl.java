@@ -140,7 +140,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
                                 .addList(menuList()
                                         .addItems(capabilityItems(context.template(), capability)))));
         if (originalMode == Mode.STORE_REFERENCE && attribute.value().hasDefined(STORE)) {
-            failSafeSelectStore(attribute.value().get(STORE).asString());
+            FormItemBricks.failSafeSelectValue(storeTypeahead, attribute.value().get(STORE).asString());
         }
 
         storePanel = div().css("cr-nested-fields")
@@ -291,15 +291,6 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
 
     // ------------------------------------------------------ internal
 
-    private void failSafeSelectStore(String value) {
-        if (storeTypeahead.menu().hasAsyncItems()) {
-            storeTypeahead.menuToggle().text(value);
-            storeTypeahead.onLoaded((__, st) -> st.select(value));
-        } else {
-            storeTypeahead.select(value);
-        }
-    }
-
     private void switchMode(SelectedMode mode) {
         selectedMode = mode;
         setVisible(clearTextPanel, mode == SelectedMode.CLEAR_TEXT);
@@ -322,7 +313,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
     }
 
     private String clearTextValue() {
-        return clearTextInput.value() != null ? clearTextInput.value() : "";
+        return FormItemBricks.safeValue(clearTextInput);
     }
 
     private String storeValue() {
@@ -333,15 +324,15 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
     }
 
     private String aliasValue() {
-        return aliasInput.value() != null ? aliasInput.value() : "";
+        return FormItemBricks.safeValue(aliasInput);
     }
 
     private String storePasswordValue() {
-        return storePasswordInput.value() != null ? storePasswordInput.value() : "";
+        return FormItemBricks.safeValue(storePasswordInput);
     }
 
     private String typeValue() {
-        return typeInput.value() != null ? typeInput.value() : "";
+        return FormItemBricks.safeValue(typeInput);
     }
 
     private static HTMLElement fieldRow(String labelText, HTMLElement fieldControl) {

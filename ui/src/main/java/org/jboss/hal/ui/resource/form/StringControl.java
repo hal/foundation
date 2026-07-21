@@ -132,6 +132,6 @@ public final class StringControl implements NativeControl<HTMLElement> {
     }
 
     private String textValue() {
-        return input != null && input.value() != null ? input.value() : "";
+        return FormItemBricks.safeValue(input);
     }
 }
