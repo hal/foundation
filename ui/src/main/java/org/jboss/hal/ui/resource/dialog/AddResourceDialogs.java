@@ -25,7 +25,6 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.WildcardResolver;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
-import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
@@ -39,7 +38,6 @@ import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.patternfly.component.modal.Modal;
 import org.patternfly.component.modal.ModalHeaderTitle;
 import org.patternfly.component.wizard.Wizard;
 import org.patternfly.component.wizard.WizardStep;
@@ -282,7 +280,7 @@ class AddResourceDialogs {
 
         ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, true);
         StringControl nameControl = new StringControl();
-        StandardFormItem<elemental2.dom.HTMLElement> nameItem = new StandardFormItem<>(NAME, ra, context, nameControl);
+        StandardFormItem<elemental2.dom.HTMLElement> nameItem = new StandardFormItem<>(context, NAME, ra, nameControl);
         if (value != null) {
             nameControl.textInput().value(value);
         }

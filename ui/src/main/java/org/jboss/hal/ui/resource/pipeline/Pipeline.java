@@ -87,7 +87,7 @@ public final class Pipeline {
     /** Runs the pipeline and produces view items for all attributes in the resource metadata. */
     public List<ViewItem> viewItems(PipelineContext context) {
         List<AttributeMatch> groups = group(context.resourceDescription().attributes());
-        return itemizeView(groups, context);
+        return itemizeView(context, groups);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class Pipeline {
      * items to get decomposable items for child or sibling attributes — callers typically use {@link ViewItem#valueElement()}
      * to embed the rendered value in a custom layout.
      */
-    public ViewItem viewItem(ResolvedAttribute attribute, PipelineContext context) {
+    public ViewItem viewItem(PipelineContext context, ResolvedAttribute attribute) {
         AttributeMatch match = AttributeMatch.single(attribute.description());
         for (ItemProvider provider : providers) {
             if (provider.matches(match)) {
@@ -111,16 +111,16 @@ public final class Pipeline {
     /** Runs the pipeline and produces form items for all attributes in the resource metadata. */
     public List<FormItem> formItems(PipelineContext context) {
         List<AttributeMatch> groups = group(context.resourceDescription().attributes());
-        return itemizeForm(groups, context);
+        return itemizeForm(context, groups);
     }
 
     /** Runs the pipeline and produces form items for operation parameters (used by dialog classes). */
     public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> parameters) {
         List<AttributeMatch> groups = group(parameters);
-        return itemizeForm(groups, context);
+        return itemizeForm(context, groups);
     }
 
-    public FormItem formItem(ResolvedAttribute attribute, PipelineContext context) {
+    public FormItem formItem(PipelineContext context, ResolvedAttribute attribute) {
         AttributeMatch match = AttributeMatch.single(attribute.description());
         for (ItemProvider provider : providers) {
             if (provider.matches(match)) {
@@ -167,7 +167,7 @@ public final class Pipeline {
 
     // ------------------------------------------------------ stage 2: itemize
 
-    private List<ViewItem> itemizeView(List<AttributeMatch> groups, PipelineContext context) {
+    private List<ViewItem> itemizeView(PipelineContext context, List<AttributeMatch> groups) {
         List<ViewItem> items = new ArrayList<>();
         for (AttributeMatch group : groups) {
             for (ItemProvider provider : providers) {
@@ -183,7 +183,7 @@ public final class Pipeline {
         return items;
     }
 
-    private List<FormItem> itemizeForm(List<AttributeMatch> groups, PipelineContext context) {
+    private List<FormItem> itemizeForm(PipelineContext context, List<AttributeMatch> groups) {
         List<FormItem> items = new ArrayList<>();
         for (AttributeMatch group : groups) {
             for (ItemProvider provider : providers) {

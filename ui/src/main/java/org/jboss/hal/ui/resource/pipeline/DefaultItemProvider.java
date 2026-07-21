@@ -65,28 +65,28 @@ class DefaultItemProvider implements ItemProvider {
     static FormItem formItem(ResolvedAttribute ra, PipelineContext context) {
         String identifier = ra.fqn();
         if (!ra.readable()) {
-            return new StandardFormItem<>(identifier, ra, context, new RestrictedControl());
+            return new StandardFormItem<>(context, identifier, ra, new RestrictedControl());
         }
         if (!ra.description().hasDefined(TYPE)) {
-            return new StandardFormItem<>(identifier, ra, context, new UnsupportedControl());
+            return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());
         }
         ModelType type = ra.description().get(TYPE).asType();
         switch (type) {
             case BOOLEAN:
-                return new StandardFormItem<>(identifier, ra, context, new SwitchControl());
+                return new StandardFormItem<>(context, identifier, ra, new SwitchControl());
 
             case INT:
             case LONG:
             case DOUBLE:
-                return new StandardFormItem<>(identifier, ra, context, new NumberInputControl());
+                return new StandardFormItem<>(context, identifier, ra, new NumberInputControl());
 
             case STRING:
                 if (ra.description().hasDefined(ALLOWED)) {
-                    return new StandardFormItem<>(identifier, ra, context, new SelectControl());
+                    return new StandardFormItem<>(context, identifier, ra, new SelectControl());
                 } else if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                    return new StandardFormItem<>(identifier, ra, context, new CapabilityReferenceControl());
+                    return new StandardFormItem<>(context, identifier, ra, new CapabilityReferenceControl());
                 } else {
-                    return new StandardFormItem<>(identifier, ra, context, new StringControl());
+                    return new StandardFormItem<>(context, identifier, ra, new StringControl());
                 }
 
             case LIST:
@@ -96,16 +96,16 @@ class DefaultItemProvider implements ItemProvider {
                         : null;
                 if (valueType == ModelType.STRING) {
                     if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                        return new StandardFormItem<>(identifier, ra, context, new CapabilitiesReferenceControl());
+                        return new StandardFormItem<>(context, identifier, ra, new CapabilitiesReferenceControl());
                     } else {
-                        return new StandardFormItem<>(identifier, ra, context, new StringListControl());
+                        return new StandardFormItem<>(context, identifier, ra, new StringListControl());
                     }
                 }
-                return new StandardFormItem<>(identifier, ra, context, new UnsupportedControl());
+                return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());
 
             case OBJECT:
             default:
-                return new StandardFormItem<>(identifier, ra, context, new UnsupportedControl());
+                return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());
         }
     }
 }

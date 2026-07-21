@@ -53,7 +53,7 @@ class FlatteningProvider implements ItemProvider {
         List<ViewItem> items = new ArrayList<>();
         for (AttributeDescription nad : nested) {
             ResolvedAttribute ra = ResolvedAttribute.resolve(context, nad);
-            ViewItem viewItem = Pipeline.instance().viewItem(ra, context);
+            ViewItem viewItem = Pipeline.instance().viewItem(context, ra);
             if (viewItem != null) {
                 items.add(viewItem);
             }
@@ -66,7 +66,7 @@ class FlatteningProvider implements ItemProvider {
         List<FormItem> items = new ArrayList<>();
         for (AttributeDescription nad : nested) {
             ResolvedAttribute ra = ResolvedAttribute.resolve(context, nad);
-            FormItem formItem = Pipeline.instance().formItem(ra, context);
+            FormItem formItem = Pipeline.instance().formItem(context, ra);
             if (formItem != null) {
                 items.add(formItem);
             }

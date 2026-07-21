@@ -105,6 +105,9 @@ class ViewItemBricks {
         secondTextElement.appendChild(attributeDescriptionPopover(secondLabel, second, all)
                 .trigger(secondTextElement)
                 .element());
+        if (second.deprecation().isDefined()) {
+            secondTextElement.classList.add(halModifier(deprecated));
+        }
         wrapHtmlContainer(term.element())
                 .add(slashSeparator())
                 .add(secondTextElement);
@@ -120,12 +123,12 @@ class ViewItemBricks {
     static HTMLElement fileValue(PipelineContext context, ResolvedAttribute path, ResolvedAttribute relativeTo) {
         if (path.isDefined() && relativeTo.isDefined()) {
             return flex().alignItems(center).gap(sm)
-                    .addItem(flexItem().add(Pipeline.instance().viewItem(path, context).valueElement()))
+                    .addItem(flexItem().add(Pipeline.instance().viewItem(context, path).valueElement()))
                     .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
-                    .addItem(flexItem().add(Pipeline.instance().viewItem(relativeTo, context).valueElement()))
+                    .addItem(flexItem().add(Pipeline.instance().viewItem(context, relativeTo).valueElement()))
                     .element();
         } else if (path.isDefined()) {
-            return Pipeline.instance().viewItem(path, context).valueElement();
+            return Pipeline.instance().viewItem(context, path).valueElement();
         } else {
             return ViewItemBricks.undefinedValue();
         }

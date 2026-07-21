@@ -57,6 +57,6 @@ class PathRelativeToProvider implements ItemProvider {
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute path = resolve(context, match.attributes().get(0));
         ResolvedAttribute relativeTo = resolve(context, match.attributes().get(1));
-        return singletonList(new PathRelativeToFormItem(match.name(), path, relativeTo, context));
+        return singletonList(new PathRelativeToFormItem(context, match.name(), path, relativeTo));
     }
 }
