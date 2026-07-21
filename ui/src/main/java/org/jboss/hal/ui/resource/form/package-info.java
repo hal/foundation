@@ -17,104 +17,113 @@
 /**
  * Editable form items for WildFly management resource attributes.
  *
- * <h2>Architecture</h2>
+ * <h2>Architecture overview</h2>
  * <p>
- * Form items use a composition-based architecture with five building blocks:
- * <ol>
- *   <li>{@link org.jboss.hal.ui.resource.form.NativeControl NativeControl&lt;C&gt;} — strategy interface that captures the
- *       widget type and its value semantics (creation, reading, modification detection, validation). One implementation per
- *       control type (switch, select, number input, typeahead, filter input, etc.).</li>
- *   <li>{@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} — encapsulates expression/native mode
- *       switching, managing the {@link org.jboss.hal.ui.resource.form.InputMode InputMode}, the expression text input,
- *       container swapping, and tooltip lifecycle.</li>
- *   <li>{@link org.jboss.hal.ui.resource.form.EditableControl EditableControl&lt;C&gt;} — the composable unit that pairs a
- *       {@link org.jboss.hal.ui.resource.form.NativeControl NativeControl} with an optional
- *       {@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} behind a unified, mode-aware API. All
- *       behavioral methods (value reading, modification tracking, validation) dispatch to the correct mode internally, so
- *       callers never check the mode themselves.</li>
- *   <li>{@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks} — static factory methods (brick pattern) for
- *       shared UI fragments: labels with description popovers, read-only controls, placeholders, and validation helper
- *       text.</li>
- *   <li>{@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy} — functional interface for producing DMR
- *       operations from a form item's current state. Most items use the default
- *       {@link org.jboss.hal.ui.resource.form.OperationStrategy#WRITE_ATTRIBUTE WRITE_ATTRIBUTE} strategy;
- *       {@link org.jboss.hal.ui.resource.form.MapOperationStrategy MapOperationStrategy} provides granular
- *       {@code map-put}/{@code map-remove} operations.</li>
- * </ol>
- * <p>
- * {@link org.jboss.hal.ui.resource.form.StandardFormItem StandardFormItem&lt;C&gt;} is a thin visual shell that wraps an
- * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} in a {@code FormGroup} with a label and an
- * {@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy}. Composite form items like
- * {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem} access the
- * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} via
- * {@link org.jboss.hal.ui.resource.form.FormItem#editableControl()} to embed it in custom layouts.
+ * The form item architecture is composition-based. Each form item is assembled from small, single-responsibility building
+ * blocks rather than using deep inheritance. The key types and their roles are:
  *
- * <h2>NativeControl Implementations</h2>
- * <p>
- * Each {@code NativeControl} implementation captures one widget type and its value semantics:
+ * <h3>Interfaces</h3>
  * <dl>
- *   <dt>{@link org.jboss.hal.ui.resource.form.SwitchControl SwitchControl}</dt>
- *   <dd>Toggle switch for boolean attributes. Uses a flex layout for the expression-toggle container.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.NumberInputControl NumberInputControl}</dt>
- *   <dd>Number input with min/max validation (INT, LONG, DOUBLE) or allowed-values select.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.SelectControl SelectControl}</dt>
- *   <dd>Dropdown select for string attributes with predefined allowed values.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.StringControl StringControl}</dt>
- *   <dd>Text input for plain string attributes, using mixed mode (handles both literals and expressions).</dd>
- *   <dt>{@link CapabilityReferenceControl}</dt>
- *   <dd>Single-select typeahead for string attributes with a capability reference.</dd>
- *   <dt>{@link CapabilitiesReferenceControl}</dt>
- *   <dd>Multi-select typeahead for list-of-string attributes with a capability reference.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.StringListControl StringListControl}</dt>
- *   <dd>Label-based multi-value input for list-of-string attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.MapControl MapControl}</dt>
- *   <dd>Key=value filter input for free-form map attributes. Paired with
- *       {@link org.jboss.hal.ui.resource.form.MapOperationStrategy MapOperationStrategy} for granular operations.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.FileControl FileControl}</dt>
- *   <dd>Composite control for path + relative-to OBJECT attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.TimeUnitControl TimeUnitControl}</dt>
- *   <dd>Composite control for time + unit OBJECT attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.CredentialReferenceControl CredentialReferenceControl}</dt>
- *   <dd>Multi-mode composite for credential-reference OBJECT attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.RestrictedControl RestrictedControl}</dt>
- *   <dd>Locked sentinel for permission-restricted attributes.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.UnsupportedControl UnsupportedControl}</dt>
- *   <dd>Read-only fallback for unsupported attribute types.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.FormItem FormItem}</dt>
+ *   <dd>The contract every form item implements. A form item knows how to read its current value as a DMR model node, detect
+ *       whether it has been modified, validate its input, and produce the DMR operations needed to persist its state. Operations
+ *       are produced by the item, not the form — this allows composite items to generate multiple operations from a single form
+ *       group.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.NativeControl NativeControl&lt;C&gt;}</dt>
+ *   <dd>The primary extension point. A strategy interface with one implementation per widget type (switch, select, number input,
+ *       typeahead, etc.). Each implementation captures widget creation, DOM element extraction, value reading, modification
+ *       detection, and validation. Implementations should be {@code final} classes with no inheritance among them.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy}</dt>
+ *   <dd>A functional interface for producing DMR operations from a form item's state. Most items use the default
+ *       {@link org.jboss.hal.ui.resource.form.OperationStrategy#WRITE_ATTRIBUTE WRITE_ATTRIBUTE} strategy (single
+ *       {@code write-attribute} or {@code undefine-attribute}). Custom implementations like
+ *       {@link org.jboss.hal.ui.resource.form.MapOperationStrategy MapOperationStrategy} produce granular per-entry
+ *       operations.</dd>
  * </dl>
- * <p>
- * For multi-attribute form items (e.g. sibling path + relative-to STRING pairs),
- * {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem} implements
- * {@link org.jboss.hal.ui.resource.form.FormItem FormItem} as a composite that delegates to two pipeline-created
- * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl}s.
  *
- * <h2>Helper Text</h2>
- * <p>
- * Native and expression modes manage helper text independently. {@link org.jboss.hal.ui.resource.form.NativeControl#helperText()
- * NativeControl.helperText()} provides helper text for native mode, and
- * {@link org.jboss.hal.ui.resource.form.NativeControl#expressionHelperText() NativeControl.expressionHelperText()} provides
- * helper text for expression mode. Both return {@link org.patternfly.component.help.HelperText HelperText} components, which
- * support rich content with nested elements and markup. {@code EditableControl} applies the correct helper text when switching
- * modes and after resetting validation.
- *
- * <h2>Shared Support Types</h2>
+ * <h3>Composition classes</h3>
  * <dl>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.EditableControl EditableControl&lt;C&gt;}</dt>
+ *   <dd>The composable unit at the heart of the architecture. Pairs a {@link org.jboss.hal.ui.resource.form.NativeControl
+ *       NativeControl} with an optional {@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} behind a
+ *       unified, mode-aware API. All behavioral methods (value reading, modification tracking, validation) dispatch to the
+ *       correct {@link org.jboss.hal.ui.resource.form.InputMode InputMode} internally, so callers never check the mode
+ *       themselves. Its {@code controlElement()} returns a switchable container that can be reparented into any layout without
+ *       breaking expression support.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle}</dt>
+ *   <dd>Manages expression/native mode switching: the expression text input, container swapping, tooltip lifecycle, and
+ *       expression validation. Created automatically by {@code EditableControl} when the attribute allows expressions and the
+ *       native control does not handle them in mixed mode.</dd>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.StandardFormItem StandardFormItem&lt;C&gt;}</dt>
+ *   <dd>The standard {@link org.jboss.hal.ui.resource.form.FormItem FormItem} for single-attribute controls. A thin visual
+ *       shell that wraps an {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} in a PatternFly
+ *       {@code FormGroup} with a label and an {@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy}. Most
+ *       form items in the console are {@code StandardFormItem}s.</dd>
+ * </dl>
+ *
+ * <h3>Shared utilities</h3>
+ * <dl>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks}</dt>
+ *   <dd>Static utility class providing reusable UI fragments (brick pattern): labels with description popovers and stability
+ *       badges, read-only controls, expression text inputs, placeholder application, validation helper text, and fail-safe
+ *       value selection for {@code FormSelect} and {@code SingleTypeahead} controls.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm}</dt>
- *   <dd>Container that orchestrates form items, validation, and DMR operation submission.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.CapabilityReferenceSupport CapabilityReferenceSupport}</dt>
- *   <dd>Helper for loading capability reference options into typeahead controls.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.StringListSupport StringListSupport}</dt>
- *   <dd>Shared logic for label-based multi-value string list inputs.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.SearchReloadInput SearchReloadInput}</dt>
- *   <dd>Search input that reloads options on focus, for single-select typeahead controls.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.FilterReloadInput FilterReloadInput}</dt>
- *   <dd>Filter input that reloads options on focus, for multi-select typeahead controls.</dd>
+ *   <dd>The form container. Aggregates a list of {@link org.jboss.hal.ui.resource.form.FormItem FormItem}s, orchestrates
+ *       validation across all items, collects their DMR operations into a single composite, and manages grouped/flat layouts
+ *       with expandable sections.</dd>
  * </dl>
  *
- * <h2>Pipeline Integration</h2>
+ * <h2>How the pieces fit together</h2>
  * <p>
- * Form items are created by the pipeline's item providers. The
- * {@code DefaultItemProvider} dispatches by attribute type to the
- * appropriate {@code NativeControl} implementation. Specialized providers (e.g.
- * {@code MapProvider}) handle composite matches.
+ * The composition hierarchy for a typical single-attribute form item is:
+ * <pre>
+ * ResourceForm
+ *   └── StandardFormItem (implements FormItem)
+ *         ├── FormItemBricks.label(...)        → FormGroupLabel
+ *         ├── EditableControl                  → mode-aware control container
+ *         │     ├── NativeControl              → widget strategy (e.g. SelectControl)
+ *         │     └── ExpressionToggle           → expression/native mode switching (optional)
+ *         └── OperationStrategy               → DMR operation generation
+ * </pre>
+ * <p>
+ * Composite form items (e.g. {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem}) implement
+ * {@link org.jboss.hal.ui.resource.form.FormItem FormItem} directly and use the pipeline to create child
+ * {@code StandardFormItem}s, then extract their {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl}s via
+ * {@link org.jboss.hal.ui.resource.form.FormItem#editableControl()} to embed them in a custom layout. This reuses the full
+ * expression support, validation, and value reading of each child without duplicating any logic.
+ *
+ * <h2>Data and control flow</h2>
+ * <p>
+ * When the user saves the form, {@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm} iterates over all form items:
+ * <ol>
+ *   <li><b>Validation</b> — each {@code FormItem.validate()} delegates to {@code EditableControl.validate()}, which dispatches
+ *       to the expression toggle or native control based on the current mode.</li>
+ *   <li><b>Modification detection</b> — each {@code FormItem.isModified()} delegates to {@code EditableControl.isModified()},
+ *       which checks scope ({@code NEW_RESOURCE} vs {@code EXISTING_RESOURCE}) and dispatches to the native control's
+ *       {@code isModifiedForNew()} or {@code isModifiedForExisting()}.</li>
+ *   <li><b>Operation generation</b> — each modified item's {@code FormItem.operations(address)} delegates to its
+ *       {@code OperationStrategy}, which reads {@code FormItem.modelNode()} (via {@code EditableControl.modelNode()}) and
+ *       produces the appropriate DMR operations.</li>
+ *   <li><b>Submission</b> — all operations from all items are flat-mapped into a single DMR composite operation.</li>
+ * </ol>
+ *
+ * <h2>Expression mode</h2>
+ * <p>
+ * Expression support is handled at two levels. Most controls use the {@link org.jboss.hal.ui.resource.form.ExpressionToggle
+ * ExpressionToggle} created by {@code EditableControl}: a toggle button swaps between the native control and an expression text
+ * input, and all behavioral methods dispatch transparently. Controls that handle expressions internally (mixed mode, e.g.
+ * {@link org.jboss.hal.ui.resource.form.StringControl StringControl}) signal this via
+ * {@link org.jboss.hal.ui.resource.form.NativeControl#handlesMixedExpressions()}, and no toggle is created.
+ * <p>
+ * Helper text is mode-aware: {@link org.jboss.hal.ui.resource.form.NativeControl#helperText()} and
+ * {@link org.jboss.hal.ui.resource.form.NativeControl#expressionHelperText()} provide per-mode helper text, and
+ * {@code EditableControl} applies the correct one when switching modes and after resetting validation.
+ *
+ * <h2>Pipeline integration</h2>
+ * <p>
+ * Form items are created by the pipeline's item providers. The {@code DefaultItemProvider} dispatches by attribute type and
+ * metadata to the appropriate {@code NativeControl} implementation. Specialized providers (e.g. {@code MapProvider})
+ * handle composite matches. Composite form items use the pipeline to create child items, then compose their
+ * {@code EditableControl}s into a single form group.
  */
 package org.jboss.hal.ui.resource.form;
