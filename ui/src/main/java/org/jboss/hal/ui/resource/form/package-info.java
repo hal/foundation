@@ -48,8 +48,7 @@
  *       NativeControl} with an optional {@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} behind a
  *       unified, mode-aware API. All behavioral methods (value reading, modification tracking, validation) dispatch to the
  *       correct {@link org.jboss.hal.ui.resource.form.InputMode InputMode} internally, so callers never check the mode
- *       themselves. Its {@code controlElement()} returns a switchable container that can be reparented into any layout without
- *       breaking expression support.</dd>
+ *       themselves.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle}</dt>
  *   <dd>Manages expression/native mode switching: the expression text input, container swapping, tooltip lifecycle, and
  *       expression validation. Created automatically by {@code EditableControl} when the attribute allows expressions and the
@@ -115,7 +114,7 @@
  * {@link org.jboss.hal.ui.resource.form.StringControl StringControl}) signal this via
  * {@link org.jboss.hal.ui.resource.form.NativeControl#handlesMixedExpressions()}, and no toggle is created.
  * <p>
- * Helper text is mode-aware: {@link org.jboss.hal.ui.resource.form.NativeControl#helperText()} and
+ * Helper text is mode-aware: {@link org.jboss.hal.ui.resource.form.NativeControl#nativeHelperText()} and
  * {@link org.jboss.hal.ui.resource.form.NativeControl#expressionHelperText()} provide per-mode helper text, and
  * {@code EditableControl} applies the correct one when switching modes and after resetting validation.
  *

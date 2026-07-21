@@ -66,7 +66,7 @@ public final class EditableControl<C> {
         this.flags = context.flags();
         this.nativeControl = nativeControl;
         this.control = nativeControl.create(context, identifier, attribute);
-        this.nativeHelperText = nativeControl.helperText();
+        this.nativeHelperText = nativeControl.nativeHelperText();
         this.expressionHelperText = nativeControl.expressionHelperText();
 
         if (attribute.description().expressionAllowed() && !nativeControl.handlesMixedExpressions()) {

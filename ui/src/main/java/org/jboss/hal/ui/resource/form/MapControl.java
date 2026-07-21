@@ -129,7 +129,7 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public HelperText helperText() {
+    public HelperText nativeHelperText() {
         return HelperText.helperText("Use <key>=<value> to add new entries.");
     }
 

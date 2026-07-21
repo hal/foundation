@@ -22,6 +22,7 @@ import java.util.List;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
@@ -38,16 +39,15 @@ import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.token.Token.globalTextColorPlaceholder;
 
 /**
- * Composite form item for sibling path + relative-to attribute groups. Uses the pipeline to create child
- * {@link FormItem}s, then extracts their {@link EditableControl}s for composition in a single
- * {@link org.patternfly.component.form.FormGroup}.
+ * Composite form item for sibling path + relative-to attribute groups. Uses the pipeline to create child {@link FormItem}s,
+ * then extracts their {@link EditableControl}s for composition in a single {@link org.patternfly.component.form.FormGroup}.
  * <p>
  * All behavioral concerns (expression support, validation, modification tracking, operation generation) are delegated to the
  * child {@link EditableControl}s. The composite only provides visual assembly (flex layout, composite label) and coordinates
  * the children's results.
  *
  * @see EditableControl
- * @see FormItemBricks#compositeLabel(String, ResolvedAttribute, ResolvedAttribute, PipelineContext)
+ * @see FormItemBricks#compositeLabel(PipelineContext, String, AttributeDescription, AttributeDescription)
  */
 public class PathRelativeToFormItem implements FormItem {
 
@@ -75,7 +75,8 @@ public class PathRelativeToFormItem implements FormItem {
                 .addItem(flexItem().style("flex-grow", "1").add(relativeToControl.controlElement())));
 
         this.root = formGroup(identifier)
-                .addLabel(FormItemBricks.compositeLabel(identifier, pathAttr, relativeToAttr, context))
+                .addLabel(FormItemBricks.compositeLabel(context, identifier,
+                        pathAttr.description(), relativeToAttr.description()))
                 .addControl(formGroupControl)
                 .element();
     }

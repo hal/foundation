@@ -98,7 +98,7 @@ public final class StandardFormItem<C> implements FormItem {
 
         this.formGroup = formGroup(identifier)
                 .required(attribute.description().required())
-                .addLabel(FormItemBricks.label(identifier, attribute, context))
+                .addLabel(FormItemBricks.label(context, identifier, attribute.description()))
                 .addControl(formGroupControl);
     }
 

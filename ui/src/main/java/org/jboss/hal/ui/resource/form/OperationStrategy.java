@@ -44,8 +44,13 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERAT
 @FunctionalInterface
 public interface OperationStrategy {
 
-    /** Produces the DMR operations needed to persist the form item's current value. */
-    List<Operation> operations(FormItem item, ResourceAddress address);
+    /** Standard strategy: single {@code write-attribute} or {@code undefine-attribute} operation. */
+    OperationStrategy WRITE_ATTRIBUTE = (item, address) -> {
+        if (!item.isModified()) {
+            return Collections.emptyList();
+        }
+        return singletonList(writeOrUndefine(address, item.attribute().fqn(), item.modelNode()));
+    };
 
     /** Builds a {@code write-attribute} or {@code undefine-attribute} operation depending on whether the value is defined. */
     static Operation writeOrUndefine(ResourceAddress address, String name, ModelNode value) {
@@ -61,11 +66,6 @@ public interface OperationStrategy {
         }
     }
 
-    /** Standard strategy: single {@code write-attribute} or {@code undefine-attribute} operation. */
-    OperationStrategy WRITE_ATTRIBUTE = (item, address) -> {
-        if (!item.isModified()) {
-            return Collections.emptyList();
-        }
-        return singletonList(writeOrUndefine(address, item.attribute().fqn(), item.modelNode()));
-    };
+    /** Produces the DMR operations needed to persist the form item's current value. */
+    List<Operation> operations(FormItem item, ResourceAddress address);
 }

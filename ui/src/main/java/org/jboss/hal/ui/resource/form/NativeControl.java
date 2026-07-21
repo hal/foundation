@@ -36,7 +36,7 @@ import elemental2.dom.HTMLElement;
  *       {@link #isModifiedForExisting(Object, ResolvedAttribute, boolean)}</li>
  *   <li><b>Validation</b> — {@link #validate(Object, ResolvedAttribute, FormGroupControl)} and
  *       {@link #resetValidation(Object)}</li>
- *   <li><b>Mode-aware helper text</b> — {@link #helperText()} for native mode and {@link #expressionHelperText()} for
+ *   <li><b>Mode-aware helper text</b> — {@link #nativeHelperText()} for native mode and {@link #expressionHelperText()} for
  *       expression mode, both returning {@link HelperText} components that support rich content with nested elements</li>
  *   <li><b>Custom container layout</b> — {@link #nativeContainer(Object, ExpressionToggle)} for controls that need a
  *       non-standard layout in expression-toggle mode (e.g. flex instead of InputGroup)</li>
@@ -80,7 +80,7 @@ public interface NativeControl<C> {
     }
 
     /** Optional helper text displayed below the control in native mode. */
-    default HelperText helperText() {
+    default HelperText nativeHelperText() {
         return null;
     }
 

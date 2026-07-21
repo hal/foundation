@@ -89,7 +89,7 @@ public final class UnsupportedControl implements NativeControl<HTMLElement> {
     }
 
     @Override
-    public HelperText helperText() {
+    public HelperText nativeHelperText() {
         return HelperText.helperText("The type of this attribute is not yet supported: " + formatType, warning);
     }
 }

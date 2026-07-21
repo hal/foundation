@@ -73,7 +73,6 @@ import static org.patternfly.style.Classes.form;
 import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.help;
 import static org.patternfly.style.Classes.icon;
-import static org.patternfly.style.Classes.label;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.noPadding;
 import static org.patternfly.style.Classes.plain;
@@ -92,55 +91,45 @@ import static org.patternfly.style.Classes.util;
  * @see StandardFormItem
  * @see org.jboss.hal.ui.brick
  */
-public final class FormItemBricks {
+final class FormItemBricks {
+
+    // ------------------------------------------------------ label
 
     /** Creates a {@link FormGroupLabel} with description popover, stability badge, deprecation styling, and nested support. */
-    public static FormGroupLabel label(String identifier, ResolvedAttribute attribute, PipelineContext context) {
-        AttributeDescription description = attribute.description();
+    static FormGroupLabel label(PipelineContext context, String identifier, AttributeDescription attributeDescription) {
         FormGroupLabel fgl;
 
-        if (description.nested()) {
-            AttributeDescription parentDescription = description.parent();
+        if (attributeDescription.nested()) {
+            AttributeDescription parentDescription = attributeDescription.parent();
             String parentLabel = sentenceCase(parentDescription.name());
-            String nestedLabel = sentenceCase(description.name());
+            String nestedLabel = sentenceCase(attributeDescription.name());
             fgl = formGroupLabel(nestedLabel)
                     .css(halComponent(resource, HalClasses.compositeLabel))
-                    .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, description, all));
-            HTMLElement parentLabelElement = Elements.label().css(component(form, label))
-                    .apply(l -> l.htmlFor = identifier)
-                    .add(span().css(component(form, label, text))
-                            .text(parentLabel))
-                    .element();
-            HTMLElement parentHelpButton = span().css(component(form, group, Classes.label, help), util("ml-xs"))
-                    .add(span().css(component(Classes.button), modifier(plain), modifier(noPadding))
-                            .attr(type, "button")
-                            .attr(role, Roles.button)
-                            .attr(tabindex, 0)
-                            .aria(Aria.label, parentLabel + " description")
-                            .add(span().css(component(Classes.button, icon))
-                                    .add(circleQuestion())))
-                    .element();
+                    .help(nestedLabel + " description", attributeDescriptionPopover(nestedLabel, attributeDescription, all));
+
+            HTMLElement parentLabelElement = labelElement(identifier, parentLabel);
+            HTMLElement parentHelpButton = helpElement(parentLabel);
             insertFirst(fgl.element(), slashSeparator());
             insertFirst(fgl.element(), parentHelpButton);
             insertFirst(fgl.element(), parentLabelElement);
             fgl.add(attributeDescriptionPopover(parentLabel, parentDescription, all)
                     .trigger(parentHelpButton));
         } else {
-            String lbl = sentenceCase(attribute.name());
+            String lbl = sentenceCase(attributeDescription.name());
             fgl = formGroupLabel(lbl)
-                    .help(lbl + " description", attributeDescriptionPopover(lbl, description, all));
+                    .help(lbl + " description", attributeDescriptionPopover(lbl, attributeDescription, all));
 
             if (uic().environment()
-                    .highlightStability(context.resourceDescription().stability(), description.stability())) {
+                    .highlightStability(context.resourceDescription().stability(), attributeDescription.stability())) {
                 fgl.css(halComponent(resource, stabilityLevel))
-                        .add(stabilityLabel(description.stability()).compact()
+                        .add(stabilityLabel(attributeDescription.stability()).compact()
                                 .style("align-self", "baseline")
                                 .css(util("ml-sm"), util("font-weight-normal"))
                                 .element());
             }
         }
 
-        if (description.deprecation().isDefined()) {
+        if (attributeDescription.deprecation().isDefined()) {
             fgl.classList().add(halModifier(deprecated));
         }
         return fgl;
@@ -148,60 +137,57 @@ public final class FormItemBricks {
 
     /**
      * Creates a {@link FormGroupLabel} for sibling attribute pairs. Shows both attribute names separated by a slash, each with
-     * its own description popover. Analogous to {@link org.jboss.hal.ui.resource.view.ViewItemBricks#compositeLabel}.
+     * its own description popover. Analogous to {@code org.jboss.hal.ui.resource.view.ViewItemBricks.compositeLabel()}.
      */
-    public static FormGroupLabel compositeLabel(String identifier, ResolvedAttribute first, ResolvedAttribute second,
-            PipelineContext context) {
+    static FormGroupLabel compositeLabel(PipelineContext context, String identifier,
+            AttributeDescription first, AttributeDescription second) {
         String firstLabel = sentenceCase(first.name());
         String secondLabel = sentenceCase(second.name());
         FormGroupLabel fgl = formGroupLabel(firstLabel)
                 .css(halComponent(resource, HalClasses.compositeLabel))
-                .help(firstLabel + " description", attributeDescriptionPopover(firstLabel, first.description(), all));
+                .help(firstLabel + " description", attributeDescriptionPopover(firstLabel, first, all));
 
-        HTMLElement secondLabelElement = Elements.label().css(component(form, label))
-                .apply(l -> l.htmlFor = identifier)
-                .add(span().css(component(form, label, text))
-                        .text(secondLabel))
-                .element();
-        HTMLElement secondHelpButton = span().css(component(form, group, Classes.label, help), util("ml-xs"))
-                .add(span().css(component(Classes.button), modifier(plain), modifier(noPadding))
-                        .attr(type, "button")
-                        .attr(role, Roles.button)
-                        .attr(tabindex, 0)
-                        .aria(Aria.label, secondLabel + " description")
-                        .add(span().css(component(Classes.button, icon))
-                                .add(circleQuestion())))
-                .element();
+        HTMLElement secondLabelElement = labelElement(identifier, secondLabel);
+        HTMLElement secondHelpButton = helpElement(secondLabel);
         fgl.element().appendChild(slashSeparator());
         fgl.element().appendChild(secondLabelElement);
         fgl.element().appendChild(secondHelpButton);
-        fgl.add(attributeDescriptionPopover(secondLabel, second.description(), all)
+        fgl.add(attributeDescriptionPopover(secondLabel, second, all)
                 .trigger(secondHelpButton));
 
-        if (first.description().deprecation().isDefined()) {
+        if (first.deprecation().isDefined()) {
             fgl.classList().add(halModifier(deprecated));
         }
-        if (second.description().deprecation().isDefined()) {
+        if (second.deprecation().isDefined()) {
             secondLabelElement.classList.add(halModifier(deprecated));
         }
         return fgl;
     }
 
-    /** Creates a read-only {@link TextInput} with lock icon, populated from the attribute value. */
-    public static TextInput readOnlyTextControl(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
-        return textInput(identifier)
-                .run(ti -> {
-                    ti.input().autocomplete("off");
-                    if (attribute.value().isDefined()) {
-                        ti.value(attribute.value().asString());
-                    }
-                    applyPlaceholder(ti.input(), attribute, flags);
-                })
-                .readonly().icon(lock());
+    private static HTMLElement labelElement(String identifier, String label) {
+        return Elements.label().css(Classes.component(form, Classes.label))
+                .apply(l -> l.htmlFor = identifier)
+                .add(Elements.span().css(Classes.component(form, Classes.label, text))
+                        .text(label))
+                .element();
     }
 
+    private static HTMLElement helpElement(String label) {
+        return span().css(component(form, group, Classes.label, help), util("ml-xs"))
+                .add(span().css(component(Classes.button), modifier(plain), modifier(noPadding))
+                        .attr(type, "button")
+                        .attr(role, Roles.button)
+                        .attr(tabindex, 0)
+                        .aria(Aria.label, label + " description")
+                        .add(span().css(component(Classes.button, icon))
+                                .add(circleQuestion())))
+                .element();
+    }
+
+    // ------------------------------------------------------ read only
+
     /** Creates a read-only {@link FormGroupControl} with optional expression resolve button. */
-    public static FormGroupControl readOnlyGroup(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
+    static FormGroupControl readOnlyGroup(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
         TextInput tc = readOnlyTextControl(identifier, attribute, flags);
         if (attribute.expression()) {
             String resolveId = identifier + "-resolve-expression";
@@ -215,8 +201,8 @@ public final class FormItemBricks {
         }
     }
 
-    /** Creates an expression-mode {@link TextInput} for entering WildFly expressions. */
-    public static TextInput expressionTextControl(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
+    /** Creates a read-only {@link TextInput} with lock icon, populated from the attribute value. */
+    static TextInput readOnlyTextControl(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
         return textInput(identifier)
                 .run(ti -> {
                     ti.input().autocomplete("off");
@@ -224,11 +210,53 @@ public final class FormItemBricks {
                         ti.value(attribute.value().asString());
                     }
                     applyPlaceholder(ti.input(), attribute, flags);
-                });
+                })
+                .readonly().icon(lock());
     }
 
+    // ------------------------------------------------------ required
+
+    /** Creates a "required" error helper text for the given attribute. */
+    static HelperText requiredHelperText(ResolvedAttribute attribute) {
+        return helperText(sentenceCase(attribute.name()) + " is a required attribute.", error);
+    }
+
+    /** Returns {@code true} if the attribute is required and has no ALTERNATIVES or REQUIRES relationships. */
+    static boolean requiredOnItsOwn(ResolvedAttribute attribute) {
+        return attribute.description().required()
+                && !(attribute.description().hasDefined("alternatives") || attribute.description().hasDefined("requires"));
+    }
+
+    // ------------------------------------------------------ value
+
+    /** Selects a value in a {@link FormSelect}, falling back to the first value if the value is not available. */
+    static void failSafeSelectValue(FormSelect formSelect, String value) {
+        if (formSelect.containsValue(value)) {
+            formSelect.value(value, false);
+        } else {
+            formSelect.selectFirstValue(false);
+        }
+    }
+
+    /** Selects a value in a {@link SingleTypeahead}, handling async items that may not be loaded yet. */
+    static void failSafeSelectValue(SingleTypeahead typeahead, String value) {
+        if (typeahead.menu().hasAsyncItems()) {
+            typeahead.menuToggle().text(value);
+            typeahead.onLoaded((__, st) -> st.select(value));
+        } else {
+            typeahead.select(value);
+        }
+    }
+
+    /** Returns the text input's value, or an empty string if the input is {@code null} or its value is {@code null}. */
+    static String safeValue(TextInput input) {
+        return input != null && input.value() != null ? input.value() : "";
+    }
+
+    // ------------------------------------------------------ misc
+
     /** Applies a placeholder (UNDEFINED or default value) to an input element based on pipeline flags. */
-    public static void applyPlaceholder(HTMLInputElementBuilder<HTMLInputElement> input, ResolvedAttribute attribute,
+    static void applyPlaceholder(HTMLInputElementBuilder<HTMLInputElement> input, ResolvedAttribute attribute,
             PipelineFlags flags) {
         if (flags.placeholder() == PipelineFlags.Placeholder.UNDEFINED) {
             input.placeholder(UNDEFINED);
@@ -239,46 +267,20 @@ public final class FormItemBricks {
         }
     }
 
+    /** Creates an expression-mode {@link TextInput} for entering WildFly expressions. */
+    static TextInput expressionTextControl(String identifier, ResolvedAttribute attribute, PipelineFlags flags) {
+        return textInput(identifier)
+                .run(ti -> {
+                    ti.input().autocomplete("off");
+                    if (attribute.value().isDefined()) {
+                        ti.value(attribute.value().asString());
+                    }
+                    applyPlaceholder(ti.input(), attribute, flags);
+                });
+    }
+
     /** Creates a unit text element for display in an InputGroup. */
-    public static InputGroupText unitText(String unit) {
+    static InputGroupText unitText(String unit) {
         return inputGroupText().plain().add(small().text(unit));
-    }
-
-    /** Creates a "required" error helper text for the given attribute. */
-    public static HelperText requiredHelperText(ResolvedAttribute attribute) {
-        return helperText(sentenceCase(attribute.name()) + " is a required attribute.", error);
-    }
-
-    /** Returns {@code true} if the attribute is required and has no ALTERNATIVES or REQUIRES relationships. */
-    public static boolean requiredOnItsOwn(ResolvedAttribute attribute) {
-        return attribute.description().required()
-                && !(attribute.description().hasDefined("alternatives") || attribute.description().hasDefined("requires"));
-    }
-
-    /** Selects a value in a {@link FormSelect}, falling back to the first value if the value is not available. */
-    public static void failSafeSelectValue(FormSelect formSelect, String value) {
-        if (formSelect.containsValue(value)) {
-            formSelect.value(value, false);
-        } else {
-            formSelect.selectFirstValue(false);
-        }
-    }
-
-    /** Selects a value in a {@link SingleTypeahead}, handling async items that may not be loaded yet. */
-    public static void failSafeSelectValue(SingleTypeahead typeahead, String value) {
-        if (typeahead.menu().hasAsyncItems()) {
-            typeahead.menuToggle().text(value);
-            typeahead.onLoaded((__, st) -> st.select(value));
-        } else {
-            typeahead.select(value);
-        }
-    }
-
-    /** Returns the text input's value, or an empty string if the input is {@code null} or its value is {@code null}. */
-    public static String safeValue(TextInput input) {
-        return input != null && input.value() != null ? input.value() : "";
-    }
-
-    private FormItemBricks() {
     }
 }
