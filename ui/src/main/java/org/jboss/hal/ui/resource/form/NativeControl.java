@@ -24,7 +24,7 @@ import org.patternfly.component.help.HelperText;
 import elemental2.dom.HTMLElement;
 
 /**
- * Strategy interface for the native (non-expression) control within a {@link StandardFormItem}. This is the primary extension
+ * Strategy interface for the native (non-expression) control within an {@link EditableControl}. This is the primary extension
  * point of the form item architecture — one implementation per widget type.
  * <p>
  * Each implementation captures:
@@ -43,10 +43,10 @@ import elemental2.dom.HTMLElement;
  * </ul>
  * <p>
  * Implementations should be {@code final} classes with no inheritance. They are stateless with respect to DOM assembly —
- * all DOM concerns are handled by {@link StandardFormItem} and {@link ExpressionToggle}.
+ * all DOM concerns are handled by {@link EditableControl} and {@link ExpressionToggle}.
  *
  * @param <C> the PatternFly component type (e.g. {@code FormSelect}, {@code Switch}, {@code FilterInput})
- * @see StandardFormItem
+ * @see EditableControl
  * @see ExpressionToggle
  */
 public interface NativeControl<C> {
@@ -91,7 +91,7 @@ public interface NativeControl<C> {
 
     /**
      * Returns {@code true} if this control handles expression input internally (mixed mode). When {@code true},
-     * {@link StandardFormItem} will not create an {@link ExpressionToggle}, even if the attribute allows expressions.
+     * {@link EditableControl} will not create an {@link ExpressionToggle}, even if the attribute allows expressions.
      * The control is responsible for rendering its own expression support (e.g. a resolve button in an InputGroup).
      */
     default boolean handlesMixedExpressions() {

@@ -61,9 +61,9 @@ import static org.patternfly.component.tooltip.Tooltip.tooltip;
  * helper text), and one after switching to expression mode (to apply expression helper text). Both callbacks fire on every mode
  * switch, not just during initialization.
  * <p>
- * Used by {@link StandardFormItem} for items whose attributes allow expressions.
+ * Used by {@link EditableControl} for attributes that allow expressions.
  *
- * @see StandardFormItem
+ * @see EditableControl
  * @see NativeControl
  */
 public final class ExpressionToggle {
@@ -79,7 +79,7 @@ public final class ExpressionToggle {
     private final HTMLElement expressionContainer;
 
     private InputMode inputMode;
-    private FormGroupControl formGroupControl;
+    private HTMLElement container;
     private HTMLElement nativeContainer;
     private Runnable afterSwitchedToNative;
     private Runnable afterSwitchedToExpression;
@@ -127,21 +127,21 @@ public final class ExpressionToggle {
     }
 
     /** Initializes the toggle with the default InputGroup-based native container. */
-    void initialize(FormGroupControl fgc, HTMLElement nativeCtl,
+    void initialize(HTMLElement container, HTMLElement nativeCtl,
             Runnable afterSwitchedToNative, Runnable afterSwitchedToExpression) {
-        doInitialize(fgc, nativeContainer(nativeCtl), afterSwitchedToNative, afterSwitchedToExpression);
+        doInitialize(container, nativeContainer(nativeCtl), afterSwitchedToNative, afterSwitchedToExpression);
     }
 
     /** Initializes the toggle with a custom native container (e.g. flex layout for Switch controls). */
-    void initializeWithCustomContainer(FormGroupControl fgc, HTMLElement customNativeContainer,
+    void initializeWithCustomContainer(HTMLElement container, HTMLElement customNativeContainer,
             Runnable afterSwitchedToNative, Runnable afterSwitchedToExpression) {
-        doInitialize(fgc, customNativeContainer, afterSwitchedToNative, afterSwitchedToExpression);
+        doInitialize(container, customNativeContainer, afterSwitchedToNative, afterSwitchedToExpression);
     }
 
-    private void doInitialize(FormGroupControl fgc, HTMLElement container,
+    private void doInitialize(HTMLElement container, HTMLElement nativeContainer,
             Runnable afterSwitchedToNative, Runnable afterSwitchedToExpression) {
-        this.formGroupControl = fgc;
-        this.nativeContainer = container;
+        this.container = container;
+        this.nativeContainer = nativeContainer;
         this.afterSwitchedToNative = afterSwitchedToNative;
         this.afterSwitchedToExpression = afterSwitchedToExpression;
         if (attribute.expression()) {
@@ -166,7 +166,7 @@ public final class ExpressionToggle {
         switchToNativeModeTooltip = tooltip(By.id(switchToNativeModeId), "Switch to native mode").element();
         resolveExpressionTooltip = tooltip(By.id(resolveExpressionId), "Resolve expression").element();
 
-        formGroupControl.add(expressionContainer);
+        container.appendChild(expressionContainer);
         expressionContainer.appendChild(switchToNativeModeTooltip);
         expressionContainer.appendChild(resolveExpressionTooltip);
 
@@ -183,7 +183,7 @@ public final class ExpressionToggle {
         failSafeRemoveFromParent(resolveExpressionTooltip);
 
         switchToExpressionModeTooltip = tooltip(By.id(switchToExpressionModeId), "Switch to expression mode").element();
-        formGroupControl.add(nativeContainer);
+        container.appendChild(nativeContainer);
         nativeContainer.appendChild(switchToExpressionModeTooltip);
 
         inputMode = NATIVE;

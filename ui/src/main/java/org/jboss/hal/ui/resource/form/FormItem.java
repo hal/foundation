@@ -22,6 +22,8 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.ui.resource.ResourceItem;
 
+import elemental2.dom.HTMLElement;
+
 /**
  * An editable form item produced by the pipeline. Each form item knows how to produce 1..n DMR operations that are flat-mapped
  * into a single composite operation for the resource write.
@@ -43,6 +45,27 @@ public interface FormItem extends ResourceItem {
 
     /** Clears any validation state (error messages, visual indicators). */
     void resetValidation();
+
+    /**
+     * Returns the {@link EditableControl} for embedding in composite layouts. Composite form items use this to extract the
+     * composable unit — native control + expression toggle — from pipeline-created children, without needing to know the
+     * concrete {@code FormItem} implementation. Returns {@code null} for non-decomposable items (e.g. read-only attributes).
+     *
+     * @see EditableControl
+     */
+    default EditableControl<?> editableControl() {
+        return null;
+    }
+
+    /**
+     * Returns the control element for embedding in composite layouts. Convenience shortcut that delegates to
+     * {@link EditableControl#controlElement()} when an {@link #editableControl()} is available, falling back to
+     * {@link #element()} for non-decomposable items.
+     */
+    default HTMLElement controlElement() {
+        EditableControl<?> ec = editableControl();
+        return ec != null ? ec.controlElement() : element();
+    }
 
     /**
      * Produces the DMR operations needed to persist this form item's current value. Returns an empty list if the item has not

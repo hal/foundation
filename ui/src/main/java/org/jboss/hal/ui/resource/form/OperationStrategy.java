@@ -30,13 +30,15 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERAT
 
 /**
  * Strategy for producing DMR operations from a form item's current state. Injected into {@link StandardFormItem} at
- * construction time.
+ * construction time. Composite form items like {@link PathRelativeToFormItem} use the {@link #writeOrUndefine} utility
+ * directly.
  * <p>
  * Most items use the default {@link #WRITE_ATTRIBUTE} strategy, which produces a single {@code write-attribute} or
  * {@code undefine-attribute} operation. Custom implementations like {@link MapOperationStrategy} produce granular operations
  * (e.g. {@code map-put}/{@code map-remove}) for attribute types that require per-entry operations.
  *
  * @see StandardFormItem
+ * @see PathRelativeToFormItem
  * @see MapOperationStrategy
  */
 @FunctionalInterface
@@ -45,21 +47,25 @@ public interface OperationStrategy {
     /** Produces the DMR operations needed to persist the form item's current value. */
     List<Operation> operations(FormItem item, ResourceAddress address);
 
+    /** Builds a {@code write-attribute} or {@code undefine-attribute} operation depending on whether the value is defined. */
+    static Operation writeOrUndefine(ResourceAddress address, String name, ModelNode value) {
+        if (value.isDefined()) {
+            return new Operation.Builder(address, WRITE_ATTRIBUTE_OPERATION)
+                    .param(NAME, name)
+                    .param(VALUE, value)
+                    .build();
+        } else {
+            return new Operation.Builder(address, UNDEFINE_ATTRIBUTE_OPERATION)
+                    .param(NAME, name)
+                    .build();
+        }
+    }
+
     /** Standard strategy: single {@code write-attribute} or {@code undefine-attribute} operation. */
     OperationStrategy WRITE_ATTRIBUTE = (item, address) -> {
         if (!item.isModified()) {
             return Collections.emptyList();
         }
-        ModelNode value = item.modelNode();
-        if (value.isDefined()) {
-            return singletonList(new Operation.Builder(address, WRITE_ATTRIBUTE_OPERATION)
-                    .param(NAME, item.attribute().fqn())
-                    .param(VALUE, value)
-                    .build());
-        } else {
-            return singletonList(new Operation.Builder(address, UNDEFINE_ATTRIBUTE_OPERATION)
-                    .param(NAME, item.attribute().fqn())
-                    .build());
-        }
+        return singletonList(writeOrUndefine(address, item.attribute().fqn(), item.modelNode()));
     };
 }

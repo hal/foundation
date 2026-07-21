@@ -46,17 +46,13 @@ public final class MapOperationStrategy implements OperationStrategy {
         if (!item.isModified()) {
             return Collections.emptyList();
         }
-        if (!(item instanceof StandardFormItem)) {
+        EditableControl<?> ec = item.editableControl();
+        if (ec == null || !(ec.nativeControl() instanceof MapControl)) {
             return Collections.emptyList();
         }
+        MapControl mapControl = (MapControl) ec.nativeControl();
         @SuppressWarnings("unchecked")
-        StandardFormItem<FilterInput> standardItem = (StandardFormItem<FilterInput>) item;
-        NativeControl<FilterInput> nc = standardItem.nativeControl();
-        if (!(nc instanceof MapControl)) {
-            return Collections.emptyList();
-        }
-        MapControl mapControl = (MapControl) nc;
-        FilterInput control = standardItem.control();
+        FilterInput control = ((EditableControl<FilterInput>) ec).control();
         Map<String, String> original = mapControl.originalEntries();
         Map<String, String> current = mapControl.currentEntries(control);
         String attributeName = item.attribute().name();

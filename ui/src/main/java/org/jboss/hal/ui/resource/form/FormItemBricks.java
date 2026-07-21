@@ -82,10 +82,11 @@ import static org.patternfly.style.Classes.util;
  * Reusable UI fragments ("bricks") for composing form items. Following the brick pattern used throughout the console (see
  * {@link org.jboss.hal.ui.brick}), this is a {@code final} utility class with only {@code static} factory methods.
  * <p>
- * Provides shared building blocks for {@link StandardFormItem} and {@link NativeControl} implementations: labels with
- * description popovers and stability badges, read-only controls with expression resolve buttons,
+ * Provides shared building blocks for {@link EditableControl}, {@link StandardFormItem}, and {@link NativeControl}
+ * implementations: labels with description popovers and stability badges, read-only controls with expression resolve buttons,
  * placeholder application, and validation helper text.
  *
+ * @see EditableControl
  * @see StandardFormItem
  * @see org.jboss.hal.ui.brick
  */
@@ -139,6 +140,47 @@ public final class FormItemBricks {
 
         if (description.deprecation().isDefined()) {
             fgl.classList().add(halModifier(deprecated));
+        }
+        return fgl;
+    }
+
+    /**
+     * Creates a {@link FormGroupLabel} for sibling attribute pairs. Shows both attribute names separated by a slash, each with
+     * its own description popover. Analogous to {@link org.jboss.hal.ui.resource.view.ViewItemBricks#compositeLabel}.
+     */
+    public static FormGroupLabel compositeLabel(String identifier, ResolvedAttribute first, ResolvedAttribute second,
+            PipelineContext context) {
+        String firstLabel = sentenceCase(first.name());
+        String secondLabel = sentenceCase(second.name());
+        FormGroupLabel fgl = formGroupLabel(firstLabel)
+                .css(halComponent(resource, HalClasses.compositeLabel))
+                .help(firstLabel + " description", attributeDescriptionPopover(firstLabel, first.description(), all));
+
+        HTMLElement secondLabelElement = Elements.label().css(component(form, label))
+                .apply(l -> l.htmlFor = identifier)
+                .add(span().css(component(form, label, text))
+                        .text(secondLabel))
+                .element();
+        HTMLElement secondHelpButton = span().css(component(form, group, Classes.label, help), util("ml-xs"))
+                .add(span().css(component(Classes.button), modifier(plain), modifier(noPadding))
+                        .attr(type, "button")
+                        .attr(role, Roles.button)
+                        .attr(tabindex, 0)
+                        .aria(Aria.label, secondLabel + " description")
+                        .add(span().css(component(Classes.button, icon))
+                                .add(circleQuestion())))
+                .element();
+        fgl.element().appendChild(slashSeparator());
+        fgl.element().appendChild(secondLabelElement);
+        fgl.element().appendChild(secondHelpButton);
+        fgl.add(attributeDescriptionPopover(secondLabel, second.description(), all)
+                .trigger(secondHelpButton));
+
+        if (first.description().deprecation().isDefined()) {
+            fgl.classList().add(halModifier(deprecated));
+        }
+        if (second.description().deprecation().isDefined()) {
+            secondLabelElement.classList.add(halModifier(deprecated));
         }
         return fgl;
     }

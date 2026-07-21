@@ -15,83 +15,68 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
-import org.patternfly.component.form.TextInput;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
+import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.patternfly.component.form.FormGroupControl;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINE_ATTRIBUTE_OPERATION;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
-import static org.patternfly.component.form.TextInput.textInput;
-import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
-import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
-import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
+import static org.patternfly.layout.flex.AlignItems.center;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.layout.flex.Gap.sm;
+import static org.patternfly.token.Token.globalTextColorPlaceholder;
 
 /**
- * Form item for sibling path + relative-to attribute groups. Two text inputs rendered as a single form group. Produces 2
- * separate write-attribute/undefine-attribute operations (one per attribute).
+ * Composite form item for sibling path + relative-to attribute groups. Uses the pipeline to create child
+ * {@link FormItem}s, then extracts their {@link EditableControl}s for composition in a single
+ * {@link org.patternfly.component.form.FormGroup}.
+ * <p>
+ * All behavioral concerns (expression support, validation, modification tracking, operation generation) are delegated to the
+ * child {@link EditableControl}s. The composite only provides visual assembly (flex layout, composite label) and coordinates
+ * the children's results.
+ *
+ * @see EditableControl
+ * @see FormItemBricks#compositeLabel(String, ResolvedAttribute, ResolvedAttribute, PipelineContext)
  */
 public class PathRelativeToFormItem implements FormItem {
 
     private final String identifier;
     private final ResolvedAttribute pathAttr;
-    private final ResolvedAttribute relativeToAttr;
-    private final TextInput pathInput;
-    private final TextInput relativeToInput;
-    private final String originalPath;
-    private final String originalRelativeTo;
+    private final EditableControl<?> pathControl;
+    private final EditableControl<?> relativeToControl;
     private final HTMLElement root;
 
-    public PathRelativeToFormItem(String identifier, ResolvedAttribute pathAttr, ResolvedAttribute relativeToAttr,
-            PipelineContext context) {
+    public PathRelativeToFormItem(PipelineContext context, String identifier,
+            ResolvedAttribute pathAttr, ResolvedAttribute relativeToAttr) {
         this.identifier = identifier;
         this.pathAttr = pathAttr;
-        this.relativeToAttr = relativeToAttr;
 
-        this.originalPath = pathAttr.value().isDefined() ? pathAttr.value().asString() : "";
-        this.originalRelativeTo = relativeToAttr.value().isDefined() ? relativeToAttr.value().asString() : "";
+        this.pathControl = Pipeline.instance().formItem(context, pathAttr).editableControl();
+        this.relativeToControl = Pipeline.instance().formItem(context, relativeToAttr).editableControl();
 
-        pathInput = textInput(Id.build(identifier, "path"))
-                .run(ti -> {
-                    ti.input().autocomplete("off");
-                    if (!originalPath.isEmpty()) {
-                        ti.value(originalPath);
-                    }
-                });
+        FormGroupControl formGroupControl = formGroupControl();
+        pathControl.setValidationTarget(formGroupControl);
+        relativeToControl.setValidationTarget(formGroupControl);
 
-        // TODO Replace with typeahead populated from /path=* and standard paths
-        relativeToInput = textInput(Id.build(identifier, "relative-to"))
-                .run(ti -> {
-                    ti.input().autocomplete("off");
-                    ti.placeholder("relative to...");
-                    if (!originalRelativeTo.isEmpty()) {
-                        ti.value(originalRelativeTo);
-                    }
-                });
-
-        String label = org.jboss.hal.core.Humanize.sentenceCase(pathAttr.name());
+        formGroupControl.add(flex().alignItems(center).gap(sm)
+                .addItem(flexItem().style("flex-grow", "1").add(pathControl.controlElement()))
+                .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
+                .addItem(flexItem().style("flex-grow", "1").add(relativeToControl.controlElement())));
 
         this.root = formGroup(identifier)
-                .addLabel(org.patternfly.component.form.FormGroupLabel.formGroupLabel(label))
-                .addControl(formGroupControl()
-                        .addInputGroup(inputGroup()
-                                .addItem(inputGroupItem().fill().addControl(pathInput))
-                                .addText(inputGroupText().plain().text("relative to"))
-                                .addItem(inputGroupItem().fill().addControl(relativeToInput))))
+                .addLabel(FormItemBricks.compositeLabel(identifier, pathAttr, relativeToAttr, context))
+                .addControl(formGroupControl)
                 .element();
     }
 
@@ -108,75 +93,51 @@ public class PathRelativeToFormItem implements FormItem {
     }
 
     @Override
-    public boolean isModified() {
-        return !originalPath.equals(pathValue()) || !originalRelativeTo.equals(relativeToValue());
-    }
-
-    @Override
-    public boolean validate() {
-        return true;
-    }
-
-    @Override
-    public void resetValidation() {
-        pathInput.resetValidation();
-        relativeToInput.resetValidation();
-    }
-
-    @Override
     public ModelNode modelNode() {
         ModelNode result = new ModelNode();
-        String path = pathValue();
-        String relativeTo = relativeToValue();
-        if (!path.isEmpty()) {
-            result.get(pathAttr.name()).set(path);
+        ModelNode pathNode = pathControl.modelNode();
+        ModelNode relativeToNode = relativeToControl.modelNode();
+        if (pathNode.isDefined()) {
+            result.get(pathControl.attribute().name()).set(pathNode);
         }
-        if (!relativeTo.isEmpty()) {
-            result.get(relativeToAttr.name()).set(relativeTo);
+        if (relativeToNode.isDefined()) {
+            result.get(relativeToControl.attribute().name()).set(relativeToNode);
         }
         return result;
     }
 
     @Override
+    public boolean isModified() {
+        return pathControl.isModified() || relativeToControl.isModified();
+    }
+
+    @Override
+    public boolean validate() {
+        return pathControl.validate() & relativeToControl.validate();
+    }
+
+    @Override
+    public void resetValidation() {
+        pathControl.resetValidation();
+        relativeToControl.resetValidation();
+    }
+
+    @Override
     public List<Operation> operations(ResourceAddress address) {
-        if (!isModified()) {
-            return Collections.emptyList();
-        }
         List<Operation> ops = new ArrayList<>();
-        if (!originalPath.equals(pathValue())) {
-            ops.add(attributeOperation(address, pathAttr.name(), pathValue()));
+        if (pathControl.isModified()) {
+            ops.add(OperationStrategy.writeOrUndefine(address, pathControl.attribute().fqn(),
+                    pathControl.modelNode()));
         }
-        if (!originalRelativeTo.equals(relativeToValue())) {
-            ops.add(attributeOperation(address, relativeToAttr.name(), relativeToValue()));
+        if (relativeToControl.isModified()) {
+            ops.add(OperationStrategy.writeOrUndefine(address, relativeToControl.attribute().fqn(),
+                    relativeToControl.modelNode()));
         }
-        return ops;
+        return ops.isEmpty() ? Collections.emptyList() : ops;
     }
 
     @Override
     public HTMLElement element() {
         return root;
-    }
-
-    // ------------------------------------------------------ internal
-
-    private Operation attributeOperation(ResourceAddress address, String name, String value) {
-        if (value.isEmpty()) {
-            return new Operation.Builder(address, UNDEFINE_ATTRIBUTE_OPERATION)
-                    .param(NAME, name)
-                    .build();
-        } else {
-            return new Operation.Builder(address, WRITE_ATTRIBUTE_OPERATION)
-                    .param(NAME, name)
-                    .param(VALUE, new ModelNode().set(value))
-                    .build();
-        }
-    }
-
-    private String pathValue() {
-        return pathInput.value() != null ? pathInput.value() : "";
-    }
-
-    private String relativeToValue() {
-        return relativeToInput.value() != null ? relativeToInput.value() : "";
     }
 }

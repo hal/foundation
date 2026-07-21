@@ -19,14 +19,19 @@
  *
  * <h2>Architecture</h2>
  * <p>
- * Form items use a composition-based architecture with four building blocks:
+ * Form items use a composition-based architecture with five building blocks:
  * <ol>
  *   <li>{@link org.jboss.hal.ui.resource.form.NativeControl NativeControl&lt;C&gt;} — strategy interface that captures the
  *       widget type and its value semantics (creation, reading, modification detection, validation). One implementation per
  *       control type (switch, select, number input, typeahead, filter input, etc.).</li>
  *   <li>{@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} — encapsulates expression/native mode
  *       switching, managing the {@link org.jboss.hal.ui.resource.form.InputMode InputMode}, the expression text input,
- *       container swapping on the {@code FormGroupControl}, and tooltip lifecycle.</li>
+ *       container swapping, and tooltip lifecycle.</li>
+ *   <li>{@link org.jboss.hal.ui.resource.form.EditableControl EditableControl&lt;C&gt;} — the composable unit that pairs a
+ *       {@link org.jboss.hal.ui.resource.form.NativeControl NativeControl} with an optional
+ *       {@link org.jboss.hal.ui.resource.form.ExpressionToggle ExpressionToggle} behind a unified, mode-aware API. All
+ *       behavioral methods (value reading, modification tracking, validation) dispatch to the correct mode internally, so
+ *       callers never check the mode themselves.</li>
  *   <li>{@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks} — static factory methods (brick pattern) for
  *       shared UI fragments: labels with description popovers, read-only controls, placeholders, and validation helper
  *       text.</li>
@@ -37,10 +42,12 @@
  *       {@code map-put}/{@code map-remove} operations.</li>
  * </ol>
  * <p>
- * {@link org.jboss.hal.ui.resource.form.StandardFormItem StandardFormItem&lt;C&gt;} is the single {@code final} class that
- * composes all four building blocks. It handles the three assembly paths (read-only, expression-allowed, native-only),
- * mode-aware helper text lifecycle, modification tracking, validation, and DMR operation generation — with no template methods
- * and no subclassing.
+ * {@link org.jboss.hal.ui.resource.form.StandardFormItem StandardFormItem&lt;C&gt;} is a thin visual shell that wraps an
+ * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} in a {@code FormGroup} with a label and an
+ * {@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy}. Composite form items like
+ * {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem} access the
+ * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} via
+ * {@link org.jboss.hal.ui.resource.form.FormItem#editableControl()} to embed it in custom layouts.
  *
  * <h2>NativeControl Implementations</h2>
  * <p>
@@ -77,7 +84,8 @@
  * <p>
  * For multi-attribute form items (e.g. sibling path + relative-to STRING pairs),
  * {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem} implements
- * {@link org.jboss.hal.ui.resource.form.FormItem FormItem} directly.
+ * {@link org.jboss.hal.ui.resource.form.FormItem FormItem} as a composite that delegates to two pipeline-created
+ * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl}s.
  *
  * <h2>Helper Text</h2>
  * <p>
@@ -85,7 +93,7 @@
  * NativeControl.helperText()} provides helper text for native mode, and
  * {@link org.jboss.hal.ui.resource.form.NativeControl#expressionHelperText() NativeControl.expressionHelperText()} provides
  * helper text for expression mode. Both return {@link org.patternfly.component.help.HelperText HelperText} components, which
- * support rich content with nested elements and markup. {@code StandardFormItem} applies the correct helper text when switching
+ * support rich content with nested elements and markup. {@code EditableControl} applies the correct helper text when switching
  * modes and after resetting validation.
  *
  * <h2>Shared Support Types</h2>

@@ -49,7 +49,7 @@ class MapProvider implements ItemProvider {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new StandardFormItem<>(ra.fqn(), ra, context,
+        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra,
                 new MapControl(), MapOperationStrategy.INSTANCE));
     }
 }
