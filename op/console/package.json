@@ -7,12 +7,12 @@
     "dompurify": "^3.4.12"
   },
   "devDependencies": {
-    "@cyclonedx/cdxgen": "^12.8.0",
+    "@cyclonedx/cdxgen": "^12.8.1",
     "esbuild": "^0.28.1",
     "vite": "^8.1.5"
   },
   "name": "hal-op",
-  "packageManager": "pnpm@11.16.0",
+  "packageManager": "pnpm@11.17.0",
   "private": true,
   "scripts": {
     "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
