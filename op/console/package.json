@@ -12,7 +12,7 @@
     "vite": "^8.1.5"
   },
   "name": "hal-op",
-  "packageManager": "pnpm@11.16.0",
+  "packageManager": "pnpm@11.17.0",
   "private": true,
   "scripts": {
     "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
