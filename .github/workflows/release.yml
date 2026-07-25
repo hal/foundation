@@ -153,7 +153,7 @@ jobs:
         with:
           name: native-binary-arm64
           path: op/standalone/target/native-arm64
-      - uses: redhat-actions/podman-login@v1
+      - uses: redhat-actions/podman-login@v2
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
