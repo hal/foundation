@@ -15,74 +15,37 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import java.util.List;
-
-import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.TimeUnitProvider;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.FormSelect;
-import org.patternfly.component.form.TextInput;
 
 import elemental2.dom.HTMLElement;
 
-import static java.util.stream.Collectors.toList;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
-import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.form.FormSelect.formSelect;
-import static org.patternfly.component.form.FormSelectOption.formSelectOption;
-import static org.patternfly.component.form.TextInput.textInput;
-import static org.patternfly.component.form.TextInputType.number;
-import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
-import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.layout.flex.Gap.sm;
+import static org.patternfly.style.Breakpoint.default_;
 
 /**
  * {@link NativeControl} for time-unit composite attributes. Combines a number input (time) with a unit dropdown.
  */
 public final class TimeUnitControl implements NativeControl<HTMLElement> {
 
-    private static final List<String> DEFAULT_UNITS = List.of(
-            "NANOSECONDS", "MICROSECONDS", "MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS");
-
-    private TextInput timeInput;
-    private FormSelect unitSelect;
-    private long originalTime;
-    private String originalUnit;
+    private FormItem timeItem;
+    private FormItem unitItem;
 
     @Override
     public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        originalTime = TimeUnitProvider.time(attribute.value());
-        originalUnit = TimeUnitProvider.unit(attribute.value());
+        timeItem = Pipeline.instance().formItem(context, attribute.child(TIME));
+        unitItem = Pipeline.instance().formItem(context, attribute.child(UNIT));
 
-        timeInput = textInput(number, Id.build(identifier, "time"))
-                .run(ti -> {
-                    ti.input().autocomplete("off");
-                    ti.input().min(0);
-                    ti.input().apply(e -> e.step = "1");
-                    if (originalTime >= 0) {
-                        ti.value(String.valueOf(originalTime));
-                    }
-                });
-
-        List<String> allowedUnits = allowedUnits(attribute);
-        unitSelect = formSelect(Id.build(identifier, "unit"))
-                .run(fs -> fs.selectElement().attr("autocomplete", "off"))
-                .addOptions(allowedUnits, u -> formSelectOption(u))
-                .run(fs -> {
-                    if (originalUnit != null) {
-                        fs.value(originalUnit);
-                    }
-                });
-
-        return inputGroup()
-                .addItem(inputGroupItem().fill().addControl(timeInput))
-                .addItem(inputGroupItem().addControl(unitSelect))
+        return flex().gap(sm)
+                .addItem(flexItem().grow(default_).add(timeItem.editableControl()))
+                .addItem(flexItem().add(unitItem.editableControl()))
                 .element();
     }
 
@@ -93,74 +56,37 @@ public final class TimeUnitControl implements NativeControl<HTMLElement> {
 
     @Override
     public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
-        String timeStr = timeValue();
-        if (timeStr.isEmpty()) {
+        ModelNode timeNode = timeItem.modelNode();
+        ModelNode unitNode = unitItem.modelNode();
+
+        if (timeNode.isDefined() && unitNode.isDefined()) {
+            ModelNode result = new ModelNode();
+            result.get(TIME).set(timeNode);
+            result.get(UNIT).set(unitNode);
+            return result;
+        } else {
             return new ModelNode();
         }
-        ModelNode result = new ModelNode();
-        result.get(TIME).set(Long.parseLong(timeStr));
-        result.get(UNIT).set(unitValue());
-        return result;
     }
 
     @Override
     public boolean isModifiedForNew(HTMLElement control, ResolvedAttribute attribute) {
-        return !timeValue().isEmpty();
+        return timeItem.isModified() || unitItem.isModified();
     }
 
     @Override
     public boolean isModifiedForExisting(HTMLElement control, ResolvedAttribute attribute, boolean wasDefined) {
-        if (!wasDefined) {
-            return !timeValue().isEmpty();
-        }
-        String currentTimeStr = timeValue();
-        String currentUnit = unitValue();
-        long currentTime = currentTimeStr.isEmpty() ? -1 : Long.parseLong(currentTimeStr);
-        return currentTime != originalTime || !currentUnit.equals(originalUnit != null ? originalUnit : "");
+        return timeItem.isModified() || unitItem.isModified();
     }
 
     @Override
     public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
-        String timeStr = timeValue();
-        if (FormItemBricks.requiredOnItsOwn(attribute) && timeStr.isEmpty()) {
-            timeInput.validated(error);
-            formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
-            return false;
-        }
-        if (!timeStr.isEmpty()) {
-            try {
-                Long.parseLong(timeStr);
-            } catch (NumberFormatException e) {
-                timeInput.validated(error);
-                formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
-                return false;
-            }
-        }
-        return true;
+        return timeItem.validate() && unitItem.validate();
     }
 
     @Override
     public void resetValidation(HTMLElement control) {
-        timeInput.resetValidation();
-        unitSelect.resetValidation();
-    }
-
-    private static List<String> allowedUnits(ResolvedAttribute attribute) {
-        AttributeDescriptions nested = attribute.description().valueTypeAttributeDescriptions();
-        AttributeDescription unitDescription = nested.get(UNIT);
-        if (unitDescription != null && unitDescription.hasDefined(ALLOWED)) {
-            return unitDescription.get(ALLOWED).asList().stream()
-                    .map(ModelNode::asString)
-                    .collect(toList());
-        }
-        return DEFAULT_UNITS;
-    }
-
-    private String timeValue() {
-        return FormItemBricks.safeValue(timeInput);
-    }
-
-    private String unitValue() {
-        return unitSelect.value() != null ? unitSelect.value() : "";
+        timeItem.resetValidation();
+        unitItem.resetValidation();
     }
 }

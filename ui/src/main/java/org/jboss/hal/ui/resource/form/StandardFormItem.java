@@ -92,7 +92,7 @@ public final class StandardFormItem<C> implements FormItem {
             formGroupControl = FormItemBricks.readOnlyGroup(identifier, attribute, context.flags());
         } else {
             this.editableControl = new EditableControl<>(context, identifier, attribute, nativeControl);
-            formGroupControl = formGroupControl().add(editableControl.controlElement());
+            formGroupControl = formGroupControl().add(editableControl);
             editableControl.setValidationTarget(formGroupControl);
         }
 

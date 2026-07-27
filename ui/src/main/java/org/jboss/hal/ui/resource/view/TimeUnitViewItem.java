@@ -16,20 +16,17 @@
 package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.TimeUnitProvider;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.span;
-import static org.jboss.hal.resources.HalClasses.halComponent;
-import static org.jboss.hal.resources.HalClasses.resource;
-import static org.jboss.hal.resources.HalClasses.timeUnit;
-import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.TIME;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
-import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.Gap.sm;
 
 /** View item for time-unit composite attributes. Shows time value + unit (e.g. "100 MILLISECONDS"). */
@@ -48,20 +45,15 @@ public class TimeUnitViewItem extends AbstractViewItem {
     }
 
     private HTMLElement definedValue(PipelineContext context, ResolvedAttribute attribute) {
-        long time = TimeUnitProvider.time(attribute.value());
-        String unit = TimeUnitProvider.unit(attribute.value());
+        ViewItem timeItem = Pipeline.instance().viewItem(context, attribute.child(TIME));
+        ViewItem unitItem = Pipeline.instance().viewItem(context, attribute.child(UNIT));
 
-        HTMLElement root = flex().css(halComponent(resource, view, timeUnit))
-                .alignItems(center).columnGap(sm)
+        return flex().gap(sm)
+                .addItem(flexItem()
+                        .add(timeItem.valueElement()))
+                .addItem(flexItem()
+                        .add(unitItem.valueElement()))
                 .element();
-
-        if (time >= 0 && unit != null) {
-            root.appendChild(span().text(String.valueOf(time)).element());
-            root.appendChild(span().text(unit).element());
-        } else {
-            root.appendChild(span().text(attribute.value().asString()).element());
-        }
-        return root;
     }
 
     @Override

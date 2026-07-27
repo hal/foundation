@@ -42,6 +42,7 @@ import org.patternfly.component.modal.ModalHeaderTitle;
 import org.patternfly.component.wizard.Wizard;
 import org.patternfly.component.wizard.WizardStep;
 
+import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 
 import static org.jboss.elemento.Elements.code;
@@ -280,7 +281,7 @@ class AddResourceDialogs {
 
         ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, true);
         StringControl nameControl = new StringControl();
-        StandardFormItem<elemental2.dom.HTMLElement> nameItem = new StandardFormItem<>(context, NAME, ra, nameControl);
+        StandardFormItem<HTMLElement> nameItem = new StandardFormItem<>(context, NAME, ra, nameControl);
         if (value != null) {
             nameControl.textInput().value(value);
         }

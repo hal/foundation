@@ -60,11 +60,11 @@ public record ResolvedAttribute(
     }
 
     public ResolvedAttribute child(String name) {
-        if (value.hasDefined(name) && description.simpleRecord()) {
-            ModelNode childNode = value.get(name);
+        if (description.simpleRecord()) {
             AttributeDescriptions descriptions = description.valueTypeAttributeDescriptions();
             AttributeDescription childDescription = descriptions.get(name);
-            if (childNode != null && childDescription != null) {
+            if (childDescription != null) {
+                ModelNode childNode = value.hasDefined(name) ? value.get(name) : new ModelNode();
                 return new ResolvedAttribute(childDescription, childNode, readable, writable);
             }
         }

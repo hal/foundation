@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.form;
 
+import org.jboss.elemento.IsElement;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
@@ -37,7 +38,7 @@ import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope.NEW_RESOURC
  * dispatch to the expression toggle or native control based on the current {@link InputMode}, so callers never need to check
  * the mode themselves.
  * <p>
- * The {@link #controlElement()} returns the switchable container — a plain DOM element that the expression toggle swaps content
+ * The {@link #element()} returns the switchable container — a plain DOM element that the expression toggle swaps content
  * in. This element can be reparented into any layout (e.g., a composite's flex container) without breaking expression support.
  * <p>
  * Validation helper text is directed to a {@link FormGroupControl} set via {@link #setValidationTarget(FormGroupControl)}. The
@@ -48,7 +49,7 @@ import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope.NEW_RESOURC
  * @see ExpressionToggle
  * @see StandardFormItem
  */
-public final class EditableControl<C> {
+public final class EditableControl<C> implements IsElement<HTMLElement> {
 
     private final ResolvedAttribute attribute;
     private final PipelineFlags flags;
@@ -92,6 +93,11 @@ public final class EditableControl<C> {
         }
     }
 
+    @Override
+    public HTMLElement element() {
+        return switchableContainer;
+    }
+
     // ------------------------------------------------------ accessors
 
     /** Returns the resolved attribute this control edits. */
@@ -107,11 +113,6 @@ public final class EditableControl<C> {
     /** Returns the native control instance. */
     C control() {
         return control;
-    }
-
-    /** Returns the switchable container element for embedding in composite layouts. */
-    public HTMLElement controlElement() {
-        return switchableContainer;
     }
 
     /** Sets the target {@link FormGroupControl} for validation helper text and mode-switch helper text. */

@@ -47,7 +47,6 @@ public interface HalClasses {
     String results = "results";
     String stabilityLevel = "stability-level";
     String status = "status";
-    String timeUnit = "time-unit";
     String tree = "tree";
     String unit = "unit";
     String undefined = "undefined";

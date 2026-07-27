@@ -32,7 +32,7 @@ FormItem         — holds 1..n ResolvedAttributes, renders UI, produces operati
 ViewItem         — holds 1..n ResolvedAttributes, renders read-only display
 ```
 
-`AttributeMatch` is the stage 1 → stage 2 contract (descriptions only). `ResolvedAttribute` is the stage 2 → item contract (descriptions + values + RBAC). The split happens at the provider: it receives a group, resolves each description against the context, and passes resolved attributes to the item constructor.
+`AttributeMatch` is the stage 1 → stage 2 contract (descriptions only). `ResolvedAttribute` is the stage 2 → item contract (descriptions + values + RBAC). The split happens at the provider: it receives a match, resolves each description against the context, and passes resolved attributes to the item constructor.
 
 ## Use Cases
 

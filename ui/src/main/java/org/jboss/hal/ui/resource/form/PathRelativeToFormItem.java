@@ -70,9 +70,9 @@ public class PathRelativeToFormItem implements FormItem {
         relativeToControl.setValidationTarget(formGroupControl);
 
         formGroupControl.add(flex().alignItems(center).gap(sm)
-                .addItem(flexItem().style("flex-grow", "1").add(pathControl.controlElement()))
+                .addItem(flexItem().style("flex-grow", "1").add(pathControl))
                 .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
-                .addItem(flexItem().style("flex-grow", "1").add(relativeToControl.controlElement())));
+                .addItem(flexItem().style("flex-grow", "1").add(relativeToControl)));
 
         this.root = formGroup(identifier)
                 .addLabel(FormItemBricks.compositeLabel(context, identifier,

@@ -21,6 +21,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.patternfly.component.button.Button;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 
@@ -151,7 +152,7 @@ public final class ExpressionToggle {
     }
 
     /** Returns a button that switches to expression mode. For use by {@link NativeControl#nativeContainer}. */
-    org.patternfly.component.button.Button switchToExpressionButton() {
+    Button switchToExpressionButton() {
         return button().id(switchToExpressionModeId).control().icon(expressionModeIcon().get())
                 .onClick((e, b) -> switchToExpression());
     }

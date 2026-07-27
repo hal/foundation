@@ -293,5 +293,4 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
         }
         return new ModelNode();
     }
-
 }
