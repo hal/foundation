@@ -49,7 +49,7 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
  * Shared helper methods for {@link CapabilityReferenceControl} and {@link CapabilitiesReferenceControl} that load capability
  * suggestions from the registry and handle creation of new capability provider resources.
  */
-public class CapabilityReferenceSupport {
+class CapabilityReferenceSupport {
 
     /**
      * Returns an async item loader that queries the capability registry for suggestions matching the given capability name

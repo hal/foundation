@@ -20,6 +20,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.patternfly.component.button.Button;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 
@@ -68,12 +69,11 @@ public final class StringControl implements NativeControl<HTMLElement> {
                 });
 
         if (attribute.description().expressionAllowed()) {
-            String resolveId = identifier + "-resolve-expression";
+            Button resolveButton = button().control().icon(resolveExpressionIcon().get());
             return inputGroup()
                     .addItem(inputGroupItem().fill().addControl(input))
-                    .addItem(inputGroupItem().addButton(
-                            button().id(resolveId).control().icon(resolveExpressionIcon().get())))
-                    .add(tooltip(By.id(resolveId), "Resolve expression"))
+                    .addItem(inputGroupItem().addButton(resolveButton))
+                    .add(tooltip(resolveButton.element(), "Resolve expression"))
                     .element();
         } else {
             return input.element();
