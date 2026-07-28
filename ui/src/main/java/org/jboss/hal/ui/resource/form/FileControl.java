@@ -15,20 +15,22 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.patternfly.component.form.TextInput;
+import org.patternfly.component.form.FormGroupControl;
+import org.patternfly.style.Breakpoint;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
-import static org.patternfly.component.form.TextInput.textInput;
-import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
-import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
-import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.layout.flex.Gap.sm;
+import static org.patternfly.style.Breakpoint.default_;
+import static org.patternfly.token.Token.globalTextColorPlaceholder;
 
 /**
  * {@link NativeControl} for file composite attributes ({@code {path, relative-to}}). Two text inputs side-by-side in an input
@@ -36,38 +38,18 @@ import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
  */
 public final class FileControl implements NativeControl<HTMLElement> {
 
-    private TextInput pathInput;
-    private TextInput relativeToInput;
-    private String originalPath;
-    private String originalRelativeTo;
+    private EditableControl<?> pathControl;
+    private EditableControl<?> relativeToControl;
 
     @Override
     public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        originalPath = attribute.value().hasDefined(PATH) ? attribute.value().get(PATH).asString() : "";
-        originalRelativeTo = attribute.value().hasDefined(RELATIVE_TO)
-                ? attribute.value().get(RELATIVE_TO).asString() : "";
+        pathControl = Pipeline.instance().formItem(context, attribute.child(PATH)).editableControl();
+        relativeToControl = Pipeline.instance().formItem(context, attribute.child(RELATIVE_TO)).editableControl();
 
-        pathInput = textInput(Id.build(identifier, "path"))
-                .run(ti -> {
-                    ti.input().autocomplete("off");
-                    if (!originalPath.isEmpty()) {
-                        ti.value(originalPath);
-                    }
-                });
-
-        relativeToInput = textInput(Id.build(identifier, "relative-to"))
-                .run(ti -> {
-                    ti.input().autocomplete("off");
-                    ti.placeholder("relative to...");
-                    if (!originalRelativeTo.isEmpty()) {
-                        ti.value(originalRelativeTo);
-                    }
-                });
-
-        return inputGroup()
-                .addItem(inputGroupItem().fill().addControl(pathInput))
-                .addText(inputGroupText().plain().text("relative to"))
-                .addItem(inputGroupItem().fill().addControl(relativeToInput))
+        return flex().gap(sm)
+                .addItem(flexItem().grow(default_).add(pathControl))
+                .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
+                .addItem(flexItem().grow(default_).add(relativeToControl))
                 .element();
     }
 
@@ -78,45 +60,43 @@ public final class FileControl implements NativeControl<HTMLElement> {
 
     @Override
     public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
-        String path = pathValue();
-        String relativeTo = relativeToValue();
-        if (path.isEmpty() && relativeTo.isEmpty()) {
+        ModelNode pathNode = pathControl.modelNode();
+        ModelNode relativeToNode = relativeToControl.modelNode();
+
+        if (!pathNode.isDefined() && !relativeToNode.isDefined()) {
             return new ModelNode();
+        } else {
+            ModelNode result = new ModelNode();
+            if (pathNode.isDefined()) {
+                result.get(PATH).set(pathNode);
+            }
+            if (relativeToNode.isDefined()) {
+                result.get(RELATIVE_TO).set(relativeToNode);
+            }
+            return result;
         }
-        ModelNode result = new ModelNode();
-        if (!path.isEmpty()) {
-            result.get(PATH).set(path);
-        }
-        if (!relativeTo.isEmpty()) {
-            result.get(RELATIVE_TO).set(relativeTo);
-        }
-        return result;
     }
 
     @Override
     public boolean isModifiedForNew(HTMLElement control, ResolvedAttribute attribute) {
-        return !pathValue().isEmpty() || !relativeToValue().isEmpty();
+        return pathControl.isModified() || relativeToControl.isModified();
     }
 
     @Override
     public boolean isModifiedForExisting(HTMLElement control, ResolvedAttribute attribute, boolean wasDefined) {
-        if (!wasDefined) {
-            return !pathValue().isEmpty() || !relativeToValue().isEmpty();
-        }
-        return !originalPath.equals(pathValue()) || !originalRelativeTo.equals(relativeToValue());
+        return pathControl.isModified() || relativeToControl.isModified();
+    }
+
+    @Override
+    public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+        pathControl.setValidationTarget(formGroupControl);
+        relativeToControl.setValidationTarget(formGroupControl);
+        return pathControl.validate() && relativeToControl.validate();
     }
 
     @Override
     public void resetValidation(HTMLElement control) {
-        pathInput.resetValidation();
-        relativeToInput.resetValidation();
-    }
-
-    private String pathValue() {
-        return FormItemBricks.safeValue(pathInput);
-    }
-
-    private String relativeToValue() {
-        return FormItemBricks.safeValue(relativeToInput);
+        pathControl.resetValidation();
+        relativeToControl.resetValidation();
     }
 }

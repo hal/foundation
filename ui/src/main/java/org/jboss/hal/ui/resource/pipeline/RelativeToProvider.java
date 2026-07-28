@@ -15,14 +15,16 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
-import org.jboss.hal.ui.resource.form.StringControl;
-
 import java.util.List;
 
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.form.CapabilityReferenceControl;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.RelativeToControl;
+import org.jboss.hal.ui.resource.form.StandardFormItem;
+
 import static java.util.Collections.singletonList;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 
 /**
@@ -45,6 +47,7 @@ class RelativeToProvider implements ItemProvider {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra, new StringControl()));
+        ra.description().get(CAPABILITY_REFERENCE).set("org.wildfly.management.path");
+        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra, new RelativeToControl()));
     }
 }
