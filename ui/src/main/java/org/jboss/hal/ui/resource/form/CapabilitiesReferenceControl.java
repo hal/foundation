@@ -140,6 +140,6 @@ public final class CapabilitiesReferenceControl implements NativeControl<MultiTy
     }
 
     private List<String> getValues(MultiTypeahead control) {
-        return control.menu().items().stream().map(MenuItem::text).collect(toList());
+        return control.menu().selectedItems().stream().map(MenuItem::text).collect(toList());
     }
 }
