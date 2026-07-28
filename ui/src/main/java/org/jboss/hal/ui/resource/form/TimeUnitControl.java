@@ -35,17 +35,16 @@ import static org.patternfly.style.Breakpoint.default_;
  */
 public final class TimeUnitControl implements NativeControl<HTMLElement> {
 
-    private FormItem timeItem;
-    private FormItem unitItem;
+    private EditableControl<?> timeControl;
+    private EditableControl<?> unitControl;
 
     @Override
     public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        timeItem = Pipeline.instance().formItem(context, attribute.child(TIME));
-        unitItem = Pipeline.instance().formItem(context, attribute.child(UNIT));
-
+        timeControl = Pipeline.instance().formItem(context, attribute.child(TIME)).editableControl();
+        unitControl = Pipeline.instance().formItem(context, attribute.child(UNIT)).editableControl();
         return flex().gap(sm)
-                .addItem(flexItem().grow(default_).add(timeItem.editableControl()))
-                .addItem(flexItem().add(unitItem.editableControl()))
+                .addItem(flexItem().grow(default_).add(timeControl))
+                .addItem(flexItem().add(unitControl))
                 .element();
     }
 
@@ -56,8 +55,8 @@ public final class TimeUnitControl implements NativeControl<HTMLElement> {
 
     @Override
     public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
-        ModelNode timeNode = timeItem.modelNode();
-        ModelNode unitNode = unitItem.modelNode();
+        ModelNode timeNode = timeControl.modelNode();
+        ModelNode unitNode = unitControl.modelNode();
 
         if (timeNode.isDefined() && unitNode.isDefined()) {
             ModelNode result = new ModelNode();
@@ -71,22 +70,24 @@ public final class TimeUnitControl implements NativeControl<HTMLElement> {
 
     @Override
     public boolean isModifiedForNew(HTMLElement control, ResolvedAttribute attribute) {
-        return timeItem.isModified() || unitItem.isModified();
+        return timeControl.isModified() || unitControl.isModified();
     }
 
     @Override
     public boolean isModifiedForExisting(HTMLElement control, ResolvedAttribute attribute, boolean wasDefined) {
-        return timeItem.isModified() || unitItem.isModified();
+        return timeControl.isModified() || unitControl.isModified();
     }
 
     @Override
     public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
-        return timeItem.validate() && unitItem.validate();
+        timeControl.setValidationTarget(formGroupControl);
+        unitControl.setValidationTarget(formGroupControl);
+        return timeControl.validate() && unitControl.validate();
     }
 
     @Override
     public void resetValidation(HTMLElement control) {
-        timeItem.resetValidation();
-        unitItem.resetValidation();
+        timeControl.resetValidation();
+        unitControl.resetValidation();
     }
 }

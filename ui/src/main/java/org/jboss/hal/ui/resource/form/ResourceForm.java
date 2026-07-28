@@ -30,6 +30,7 @@ import org.jboss.hal.ui.resource.grouping.GroupingSupport;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.alert.Alert;
 import org.patternfly.component.expandable.ExpandableSection;
+import org.patternfly.component.form.Form;
 import org.patternfly.filter.Filter;
 import org.patternfly.style.Classes;
 
@@ -48,7 +49,6 @@ import static org.patternfly.component.expandable.ExpandableSectionContent.expan
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
 import static org.patternfly.component.form.Form.form;
 import static org.patternfly.style.Classes.filtered;
-import static org.patternfly.style.Classes.form;
 import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.modifier;
 
@@ -60,21 +60,21 @@ import static org.patternfly.style.Classes.modifier;
  */
 public class ResourceForm implements IsElement<HTMLElement> {
 
+    private final Form form;
     private final List<FormItem> items;
     private final List<HTMLElement> groupContainers;
-    private final org.patternfly.component.form.Form pfForm;
 
     public ResourceForm() {
+        this.form = form().css(halComponent(resource, Classes.form)).horizontal();
         this.items = new ArrayList<>();
         this.groupContainers = new ArrayList<>();
-        this.pfForm = form().css(halComponent(resource, form)).horizontal();
     }
 
     // ------------------------------------------------------ add items
 
     public ResourceForm addItem(FormItem item) {
         items.add(item);
-        pfForm.add(item.element());
+        form.add(item.element());
         return this;
     }
 
@@ -88,7 +88,7 @@ public class ResourceForm implements IsElement<HTMLElement> {
             return this;
         }
         for (FormItem item : formItems) {
-            pfForm.add(item.element());
+            form.add(item.element());
         }
         return this;
     }
@@ -99,7 +99,7 @@ public class ResourceForm implements IsElement<HTMLElement> {
             List<FormItem> groupItems = entry.getValue();
             if (GroupingSupport.UNGROUPED.equals(groupName)) {
                 for (FormItem item : groupItems) {
-                    pfForm.add(item.element());
+                    form.add(item.element());
                 }
             } else {
                 HTMLContainerBuilder<HTMLDivElement> groupContent = div()
@@ -111,7 +111,7 @@ public class ResourceForm implements IsElement<HTMLElement> {
                         .css(halComponent(HalClasses.resource, group))
                         .addToggle(expandableSectionToggle(capitalCase(groupName)))
                         .addContent(expandableSectionContent().add(groupContent));
-                pfForm.add(es);
+                form.add(es);
                 groupContainers.add(es.element());
             }
         }
@@ -150,11 +150,11 @@ public class ResourceForm implements IsElement<HTMLElement> {
     // ------------------------------------------------------ alerts
 
     public void addAlert(Alert alert) {
-        pfForm.add(alert);
+        form.add(alert);
     }
 
     public void validationAlert(String title) {
-        pfForm.add(alert(danger, title).inline()
+        form.add(alert(danger, title).inline()
                 .addDescription("Please fix the validation errors before saving."));
     }
 
@@ -202,6 +202,6 @@ public class ResourceForm implements IsElement<HTMLElement> {
 
     @Override
     public HTMLElement element() {
-        return pfForm.element();
+        return form.element();
     }
 }

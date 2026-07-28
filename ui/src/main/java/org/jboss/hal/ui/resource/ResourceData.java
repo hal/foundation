@@ -17,7 +17,6 @@ package org.jboss.hal.ui.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jboss.elemento.Attachable;
 import org.jboss.elemento.HTMLContainerBuilder;
@@ -61,10 +60,10 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
+import static org.jboss.hal.ui.brick.DomBricks.toggle;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.error;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.brick.DomBricks.toggle;
 import static org.jboss.hal.ui.resource.ResourceData.State.EDIT;
 import static org.jboss.hal.ui.resource.ResourceData.State.ERROR;
 import static org.jboss.hal.ui.resource.ResourceData.State.NO_ATTRIBUTES;
@@ -81,8 +80,8 @@ import static org.patternfly.core.ObservableValue.ov;
 
 /**
  * Central state machine that orchestrates viewing and editing of WildFly management resource attributes. Uses the pipeline to
- * produce view and form items from resource metadata, and delegates filtering and grouping to
- * {@link org.jboss.hal.ui.resource.view.ResourceView} and {@link ResourceForm}.
+ * produce view and form items from resource metadata, and delegates filtering and grouping to {@link ResourceView} and
+ * {@link ResourceForm}.
  *
  * @see org.jboss.hal.ui.resource.ResourceItem
  * @see GroupingSupport
@@ -108,7 +107,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     private final ObservableValue<Integer> visible;
     private final ObservableValue<Integer> total;
     private final Filter<ResolvedAttribute> filter;
-    private final List<String> attributes;
     private final EmptyState noMatch;
     private final ResourceDataToolbar toolbar;
     private final HTMLContainerBuilder<HTMLDivElement> rootContainer;
@@ -130,7 +128,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         this.visible = ov(0);
         this.total = ov(0);
         this.filter = new ResourceFilter().onChange(this::onFilterChanged);
-        this.attributes = new ArrayList<>();
         this.noMatch = noMatch(filter);
         this.grouped = false;
         this.supportsGrouping = false;
@@ -172,13 +169,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
         return this;
     }
 
-    public ResourceData attributes(Iterable<String> attributes) {
-        for (String attribute : attributes) {
-            this.attributes.add(attribute);
-        }
-        return this;
-    }
-
     @Override
     public ResourceData that() {
         return this;
@@ -199,7 +189,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
                     if (state == VIEW) {
                         List<ViewItem> items = pipeline.viewItems(context);
-                        items = filterByIncludes(items);
                         viewItems.addAll(items);
                         supportsGrouping = GroupingSupport.hasGroups(items)
                                 || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
@@ -208,7 +197,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
                     } else if (state == EDIT) {
                         List<FormItem> items = pipeline.formItems(context);
-                        items = filterByIncludes(items);
                         formItems.addAll(items);
                         supportsGrouping = GroupingSupport.hasGroups(items)
                                 || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
@@ -239,15 +227,6 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
     }
 
     // ------------------------------------------------------ filtering
-
-    private <T extends ResourceItem> List<T> filterByIncludes(List<T> items) {
-        if (attributes.isEmpty()) {
-            return items;
-        }
-        return items.stream()
-                .filter(item -> attributes.contains(item.attribute().fqn()))
-                .collect(Collectors.toList());
-    }
 
     private void onFilterChanged(Filter<ResolvedAttribute> filter, String origin) {
         if ((state == VIEW || state == EDIT) && isAttached(element())) {
