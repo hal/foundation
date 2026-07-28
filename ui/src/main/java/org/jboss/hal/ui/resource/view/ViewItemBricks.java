@@ -25,6 +25,7 @@ import static org.jboss.hal.resources.HalClasses.view;
 import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
+import static org.jboss.hal.ui.brick.AttributeBricks.pathRelativeTo;
 import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
@@ -35,17 +36,12 @@ import static org.patternfly.component.list.DescriptionListTerm.descriptionListT
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.core.Attributes.role;
 import static org.patternfly.icon.IconSets.fas.lock;
-import static org.patternfly.layout.flex.AlignItems.center;
-import static org.patternfly.layout.flex.Flex.flex;
-import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.descriptionList;
 import static org.patternfly.style.Classes.helpText;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.text;
 import static org.patternfly.style.Classes.util;
-import static org.patternfly.token.Token.globalTextColorPlaceholder;
 
 /** Brick class for shared view item UI fragments such as attribute name rendering and value display. */
 class ViewItemBricks {
@@ -122,10 +118,8 @@ class ViewItemBricks {
 
     static HTMLElement fileValue(PipelineContext context, ResolvedAttribute path, ResolvedAttribute relativeTo) {
         if (path.isDefined() && relativeTo.isDefined()) {
-            return flex().alignItems(center).gap(sm)
-                    .addItem(flexItem().add(Pipeline.instance().viewItem(context, path).valueElement()))
-                    .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
-                    .addItem(flexItem().add(Pipeline.instance().viewItem(context, relativeTo).valueElement()))
+            return pathRelativeTo(Pipeline.instance().viewItem(context, path).valueElement(),
+                    Pipeline.instance().viewItem(context, relativeTo).valueElement(), false)
                     .element();
         } else if (path.isDefined()) {
             return Pipeline.instance().viewItem(context, path).valueElement();

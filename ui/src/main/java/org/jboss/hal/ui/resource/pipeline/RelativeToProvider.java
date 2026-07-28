@@ -18,22 +18,17 @@ package org.jboss.hal.ui.resource.pipeline;
 import java.util.List;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.CapabilityReferenceControl;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.RelativeToControl;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 
 import static java.util.Collections.singletonList;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 
 /**
  * Provider for standalone {@code *relative-to} attributes that were not claimed by the {@link PathRelativeToMatcher} (no
  * sibling path attribute found). FIP only — uses default view rendering.
- * <p>
- * Only 1 non-deprecated occurrence exists: {@code ejb3/file-passivation-store=*}.
  */
-// TODO Replace with typeahead populated from /path=* and standard paths
 class RelativeToProvider implements ItemProvider {
 
     @Override
@@ -47,7 +42,6 @@ class RelativeToProvider implements ItemProvider {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        ra.description().get(CAPABILITY_REFERENCE).set("org.wildfly.management.path");
         return singletonList(new StandardFormItem<>(context, ra.fqn(), ra, new RelativeToControl()));
     }
 }

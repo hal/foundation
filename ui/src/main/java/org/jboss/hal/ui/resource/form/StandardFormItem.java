@@ -125,8 +125,13 @@ public final class StandardFormItem<C> implements FormItem {
     }
 
     @Override
-    public ModelNode modelNode() {
-        return editableControl != null ? editableControl.modelNode() : new ModelNode();
+    public void contributeToPayload(ModelNode payload) {
+        if (editableControl != null) {
+            ModelNode value = editableControl.modelNode();
+            if (value.isDefined()) {
+                payload.get(attribute().fqn()).set(value);
+            }
+        }
     }
 
     @Override

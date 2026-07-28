@@ -128,16 +128,13 @@ public class ResourceForm implements IsElement<HTMLElement> {
     }
 
     public ModelNode modelNode() {
-        ModelNode modelNode = new ModelNode();
+        ModelNode payload = new ModelNode();
         for (FormItem item : items) {
             if (item.isModified()) {
-                ModelNode value = item.modelNode();
-                if (value.isDefined()) {
-                    modelNode.get(item.attribute().fqn()).set(value);
-                }
+                item.contributeToPayload(payload);
             }
         }
-        return modelNode;
+        return payload;
     }
 
     public List<Operation> operations(ResourceAddress address) {

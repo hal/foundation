@@ -22,6 +22,9 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.RestartMode;
 import org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent;
 import org.patternfly.component.popover.Popover;
+import org.patternfly.layout.flex.Flex;
+import org.patternfly.layout.flex.Gap;
+import org.patternfly.layout.flex.SpaceItems;
 import org.patternfly.style.Variable;
 
 import elemental2.dom.HTMLDivElement;
@@ -49,23 +52,24 @@ import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionConte
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.component.popover.PopoverBody.popoverBody;
+import static org.patternfly.layout.flex.AlignItems.center;
+import static org.patternfly.layout.flex.Flex.flex;
+import static org.patternfly.layout.flex.FlexItem.flexItem;
+import static org.patternfly.style.Breakpoint.default_;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.list;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variable.utilVar;
-import static org.patternfly.layout.flex.AlignItems.center;
-import static org.patternfly.layout.flex.Flex.flex;
-import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.layout.flex.SpaceItems.sm;
+import static org.patternfly.token.Token.globalTextColorPlaceholder;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
 /**
  * Factory methods for rendering management model attribute names, descriptions, and popovers as PatternFly UI elements.
  * <p>
- * Attribute names can optionally display a stability label and a deprecation indicator. Descriptions render the full
- * attribute metadata including read-only status, required flag, capability references, expression support, unit, default
- * value, requires/alternatives relationships, and restart requirements.
+ * Attribute names can optionally display a stability label and a deprecation indicator. Descriptions render the full attribute
+ * metadata including read-only status, required flag, capability references, expression support, unit, default value,
+ * requires/alternatives relationships, and restart requirements.
  */
 public final class AttributeBricks {
 
@@ -100,7 +104,7 @@ public final class AttributeBricks {
                     }
                 });
         if (stabilityCheck.get()) {
-            return flex().alignItems(center).spaceItems(sm)
+            return flex().alignItems(center).spaceItems(SpaceItems.sm)
                     .addItem(flexItem().add(name))
                     .addItem(flexItem().add(stabilityLabel(attribute.stability()).compact(compact)));
         } else {
@@ -109,8 +113,8 @@ public final class AttributeBricks {
     }
 
     /**
-     * Renders a detailed attribute description including deprecation info and a metadata list. The metadata list is
-     * controlled by the {@code content} parameter:
+     * Renders a detailed attribute description including deprecation info and a metadata list. The metadata list is controlled
+     * by the {@code content} parameter:
      * <ul>
      *     <li>{@link AttributeDescriptionContent#all} — includes read-only status and all metadata</li>
      *     <li>{@link AttributeDescriptionContent#allButReadOnly} — all metadata except the read-only indicator</li>
@@ -195,8 +199,8 @@ public final class AttributeBricks {
     }
 
     /**
-     * Creates a popover that displays the full attribute description. The popover uses a minimum width of 40 characters
-     * to ensure readable formatting of the metadata list.
+     * Creates a popover that displays the full attribute description. The popover uses a minimum width of 40 characters to
+     * ensure readable formatting of the metadata list.
      *
      * @param header    the popover header text
      * @param attribute the attribute description from the management model
@@ -213,11 +217,35 @@ public final class AttributeBricks {
                         .add(attributeDescription(attribute, content)));
     }
 
+    /**
+     * Creates a flex layout that represents a path relative to another element. The layout includes the `pathElement`, a
+     * "relative to" text span, and the `relativeToElement`.
+     *
+     * @param pathElement       an HTMLElement representing the main path
+     * @param relativeToElement an HTMLElement representing the element to which the path is relative
+     * @return a flex layout containing the pathElement, "relative to" text, and relativeToElement
+     */
+    public static Flex pathRelativeTo(HTMLElement pathElement, HTMLElement relativeToElement, boolean grow) {
+        return flex().gap(Gap.sm)
+                .addItem(flexItem()
+                        .run(fi -> {
+                            if (grow) {
+                                fi.grow(default_);
+                            }
+                        })
+                        .add(pathElement))
+                .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
+                .addItem(flexItem()
+                        .run(fi -> {
+                            if (grow) {
+                                fi.grow(default_);
+                            }
+                        })
+                        .add(relativeToElement));
+    }
+
     /** Returns a "/" separator element with horizontal margins, used between segments of composite attribute paths. */
     public static HTMLElement slashSeparator() {
         return span().css(util("mx-sm")).text("/").element();
-    }
-
-    private AttributeBricks() {
     }
 }

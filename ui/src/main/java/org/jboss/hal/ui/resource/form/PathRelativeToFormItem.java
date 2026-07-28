@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
@@ -30,16 +31,13 @@ import org.patternfly.component.form.FormGroupControl;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.hal.ui.brick.AttributeBricks.pathRelativeTo;
+import static org.jboss.hal.ui.resource.form.FormItemBricks.compositeLabel;
 import static org.patternfly.component.form.FormGroup.formGroup;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
-import static org.patternfly.layout.flex.AlignItems.center;
-import static org.patternfly.layout.flex.Flex.flex;
-import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.layout.flex.Gap.sm;
-import static org.patternfly.token.Token.globalTextColorPlaceholder;
 
 /**
- * Composite form item for sibling path + relative-to attribute groups. Uses the pipeline to create child {@link FormItem}s,
+ * Composite form item for a sibling path and relative-to attribute group. Uses the pipeline to create child {@link FormItem}s,
  * then extracts their {@link EditableControl}s for composition in a single {@link org.patternfly.component.form.FormGroup}.
  * <p>
  * All behavioral concerns (expression support, validation, modification tracking, operation generation) are delegated to the
@@ -52,31 +50,25 @@ import static org.patternfly.token.Token.globalTextColorPlaceholder;
 public class PathRelativeToFormItem implements FormItem {
 
     private final String identifier;
-    private final ResolvedAttribute pathAttr;
+    private final ResolvedAttribute primaryAttribute;
     private final EditableControl<?> pathControl;
     private final EditableControl<?> relativeToControl;
     private final HTMLElement root;
 
     public PathRelativeToFormItem(PipelineContext context, String identifier,
-            ResolvedAttribute pathAttr, ResolvedAttribute relativeToAttr) {
-        this.identifier = identifier;
-        this.pathAttr = pathAttr;
-
-        this.pathControl = Pipeline.instance().formItem(context, pathAttr).editableControl();
-        this.relativeToControl = Pipeline.instance().formItem(context, relativeToAttr).editableControl();
+            ResolvedAttribute pathAttribute, ResolvedAttribute relativeToAttribute) {
+        this.identifier = Id.build(pathAttribute.fqn(), relativeToAttribute.fqn());
+        this.primaryAttribute = pathAttribute;
+        this.pathControl = Pipeline.instance().formItem(context, pathAttribute).editableControl();
+        this.relativeToControl = Pipeline.instance().formItem(context, relativeToAttribute).editableControl();
 
         FormGroupControl formGroupControl = formGroupControl();
         pathControl.setValidationTarget(formGroupControl);
         relativeToControl.setValidationTarget(formGroupControl);
-
-        formGroupControl.add(flex().alignItems(center).gap(sm)
-                .addItem(flexItem().style("flex-grow", "1").add(pathControl))
-                .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
-                .addItem(flexItem().style("flex-grow", "1").add(relativeToControl)));
+        formGroupControl.add(pathRelativeTo(pathControl.element(), relativeToControl.element(), true));
 
         this.root = formGroup(identifier)
-                .addLabel(FormItemBricks.compositeLabel(context, identifier,
-                        pathAttr.description(), relativeToAttr.description()))
+                .addLabel(compositeLabel(context, identifier, pathAttribute.description(), relativeToAttribute.description()))
                 .addControl(formGroupControl)
                 .element();
     }
@@ -90,21 +82,19 @@ public class PathRelativeToFormItem implements FormItem {
 
     @Override
     public ResolvedAttribute attribute() {
-        return pathAttr;
+        return primaryAttribute;
     }
 
     @Override
-    public ModelNode modelNode() {
-        ModelNode result = new ModelNode();
+    public void contributeToPayload(ModelNode payload) {
         ModelNode pathNode = pathControl.modelNode();
         ModelNode relativeToNode = relativeToControl.modelNode();
         if (pathNode.isDefined()) {
-            result.get(pathControl.attribute().name()).set(pathNode);
+            payload.get(pathControl.attribute().fqn()).set(pathNode);
         }
         if (relativeToNode.isDefined()) {
-            result.get(relativeToControl.attribute().name()).set(relativeToNode);
+            payload.get(relativeToControl.attribute().fqn()).set(relativeToNode);
         }
-        return result;
     }
 
     @Override
@@ -114,7 +104,7 @@ public class PathRelativeToFormItem implements FormItem {
 
     @Override
     public boolean validate() {
-        return pathControl.validate() & relativeToControl.validate();
+        return pathControl.validate() && relativeToControl.validate();
     }
 
     @Override

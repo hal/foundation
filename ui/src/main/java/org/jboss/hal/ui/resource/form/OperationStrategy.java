@@ -49,7 +49,9 @@ public interface OperationStrategy {
         if (!item.isModified()) {
             return Collections.emptyList();
         }
-        return singletonList(writeOrUndefine(address, item.attribute().fqn(), item.modelNode()));
+        EditableControl<?> ec = item.editableControl();
+        ModelNode value = ec != null ? ec.modelNode() : new ModelNode();
+        return singletonList(writeOrUndefine(address, item.attribute().fqn(), value));
     };
 
     /** Builds a {@code write-attribute} or {@code undefine-attribute} operation depending on whether the value is defined. */

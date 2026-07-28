@@ -20,17 +20,12 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.style.Breakpoint;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
-import static org.patternfly.layout.flex.Flex.flex;
-import static org.patternfly.layout.flex.FlexItem.flexItem;
-import static org.patternfly.layout.flex.Gap.sm;
-import static org.patternfly.style.Breakpoint.default_;
-import static org.patternfly.token.Token.globalTextColorPlaceholder;
+import static org.jboss.hal.ui.brick.AttributeBricks.pathRelativeTo;
 
 /**
  * {@link NativeControl} for file composite attributes ({@code {path, relative-to}}). Two text inputs side-by-side in an input
@@ -46,11 +41,7 @@ public final class FileControl implements NativeControl<HTMLElement> {
         pathControl = Pipeline.instance().formItem(context, attribute.child(PATH)).editableControl();
         relativeToControl = Pipeline.instance().formItem(context, attribute.child(RELATIVE_TO)).editableControl();
 
-        return flex().gap(sm)
-                .addItem(flexItem().grow(default_).add(pathControl))
-                .addItem(flexItem().style("color", globalTextColorPlaceholder.var).text("relative to"))
-                .addItem(flexItem().grow(default_).add(relativeToControl))
-                .element();
+        return pathRelativeTo(pathControl.element(), relativeToControl.element(), true).element();
     }
 
     @Override

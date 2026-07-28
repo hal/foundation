@@ -42,16 +42,15 @@ public final class MapOperationStrategy implements OperationStrategy {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Operation> operations(FormItem item, ResourceAddress address) {
         if (!item.isModified()) {
             return Collections.emptyList();
         }
         EditableControl<?> ec = item.editableControl();
-        if (ec == null || !(ec.nativeControl() instanceof MapControl)) {
+        if (ec == null || !(ec.nativeControl() instanceof MapControl mapControl)) {
             return Collections.emptyList();
         }
-        MapControl mapControl = (MapControl) ec.nativeControl();
-        @SuppressWarnings("unchecked")
         FilterInput control = ((EditableControl<FilterInput>) ec).control();
         Map<String, String> original = mapControl.originalEntries();
         Map<String, String> current = mapControl.currentEntries(control);

@@ -27,13 +27,16 @@ import org.jboss.hal.ui.resource.ResourceItem;
  * into a single composite operation for the resource write.
  * <p>
  * The {@link #operations(ResourceAddress)} method is a key design choice: operations are produced by the item, not the form.
- * This allows composite items (e.g. credential-reference, path+relative-to) to generate multiple operations from a single
- * form group.
+ * This allows composite items (e.g. credential-reference, path+relative-to) to generate multiple operations from a single form
+ * group.
  */
 public interface FormItem extends ResourceItem {
 
-    /** Returns the current value of this form item as a DMR model node. Used for building operation payloads. */
-    ModelNode modelNode();
+    /**
+     * Writes this item's current value(s) into the given payload. Single-attribute items add one key; composite items (e.g.
+     * path + relative-to) add multiple keys.
+     */
+    void contributeToPayload(ModelNode payload);
 
     /** Returns whether the value has been modified from its original. */
     boolean isModified();

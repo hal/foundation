@@ -101,7 +101,7 @@
  *       which checks scope ({@code NEW_RESOURCE} vs {@code EXISTING_RESOURCE}) and dispatches to the native control's
  *       {@code isModifiedForNew()} or {@code isModifiedForExisting()}.</li>
  *   <li><b>Operation generation</b> — each modified item's {@code FormItem.operations(address)} delegates to its
- *       {@code OperationStrategy}, which reads {@code FormItem.modelNode()} (via {@code EditableControl.modelNode()}) and
+ *       {@code OperationStrategy}, which reads {@code EditableControl.modelNode()} and
  *       produces the appropriate DMR operations.</li>
  *   <li><b>Submission</b> — all operations from all items are flat-mapped into a single DMR composite operation.</li>
  * </ol>
