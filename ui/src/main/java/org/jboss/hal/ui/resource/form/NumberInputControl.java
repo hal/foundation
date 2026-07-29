@@ -172,17 +172,7 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
     public void afterSwitchedToNativeMode(HTMLElement control, ResolvedAttribute attribute) {
         boolean wasDefined = attribute.value().isDefined();
         if (allowedValuesControl != null) {
-            if (wasDefined && !attribute.expression()) {
-                FormItemBricks.failSafeSelectValue(allowedValuesControl, attribute.value().asString());
-            } else {
-                if (attribute.description().hasDefault()) {
-                    FormItemBricks.failSafeSelectValue(allowedValuesControl, attribute.description().get(DEFAULT).asString());
-                } else if (attribute.description().nillable()) {
-                    FormItemBricks.failSafeSelectValue(allowedValuesControl, UNDEFINED);
-                } else {
-                    allowedValuesControl.selectFirstValue(false);
-                }
-            }
+            FormItemBricks.afterSwitchedToSelectControl(wasDefined, attribute, allowedValuesControl);
         } else if (minMaxControl != null) {
             if (wasDefined && !attribute.expression()) {
                 minMaxControl.value(attribute.value().asString());

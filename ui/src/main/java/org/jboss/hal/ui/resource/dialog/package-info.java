@@ -30,8 +30,6 @@
  * <dd>Delete confirmation dialog.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog.ExecuteOperationDialogs}</dt>
  * <dd>Execute operation dialog with parameter inputs and result display.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.dialog.ExecuteOperationDialog}</dt>
- * <dd>Builder-style wrapper for executing a management operation (stub, not yet wired up).</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource.dialog;

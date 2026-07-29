@@ -22,18 +22,11 @@ import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.menu.SingleTypeahead;
-import org.patternfly.style.Modifiers;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
-import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
 import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.menu.MenuContent.menuContent;
-import static org.patternfly.component.menu.MenuList.menuList;
-import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
-import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
 
 /**
  * {@link NativeControl} for standalone {@code relative-to} attributes not paired with a sibling path attribute.
@@ -55,26 +48,7 @@ public final class RelativeToControl implements NativeControl<SingleTypeahead> {
 
     @Override
     public SingleTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        SearchReloadInput searchReloadInput = searchReloadInput(identifier)
-                .plain()
-                .placeholder("");
-        SingleTypeahead typeahead = singleTypeahead(searchReloadInput)
-                .applyToMenuToggle(Modifiers.FullWidth::fullWidth)
-                .allowNewItems(value -> "Add \"" + value + "\"...", PathSupport::newPath)
-                .addMenu(singleSelectMenu()
-                        .addContent(menuContent()
-                                .addList(menuList()
-                                        .addItems(PathSupport.paths()))));
-        searchReloadInput.onReload((e, c) -> typeahead.menu().reload());
-
-        if (attribute.value().isDefined()) {
-            FormItemBricks.failSafeSelectValue(typeahead, attribute.value().asString());
-        } else if (attribute.description().hasDefault()) {
-            typeahead.menuToggle().searchInput().placeholder(attribute.description().get(DEFAULT).asString());
-        } else if (attribute.description().nillable()) {
-            typeahead.menuToggle().searchInput().placeholder(UNDEFINED);
-        }
-        return typeahead;
+        return FormItemBricks.singleTypeahead(identifier, attribute, PathSupport::newPath, PathSupport.paths());
     }
 
     @Override
@@ -126,15 +100,7 @@ public final class RelativeToControl implements NativeControl<SingleTypeahead> {
 
     @Override
     public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
-        if (attribute.value().isDefined() && !attribute.expression()) {
-            FormItemBricks.failSafeSelectValue(control, attribute.value().asString());
-        } else {
-            if (attribute.description().hasDefault()) {
-                FormItemBricks.failSafeSelectValue(control, attribute.description().get(DEFAULT).asString());
-            } else if (attribute.description().nillable()) {
-                control.menuToggle().searchInput().placeholder(UNDEFINED);
-            }
-        }
+        FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
     }
 
     private String value(SingleTypeahead control) {

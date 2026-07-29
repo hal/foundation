@@ -20,21 +20,14 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.menu.SingleTypeahead;
-import org.patternfly.style.Modifiers.FullWidth;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
-import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
 import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.menu.MenuContent.menuContent;
-import static org.patternfly.component.menu.MenuList.menuList;
-import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
-import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
 
 /**
  * {@link NativeControl} for single STRING attributes with a capability reference, rendered as a typeahead select.
@@ -46,26 +39,8 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     @Override
     public SingleTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
-        SearchReloadInput searchReloadInput = searchReloadInput(identifier)
-                .plain()
-                .placeholder("");
-        SingleTypeahead typeahead = singleTypeahead(searchReloadInput)
-                .applyToMenuToggle(FullWidth::fullWidth)
-                .allowNewItems(value -> "Add \"" + value + "\"...", value -> newItem(value, capability))
-                .addMenu(singleSelectMenu()
-                        .addContent(menuContent()
-                                .addList(menuList()
-                                        .addItems(capabilityItems(context.template(), capability)))));
-        searchReloadInput.onReload((e, c) -> typeahead.menu().reload());
-
-        if (attribute.value().isDefined()) {
-            FormItemBricks.failSafeSelectValue(typeahead, attribute.value().asString());
-        } else if (attribute.description().hasDefault()) {
-            typeahead.menuToggle().searchInput().placeholder(attribute.description().get(DEFAULT).asString());
-        } else if (attribute.description().nillable()) {
-            typeahead.menuToggle().searchInput().placeholder(UNDEFINED);
-        }
-        return typeahead;
+        return FormItemBricks.singleTypeahead(identifier, attribute,
+                value -> newItem(value, capability), capabilityItems(context.template(), capability));
     }
 
     @Override
@@ -117,15 +92,7 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
 
     @Override
     public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
-        if (attribute.value().isDefined() && !attribute.expression()) {
-            FormItemBricks.failSafeSelectValue(control, attribute.value().asString());
-        } else {
-            if (attribute.description().hasDefault()) {
-                FormItemBricks.failSafeSelectValue(control, attribute.description().get(DEFAULT).asString());
-            } else if (attribute.description().nillable()) {
-                control.menuToggle().searchInput().placeholder(UNDEFINED);
-            }
-        }
+        FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
     }
 
     private String value(SingleTypeahead control) {

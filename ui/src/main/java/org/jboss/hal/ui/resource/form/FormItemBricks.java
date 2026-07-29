@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.ui.resource.form;
 
+import java.util.function.Function;
+
 import org.jboss.elemento.Elements;
 import org.jboss.elemento.HTMLInputElementBuilder;
 import org.jboss.hal.meta.description.AttributeDescription;
@@ -22,19 +24,24 @@ import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.patternfly.component.AsyncItems;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.help.HelperText;
 import org.patternfly.component.inputgroup.InputGroupText;
+import org.patternfly.component.menu.MenuItem;
+import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleTypeahead;
 import org.patternfly.core.Aria;
 import org.patternfly.core.Roles;
 import org.patternfly.style.Classes;
+import org.patternfly.style.Modifiers;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
+import elemental2.promise.Promise;
 
 import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.elemento.Elements.small;
@@ -53,6 +60,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover
 import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
+import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
 import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder.DEFAULT_VALUE;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.button.Button.button;
@@ -63,6 +71,9 @@ import static org.patternfly.component.help.HelperText.helperText;
 import static org.patternfly.component.inputgroup.InputGroup.inputGroup;
 import static org.patternfly.component.inputgroup.InputGroupItem.inputGroupItem;
 import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
+import static org.patternfly.component.menu.MenuContent.menuContent;
+import static org.patternfly.component.menu.MenuList.menuList;
+import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
 import static org.patternfly.core.Attributes.role;
 import static org.patternfly.core.Attributes.tabindex;
 import static org.patternfly.core.Attributes.type;
@@ -225,6 +236,60 @@ final class FormItemBricks {
     static boolean requiredOnItsOwn(ResolvedAttribute attribute) {
         return attribute.description().required()
                 && !(attribute.description().hasDefined("alternatives") || attribute.description().hasDefined("requires"));
+    }
+
+    // ------------------------------------------------------ select
+
+    static void afterSwitchedToSelectControl(boolean wasDefined, ResolvedAttribute attribute, FormSelect selectControl) {
+        if (wasDefined && !attribute.expression()) {
+            failSafeSelectValue(selectControl, attribute.value().asString());
+        } else {
+            if (attribute.description().hasDefault()) {
+                failSafeSelectValue(selectControl, attribute.description().get(DEFAULT).asString());
+            } else if (attribute.description().nillable()) {
+                failSafeSelectValue(selectControl, UNDEFINED);
+            } else {
+                selectControl.selectFirstValue(false);
+            }
+        }
+    }
+
+    // ------------------------------------------------------ typeahead
+
+    static SingleTypeahead singleTypeahead(String identifier, ResolvedAttribute attribute,
+            Function<String, Promise<MenuItem>> createItem, AsyncItems<MenuList, MenuItem> asyncItems) {
+        SearchReloadInput searchReloadInput = searchReloadInput(identifier)
+                .plain()
+                .placeholder("");
+        SingleTypeahead typeahead = SingleTypeahead.singleTypeahead(searchReloadInput)
+                .applyToMenuToggle(Modifiers.FullWidth::fullWidth)
+                .allowNewItems(value -> "Add \"" + value + "\"...", createItem)
+                .addMenu(singleSelectMenu()
+                        .addContent(menuContent()
+                                .addList(menuList()
+                                        .addItems(asyncItems))));
+        searchReloadInput.onReload((e, c) -> typeahead.menu().reload());
+
+        if (attribute.value().isDefined()) {
+            FormItemBricks.failSafeSelectValue(typeahead, attribute.value().asString());
+        } else if (attribute.description().hasDefault()) {
+            typeahead.menuToggle().searchInput().placeholder(attribute.description().get(DEFAULT).asString());
+        } else if (attribute.description().nillable()) {
+            typeahead.menuToggle().searchInput().placeholder(UNDEFINED);
+        }
+        return typeahead;
+    }
+
+    static void afterSwitchedToSingleTypeahead(SingleTypeahead control, ResolvedAttribute attribute) {
+        if (attribute.value().isDefined() && !attribute.expression()) {
+            FormItemBricks.failSafeSelectValue(control, attribute.value().asString());
+        } else {
+            if (attribute.description().hasDefault()) {
+                FormItemBricks.failSafeSelectValue(control, attribute.description().get(DEFAULT).asString());
+            } else if (attribute.description().nillable()) {
+                control.menuToggle().searchInput().placeholder(UNDEFINED);
+            }
+        }
     }
 
     // ------------------------------------------------------ value

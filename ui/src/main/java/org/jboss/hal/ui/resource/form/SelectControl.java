@@ -115,16 +115,6 @@ public final class SelectControl implements NativeControl<FormSelect> {
     @Override
     public void afterSwitchedToNativeMode(FormSelect control, ResolvedAttribute attribute) {
         boolean wasDefined = attribute.value().isDefined();
-        if (wasDefined && !attribute.expression()) {
-            FormItemBricks.failSafeSelectValue(control, attribute.value().asString());
-        } else {
-            if (attribute.description().hasDefault()) {
-                FormItemBricks.failSafeSelectValue(control, attribute.description().get(DEFAULT).asString());
-            } else if (attribute.description().nillable()) {
-                FormItemBricks.failSafeSelectValue(control, UNDEFINED);
-            } else {
-                control.selectFirstValue(false);
-            }
-        }
+        FormItemBricks.afterSwitchedToSelectControl(wasDefined, attribute, control);
     }
 }
