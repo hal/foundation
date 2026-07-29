@@ -42,7 +42,7 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
 import static org.jboss.hal.ui.brick.CodeBricks.modelNodeCode;
-import static org.jboss.hal.ui.resource.view.CapabilityReference.capabilityReference;
+import static org.jboss.hal.ui.resource.view.CapabilityReferenceLabel.capabilityReferenceLabel;
 import static org.jboss.hal.ui.resource.view.ViewItemDefaults.NUM_LABELS;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
@@ -122,7 +122,7 @@ public class DefaultViewItem extends AbstractViewItem {
                     .element();
         } else if (attribute.description().hasDefined(CAPABILITY_REFERENCE)) {
             String capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
-            return capabilityReference(template, capability, attribute.value().asString()).element();
+            return capabilityReferenceLabel(template, capability, attribute.value().asString()).element();
         } else {
             return ViewItemBricks.plainText(attribute);
         }

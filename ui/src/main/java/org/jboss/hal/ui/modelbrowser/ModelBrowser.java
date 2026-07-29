@@ -268,8 +268,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 if (inScope(details.template)) {
                     tree.select(details.template);
                 } else {
-                    logger.debug("Out of scope navigation for %s (not a sub-template of %s)",
-                            details.template, root);
+                    logger.debug("Out of scope navigation for %s (not a sub-template of %s)", details.template, root);
                     uic().routeRegistry().goTo(details.template);
                 }
             } else if (details.identifier != null) {

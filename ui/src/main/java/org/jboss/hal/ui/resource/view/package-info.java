@@ -51,7 +51,7 @@
  * <dl>
  * <dt>{@link org.jboss.hal.ui.resource.view.ResourceView}</dt>
  * <dd>Description list container for read-only attribute display with responsive layout.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.view.CapabilityReference}</dt>
+ * <dt>{@link CapabilityReferenceLabel}</dt>
  * <dd>Interactive capability reference display with navigation to the providing resource(s).</dd>
  * </dl>
  */
