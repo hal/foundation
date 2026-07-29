@@ -15,9 +15,9 @@
  */
 package org.jboss.hal.dmr;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 /** {@link ModelValue} implementation holding a {@link String}. */
 class StringModelValue extends ModelValue {
@@ -76,11 +76,7 @@ class StringModelValue extends ModelValue {
 
     @Override
     byte[] asBytes() {
-        try {
-            return value.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return value.getBytes();
-        }
+        return value.getBytes(StandardCharsets.UTF_8);
     }
 
     @Override

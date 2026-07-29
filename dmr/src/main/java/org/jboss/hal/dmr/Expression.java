@@ -21,6 +21,9 @@ import java.util.function.Predicate;
 
 import elemental2.core.JsRegExp;
 
+import static org.jboss.hal.dmr.ModelValue.indent;
+import static org.jboss.hal.dmr.ModelValue.jsonEscape;
+
 /**
  * Utility for detecting and parsing WildFly management model expressions (e.g., {@code ${env.JAVA_HOME}}).
  *
@@ -39,7 +42,10 @@ public class Expression {
     static final JsRegExp JS_REG_EXP = new JsRegExp(REG_EXP);
     static Predicate<String> PREDICATE = JS_REG_EXP::test; // replaced in JVM unit tests
 
-    /** Returns {@code true} if the given string is a complete expression in the format {@code ${name}} or {@code ${name:default}}. */
+    /**
+     * Returns {@code true} if the given string is a complete expression in the format {@code ${name}} or
+     * {@code ${name:default}}.
+     */
     public static boolean isExpression(String value) {
         if (value != null && value.length() > 3) {
             if (value.startsWith("${") && value.endsWith("}")) {
@@ -80,8 +86,8 @@ public class Expression {
     }
 
     /**
-     * Splits an expression into its name and default value. Returns a two-element array {@code [name, default]}, where
-     * the default is an empty string if not specified. Returns {@code null} if the input is not a valid expression.
+     * Splits an expression into its name and default value. Returns a two-element array {@code [name, default]}, where the
+     * default is an empty string if not specified. Returns {@code null} if the input is not a valid expression.
      */
     public static String[] splitExpression(String expression) {
         if (isExpression(expression)) {
@@ -100,7 +106,10 @@ public class Expression {
         }
     }
 
-    /** Extracts all expression names from a possibly nested expression string. Returns {@code null} if no expressions are found. */
+    /**
+     * Extracts all expression names from a possibly nested expression string. Returns {@code null} if no expressions are
+     * found.
+     */
     public static String[] extractExpressions(String expression) {
         List<String> expressions = new ArrayList<>();
         String current = expression;
@@ -114,5 +123,23 @@ public class Expression {
             parts = splitExpression(current);
         }
         return expressions.isEmpty() ? null : expressions.toArray(new String[0]);
+    }
+
+    static void formatAsJSON(StringBuilder builder, int indent, boolean multiLine, String type, String asString) {
+        builder.append('{');
+        if (multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        } else {
+            builder.append(' ');
+        }
+        builder.append(jsonEscape(type));
+        builder.append(" : ");
+        builder.append(jsonEscape(asString));
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        } else {
+            builder.append(' ');
+        }
+        builder.append('}');
     }
 }

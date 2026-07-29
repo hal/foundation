@@ -26,7 +26,7 @@ import elemental2.core.JsArray;
  * Writes primitive values and UTF-8 strings into a byte array in big-endian format. Used to serialize DMR binary data
  * for transmission to the management endpoint. Backed by a JavaScript {@code JsArray<Byte>} for J2CL compatibility.
  */
-class DataOutput {
+public class DataOutput {
 
     private final JsArray<Byte> bytes;
 

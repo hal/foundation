@@ -16,8 +16,8 @@
 package org.jboss.hal.dmr;
 
 /**
- * {@link ModelValue} implementation holding a WildFly expression string (e.g., {@code ${env.JAVA_HOME:default}}).
- * Supports resolution of system property expressions via {@link #resolve()}.
+ * {@link ModelValue} implementation holding a WildFly expression string (e.g., {@code ${env.JAVA_HOME:default}}). Supports
+ * resolution of system property expressions via {@link #resolve()}.
  */
 class ExpressionValue extends ModelValue {
 
@@ -32,10 +32,6 @@ class ExpressionValue extends ModelValue {
     /**
      * Replace properties of the form:
      * <code>${<i>&lt;name&gt;[</i>,<i>&lt;name2&gt;[</i>,<i>&lt;name3&gt;...]][</i>:<i>&lt;default&gt;]</i>}</code>
-     *
-     * @param value
-     *
-     * @return
      */
     private static String replaceProperties(String value) {
         StringBuilder builder = new StringBuilder();
@@ -180,21 +176,7 @@ class ExpressionValue extends ModelValue {
 
     @Override
     void formatAsJSON(StringBuilder builder, int indent, boolean multiLine) {
-        builder.append('{');
-        if (multiLine) {
-            indent(builder.append('\n'), indent + 1);
-        } else {
-            builder.append(' ');
-        }
-        builder.append(jsonEscape(TYPE_KEY));
-        builder.append(" : ");
-        builder.append(jsonEscape(asString()));
-        if (multiLine) {
-            indent(builder.append('\n'), indent);
-        } else {
-            builder.append(' ');
-        }
-        builder.append('}');
+        Expression.formatAsJSON(builder, indent, multiLine, TYPE_KEY, asString());
     }
 
     @Override

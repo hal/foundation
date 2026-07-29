@@ -21,8 +21,8 @@ import java.math.BigInteger;
 /** {@link ModelValue} implementation holding a {@code boolean}. Uses a flyweight pattern with shared {@code TRUE} and {@code FALSE} instances. */
 class BooleanModelValue extends ModelValue {
 
-    private static BooleanModelValue TRUE = new BooleanModelValue(true);
-    private static BooleanModelValue FALSE = new BooleanModelValue(false);
+    private static final BooleanModelValue TRUE = new BooleanModelValue(true);
+    private static final BooleanModelValue FALSE = new BooleanModelValue(false);
 
     static BooleanModelValue valueOf(boolean value) {
         return value ? TRUE : FALSE;

@@ -21,7 +21,7 @@ import java.math.BigInteger;
 /** {@link ModelValue} implementation holding a {@link java.math.BigInteger}. */
 class BigIntegerModelValue extends ModelValue {
 
-    private BigInteger value;
+    private final BigInteger value;
 
     BigIntegerModelValue(BigInteger value) {
         super(ModelType.BIG_INTEGER);

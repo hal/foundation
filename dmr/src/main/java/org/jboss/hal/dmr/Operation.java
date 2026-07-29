@@ -16,9 +16,9 @@
 package org.jboss.hal.dmr;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
+import static java.util.stream.Collectors.joining;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ADDRESS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.OP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.OPERATION_HEADERS;
@@ -127,24 +127,16 @@ public class Operation extends ModelNode {
         builder.append(":").append(name);
         if (hasParameter()) {
             builder.append("(");
-            for (Iterator<Property> iterator = parameter.asPropertyList().iterator(); iterator.hasNext();) {
-                Property p = iterator.next();
-                builder.append(p.getName()).append("=").append(p.getValue().asString());
-                if (iterator.hasNext()) {
-                    builder.append(",");
-                }
-            }
+            builder.append(parameter.asPropertyList().stream()
+                    .map(p -> p.getName() + "=" + p.getValue().asString())
+                    .collect(joining(",")));
             builder.append(")");
         }
         if (header.isDefined() && !header.asList().isEmpty()) {
             builder.append("{");
-            for (Iterator<Property> iterator = header.asPropertyList().iterator(); iterator.hasNext();) {
-                Property p = iterator.next();
-                builder.append(p.getName()).append("=").append(p.getValue().asString());
-                if (iterator.hasNext()) {
-                    builder.append(",");
-                }
-            }
+            builder.append(header.asPropertyList().stream()
+                    .map(p -> p.getName() + "=" + p.getValue().asString())
+                    .collect(joining(",")));
             builder.append("}");
         }
         return builder.toString();
@@ -246,7 +238,6 @@ public class Operation extends ModelNode {
          * Uses the specified payload for the operation.
          *
          * @param payload The operation as model node.
-         *
          * @return this builder
          */
         public Builder payload(ModelNode payload) {

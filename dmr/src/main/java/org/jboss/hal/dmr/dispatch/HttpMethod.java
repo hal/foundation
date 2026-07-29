@@ -23,5 +23,5 @@ package org.jboss.hal.dmr.dispatch;
  * Most operations use POST with DMR-encoded payloads.
  */
 public enum HttpMethod {
-    GET, POST;
+    GET, POST
 }

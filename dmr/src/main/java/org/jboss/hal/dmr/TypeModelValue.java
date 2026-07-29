@@ -93,28 +93,13 @@ class TypeModelValue extends ModelValue {
 
     @Override
     void formatAsJSON(StringBuilder builder, int indent, boolean multiLine) {
-        builder.append('{');
-        if (multiLine) {
-            indent(builder.append('\n'), indent + 1);
-        } else {
-            builder.append(' ');
-        }
-        builder.append(jsonEscape(TYPE_KEY));
-        builder.append(" : ");
-        builder.append(jsonEscape(asString()));
-        if (multiLine) {
-            indent(builder.append('\n'), indent);
-        } else {
-            builder.append(' ');
-        }
-        builder.append('}');
+        Expression.formatAsJSON(builder, indent, multiLine, TYPE_KEY, asString());
     }
 
     /**
      * Determine whether this object is equal to another.
      *
      * @param other the other object
-     *
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
@@ -126,7 +111,6 @@ class TypeModelValue extends ModelValue {
      * Determine whether this object is equal to another.
      *
      * @param other the other object
-     *
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     public boolean equals(TypeModelValue other) {

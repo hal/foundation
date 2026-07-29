@@ -156,7 +156,7 @@ abstract class ModelValue {
         }
     }
 
-    private ModelType type;
+    private final ModelType type;
 
     protected ModelValue(ModelType type) {
         this.type = type;
@@ -239,15 +239,6 @@ abstract class ModelValue {
     ModelNode addChild() {
         throw new IllegalArgumentException();
     }
-
-    // @Override
-    // protected ModelValue clone() {
-    // try {
-    // return (ModelValue) super.clone();
-    // } catch ( CloneNotSupportedException e) {
-    // throw new RuntimeException(e);
-    // }
-    // }
 
     Set<String> getKeys() {
         throw new IllegalArgumentException();
