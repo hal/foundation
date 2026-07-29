@@ -49,7 +49,7 @@ public class CredentialReferenceProvider implements ItemProvider {
     public enum Mode {
         /** {@code store} and {@code alias} are set — references a credential store entry. */
         STORE_REFERENCE,
-        /** Only {@code clear-text} is set — password visible in configuration. */
+        /** Only {@code clear-text} is set — password visible in the configuration. */
         CLEAR_TEXT,
         /** No sub-attributes are set. */
         UNDEFINED

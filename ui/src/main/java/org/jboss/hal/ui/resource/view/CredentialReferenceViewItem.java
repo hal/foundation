@@ -18,6 +18,7 @@ package org.jboss.hal.ui.resource.view;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider.Mode;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 import elemental2.dom.HTMLElement;
@@ -29,7 +30,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
 import static org.jboss.hal.resources.HalClasses.credentialReference;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
-import static org.jboss.hal.resources.HalClasses.value;
 import static org.jboss.hal.resources.HalClasses.view;
 import static org.patternfly.component.Severity.success;
 import static org.patternfly.component.Severity.warning;
@@ -68,7 +68,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
 
         switch (mode) {
             case STORE_REFERENCE:
-                buildStoreReference(root, attribute);
+                buildStoreReference(context, root, attribute);
                 break;
             case CLEAR_TEXT:
                 buildClearText(root, attribute);
@@ -80,18 +80,18 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
         return root;
     }
 
-    private void buildStoreReference(HTMLElement root, ResolvedAttribute attribute) {
-        String storeValue = attribute.value().get(STORE).asString();
-        String aliasValue = attribute.value().hasDefined(ALIAS) ? attribute.value().get(ALIAS).asString() : null;
+    private void buildStoreReference(PipelineContext context, HTMLElement root, ResolvedAttribute attribute) {
+        ResolvedAttribute storeAttribute = attribute.child(STORE);
+        ResolvedAttribute aliasAttribute = attribute.child(ALIAS);
+        ViewItem storeItem = Pipeline.instance().viewItem(context, storeAttribute);
 
         root.appendChild(label("Credential store").status(success).element());
-        root.appendChild(span().css(halComponent(resource, view, credentialReference, value))
-                .text(storeValue).element());
-        if (aliasValue != null) {
+        root.appendChild(storeItem.valueElement());
+        if (aliasAttribute.isDefined()) {
+            ViewItem aliasItem = Pipeline.instance().viewItem(context, aliasAttribute);
             root.appendChild(span().css(halComponent(resource, view, credentialReference))
                     .text("/").element());
-            root.appendChild(span().css(halComponent(resource, view, credentialReference, value))
-                    .text(aliasValue).element());
+            root.appendChild(aliasItem.valueElement());
         }
     }
 
