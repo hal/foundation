@@ -15,27 +15,21 @@
  */
 package org.jboss.hal.ui.modelbrowser;
 
-import java.util.EnumSet;
-
-import org.jboss.elemento.Attachable;
 import org.jboss.elemento.IsElement;
-import org.jboss.elemento.Key;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.patternfly.component.form.TextInput;
-import org.patternfly.popper.Modifiers;
-import org.patternfly.popper.Popper;
-import org.patternfly.popper.PopperBuilder;
-import org.patternfly.popper.TriggerAction;
+import org.patternfly.overlay.Overlay;
+import org.patternfly.style.Classes;
 
 import elemental2.dom.Event;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import elemental2.dom.MutationRecord;
 
-import static org.jboss.elemento.Elements.body;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.Key.Enter;
 import static org.jboss.hal.resources.HalClasses.goto_;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
@@ -52,9 +46,12 @@ import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.FlexShorthand._1;
-import static org.patternfly.popper.PopperPlacement.bottomStart;
+import static org.patternfly.overlay.Overlay.overlay;
+import static org.patternfly.overlay.TriggerMode.click;
+import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.search;
 import static org.patternfly.style.Classes.util;
+import static org.patternfly.style.Placement.bottom;
 
 /**
  * Popper-based input that allows direct navigation to a resource by entering its address template.
@@ -62,64 +59,46 @@ import static org.patternfly.style.Classes.util;
  * When the entered address contains wildcards, the component resolves them and presents a list of matching fully qualified
  * addresses for the user to choose from. Triggered by a compass icon button in the tree toolbar.
  */
-class GotoResource implements IsElement<HTMLElement>, Attachable {
-
-    static final int DISTANCE = 10;
-    static final int Z_INDEX = 9999;
+class GotoResource implements IsElement<HTMLElement> {
 
     private final HTMLElement button;
     private final HTMLElement menu;
     private final TextInput input;
+    private final Overlay overlay;
+    private final HTMLElement root;
     private HTMLElement multiple;
-    private Popper popper;
 
     GotoResource() {
         this.button = button().plain().icon(compass()).element();
         this.input = textInput("goto").placeholder("Goto resource")
                 .onKeyup((event, component, value) -> gotoResource(event));
         this.menu = div().css(halComponent(modelBrowser, goto_))
-                .style("display", "none")
                 .add(input)
                 .element();
-        body().add(menu);
-        Attachable.register(this, this);
-    }
-
-    @Override
-    public void attach(MutationRecord mutationRecord) {
-        popper = new PopperBuilder("GotoResource", button, menu)
-                .zIndex(Z_INDEX)
-                .placement(bottomStart)
-                .addModifier(Modifiers.offset(DISTANCE),
-                        Modifiers.noOverflow(),
-                        Modifiers.hide(),
-                        Modifiers.placement(),
-                        Modifiers.eventListeners(false))
-                .registerHandler(EnumSet.of(TriggerAction.stayOpen), this::show, this::close)
-                .removePopperOnTriggerDetach()
-                .build();
-    }
-
-    @Override
-    public void detach(MutationRecord mutationRecord) {
-        if (popper != null) {
-            popper.cleanup();
-        }
+        HTMLDivElement overlayElement = div().css(component(Classes.overlay)).add(menu).element();
+        this.overlay = overlay(overlayElement, bottom)
+                .trigger(button)
+                .triggerMode(click)
+                .onToggle((event, open) -> {
+                    if (open) {
+                        input.value("");
+                        input.input().element().focus();
+                    }
+                });
+        overlay.attach();
+        this.root = div()
+                .add(button)
+                .add(overlayElement)
+                .element();
     }
 
     @Override
     public HTMLElement element() {
-        return button;
-    }
-
-    private void show(Event event) {
-        popper.show(null);
-        input.value("");
-        input.input().element().focus();
+        return root;
     }
 
     private void gotoResource(Event event) {
-        if (Key.Enter.match(event)) {
+        if (Enter.match(event)) {
             HTMLInputElement inputElement = (HTMLInputElement) event.target;
             AddressTemplate template = AddressTemplate.ofTrusted(inputElement.value);
             if (!template.fullyQualified()) {
@@ -154,6 +133,6 @@ class GotoResource implements IsElement<HTMLElement>, Attachable {
         event.stopPropagation();
         event.preventDefault();
         failSafeRemoveFromParent(multiple);
-        popper.hide(null);
+        overlay.hide();
     }
 }
