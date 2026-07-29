@@ -34,6 +34,7 @@ import org.wildfly.subsystem.resource.ResourceDescriptor;
 import org.wildfly.subsystem.resource.SubsystemResourceDefinitionRegistrar;
 import org.wildfly.subsystem.resource.operation.ResourceOperationRuntimeHandler;
 import org.wildfly.subsystem.service.ResourceServiceConfigurator;
+import org.wildfly.service.BlockingLifecycle;
 import org.wildfly.subsystem.service.ResourceServiceInstaller;
 import org.wildfly.subsystem.service.ServiceDependency;
 import org.wildfly.subsystem.service.ServiceInstaller;
@@ -110,22 +111,23 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
             ServiceDependency<ExtensibleHttpManagement> httpManagement =
                     ServiceDependency.on(EXTENSIBLE_HTTP_CAPABILITY, ExtensibleHttpManagement.class);
 
-            return ServiceInstaller.builder(httpManagement)
-                    .onStart(mgmt -> {
-                        try {
-                            Module consoleModule = Module.getCallerModuleLoader().loadModule(CONSOLE_MODULE);
-                            ResourceManager resourceManager = new ClassPathResourceManager(
-                                    consoleModule.getClassLoader(), RESOURCE_PREFIX);
-                            mgmt.addManagementHandler(CONTEXT_NAME, true, spaHandler(resourceManager));
-                            log.infof("HAL on premise console available at /%s", CONTEXT_NAME);
-                        } catch (ModuleLoadException e) {
-                            throw new RuntimeException("Failed to load HAL console module: " + CONSOLE_MODULE, e);
-                        }
-                    })
-                    .onStop(mgmt -> {
-                        mgmt.removeContext(CONTEXT_NAME);
-                        log.infof("HAL on premise console removed from /%s", CONTEXT_NAME);
-                    })
+            return ServiceInstaller.BlockingBuilder.of(httpManagement)
+                    .withLifecycle(BlockingLifecycle.compose(
+                            mgmt -> {
+                                try {
+                                    Module consoleModule = Module.getCallerModuleLoader().loadModule(CONSOLE_MODULE);
+                                    ResourceManager resourceManager = new ClassPathResourceManager(
+                                            consoleModule.getClassLoader(), RESOURCE_PREFIX);
+                                    mgmt.addManagementHandler(CONTEXT_NAME, true, spaHandler(resourceManager));
+                                    log.infof("HAL on premise console available at /%s", CONTEXT_NAME);
+                                } catch (ModuleLoadException e) {
+                                    throw new RuntimeException("Failed to load HAL console module: " + CONSOLE_MODULE, e);
+                                }
+                            },
+                            mgmt -> {
+                                mgmt.removeContext(CONTEXT_NAME);
+                                log.infof("HAL on premise console removed from /%s", CONTEXT_NAME);
+                            }))
                     .build();
         }
 
