@@ -99,6 +99,7 @@ public class DeReDeExMultiSelect<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ internal
 
+    @SuppressWarnings("DuplicatedCode")
     private void onFilterChanged(Filter<T> filter, String origin) {
         if (!origin.equals(ORIGIN)) {
             multiSelect.clear(false);

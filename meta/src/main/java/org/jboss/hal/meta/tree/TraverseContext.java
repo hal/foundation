@@ -26,14 +26,14 @@ import org.jboss.hal.dmr.Operation;
  */
 public class TraverseContext {
 
+    private final Map<String, Operation> failed;
     private int processed;
     private int accepted;
-    private Map<String, Operation> failed;
 
     public TraverseContext() {
+        failed = new HashMap<>();
         processed = 0;
         accepted = 0;
-        failed = new HashMap<>();
     }
 
     /** @return the total number of child resources discovered during traversal */

@@ -84,12 +84,8 @@ class MetadataResolver implements TemplateResolver {
                         }
                     } else {
                         switch (key) {
-                            // No replacement for these keys!
-                            // case HOST:
-                            // case SERVER_GROUP:
-                            // case SERVER:
-                            // case SERVER_CONFIG:
-                            //     break;
+                            // No replacement for these keys:
+                            // HOST, SERVER_GROUP, SERVER, SERVER_CONFIG
 
                             case PROFILE:
                                 if (index == 0) {

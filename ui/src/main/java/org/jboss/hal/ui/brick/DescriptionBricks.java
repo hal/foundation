@@ -47,7 +47,7 @@ public final class DescriptionBricks {
         allButReadOnly,
 
         /** Only the description text and deprecation notice — no metadata list. */
-        descriptionOnly;
+        descriptionOnly
     }
 
     /**

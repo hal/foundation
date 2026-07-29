@@ -89,7 +89,6 @@ class RrdParser {
         return new ResourceAddress(operation.get(ADDRESS));
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static ResourceAddress makeFqAddress(ResourceAddress operationAddress, ResourceAddress resultAddress) {
         ResourceAddress resolved = resultAddress;
         List<Property> operationSegments = operationAddress.asPropertyList();

@@ -16,9 +16,7 @@
 package org.jboss.hal.op.configuration.socket;
 
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 
-import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.op.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
@@ -29,12 +27,6 @@ import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketB
 public class OutboundLocalColumn implements ColumnProvider {
 
     public static final String ID = "socket-binding-outbound-local";
-    private final CrudOperations crud;
-
-    @Inject
-    public OutboundLocalColumn(CrudOperations crud) {
-        this.crud = crud;
-    }
 
     @Override
     public String identifier() {

@@ -67,20 +67,12 @@ public class User {
 
     /** @return true if this user belongs to the role SuperUser, false otherwise. */
     public boolean isSuperuser() {
-        if (roles.contains(SUPER_USER)) {
-            return true;
-        } else {
-            return false;
-        }
+        return roles.contains(SUPER_USER);
     }
 
     /** @return true if this user belongs to the role Administrator, false otherwise. */
     public boolean isAdministrator() {
-        if (roles.contains(ADMINISTRATOR)) {
-            return true;
-        } else {
-            return false;
-        }
+        return roles.contains(ADMINISTRATOR);
     }
 
     /** Returns {@code true} if this user has been authenticated. */
