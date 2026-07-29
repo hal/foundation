@@ -9,48 +9,44 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add attribute-to-item pipeline for resource view/form rendering — two-stage architecture with matchers and providers that replaces the old factory-based approach
-- Add map attribute support — `MapMatcher`, `MapViewItem` (label group), and `MapFormItem` (key=value editing with map-put/map-remove operations)
-- Add composite attribute infrastructure — credential-reference view/form items with mode-based editing, time-unit composite attribute
-- Add self-contained view and form item base classes (`AbstractViewItem`, `AbstractFormItem`) that build their complete UI from a `ResolvedAttribute`
-- Add `ResourceView` and `ResourceForm` as dedicated builders with built-in filtering and grouping support
-- Add grouped layout toggle for resources with many attributes (metadata-based and auto-grouping)
-- Add pipeline entry point for operation parameters — `Pipeline.formItems(context, parameters)` for dialog classes
-- Add ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, and ResourceHeader components for composable resource page layouts
+- Add attribute-to-item pipeline for resource view/form rendering — two-stage matcher/provider architecture replacing the old factory-based approach
+- Add map attribute support — `MapMatcher`, `MapViewItem`, and `MapFormItem` with key=value editing and map-put/map-remove operations
+- Add composite attribute infrastructure — credential-reference (mode-based editing) and time-unit composite view/form items
+- Add `ResourceView` and `ResourceForm` builders with filtering, grouping, and pipeline integration
+- Add grouped layout toggle for resources with many attributes
+- Add composable resource page components — ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, ResourceHeader
+- Add pinnable subsystem column in the configuration finder
 
 ### Changed
 
-- Replace form item inheritance hierarchy with composition-based architecture — `FormItemBricks` provides shared building blocks, `NativeControl` interface decouples input widgets from form item lifecycle
-- Reorganize brick classes — domain-specific bricks now live alongside their subsystem (`FinderBricks` → `o.j.h.ui.finder`, `ResourceDialogs` → `DialogBricks`); document the brick pattern in `org.jboss.hal.ui` package-info
-- Move finder package from `o.j.h.ui.resource.finder` to `o.j.h.ui.finder` as a top-level UI concern
-- Wire pipeline into `ResourceData` and dialog classes — replaces old factory-based rendering
-- Consolidate attribute grouping into `GroupingSupport` — replaces `GroupingStrategy`/`MetadataGrouping`
-- Change `Pipeline` to singleton pattern instead of `create()` factory
-- Refactor model browser detail panel to use reusable resource components
-- Improve resource package architecture — rename manager subpackage to data, consolidate context keys into Keys interface
-- Extract OUIA component type strings to OuiaIds constants
+- Replace form item inheritance with composition — `FormItemBricks` shared building blocks, `NativeControl` interface, `contributeToPayload()` for payload contribution
+- Reorganize UI packages — domain bricks live alongside their subsystem, finder promoted to top-level `o.j.h.ui.finder`
+- Refactor model browser detail panel to reuse resource components
+- Migrate GotoResource and CapabilityReferenceLabel from Popper to Overlay API
+- Rewrite `RelativeToControl` as typeahead with file-system path support
+- Migrate WildFly subsystem to non-deprecated `ServiceInstaller.BlockingBuilder` API
+- Clean up DMR module — extract shared `formatAsJSON`, use `StandardCharsets.UTF_8`, stream-based `Operation.toString()`
 
 ### Removed
 
-- Remove `ResourceAttribute`, `ItemIdentifier` — replaced by `ResolvedAttribute`
-- Remove old view item factories (`ViewItemFactory`, `ViewItemProvider`, `ViewItemProviders`) and form item factories (`FormItemFactory`, `FormItemProvider`, `FormItemProviders`)
-- Remove `FormItemFlags`, `FormItemInputMode`, `HelperTexts` — replaced by `PipelineFlags`, `InputMode`, inline helpers
-- Remove `GroupingStrategy`, `MetadataGrouping` — replaced by `GroupingSupport`
-- Remove old form item inheritance tree (13 `Old*` classes, `CredentialReferenceView`, `TimeUnitView`)
+- Remove old view/form item factories and inheritance tree — replaced by pipeline matchers, providers, and `NativeControl`
+- Remove `FormItemFlags`, `FormItemInputMode`, `GroupingStrategy`, `MetadataGrouping` — replaced by `PipelineFlags`, `InputMode`, `GroupingSupport`
+- Remove `ExecuteOperationDialog` stub and unused `CrudOperations` injection from socket binding columns
 
 ### Fixed
 
-- Fix non-existing singleton popover in model browser — attach popover at creation time instead of in onToggle handler
+- Fix singleton popover in model browser — attach at creation time
 - Fix tooltip placement for model browser back/forward buttons
-- Fix missing remove button for singleton folder children in model browser resource list
-- Fix missing Add button in empty state for non-singleton folders in model browser
+- Fix missing remove button and Add button for singleton/non-singleton folders in model browser
+- Fix `selectedItems()` in `CapabilitiesReferenceControl`
 
 ### Upgrades
 
 - Bump PatternFly Java to 0.9.5
-- Bump Quarkus platform to 3.37.2
+- Bump Quarkus platform to 3.37.4
+- Bump WildFly BOM to 41.0.0.Final
 - Bump Maven managed dependencies and plugins
-- Bump npm dependencies, dev dependencies, and packageManager versions
+- Bump npm dependencies and packageManager versions
 
 ## [0.4.0] - 2026-07-06
 
