@@ -3,7 +3,7 @@
     "@patternfly-java/charts": "0.9.5",
     "@patternfly-java/core": "0.9.5",
     "@patternfly-java/finder": "0.9.5",
-    "@patternfly/patternfly": "^6.6.0",
+    "@patternfly/patternfly": "^6.6.1",
     "dompurify": "^3.4.12"
   },
   "devDependencies": {
