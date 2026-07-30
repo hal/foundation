@@ -22,6 +22,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.OperationDescription;
+import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.form.FormItem;
@@ -102,7 +103,9 @@ class ExecuteOperationDialogs {
 
     private static ResourceForm operationForm(AddressTemplate template, Metadata metadata,
             OperationDescription operationDescription) {
-        PipelineContext context = new PipelineContext(template, metadata, new ModelNode(),
+        Metadata rwxMetadata = Metadata.metadata(metadata.address(), metadata.resourceDescription(),
+                SecurityContext.RWX);
+        PipelineContext context = new PipelineContext(template, rwxMetadata, new ModelNode(),
                 new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
         List<FormItem> items = Pipeline.instance().formItems(context, operationDescription.parameters());
         ResourceForm pipelineForm = new ResourceForm();

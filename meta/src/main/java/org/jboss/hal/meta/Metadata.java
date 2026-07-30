@@ -35,7 +35,7 @@ public class Metadata extends ModelNode {
         return new Metadata();
     }
 
-    static Metadata metadata(String address, ResourceDescription resourceDescription,
+    public static Metadata metadata(String address, ResourceDescription resourceDescription,
             SecurityContext securityContext) {
         return new Metadata(address, resourceDescription, securityContext);
     }
