@@ -86,7 +86,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
         removeChildrenFrom(root);
         uic().metadataRepository().lookup(mbn.template, metadata -> {
             int rootSize = modelBrowser.root.size();
-            ResourceShell shell = resourceShell(mbn.template, metadata)
+            ResourceShell shell = resourceShell()
                     .contentCss(halComponent(HalClasses.modelBrowser, detail, content))
                     .addBreadcrumb(resourceBreadcrumb(mbn.template, metadata)
                             .onSegmentClick((item, template, depth) -> {

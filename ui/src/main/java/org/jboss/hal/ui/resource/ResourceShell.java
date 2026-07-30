@@ -16,8 +16,8 @@
 package org.jboss.hal.ui.resource;
 
 import org.jboss.elemento.IsElement;
-import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.Metadata;
+import org.patternfly.component.page.PageGroup;
+import org.patternfly.component.page.PageSection;
 
 import elemental2.dom.HTMLElement;
 
@@ -37,13 +37,13 @@ import static org.patternfly.style.Sticky.top;
  * Usage examples:
  * <pre>
  * // Full resource view
- * resourceShell(template, metadata)
+ * resourceShell()
  *     .addBreadcrumb(resourceBreadcrumb(template, metadata))
  *     .addHeader(resourceHeader(template, metadata))
  *     .addTabs(resourceTabs(template, metadata))
  *
  * // Minimal — just tabs
- * resourceShell(template, metadata)
+ * resourceShell()
  *     .addTabs(resourceTabs(template, metadata))
  * </pre>
  */
@@ -52,20 +52,20 @@ public class ResourceShell implements IsElement<HTMLElement> {
     // ------------------------------------------------------ factory
 
     /** Creates a new resource shell for the given template and metadata. */
-    public static ResourceShell resourceShell(AddressTemplate template, Metadata metadata) {
-        return new ResourceShell(template, metadata);
+    public static ResourceShell resourceShell() {
+        return new ResourceShell();
     }
 
     // ------------------------------------------------------ instance
 
-    private final HTMLElement stickyGroup;
-    private final HTMLElement contentSection;
+    private final PageGroup stickyGroup;
+    private final PageSection contentSection;
     private final HTMLElement root;
 
-    ResourceShell(AddressTemplate template, Metadata metadata) {
+    ResourceShell() {
         this.root = div()
-                .add(stickyGroup = pageGroup().sticky(top).element())
-                .add(contentSection = pageSection().element())
+                .add(stickyGroup = pageGroup().sticky(top))
+                .add(contentSection = pageSection())
                 .element();
     }
 
@@ -79,32 +79,32 @@ public class ResourceShell implements IsElement<HTMLElement> {
     /** Adds CSS classes to the content section. */
     public ResourceShell contentCss(String... css) {
         for (String c : css) {
-            contentSection.classList.add(c);
+            contentSection.classList().add(c);
         }
         return this;
     }
 
     /** Adds a breadcrumb to the sticky header area. */
     public ResourceShell addBreadcrumb(ResourceBreadcrumb breadcrumb) {
-        stickyGroup.appendChild(pageBreadcrumb().add(breadcrumb).element());
+        stickyGroup.addSection(pageBreadcrumb().add(breadcrumb));
         return this;
     }
 
     /** Adds a header (name, stability label, description) to the sticky header area. */
     public ResourceShell addHeader(ResourceHeader header) {
-        stickyGroup.appendChild(pageSection().add(header).element());
+        stickyGroup.addSection(pageSection().add(header));
         return this;
     }
 
     /** Adds a tabbed resource view to the content area. */
     public ResourceShell addTabs(ResourceTabs tabs) {
-        contentSection.appendChild(tabs.element());
+        contentSection.add(tabs);
         return this;
     }
 
     /** Adds a child resource list to the content area. */
     public ResourceShell addResourceList(ResourceList resourceList) {
-        contentSection.appendChild(resourceList.element());
+        contentSection.add(resourceList);
         return this;
     }
 }
