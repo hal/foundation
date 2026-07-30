@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List&lt;simple record&gt; Form Item Mockups</title>
+    <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6.6.0/patternfly.min.css">
+    <style>
+        body {
+            padding: var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--2xl);
+        }
+
+        h2 {
+            margin-top: var(--pf-t--global--spacer--2xl);
+            padding-bottom: var(--pf-t--global--spacer--xs);
+            border-bottom: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+        }
+
+        h3 {
+            margin-top: var(--pf-t--global--spacer--lg);
+            color: var(--pf-t--global--text--color--subtle);
+        }
+
+        .approach-description {
+            margin-bottom: var(--pf-t--global--spacer--md);
+            padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+            background: var(--pf-t--global--background--color--secondary--default);
+            border-radius: var(--pf-t--global--border--radius--small);
+            font-size: var(--pf-t--global--font--size--body--sm);
+        }
+
+        /* Form context wrapper — simulates being inside a larger form */
+        .form-context {
+            padding: var(--pf-t--global--spacer--lg);
+            border: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+            border-radius: var(--pf-t--global--border--radius--medium);
+        }
+
+        /* Highlight the target form item */
+        .target-item {
+            border: 2px solid var(--pf-t--global--color--brand--default);
+            border-radius: var(--pf-t--global--border--radius--small);
+            padding: var(--pf-t--global--spacer--sm);
+        }
+
+        /* Record list container */
+        .record-list {
+            border: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+            border-radius: var(--pf-t--global--border--radius--small);
+        }
+
+        /* Record row — summary display */
+        .record-row {
+            display: flex;
+            align-items: center;
+            padding: var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--sm);
+            border-bottom: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+            gap: var(--pf-t--global--spacer--sm);
+        }
+
+        .record-row:last-child { border-bottom: none; }
+
+        .record-row .summary {
+            flex: 1;
+            display: flex;
+            gap: var(--pf-t--global--spacer--md);
+            flex-wrap: wrap;
+            align-items: center;
+            font-size: var(--pf-t--global--font--size--body--sm);
+        }
+
+        .record-row .attr-name {
+            color: var(--pf-t--global--text--color--subtle);
+        }
+
+        .record-row .attr-value {
+            font-weight: var(--pf-t--global--font--weight--body--bold);
+        }
+
+        .record-row .attr-more {
+            color: var(--pf-t--global--text--color--subtle);
+            font-style: italic;
+            font-size: var(--pf-t--global--font--size--body--sm);
+        }
+
+        .record-row .actions {
+            display: flex;
+            gap: var(--pf-t--global--spacer--xs);
+            flex-shrink: 0;
+        }
+
+        /* Inline edit form */
+        .record-edit {
+            padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+            background: var(--pf-t--global--background--color--secondary--default);
+            border-bottom: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+        }
+
+        .record-edit:last-child { border-bottom: none; }
+
+        .edit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--pf-t--global--spacer--sm);
+            margin-bottom: var(--pf-t--global--spacer--sm);
+        }
+
+        .edit-grid.large {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: var(--pf-t--global--spacer--sm);
+        }
+
+        /* Expandable row header */
+        .expand-header {
+            display: flex;
+            align-items: center;
+            padding: var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--sm);
+            border-bottom: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+            gap: var(--pf-t--global--spacer--sm);
+            cursor: pointer;
+        }
+
+        .expand-header:hover {
+            background: var(--pf-t--global--background--color--secondary--default);
+        }
+
+        .expand-header:last-child { border-bottom: none; }
+
+        .expand-header .toggle {
+            color: var(--pf-t--global--text--color--subtle);
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .expand-header .title {
+            font-weight: var(--pf-t--global--font--weight--body--bold);
+        }
+
+        .expand-header .subtitle {
+            color: var(--pf-t--global--text--color--subtle);
+            font-size: var(--pf-t--global--font--size--body--sm);
+        }
+
+        .expand-header .actions {
+            margin-left: auto;
+            display: flex;
+            gap: var(--pf-t--global--spacer--xs);
+            flex-shrink: 0;
+        }
+
+        /* Expanded body */
+        .expand-body {
+            padding: 0 var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--sm) calc(16px + var(--pf-t--global--spacer--md));
+            border-bottom: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+        }
+
+        /* Label + Panel */
+        .record-panel {
+            margin-top: var(--pf-t--global--spacer--sm);
+            border: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+            border-radius: var(--pf-t--global--border--radius--small);
+            padding: var(--pf-t--global--spacer--md);
+            box-shadow: var(--pf-t--global--box-shadow--sm);
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--pf-t--global--spacer--sm);
+            margin-bottom: var(--pf-t--global--spacer--sm);
+        }
+
+        .panel-grid.large {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: var(--pf-t--global--spacer--sm);
+        }
+
+        /* Badge for attribute sizes */
+        .size-badge {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: var(--pf-t--global--border--radius--pill);
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: var(--pf-t--global--spacer--sm);
+            vertical-align: middle;
+        }
+        .size-badge.small { background: var(--pf-t--global--color--status--success--100); color: var(--pf-t--global--color--status--success--default); }
+        .size-badge.medium { background: var(--pf-t--global--color--status--warning--100); color: var(--pf-t--global--color--status--warning--default); }
+        .size-badge.large { background: var(--pf-t--global--color--status--danger--100); color: var(--pf-t--global--color--status--danger--default); }
+
+        /* Spacing helpers */
+        .mb-sm { margin-bottom: var(--pf-t--global--spacer--sm); }
+        .mb-md { margin-bottom: var(--pf-t--global--spacer--md); }
+        .mt-sm { margin-top: var(--pf-t--global--spacer--sm); }
+        .mt-md { margin-top: var(--pf-t--global--spacer--md); }
+    </style>
+</head>
+<body>
+
+<div class="pf-v6-c-content">
+    <h1>List&lt;simple record&gt; — Form Item Mockups</h1>
+    <p>Three UI approaches, each shown for three attribute sizes.
+        The <span style="border: 2px solid var(--pf-t--global--color--brand--default); padding: 0 4px; border-radius: 3px;">blue-bordered</span> area is the List&lt;simple record&gt; form item, shown in context within a larger resource form.</p>
+    <p><strong>Attribute sizes used:</strong></p>
+    <ul>
+        <li><strong>Small</strong> (2 attrs) — <code>wm-security-mapping-users</code>: from(S), to(S)</li>
+        <li><strong>Medium</strong> (5 attrs) — <code>global-modules</code>: name(S), slot(S), annotations(B), services(B), meta-inf(B)</li>
+        <li><strong>Large</strong> (12 attrs) — <code>match-rules</code>: match-abstract-type(S), match-abstract-type-authority(S), match-host(S), match-local-security-domain(S), match-no-user(B), match-path(S), match-port(I), match-protocol(S), match-urn(S), match-user(S), authentication-configuration(S), ssl-context(S)</li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="pf-v6-c-content"><h2>Approach A: Inline DataList</h2></div>
+<!-- ============================================================ -->
+<div class="approach-description">
+    Each record is a row showing attribute values as <code>name: value</code> pairs. Edit/remove buttons on the right. An "Add" button at the bottom opens a blank inline form. Clicking edit expands the row into an inline edit form. The form fields are generated by the pipeline (same form items used elsewhere).
+</div>
+
+<!-- A: Small -->
+<div class="pf-v6-c-content"><h3>Small — wm-security-mapping-users <span class="size-badge small">2 attrs</span></h3></div>
+<div class="form-context">
+    <div class="pf-v6-c-form__group mb-md">
+        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Work Manager</span></label>
+        <span class="pf-v6-c-form-control"><input type="text" value="default"></span>
+    </div>
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Security Mapping Users</span></label>
+        <div class="record-list">
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">from:</span> <span class="attr-value">admin</span></span>
+                    <span><span class="attr-name">to:</span> <span class="attr-value">ra-admin</span></span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">from:</span> <span class="attr-value">deployer</span></span>
+                    <span><span class="attr-name">to:</span> <span class="attr-value">ra-deployer</span></span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add mapping</span></button>
+        </div>
+    </div>
+    <div class="pf-v6-c-form__group mt-md">
+        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Security Enabled</span></label>
+        <label class="pf-v6-c-switch">
+            <input class="pf-v6-c-switch__input" type="checkbox" checked>
+            <span class="pf-v6-c-switch__toggle"></span>
+            <span class="pf-v6-c-switch__label">true</span>
+        </label>
+    </div>
+</div>
+
+<!-- A: Small — edit mode -->
+<div class="pf-v6-c-content"><h3>Small — edit mode (user clicked ✎ on first row)</h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Security Mapping Users</span></label>
+        <div class="record-list">
+            <div class="record-edit">
+                <div class="edit-grid">
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">From</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value="admin"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">To</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value="ra-admin"></span>
+                    </div>
+                </div>
+                <div class="edit-actions">
+                    <button class="pf-v6-c-button pf-m-primary pf-m-sm" type="button"><span class="pf-v6-c-button__text">Save</span></button>
+                    <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">Cancel</span></button>
+                </div>
+            </div>
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">from:</span> <span class="attr-value">deployer</span></span>
+                    <span><span class="attr-name">to:</span> <span class="attr-value">ra-deployer</span></span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add mapping</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- A: Medium -->
+<div class="pf-v6-c-content"><h3>Medium — global-modules <span class="size-badge medium">5 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Global Modules</span></label>
+        <div class="record-list">
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">name:</span> <span class="attr-value">org.acme.mylib</span></span>
+                    <span><span class="attr-name">slot:</span> <span class="attr-value">main</span></span>
+                    <span><span class="attr-name">annotations:</span> <span class="attr-value">true</span></span>
+                    <span><span class="attr-name">services:</span> <span class="attr-value">false</span></span>
+                    <span><span class="attr-name">meta-inf:</span> <span class="attr-value">true</span></span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">name:</span> <span class="attr-value">com.example.shared</span></span>
+                    <span><span class="attr-name">slot:</span> <span class="attr-value">main</span></span>
+                    <span><span class="attr-name">annotations:</span> <span class="attr-value">false</span></span>
+                    <span><span class="attr-name">services:</span> <span class="attr-value">true</span></span>
+                    <span><span class="attr-name">meta-inf:</span> <span class="attr-value">false</span></span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add module</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- A: Medium — add mode -->
+<div class="pf-v6-c-content"><h3>Medium — add mode (user clicked + Add module)</h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Global Modules</span></label>
+        <div class="record-list">
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">name:</span> <span class="attr-value">org.acme.mylib</span></span>
+                    <span><span class="attr-name">slot:</span> <span class="attr-value">main</span></span>
+                    <span><span class="attr-name">annotations:</span> <span class="attr-value">true</span></span>
+                    <span><span class="attr-name">services:</span> <span class="attr-value">false</span></span>
+                    <span><span class="attr-name">meta-inf:</span> <span class="attr-value">true</span></span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+            <div class="record-edit">
+                <div class="edit-grid">
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Name</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" placeholder="e.g. org.example.lib"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Slot</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" placeholder="main"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Annotations</span></label>
+                        <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Services</span></label>
+                        <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Meta-inf</span></label>
+                        <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                    </div>
+                </div>
+                <div class="edit-actions">
+                    <button class="pf-v6-c-button pf-m-primary pf-m-sm" type="button"><span class="pf-v6-c-button__text">Add</span></button>
+                    <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">Cancel</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- A: Large -->
+<div class="pf-v6-c-content"><h3>Large — match-rules <span class="size-badge large">12 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Match Rules</span></label>
+        <div class="record-list">
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">match-host:</span> <span class="attr-value">server1.example.com</span></span>
+                    <span><span class="attr-name">match-port:</span> <span class="attr-value">8443</span></span>
+                    <span><span class="attr-name">match-protocol:</span> <span class="attr-value">https</span></span>
+                    <span><span class="attr-name">authentication-configuration:</span> <span class="attr-value">my-auth-config</span></span>
+                    <span><span class="attr-name">ssl-context:</span> <span class="attr-value">my-ssl</span></span>
+                    <span class="attr-more">+4 more</span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">match-host:</span> <span class="attr-value">*.internal.corp</span></span>
+                    <span><span class="attr-name">match-no-user:</span> <span class="attr-value">true</span></span>
+                    <span><span class="attr-name">authentication-configuration:</span> <span class="attr-value">internal-config</span></span>
+                    <span class="attr-more">+2 more</span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add rule</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- A: Large — edit mode -->
+<div class="pf-v6-c-content"><h3>Large — edit mode (12-attr inline form)</h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Match Rules</span></label>
+        <div class="record-list">
+            <div class="record-edit">
+                <div class="edit-grid large">
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Abstract Type</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Abstract Type Authority</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Host</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value="server1.example.com"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Local Security Domain</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match No User</span></label>
+                        <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Path</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Port</span></label>
+                        <span class="pf-v6-c-form-control"><input type="number" value="8443"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Protocol</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value="https"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match URN</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match User</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Authentication Configuration</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value="my-auth-config"></span>
+                    </div>
+                    <div class="pf-v6-c-form__group">
+                        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">SSL Context</span></label>
+                        <span class="pf-v6-c-form-control"><input type="text" value="my-ssl"></span>
+                    </div>
+                </div>
+                <div class="edit-actions">
+                    <button class="pf-v6-c-button pf-m-primary pf-m-sm" type="button"><span class="pf-v6-c-button__text">Save</span></button>
+                    <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">Cancel</span></button>
+                </div>
+            </div>
+            <div class="record-row">
+                <div class="summary">
+                    <span><span class="attr-name">match-host:</span> <span class="attr-value">*.internal.corp</span></span>
+                    <span><span class="attr-name">match-no-user:</span> <span class="attr-value">true</span></span>
+                    <span><span class="attr-name">authentication-configuration:</span> <span class="attr-value">internal-config</span></span>
+                    <span class="attr-more">+2 more</span>
+                </div>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pf-v6-c-content"><h2>Approach B: Expandable Rows (Accordion-style)</h2></div>
+<!-- ============================================================ -->
+<div class="approach-description">
+    Each record is a collapsible row. Collapsed state shows a title (first/primary attribute) and a subtitle summary. Expanded state shows all attributes as a description list plus edit/remove actions. Editing replaces the description list with form fields. Less dense than Approach A but scales better for large attribute counts.
+</div>
+
+<!-- B: Small -->
+<div class="pf-v6-c-content"><h3>Small — wm-security-mapping-users <span class="size-badge small">2 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Security Mapping Users</span></label>
+        <div class="record-list">
+            <div class="expand-header">
+                <span class="toggle">▸</span>
+                <span class="title">admin</span>
+                <span class="subtitle">→ ra-admin</span>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+            <div>
+                <div class="expand-header" style="border-bottom: none;">
+                    <span class="toggle">▾</span>
+                    <span class="title">deployer</span>
+                    <span class="subtitle">→ ra-deployer</span>
+                    <div class="actions">
+                        <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                        <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                    </div>
+                </div>
+                <div class="expand-body">
+                    <dl class="pf-v6-c-description-list pf-m-horizontal pf-m-compact">
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">From</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">deployer</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">To</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">ra-deployer</div></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add mapping</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- B: Medium -->
+<div class="pf-v6-c-content"><h3>Medium — global-modules <span class="size-badge medium">5 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Global Modules</span></label>
+        <div class="record-list">
+            <div>
+                <div class="expand-header">
+                    <span class="toggle">▾</span>
+                    <span class="title">org.acme.mylib</span>
+                    <span class="subtitle">slot: main</span>
+                    <div class="actions">
+                        <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                        <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                    </div>
+                </div>
+                <div class="expand-body">
+                    <dl class="pf-v6-c-description-list pf-m-horizontal pf-m-compact">
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Name</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">org.acme.mylib</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Slot</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">main</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Annotations</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">true</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Services</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">false</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Meta-inf</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">true</div></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+            <div class="expand-header">
+                <span class="toggle">▸</span>
+                <span class="title">com.example.shared</span>
+                <span class="subtitle">slot: main</span>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add module</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- B: Large -->
+<div class="pf-v6-c-content"><h3>Large — match-rules <span class="size-badge large">12 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Match Rules</span></label>
+        <div class="record-list">
+            <div>
+                <div class="expand-header">
+                    <span class="toggle">▾</span>
+                    <span class="title">server1.example.com:8443</span>
+                    <span class="subtitle">https, auth: my-auth-config</span>
+                    <div class="actions">
+                        <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                        <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                    </div>
+                </div>
+                <div class="expand-body">
+                    <dl class="pf-v6-c-description-list pf-m-horizontal pf-m-compact">
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Abstract Type</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">—</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Abstract Type Authority</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">—</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Host</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">server1.example.com</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Local Security Domain</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">—</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match No User</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">false</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Path</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">/api/*</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Port</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">8443</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match Protocol</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">https</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match URN</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">—</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Match User</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">—</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">Authentication Configuration</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">my-auth-config</div></dd>
+                        </div>
+                        <div class="pf-v6-c-description-list__group">
+                            <dt class="pf-v6-c-description-list__term"><span class="pf-v6-c-description-list__text">SSL Context</span></dt>
+                            <dd class="pf-v6-c-description-list__description"><div class="pf-v6-c-description-list__text">my-ssl</div></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+            <div class="expand-header">
+                <span class="toggle">▸</span>
+                <span class="title">*.internal.corp</span>
+                <span class="subtitle">auth: internal-config</span>
+                <div class="actions">
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✎</span></button>
+                    <button class="pf-v6-c-button pf-m-plain pf-m-sm" type="button"><span class="pf-v6-c-button__icon">✕</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-sm">
+            <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add rule</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="pf-v6-c-content"><h2>Approach C: Label Group + Panel</h2></div>
+<!-- ============================================================ -->
+<div class="approach-description">
+    Existing records are shown as clickable labels/chips. Clicking a label opens an inline panel below with the record details and edit form. An "Add" button opens a blank panel. Remove via ✕ on each label. Most compact in default state.
+</div>
+
+<!-- C: Small -->
+<div class="pf-v6-c-content"><h3>Small — wm-security-mapping-users <span class="size-badge small">2 attrs</span></h3></div>
+<div class="form-context">
+    <div class="pf-v6-c-form__group mb-md">
+        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Work Manager</span></label>
+        <span class="pf-v6-c-form-control"><input type="text" value="default"></span>
+    </div>
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Security Mapping Users</span></label>
+        <div class="pf-v6-c-label-group">
+            <div class="pf-v6-c-label-group__main">
+                <ul class="pf-v6-c-label-group__list" role="list">
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">admin → ra-admin</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">deployer → ra-deployer</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add</span></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="pf-v6-c-form__group mt-md">
+        <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Security Enabled</span></label>
+        <label class="pf-v6-c-switch">
+            <input class="pf-v6-c-switch__input" type="checkbox" checked>
+            <span class="pf-v6-c-switch__toggle"></span>
+            <span class="pf-v6-c-switch__label">true</span>
+        </label>
+    </div>
+</div>
+
+<!-- C: Small — edit panel open -->
+<div class="pf-v6-c-content"><h3>Small — label clicked, edit panel open</h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Security Mapping Users</span></label>
+        <div class="pf-v6-c-label-group">
+            <div class="pf-v6-c-label-group__main">
+                <ul class="pf-v6-c-label-group__list" role="list">
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact pf-m-blue">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">admin → ra-admin</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">deployer → ra-deployer</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add</span></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="record-panel">
+            <div class="panel-grid">
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">From</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="admin"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">To</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="ra-admin"></span>
+                </div>
+            </div>
+            <div class="panel-actions">
+                <button class="pf-v6-c-button pf-m-primary pf-m-sm" type="button"><span class="pf-v6-c-button__text">Save</span></button>
+                <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">Cancel</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- C: Medium -->
+<div class="pf-v6-c-content"><h3>Medium — global-modules <span class="size-badge medium">5 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Global Modules</span></label>
+        <div class="pf-v6-c-label-group">
+            <div class="pf-v6-c-label-group__main">
+                <ul class="pf-v6-c-label-group__list" role="list">
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">org.acme.mylib</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">com.example.shared</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add</span></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- C: Medium — add panel open -->
+<div class="pf-v6-c-content"><h3>Medium — add panel open</h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Global Modules</span></label>
+        <div class="pf-v6-c-label-group">
+            <div class="pf-v6-c-label-group__main">
+                <ul class="pf-v6-c-label-group__list" role="list">
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">org.acme.mylib</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">com.example.shared</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="record-panel">
+            <div class="panel-grid">
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Name</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" placeholder="e.g. org.example.lib"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Slot</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" placeholder="main"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Annotations</span></label>
+                    <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Services</span></label>
+                    <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Meta-inf</span></label>
+                    <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                </div>
+            </div>
+            <div class="panel-actions">
+                <button class="pf-v6-c-button pf-m-primary pf-m-sm" type="button"><span class="pf-v6-c-button__text">Add</span></button>
+                <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">Cancel</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- C: Large -->
+<div class="pf-v6-c-content"><h3>Large — match-rules <span class="size-badge large">12 attrs</span></h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Match Rules</span></label>
+        <div class="pf-v6-c-label-group">
+            <div class="pf-v6-c-label-group__main">
+                <ul class="pf-v6-c-label-group__list" role="list">
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">server1.example.com:8443</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">*.internal.corp</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">+ Add</span></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- C: Large — edit panel open -->
+<div class="pf-v6-c-content"><h3>Large — label clicked, edit panel open (12 attrs)</h3></div>
+<div class="form-context">
+    <div class="target-item">
+        <label class="pf-v6-c-form__label mb-sm"><span class="pf-v6-c-form__label-text">Match Rules</span></label>
+        <div class="pf-v6-c-label-group">
+            <div class="pf-v6-c-label-group__main">
+                <ul class="pf-v6-c-label-group__list" role="list">
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact pf-m-blue">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">server1.example.com:8443</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                    <li class="pf-v6-c-label-group__list-item">
+                        <span class="pf-v6-c-label pf-m-filled pf-m-compact">
+                            <span class="pf-v6-c-label__content"><span class="pf-v6-c-label__text">*.internal.corp</span></span>
+                            <span class="pf-v6-c-label__actions"><button class="pf-v6-c-button pf-m-plain pf-m-no-padding" type="button"><span class="pf-v6-c-button__icon">✕</span></button></span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="record-panel">
+            <div class="panel-grid large">
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Abstract Type</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Abstract Type Authority</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Host</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="server1.example.com"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Local Security Domain</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match No User</span></label>
+                    <label class="pf-v6-c-switch"><input class="pf-v6-c-switch__input" type="checkbox"><span class="pf-v6-c-switch__toggle"></span></label>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Path</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="/api/*"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Port</span></label>
+                    <span class="pf-v6-c-form-control"><input type="number" value="8443"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match Protocol</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="https"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match URN</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Match User</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value=""></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">Authentication Configuration</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="my-auth-config"></span>
+                </div>
+                <div class="pf-v6-c-form__group">
+                    <label class="pf-v6-c-form__label"><span class="pf-v6-c-form__label-text">SSL Context</span></label>
+                    <span class="pf-v6-c-form-control"><input type="text" value="my-ssl"></span>
+                </div>
+            </div>
+            <div class="panel-actions">
+                <button class="pf-v6-c-button pf-m-primary pf-m-sm" type="button"><span class="pf-v6-c-button__text">Save</span></button>
+                <button class="pf-v6-c-button pf-m-link pf-m-sm" type="button"><span class="pf-v6-c-button__text">Cancel</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="height: 64px;"></div>
+
+</body>
+</html>
