@@ -9,7 +9,7 @@
   "devDependencies": {
     "@cyclonedx/cdxgen": "^12.8.2",
     "esbuild": "^0.28.1",
-    "vite": "^8.1.5"
+    "vite": "^8.2.0"
   },
   "name": "hal-op",
   "packageManager": "pnpm@11.18.0",
