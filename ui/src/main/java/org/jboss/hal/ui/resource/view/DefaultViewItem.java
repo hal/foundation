@@ -23,7 +23,7 @@ import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.patternfly.component.label.Label;
 
 import elemental2.dom.HTMLElement;
@@ -54,8 +54,8 @@ import static org.patternfly.style.Color.grey;
 /**
  * Default view item for single attributes. Handles all standard types: BOOLEAN (switch), simple types (plain text, unit,
  * allowed values), LIST (inline list or JSON), and OBJECT (JSON). Used by
- * {@code org.jboss.hal.ui.resource.pipeline.DefaultItemProvider} and
- * {@code org.jboss.hal.ui.resource.pipeline.FlatteningProvider}.
+ * {@link org.jboss.hal.ui.resource.pipeline.DefaultProvider} and
+ * {@link org.jboss.hal.ui.resource.pipeline.FlatteningHandler}.
  */
 public class DefaultViewItem extends AbstractViewItem {
 

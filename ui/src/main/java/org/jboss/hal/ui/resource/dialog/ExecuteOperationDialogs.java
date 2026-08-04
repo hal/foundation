@@ -28,10 +28,10 @@ import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
+import org.jboss.hal.ui.resource.PipelineFlags.Scope;
 import org.patternfly.layout.stack.StackItem;
 
 import static org.jboss.elemento.Elements.div;
@@ -103,6 +103,9 @@ class ExecuteOperationDialogs {
 
     private static ResourceForm operationForm(AddressTemplate template, Metadata metadata,
             OperationDescription operationDescription) {
+        // Operation parameters are always editable when the operation itself is executable.
+        // The original security context may restrict attribute-level access, but operation
+        // parameters don't have individual access constraints.
         Metadata rwxMetadata = Metadata.metadata(metadata.address(), metadata.resourceDescription(),
                 SecurityContext.RWX);
         PipelineContext context = new PipelineContext(template, rwxMetadata, new ModelNode(),

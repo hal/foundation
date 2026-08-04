@@ -5,8 +5,7 @@ Matches resources that have a `path` attribute paired with a sibling `relative-t
 ## Status
 
 - **Implemented**: yes
-- **Matcher**: `PathRelativeToMatcher`
-- **Provider**: `PathRelativeToProvider`
+- **Handler**: `PathRelativeToHandler`
 - **Priority**: —
 
 ## Attributes — 31 occurrences

@@ -16,10 +16,10 @@
 package org.jboss.hal.ui.resource.view;
 
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider;
-import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider.Mode;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler.Mode;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
@@ -31,6 +31,7 @@ import static org.jboss.hal.resources.HalClasses.credentialReference;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
+import static org.patternfly.component.Severity.info;
 import static org.patternfly.component.Severity.success;
 import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
@@ -61,7 +62,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
     }
 
     private HTMLElement definedValue(PipelineContext context, ResolvedAttribute attribute) {
-        Mode mode = CredentialReferenceProvider.mode(attribute.value());
+        Mode mode = CredentialReferenceHandler.mode(attribute.value());
         HTMLElement root = flex().css(halComponent(resource, view, credentialReference))
                 .alignItems(center).columnGap(sm)
                 .element();
@@ -110,7 +111,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
                 })
                 .element();
 
-        root.appendChild(label("Clear text").status(warning).element());
+        root.appendChild(label("Clear text").status(info).element());
         root.appendChild(maskedElement);
         root.appendChild(showButton);
     }

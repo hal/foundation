@@ -1,6 +1,6 @@
 # Flattening
 
-Handles simpleRecord OBJECT attributes — OBJECTs whose sub-attributes are all simple types. The provider "flattens" the nested object's fields into the parent form/view, so each sub-attribute appears as its own form item.
+Handles simpleRecord OBJECT attributes — OBJECTs whose sub-attributes are all simple types. The handler "flattens" the nested object's fields into the parent form/view, so each sub-attribute appears as its own form item.
 
 Covers two sub-patterns:
 - **\*-column (Infinispan JDBC)**: Column definition OBJECTs with `name` + `type` sub-attributes (~20 occurrences)
@@ -9,8 +9,7 @@ Covers two sub-patterns:
 ## Status
 
 - **Implemented**: yes
-- **Matcher**: n/a (uses `simpleRecord()` check)
-- **Provider**: `FlatteningProvider`
+- **Handler**: `FlatteningHandler` (claims `simpleRecord()` OBJECTs from the pool)
 - **Priority**: —
 
 ## Attributes — ~80 occurrences

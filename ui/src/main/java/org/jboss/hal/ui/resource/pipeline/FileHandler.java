@@ -15,32 +15,33 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+
+import java.util.List;
+
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.FileControl;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.view.FileViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import java.util.List;
-
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
-import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.hasObjectValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
 
 /**
- * Provider for the composite {@code file} attribute ({@code {path: STRING, relative-to: STRING}}). Used in the logging
- * subsystem. Renders path and relative-to as a single visual unit.
- * <p>
- * This is the composite counterpart to {@link PathRelativeToProvider}, which handles the same concept at the sibling attribute
- * level.
+ * Handler for the composite {@code file} attribute ({@code {path: STRING, relative-to: STRING}}). Used in the logging
+ * subsystem.
  */
-class FileProvider implements ItemProvider {
+class FileHandler implements AttributeHandler {
 
     @Override
-    public boolean matches(AttributeMatch match) {
-        return match.isSingle() && hasObjectValueType(match.primary(), PATH, RELATIVE_TO);
+    public MatchResult match(List<AttributeDescription> pool) {
+        return partition(pool, ad -> hasObjectValueType(ad, PATH, RELATIVE_TO));
     }
 
     @Override

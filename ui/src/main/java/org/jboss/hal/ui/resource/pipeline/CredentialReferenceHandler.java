@@ -15,43 +15,36 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+
+import java.util.List;
+
+import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.CredentialReferenceControl;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.view.CredentialReferenceViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import java.util.List;
-
-import org.jboss.hal.dmr.ModelNode;
-
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALIAS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
-import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.hasObjectValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
 
 /**
- * Provider for credential reference composite attributes. Matches groups containing a single OBJECT attribute with the
- * credential reference structure ({@code store}, {@code alias}, {@code clear-text}).
- * <p>
- * A credential reference operates in one of three {@linkplain Mode modes}:
- * <ol>
- *     <li><b>Store reference</b> — {@code store} + {@code alias} are set, referencing an entry in a credential store.</li>
- *     <li><b>Clear text</b> — only {@code clear-text} is set. The password is visible in the server configuration.</li>
- *     <li><b>Undefined</b> — no sub-attributes are set.</li>
- * </ol>
+ * Handler for credential reference composite attributes. Claims OBJECT attributes with the credential reference structure
+ * ({@code store}, {@code alias}, {@code clear-text}) and produces composite view/form items.
  */
-public class CredentialReferenceProvider implements ItemProvider {
+public class CredentialReferenceHandler implements AttributeHandler {
 
     /** The credential reference mode derived from which sub-attributes have values. */
     public enum Mode {
-        /** {@code store} and {@code alias} are set — references a credential store entry. */
         STORE_REFERENCE,
-        /** Only {@code clear-text} is set — password visible in the configuration. */
         CLEAR_TEXT,
-        /** No sub-attributes are set. */
         UNDEFINED
     }
 
@@ -71,8 +64,8 @@ public class CredentialReferenceProvider implements ItemProvider {
     }
 
     @Override
-    public boolean matches(AttributeMatch match) {
-        return match.isSingle() && hasObjectValueType(match.primary(), STORE, ALIAS, CLEAR_TEXT);
+    public MatchResult match(List<AttributeDescription> pool) {
+        return partition(pool, ad -> hasObjectValueType(ad, STORE, ALIAS, CLEAR_TEXT));
     }
 
     @Override

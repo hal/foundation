@@ -47,8 +47,8 @@
  * <dt>{@link org.jboss.hal.ui.resource.table}</dt>
  * <dd>Read-only metadata tables for attributes, operations, and capabilities.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.pipeline}</dt>
- * <dd>Attribute-to-item pipeline that transforms resource metadata into view and form items. Includes matchers for
- * composite attributes (credential-reference, time-unit, file) and providers that create the corresponding items.</dd>
+ * <dd>Attribute-to-item pipeline that transforms resource metadata into view and form items. Handlers claim and produce
+ * items for composite attributes (credential-reference, time-unit, file); providers handle unclaimed leaf attributes.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.grouping}</dt>
  * <dd>Grouping strategies for organizing resource items into named sections.</dd>
  * </dl>

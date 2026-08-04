@@ -18,7 +18,7 @@ package org.jboss.hal.ui.resource.form;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.patternfly.component.help.HelperText;
 
 import elemental2.dom.HTMLElement;

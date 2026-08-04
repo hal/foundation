@@ -15,121 +15,70 @@
  */
 
 /**
- * Attribute-to-item pipeline that transforms resource metadata into view and form items.
+ * Attribute-to-item pipeline with a two-tier architecture.
  *
- * <h2>Pipeline Stages</h2>
+ * <h2>Overview</h2>
+ * <p>
+ * The pipeline transforms resource metadata ({@link org.jboss.hal.meta.description.AttributeDescription}s) into
+ * {@link org.jboss.hal.ui.resource.view.ViewItem}s and {@link org.jboss.hal.ui.resource.form.FormItem}s through two tiers:
+ *
+ * <h3>Handlers ({@link org.jboss.hal.ui.resource.pipeline.AttributeHandler})</h3>
+ * <p>
+ * Handlers bridge the <em>description world</em> (metadata only) and the <em>value world</em> (resolved snapshots with RBAC
+ * state). Each handler both claims attributes from the pool and produces items for its claimed matches — no separate matcher
+ * and provider needed.
+ * <p>
+ * Registered handlers (in priority order):
  * <ol>
- *     <li><b>Match</b> — {@link org.jboss.hal.ui.resource.pipeline.AttributeMatcher}s scan the attribute pool in priority
- *         order, claiming related attributes into {@link org.jboss.hal.ui.resource.pipeline.AttributeMatch}s.</li>
- *     <li><b>Itemize</b> — {@link org.jboss.hal.ui.resource.pipeline.ItemProvider}s resolve each group against the
- *         {@link org.jboss.hal.ui.resource.pipeline.PipelineContext} into
- *         {@link org.jboss.hal.ui.resource.ResolvedAttribute}s and create
- *         {@link org.jboss.hal.ui.resource.view.ViewItem}s or
- *         {@link org.jboss.hal.ui.resource.form.FormItem}s. Providers are tried in registration order; first match
- *         wins.</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler} — OBJECT with {store, alias, clear-text}</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.TimeUnitHandler} — OBJECT with {time, unit}</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.FileHandler} — OBJECT with {path, relative-to}</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.PathRelativeToHandler} — sibling path + relative-to STRING pairs</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.MapHandler} — OBJECT with simple scalar VALUE_TYPE</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.FlatteningHandler} — simpleRecord OBJECTs (all simple sub-attributes)</li>
  * </ol>
  *
- * <h2>Matcher Chain</h2>
+ * <h3>Providers ({@link org.jboss.hal.ui.resource.pipeline.ItemProvider})</h3>
  * <p>
- * Concrete {@link org.jboss.hal.ui.resource.pipeline.AttributeMatcher} implementations that claim related attributes:
+ * Providers operate in the value world only — they receive already-resolved
+ * {@link org.jboss.hal.ui.resource.ResolvedAttribute}s and produce leaf-level items. Providers are the common exit path for
+ * both unclaimed top-level attributes and child attributes delegated by handlers.
+ * <p>
+ * Registered providers (in order):
  * <ol>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.CredentialReferenceMatcher} — matches credential-reference OBJECT
- *         attributes</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.TimeUnitMatcher} — matches time + unit attribute pairs</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.FileMatcher} — matches path + relative-to OBJECT attributes</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.MapMatcher} — matches MAP-typed attributes</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.PathRelativeToMatcher} — matches sibling path + relative-to STRING
- *         pairs</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.RelativeToProvider} — standalone *relative-to attributes (form only)</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.DefaultProvider} — type-based dispatch catch-all</li>
  * </ol>
  *
- * <h2>Provider Chain</h2>
- * <ol>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider} — composite: credential-reference</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.TimeUnitProvider} — composite: time-unit</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.FileProvider} — composite: file</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.MapProvider} — composite: map attributes</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.PathRelativeToProvider} — sibling group: path + relative-to</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.RelativeToProvider} — standalone: relative-to (FIP only)</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.FlatteningProvider} — unclaimed simpleRecord OBJECTs → n sub-attribute
- *         items</li>
- *     <li>{@link org.jboss.hal.ui.resource.pipeline.DefaultItemProvider} — everything else: type-based dispatch</li>
- * </ol>
- *
- * <h2>Type Relationships</h2>
+ * <h2>Data Flow</h2>
  * <pre>
- * AttributeDescription  — raw metadata from the management model (no values, no RBAC)
- *         ↓ stage 1 matchers group them
- * AttributeMatch        — 1..n descriptions that belong together (still no values)
- *         ↓ stage 2 providers resolve against PipelineContext
- * ResolvedAttribute     — 1 description + its current value + readable/writable (snapshot)
- *         ↓ passed to item constructors
- * FormItem         — holds 1..n ResolvedAttributes, renders UI, produces operations
- * ViewItem         — holds 1..n ResolvedAttributes, renders read-only display
- * </pre>
- * <p>
- * {@link org.jboss.hal.ui.resource.pipeline.AttributeMatch} is the stage 1 → stage 2 contract (descriptions only).
- * {@link org.jboss.hal.ui.resource.ResolvedAttribute} is the stage 2 → item contract (descriptions + values + RBAC).
- * The split happens at the provider: it receives a group, resolves each description against the context, and passes resolved
- * attributes to the item constructor.
+ * Description world                    Value world
+ * (metadata only)                      (description + value + RBAC)
  *
- * <h2>Use Cases</h2>
- *
- * <h3>Single attribute (e.g. a STRING {@code enabled})</h3>
- * <pre>
- * Stage 1: AttributeMatch([enabled])              — 1 description
- * Stage 2: resolve → ResolvedAttribute(enabled)   — 1 resolved
- * Item:    holds 1 ResolvedAttribute
- *          operations() → 1 write-attribute(name="enabled", value=X)
+ * AttributeDescription ─┐
+ *                       ├─ match() ──→ AttributeMatch ──→ handler.viewItems(ctx, match)
+ * AttributeDescription ─┘                                        │
+ *                                                          resolve(ctx, desc)
+ *                                                                │
+ *                                                                ▼
+ *                                                        ResolvedAttribute
+ *                                                                │
+ *                                                     pipeline.viewItem(ctx, ra)
+ *                                                                │
+ *                                                                ▼
+ *                                                        ItemProvider chain
  * </pre>
  *
- * <h3>Composite OBJECT kept as unit (e.g. {@code credential-reference})</h3>
- * <pre>
- * Stage 1: AttributeMatch([credential-reference])              — 1 description (the OBJECT)
- * Stage 2: resolve → ResolvedAttribute(credential-reference)   — 1 resolved
- *          Sub-attributes (store, alias, clear-text) are INSIDE the value ModelNode
- *          and the description's valueTypeAttributeDescriptions()
- * Item:    holds 1 ResolvedAttribute
- *          operations() → 1 write-attribute(name="credential-reference", value={store:X, alias:Y, ...})
- * </pre>
- *
- * <h3>Flattened simple-record OBJECT (e.g. an unclaimed {@code {foo, bar}} OBJECT)</h3>
- * <pre>
- * Stage 1: AttributeMatch([my-record])                          — 1 description (the OBJECT)
- * Stage 2: FlatteningProvider detects simpleRecord, flattens:
- *          → ResolvedAttribute(foo) with fqn="my-record.foo"    — nested description
- *          → ResolvedAttribute(bar) with fqn="my-record.bar"
- * Items:   2 items, each holds 1 ResolvedAttribute
- *          operations() → 1 write-attribute(name="my-record.foo", value=X) each (FQN path)
- * </pre>
- *
- * <h3>Sibling group (e.g. {@code path} + {@code relative-to})</h3>
- * <pre>
- * Stage 1: AttributeMatch([path, relative-to])                  — 2 descriptions
- * Stage 2: resolve each:
- *          → ResolvedAttribute(path)
- *          → ResolvedAttribute(relative-to)
- * Item:    1 item, holds 2 ResolvedAttributes
- *          operations() → 2 write-attribute ops (one per attribute)
- * </pre>
- *
- * <h3>Summary</h3>
- * <table>
- *     <caption>Data flow per use case</caption>
- *     <tr><th>Use case</th><th>AttributeMatch</th><th>ResolvedAttributes</th><th>Items</th><th>Operations</th></tr>
- *     <tr><td>Single attribute</td><td>1 desc</td><td>1 resolved</td><td>1 item, 1 resolved</td><td>1 op</td></tr>
- *     <tr><td>Composite (credential-ref)</td><td>1 desc (OBJECT)</td><td>1 resolved</td><td>1 item, 1 resolved</td><td>1 op (whole OBJECT)</td></tr>
- *     <tr><td>Flattened simple-record</td><td>1 desc (OBJECT)</td><td>n resolved</td><td>n items, each 1 resolved</td><td>n ops (FQN paths)</td></tr>
- *     <tr><td>Sibling group</td><td>n descs</td><td>n resolved</td><td>1 item, n resolved</td><td>n ops (separate attrs)</td></tr>
- * </table>
- *
- * <p>
- * <h2>Pipeline Configuration</h2>
- * <p>
- * {@link org.jboss.hal.ui.resource.pipeline.PipelineFlags} controls pipeline behaviour using a {@code Scope} (which attributes
- * to include) and a {@code Placeholder} (how to display undefined values).
- * <p>
- * Entry point: {@link org.jboss.hal.ui.resource.pipeline.Pipeline#DEFAULT}.
+ * <h2>Entry Points</h2>
+ * <ul>
+ *     <li><b>Full pipeline</b> — {@code Pipeline.instance().viewItems(context)} /
+ *         {@code Pipeline.instance().formItems(context)}</li>
+ *     <li><b>Child pipeline</b> — {@code Pipeline.instance().viewItem(context, resolvedAttribute)} /
+ *         {@code Pipeline.instance().formItem(context, resolvedAttribute)}</li>
+ * </ul>
  *
  * @see org.jboss.hal.ui.resource.pipeline.Pipeline
+ * @see org.jboss.hal.ui.resource.pipeline.AttributeHandler
+ * @see org.jboss.hal.ui.resource.pipeline.ItemProvider
  */
 package org.jboss.hal.ui.resource.pipeline;

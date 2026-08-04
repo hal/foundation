@@ -1,6 +1,6 @@
 # List of Simple Records
 
-Lists where each element is a flat object with only simple-type sub-attributes (STRING, BOOLEAN, INT, LONG, DOUBLE) or free-form key-value map OBJECTs (already covered by MapProvider). Sub-attributes of each list element are processed recursively by the pipeline — each sub-attribute is matched and provided by the appropriate handler.
+Lists where each element is a flat object with only simple-type sub-attributes (STRING, BOOLEAN, INT, LONG, DOUBLE) or free-form key-value map OBJECTs (already covered by MapHandler). Sub-attributes of each list element are processed recursively by the pipeline — each sub-attribute is matched and provided by the appropriate handler.
 
 ## Status
 

@@ -17,7 +17,7 @@ package org.jboss.hal.ui.resource.view;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 

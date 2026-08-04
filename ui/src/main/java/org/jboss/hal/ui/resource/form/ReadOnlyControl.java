@@ -28,16 +28,15 @@ import static org.patternfly.component.inputgroup.InputGroupText.inputGroupText;
 import static org.patternfly.icon.IconSets.fas.lock;
 
 /**
- * {@link NativeControl} displayed when the current user lacks read permission, showing a locked "restricted" indicator.
+ * {@link NativeControl} if the attribute is not writable or the storage is memory.
  */
-public final class RestrictedControl implements NativeControl<HTMLElement> {
+public final class ReadOnlyControl implements NativeControl<HTMLElement> {
 
     @Override
     public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         return inputGroup()
                 .addItem(inputGroupItem().fill()
                         .addControl(textInput(identifier)
-                                .value("restricted")
                                 .disabled()))
                 .addText(inputGroupText().icon(lock()).plain())
                 .element();

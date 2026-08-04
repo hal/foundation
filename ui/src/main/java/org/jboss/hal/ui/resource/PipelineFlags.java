@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.pipeline;
+package org.jboss.hal.ui.resource;
 
 /**
  * Configuration flags for the pipeline, controlling scope (new vs. existing resource) and placeholder behavior. Used by both

@@ -15,42 +15,39 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import java.util.List;
-
 /**
- * Stage 2 of the pipeline: creates view and form items for matched attribute groups. Providers are tried in registration order;
- * the first one whose {@link #matches(AttributeMatch)} returns {@code true} handles the group.
+ * Leaf-level item factory that operates in the value world — receives already-resolved attributes and produces view or form
+ * items. Providers are the common exit path for all attributes: both unclaimed top-level attributes and child attributes
+ * delegated by handlers pass through the provider chain.
  * <p>
- * Default methods return {@code null}, which signals "use default rendering for this mode." This allows a provider to be
- * "FIP only" (custom form item, default view item) or "VIP only" (custom view item, default form item).
- * <p>
- * The {@link #viewItems(PipelineContext, AttributeMatch)} and {@link #formItems(PipelineContext, AttributeMatch)} methods
- * return lists because a provider may produce multiple items from a single group (e.g. the default provider flattens OBJECT
- * simpleRecords into n items).
+ * Providers are tried in registration order; the first one whose {@link #handles(ResolvedAttribute)} returns {@code true}
+ * creates the item. Default methods return {@code null}, allowing a provider to be form-only or view-only.
+ *
+ * @see AttributeHandler
+ * @see Pipeline
  */
 public interface ItemProvider {
 
-    /** Tests whether this provider handles the given attribute match. */
-    boolean matches(AttributeMatch match);
+    /** Tests whether this provider handles the given resolved attribute. */
+    boolean handles(ResolvedAttribute ra);
 
     /**
-     * Creates view items for the given match. Returns {@code null} to fall through to the next provider or default rendering.
-     * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
-     * simpleRecords.
+     * Creates a view item for the given resolved attribute. Returns {@code null} to fall through to the next provider.
      */
-    default List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
+    default ViewItem viewItem(PipelineContext context, ResolvedAttribute ra) {
         return null;
     }
 
     /**
-     * Creates form items for the given match. Returns {@code null} to fall through to the next provider or default rendering.
-     * Most providers return a single-element list; the default provider may return multiple items for flattened OBJECT
-     * simpleRecords.
+     * Creates a form item for the given resolved attribute. Returns {@code null} to fall through to the next provider.
      */
-    default List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+    default FormItem formItem(PipelineContext context, ResolvedAttribute ra) {
         return null;
     }
 }

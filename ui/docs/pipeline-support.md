@@ -8,7 +8,7 @@ Total attributes: **5,803** (4,118 configuration + 1,685 runtime)
 
 | | Handler | Pattern | Count | Priority |
 |---|---|---|---|---|
-| :white_check_mark: | [Default Item Provider](handler/default-item-provider.md) | STRING, BOOLEAN, INT, LONG, DOUBLE, BYTES, LIST of simple type | 5,384 | — |
+| :white_check_mark: | [Default Provider](handler/default-item-provider.md) | STRING, BOOLEAN, INT, LONG, DOUBLE, BYTES, LIST of simple type | 5,384 | — |
 | :white_check_mark: | [Credential Reference](handler/credential-reference.md) | credential-reference family | 49 | — |
 | :white_check_mark: | [Time Unit](handler/time-unit.md) | keepalive-time | 8 | — |
 | :white_check_mark: | [File](handler/file.md) | file (logging) | 8 | — |

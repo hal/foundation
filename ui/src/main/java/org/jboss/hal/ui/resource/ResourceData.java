@@ -31,11 +31,9 @@ import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.grouping.AutoGrouping;
 import org.jboss.hal.ui.resource.grouping.GroupingSupport;
+import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
+import org.jboss.hal.ui.resource.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.view.ResourceView;
 import org.jboss.hal.ui.resource.view.ViewItem;
 import org.patternfly.component.emptystate.EmptyState;
@@ -178,52 +176,60 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
 
     void load(State state) {
         changeState(state);
-        if (metadata.isDefined()) {
-            uic().dispatcher().execute(operation, resource -> {
-                if (valid(resource)) {
-                    PipelineContext context = new PipelineContext(template, metadata, resource,
-                            new PipelineFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));
-                    viewItems.clear();
-                    formItems.clear();
-                    HTMLElement rootElement = null;
-
-                    if (state == VIEW) {
-                        List<ViewItem> items = pipeline.viewItems(context);
-                        viewItems.addAll(items);
-                        supportsGrouping = GroupingSupport.hasGroups(items)
-                                || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
-                        resourceView = new ResourceView();
-                        rootElement = resourceView.build(items, grouped && supportsGrouping);
-
-                    } else if (state == EDIT) {
-                        List<FormItem> items = pipeline.formItems(context);
-                        formItems.addAll(items);
-                        supportsGrouping = GroupingSupport.hasGroups(items)
-                                || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
-                        resourceForm = new ResourceForm();
-                        resourceForm.addItems(items, grouped && supportsGrouping);
-                        rootElement = resourceForm.element();
-                    }
-
-                    if (state == VIEW || state == EDIT) {
-                        int itemCount = state == VIEW ? viewItems.size() : formItems.size();
-                        total.set(itemCount);
-                        if (filter.defined()) {
-                            onFilterChanged(filter, null);
-                        } else {
-                            visible.set(itemCount);
-                        }
-                        toolbar.adjust(state, metadata.securityContext());
-                        setVisible(toolbar, true);
-                        rootContainer.add(rootElement);
-                    }
-                } else {
-                    noAttributes();
-                }
-            }, (op, error) -> operationError(op.asCli(), error));
-        } else {
+        if (!metadata.isDefined()) {
             metadataError();
+            return;
         }
+        uic().dispatcher().execute(operation,
+                resource -> processResource(resource, state),
+                (op, error) -> operationError(op.asCli(), error));
+    }
+
+    private void processResource(ModelNode resource, State state) {
+        if (!valid(resource)) {
+            noAttributes();
+            return;
+        }
+
+        PipelineContext context = new PipelineContext(template, metadata, resource,
+                new PipelineFlags(Scope.EXISTING_RESOURCE, Placeholder.UNDEFINED));
+        viewItems.clear();
+        formItems.clear();
+
+        HTMLElement rootElement = buildItems(state, context);
+        if (rootElement != null) {
+            int itemCount = state == VIEW ? viewItems.size() : formItems.size();
+            total.set(itemCount);
+            if (filter.defined()) {
+                onFilterChanged(filter, null);
+            } else {
+                visible.set(itemCount);
+            }
+            toolbar.adjust(state, metadata.securityContext());
+            setVisible(toolbar, true);
+            rootContainer.add(rootElement);
+        }
+    }
+
+    private HTMLElement buildItems(State state, PipelineContext context) {
+        if (state == VIEW) {
+            List<ViewItem> items = pipeline.viewItems(context);
+            viewItems.addAll(items);
+            supportsGrouping = GroupingSupport.hasGroups(items)
+                    || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
+            resourceView = new ResourceView();
+            return resourceView.build(items, grouped && supportsGrouping);
+
+        } else if (state == EDIT) {
+            List<FormItem> items = pipeline.formItems(context);
+            formItems.addAll(items);
+            supportsGrouping = GroupingSupport.hasGroups(items)
+                    || items.size() >= AutoGrouping.AUTO_GROUPING_THRESHOLD;
+            resourceForm = new ResourceForm();
+            resourceForm.addItems(items, grouped && supportsGrouping);
+            return resourceForm.element();
+        }
+        return null;
     }
 
     // ------------------------------------------------------ filtering

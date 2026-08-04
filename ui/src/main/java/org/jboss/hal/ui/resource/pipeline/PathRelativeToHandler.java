@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,22 +25,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.PathRelativeToFormItem;
+import org.jboss.hal.ui.resource.view.PathRelativeToViewItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
 
+import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 
 /**
- * Sibling matcher that claims pairs of top-level {@code path} + {@code relative-to} attributes. These are two separate STRING
- * attributes that are semantically coupled and should be rendered as one unit.
- * <p>
- * The matcher handles multiple naming variants by extracting a shared prefix:
- * <ul>
- *     <li>{@code path} + {@code relative-to} — most common (27 occurrences)</li>
- *     <li>{@code keystore-path} + {@code keystore-relative-to} — audit syslog TLS</li>
- *     <li>{@code object-store-path} + {@code object-store-relative-to} — transactions</li>
- *     <li>{@code directory} + {@code relative-to} — undertow access-log exception</li>
- * </ul>
+ * Handler for sibling path + relative-to attribute pairs. Claims pairs of top-level STRING attributes that are semantically
+ * coupled and should be rendered as one unit. Resolves both attributes and uses name-based lookup (not positional).
  */
-class PathRelativeToMatcher implements AttributeMatcher {
+class PathRelativeToHandler implements AttributeHandler {
 
     private static final String RELATIVE_TO_SUFFIX = RELATIVE_TO;
     private static final String DIRECTORY = "directory";
@@ -64,8 +64,7 @@ class PathRelativeToMatcher implements AttributeMatcher {
             }
 
             if (path != null && !claimed.contains(path.name())) {
-                groups.add(AttributeMatch.of(path.name(),
-                        Arrays.asList(path, ad)));
+                groups.add(AttributeMatch.of(path.name(), Arrays.asList(path, ad)));
                 claimed.add(path.name());
                 claimed.add(ad.name());
             }
@@ -79,6 +78,20 @@ class PathRelativeToMatcher implements AttributeMatcher {
         }
 
         return new MatchResult(groups, remaining);
+    }
+
+    @Override
+    public List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute path = ResolvedAttribute.resolve(context, match.descriptions().get(0));
+        ResolvedAttribute relativeTo = ResolvedAttribute.resolve(context, match.descriptions().get(1));
+        return singletonList(new PathRelativeToViewItem(context, match.name(), path, relativeTo));
+    }
+
+    @Override
+    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
+        ResolvedAttribute path = ResolvedAttribute.resolve(context, match.descriptions().get(0));
+        ResolvedAttribute relativeTo = ResolvedAttribute.resolve(context, match.descriptions().get(1));
+        return singletonList(new PathRelativeToFormItem(context, match.name(), path, relativeTo));
     }
 
     private AttributeDescription findInPool(List<AttributeDescription> pool, String name) {

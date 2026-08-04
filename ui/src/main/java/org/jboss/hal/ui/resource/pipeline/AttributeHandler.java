@@ -15,6 +15,9 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,64 +25,66 @@ import java.util.function.Predicate;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.view.ViewItem;
 
 import static java.util.Collections.unmodifiableList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 
 /**
- * Stage 1 of the pipeline: scans the attribute pool and claims groups of related attributes. Matchers run in priority order.
- * Each matcher receives the remaining pool (attributes not yet claimed by higher-priority matchers) and returns a
- * {@link MatchResult} containing the claimed groups and the remaining unclaimed attributes.
+ * Unified handler that bridges the description world and the value world. Handlers both claim attributes from the pool (match
+ * phase) and produce view/form items (itemize phase), performing resolution internally.
  * <p>
- * The pool is processed immutably — matchers do not modify the input list. Instead, they return a new {@code MatchResult} with
- * the remaining attributes.
+ * Handlers run in priority order during matching. Each handler receives the remaining pool (attributes not yet claimed by
+ * higher-priority handlers) and returns a {@link MatchResult} with claimed matches and remaining attributes. The same handler
+ * then produces items for its claimed matches — no separate provider needed, no dual matching.
+ *
+ * @see ItemProvider
+ * @see Pipeline
  */
-@FunctionalInterface
-public interface AttributeMatcher {
+public interface AttributeHandler {
 
-    /** The result of a matcher's scan: claimed groups and the remaining unclaimed attributes. */
+    /** The result of a handler's scan: claimed matches and the remaining unclaimed attributes. */
     final class MatchResult {
 
-        private final List<AttributeMatch> groups;
+        private final List<AttributeMatch> matches;
         private final List<AttributeDescription> remaining;
 
-        public MatchResult(List<AttributeMatch> groups, List<AttributeDescription> remaining) {
-            this.groups = unmodifiableList(groups);
+        public MatchResult(List<AttributeMatch> matches, List<AttributeDescription> remaining) {
+            this.matches = unmodifiableList(matches);
             this.remaining = unmodifiableList(remaining);
         }
 
-        /** Returns the groups claimed by this matcher. May be empty if nothing matched. */
-        public List<AttributeMatch> groups() {
-            return groups;
+        public List<AttributeMatch> matches() {
+            return matches;
         }
 
-        /** Returns the attributes that were not claimed and are still available for subsequent matchers. */
         public List<AttributeDescription> remaining() {
             return remaining;
         }
     }
 
+    // ------------------------------------------------------ static helpers
+
     /**
-     * Partitions the pool by a predicate: matching attributes become single-attribute groups, the rest stays in remaining. Use
-     * this for composite matchers that claim individual attributes based on their structure.
+     * Partitions the pool by a predicate: matching attributes become single-attribute matches, the rest stays in remaining.
      */
     static MatchResult partition(List<AttributeDescription> pool, Predicate<AttributeDescription> predicate) {
-        List<AttributeMatch> groups = new ArrayList<>();
+        List<AttributeMatch> matches = new ArrayList<>();
         List<AttributeDescription> remaining = new ArrayList<>();
         for (AttributeDescription ad : pool) {
             if (predicate.test(ad)) {
-                groups.add(AttributeMatch.single(ad));
+                matches.add(AttributeMatch.single(ad));
             } else {
                 remaining.add(ad);
             }
         }
-        return new MatchResult(groups, remaining);
+        return new MatchResult(matches, remaining);
     }
 
     /**
-     * Tests whether the given attribute is an OBJECT whose structured VALUE_TYPE contains all the specified keys. Use this
-     * for composite matchers that identify attributes by their internal structure.
+     * Tests whether the given attribute is an OBJECT whose structured VALUE_TYPE contains all the specified keys.
      */
     static boolean hasObjectValueType(AttributeDescription description, String... requiredKeys) {
         try {
@@ -106,8 +111,8 @@ public interface AttributeMatcher {
     }
 
     /**
-     * Tests whether the given attribute is an OBJECT whose VALUE_TYPE is a simple scalar type (STRING, INT, LONG, etc.).
-     * This identifies free-form key-value map attributes — the complement of {@link #hasObjectValueType}.
+     * Tests whether the given attribute is an OBJECT whose VALUE_TYPE is a simple scalar type. Identifies free-form key-value
+     * map attributes.
      */
     static boolean hasSimpleValueType(AttributeDescription description) {
         try {
@@ -128,11 +133,29 @@ public interface AttributeMatcher {
         }
     }
 
+    // ------------------------------------------------------ handler methods
+
     /**
-     * Scans the given pool of attributes and claims groups of related attributes.
+     * Scans the pool and claims matches of related attributes.
      *
-     * @param pool the attributes available for claiming (not yet claimed by higher-priority matchers)
-     * @return a result containing the claimed groups and the remaining unclaimed attributes
+     * @param pool the attributes available for claiming (not yet claimed by higher-priority handlers)
+     * @return claimed matches and remaining unclaimed attributes
      */
     MatchResult match(List<AttributeDescription> pool);
+
+    /**
+     * Creates view items for the given match. The handler resolves attributes against the context internally and may delegate
+     * child attributes to the pipeline's provider chain via {@link Pipeline#viewItem(PipelineContext, ResolvedAttribute)}.
+     *
+     * @return view items, or {@code null} to fall through to the provider chain
+     */
+    List<ViewItem> viewItems(PipelineContext context, AttributeMatch match);
+
+    /**
+     * Creates form items for the given match. The handler resolves attributes against the context internally and may delegate
+     * child attributes to the pipeline's provider chain via {@link Pipeline#formItem(PipelineContext, ResolvedAttribute)}.
+     *
+     * @return form items, or {@code null} to fall through to the provider chain
+     */
+    List<FormItem> formItems(PipelineContext context, AttributeMatch match);
 }

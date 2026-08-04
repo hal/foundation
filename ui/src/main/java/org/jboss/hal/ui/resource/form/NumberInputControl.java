@@ -21,7 +21,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
@@ -52,6 +52,8 @@ import org.patternfly.component.help.HelperText;
  */
 public final class NumberInputControl implements NativeControl<HTMLElement> {
 
+    // JavaScript Number.MIN_SAFE_INTEGER / MAX_SAFE_INTEGER (-(2^53-1) to 2^53-1).
+    // J2CL compiles to JavaScript where precision is lost beyond this range.
     private static final long MIN_SAFE_LONG = -9007199254740991L;
     private static final long MAX_SAFE_LONG = 9007199254740991L;
 

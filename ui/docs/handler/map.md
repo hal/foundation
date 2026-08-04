@@ -5,8 +5,7 @@ Matches free-form key-value OBJECT attributes — OBJECTs with `value-type=STRIN
 ## Status
 
 - **Implemented**: yes
-- **Matcher**: `MapMatcher`
-- **Provider**: `MapProvider`
+- **Handler**: `MapHandler`
 - **Priority**: —
 
 ## Attributes — 222 occurrences

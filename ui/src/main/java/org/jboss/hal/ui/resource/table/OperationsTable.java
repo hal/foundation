@@ -101,7 +101,7 @@ public class OperationsTable implements IsElement<HTMLElement> {
     private final ObservableValue<Integer> total;
     private final Tbody tbody;
     private final HTMLElement root;
-    private EmptyState noAttributes;
+    private EmptyState noOperations;
 
     public OperationsTable(AddressTemplate template, Metadata metadata) {
         boolean showGlobalOperations = uic().settings().get(Settings.Key.SHOW_GLOBAL_OPERATIONS).asBoolean();
@@ -210,11 +210,11 @@ public class OperationsTable implements IsElement<HTMLElement> {
     }
 
     private void noOperations() {
-        if (noAttributes == null) {
-            noAttributes = noMatch(filter);
+        if (noOperations == null) {
+            noOperations = noMatch(filter);
         }
-        if (!isAttached(noAttributes)) {
-            tbody.empty(5, noAttributes);
+        if (!isAttached(noOperations)) {
+            tbody.empty(5, noOperations);
         }
     }
 

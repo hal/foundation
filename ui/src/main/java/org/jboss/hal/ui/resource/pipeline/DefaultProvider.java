@@ -15,57 +15,53 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import java.util.List;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import org.jboss.hal.dmr.ModelType;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.CapabilitiesReferenceControl;
+import org.jboss.hal.ui.resource.form.CapabilityReferenceControl;
+import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.NumberInputControl;
+import org.jboss.hal.ui.resource.form.ReadOnlyControl;
 import org.jboss.hal.ui.resource.form.RestrictedControl;
 import org.jboss.hal.ui.resource.form.SelectControl;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.form.StringListControl;
 import org.jboss.hal.ui.resource.form.SwitchControl;
-import org.jboss.hal.ui.resource.form.CapabilityReferenceControl;
 import org.jboss.hal.ui.resource.form.UnsupportedControl;
 import org.jboss.hal.ui.resource.view.DefaultViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 
 /**
- * Catch-all provider that handles all unmatched single-attribute groups with type-based rendering. Must be registered last in
- * the provider chain, after {@link FlatteningProvider} (which handles simpleRecord OBJECTs).
+ * Catch-all provider that handles all attributes with type-based rendering. Must be registered last in the provider chain.
  */
-class DefaultItemProvider implements ItemProvider {
+class DefaultProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch match) {
+    public boolean handles(ResolvedAttribute ra) {
         return true;
     }
 
     @Override
-    public List<ViewItem> viewItems(PipelineContext context, AttributeMatch match) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new DefaultViewItem(context, ra.fqn(), ra));
+    public ViewItem viewItem(PipelineContext context, ResolvedAttribute ra) {
+        return new DefaultViewItem(context, ra.fqn(), ra);
     }
 
     @Override
-    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(formItem(ra, context));
-    }
-
-    static FormItem formItem(ResolvedAttribute ra, PipelineContext context) {
+    public FormItem formItem(PipelineContext context, ResolvedAttribute ra) {
         String identifier = ra.fqn();
         if (!ra.readable()) {
             return new StandardFormItem<>(context, identifier, ra, new RestrictedControl());
+        }
+        if (!ra.writable()) {
+            return new StandardFormItem<>(context, identifier, ra, new ReadOnlyControl());
         }
         if (!ra.description().hasDefined(TYPE)) {
             return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());

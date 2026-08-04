@@ -11,7 +11,7 @@ OBJECTs with nested OBJECT or LIST sub-attributes — not matching the `simpleRe
 
 ## Attributes — 7 occurrences
 
-Deprecated and excluded: `filter` on all logging handler types, logger, and root-logger (8 occurrences) — deprecated since model version 1.2.0. Use `filter-spec` (a simple STRING already covered by `DefaultItemProvider`).
+Deprecated and excluded: `filter` on all logging handler types, logger, and root-logger (8 occurrences) — deprecated since model version 1.2.0. Use `filter-spec` (a simple STRING already covered by `DefaultProvider`).
 
 ### Configuration — standalone (6 occurrences)
 

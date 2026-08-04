@@ -20,9 +20,9 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider;
-import org.jboss.hal.ui.resource.pipeline.CredentialReferenceProvider.Mode;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
+import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler.Mode;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;
 import org.patternfly.component.menu.SingleTypeahead;
@@ -76,8 +76,37 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
 
     @Override
     public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        originalMode = CredentialReferenceProvider.mode(attribute.value());
+        originalMode = CredentialReferenceHandler.mode(attribute.value());
+        resolveCapability(attribute);
 
+        String radioGroup = Id.build(identifier, RADIO_GROUP);
+        HTMLElement noneRadioContainer = createNoneRadio(identifier, radioGroup, attribute);
+        createClearTextPanel(identifier, attribute);
+        createStorePanel(context, identifier, attribute);
+        initializeMode();
+
+        return div()
+                .add(noneRadioContainer)
+                .add(radio(Id.build(identifier, "clear-text-radio"), radioGroup, "Clear text")
+                        .value(originalMode == Mode.CLEAR_TEXT)
+                        .onChange((e, r, checked) -> {
+                            if (checked) {
+                                switchMode(SelectedMode.CLEAR_TEXT);
+                            }
+                        }))
+                .add(clearTextPanel)
+                .add(radio(Id.build(identifier, "store-radio"), radioGroup, "Credential store")
+                        .value(originalMode == Mode.STORE_REFERENCE)
+                        .onChange((e, r, checked) -> {
+                            if (checked) {
+                                switchMode(SelectedMode.CREDENTIAL_STORE);
+                            }
+                        }))
+                .add(storePanel)
+                .element();
+    }
+
+    private void resolveCapability(ResolvedAttribute attribute) {
         AttributeDescriptions nested = attribute.description().valueTypeAttributeDescriptions();
         AttributeDescription storeDescription = nested.get(STORE);
         if (storeDescription != null && storeDescription.hasDefined(CAPABILITY_REFERENCE)) {
@@ -86,10 +115,9 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         if (capability == null) {
             capability = "org.wildfly.security.credential-store";
         }
+    }
 
-        String radioGroup = Id.build(identifier, RADIO_GROUP);
-
-        // "Not configured" radio
+    private HTMLElement createNoneRadio(String identifier, String radioGroup, ResolvedAttribute attribute) {
         HTMLElement noneRadioContainer = div()
                 .add(radio(Id.build(identifier, "none"), radioGroup, "Not configured")
                         .value(originalMode == Mode.UNDEFINED)
@@ -102,8 +130,10 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         if (attribute.description().required()) {
             setVisible(noneRadioContainer, false);
         }
+        return noneRadioContainer;
+    }
 
-        // "Clear text" controls
+    private void createClearTextPanel(String identifier, ResolvedAttribute attribute) {
         clearTextInput = textInput(password, Id.build(identifier, "clear-text"));
         if (originalMode == Mode.CLEAR_TEXT && attribute.value().hasDefined(CLEAR_TEXT)) {
             clearTextInput.value(attribute.value().get(CLEAR_TEXT).asString());
@@ -111,8 +141,9 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         clearTextPanel = div().css("cr-nested-fields")
                 .add(fieldRow("Password", clearTextInput.element()))
                 .element();
+    }
 
-        // "Credential store" controls
+    private void createStorePanel(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         aliasInput = textInput(Id.build(identifier, "alias"));
         storePasswordInput = textInput(password, Id.build(identifier, "store-password"));
         storePasswordInput.placeholder("New password for alias...");
@@ -151,8 +182,9 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
                 .add(fieldRow("Type", typeInput.element(),
                         span().css("cr-optional-label").text("(optional)").element()))
                 .element();
+    }
 
-        // initial mode
+    private void initializeMode() {
         switch (originalMode) {
             case STORE_REFERENCE:
                 selectedMode = SelectedMode.CREDENTIAL_STORE;
@@ -166,26 +198,6 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         }
         setVisible(clearTextPanel, selectedMode == SelectedMode.CLEAR_TEXT);
         setVisible(storePanel, selectedMode == SelectedMode.CREDENTIAL_STORE);
-
-        return div()
-                .add(noneRadioContainer)
-                .add(radio(Id.build(identifier, "clear-text-radio"), radioGroup, "Clear text")
-                        .value(originalMode == Mode.CLEAR_TEXT)
-                        .onChange((e, r, checked) -> {
-                            if (checked) {
-                                switchMode(SelectedMode.CLEAR_TEXT);
-                            }
-                        }))
-                .add(clearTextPanel)
-                .add(radio(Id.build(identifier, "store-radio"), radioGroup, "Credential store")
-                        .value(originalMode == Mode.STORE_REFERENCE)
-                        .onChange((e, r, checked) -> {
-                            if (checked) {
-                                switchMode(SelectedMode.CREDENTIAL_STORE);
-                            }
-                        }))
-                .add(storePanel)
-                .element();
     }
 
     @Override

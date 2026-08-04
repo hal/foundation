@@ -15,27 +15,30 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+
+import java.util.List;
+
+import org.jboss.hal.dmr.ModelNode;
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.form.TimeUnitControl;
 import org.jboss.hal.ui.resource.view.TimeUnitViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import java.util.List;
-
-import org.jboss.hal.dmr.ModelNode;
-
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
-import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasObjectValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.hasObjectValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
 
 /**
- * Provider for time-unit composite attributes (e.g. {@code keepalive-time}). Matches groups containing a single OBJECT attribute
- * with the time-unit structure ({@code time} + {@code unit}).
+ * Handler for time-unit composite attributes (e.g. {@code keepalive-time}). Claims OBJECT attributes with the time-unit
+ * structure ({@code time} + {@code unit}).
  */
-public class TimeUnitProvider implements ItemProvider {
+class TimeUnitHandler implements AttributeHandler {
 
     /** Returns the time value from a keepalive-time model node, or -1 if undefined. */
     public static long time(ModelNode value) {
@@ -54,8 +57,8 @@ public class TimeUnitProvider implements ItemProvider {
     }
 
     @Override
-    public boolean matches(AttributeMatch match) {
-        return match.isSingle() && hasObjectValueType(match.primary(), TIME, UNIT);
+    public MatchResult match(List<AttributeDescription> pool) {
+        return partition(pool, ad -> hasObjectValueType(ad, TIME, UNIT));
     }
 
     @Override

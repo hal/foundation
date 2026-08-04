@@ -2,92 +2,97 @@
 
 The pipeline transforms resource metadata from the WildFly management model into view and form items for the UI.
 
-## Pipeline Stages
+## Two-Tier Architecture
 
-1. **Match** — `AttributeMatcher`s scan the attribute pool in priority order, claiming groups of related attributes into `AttributeMatch`es.
-2. **Itemize** — `ItemProvider`s resolve each group against the `PipelineContext` into `ResolvedAttribute`s and create `ViewItem`s or `FormItem`s. Providers are tried in registration order; first match wins.
+### Handlers
 
-## Provider Chain
+`AttributeHandler`s scan the attribute pool in priority order, claiming groups of related attributes into `AttributeMatch`es. Each handler both claims and produces items for its matches, performing resolution (description → value + RBAC snapshot) internally. Handlers bridge the *description world* (metadata only) and the *value world* (resolved snapshots).
 
-Providers are tried in this order:
+Registered handlers (in priority order):
 
-1. `CredentialReferenceProvider` — composite: credential-reference
-2. `TimeUnitProvider` — composite: time-unit
-3. `FileProvider` — composite: file
-4. `PathRelativeToProvider` — sibling group: path + relative-to
-5. `RelativeToProvider` — standalone: relative-to
-6. `FlatteningProvider` — unclaimed simpleRecord OBJECTs → n sub-attribute items
-7. `DefaultItemProvider` — everything else: type-based dispatch
+1. `CredentialReferenceHandler` — OBJECT with {store, alias, clear-text}
+2. `TimeUnitHandler` — OBJECT with {time, unit}
+3. `FileHandler` — OBJECT with {path, relative-to}
+4. `PathRelativeToHandler` — sibling path + relative-to STRING pairs
+5. `MapHandler` — OBJECT with simple scalar VALUE_TYPE
+6. `FlatteningHandler` — simpleRecord OBJECTs (all simple sub-attributes)
+
+### Providers
+
+`ItemProvider`s handle unclaimed attributes and child attributes delegated by handlers. Providers operate in the value world only — they receive already-resolved `ResolvedAttribute`s. First match wins.
+
+1. `RelativeToProvider` — standalone relative-to attributes (form only)
+2. `DefaultProvider` — type-based dispatch catch-all
 
 ## Type Relationships
 
 ```
 AttributeDescription  — raw metadata from the management model (no values, no RBAC)
-        ↓ stage 1 matchers group them
+        ↓ handler.match() claims groups
 AttributeMatch        — 1..n descriptions that belong together (still no values)
-        ↓ stage 2 providers resolve against PipelineContext
+        ↓ handler resolves against PipelineContext
 ResolvedAttribute     — 1 description + its current value + readable/writable (snapshot)
-        ↓ passed to item constructors
-FormItem         — holds 1..n ResolvedAttributes, renders UI, produces operations
-ViewItem         — holds 1..n ResolvedAttributes, renders read-only display
+        ↓ handler produces items or delegates to provider chain
+ViewItem / FormItem   — holds 1..n ResolvedAttributes, renders UI
 ```
 
-`AttributeMatch` is the stage 1 → stage 2 contract (descriptions only). `ResolvedAttribute` is the stage 2 → item contract (descriptions + values + RBAC). The split happens at the provider: it receives a match, resolves each description against the context, and passes resolved attributes to the item constructor.
+`AttributeMatch` lives in the description world. `ResolvedAttribute` lives in the value world. Handlers bridge the two — they receive matches and context, perform resolution, and either produce items directly or delegate children to the provider chain via `Pipeline.viewItem/formItem`.
+
+## Entry Points
+
+- **Full pipeline** — `Pipeline.instance().viewItems(context)` / `Pipeline.instance().formItems(context)`
+- **Child pipeline** — `Pipeline.instance().viewItem(context, resolvedAttribute)` / `Pipeline.instance().formItem(context, resolvedAttribute)`
 
 ## Use Cases
 
 ### Single attribute (e.g., a STRING `enabled`)
 
 ```
-Stage 1: AttributeMatch([enabled])              — 1 description
-Stage 2: resolve → ResolvedAttribute(enabled)   — 1 resolved
-Item:    holds 1 ResolvedAttribute
-         operations() → 1 write-attribute(name="enabled", value=X)
+Match:    no handler claims it → unclaimed
+Resolve:  Pipeline resolves → ResolvedAttribute(enabled)
+Provider: DefaultProvider → SwitchControl / StringControl / etc.
+Item:     1 item, 1 ResolvedAttribute
 ```
 
 ### Composite OBJECT kept as unit (e.g., `credential-reference`)
 
 ```
-Stage 1: AttributeMatch([credential-reference])              — 1 description (the OBJECT)
-Stage 2: resolve → ResolvedAttribute(credential-reference)   — 1 resolved
-         Sub-attributes (store, alias, clear-text) are INSIDE the value ModelNode
-         and the description's valueTypeAttributeDescriptions()
-Item:    holds 1 ResolvedAttribute
-         operations() → 1 write-attribute(name="credential-reference", value={store:X, alias:Y, ...})
+Match:    CredentialReferenceHandler claims it → AttributeMatch([credential-reference])
+Handler:  resolves parent, derives children (store, alias, clear-text) via parent.child()
+          delegates children to provider chain → DefaultProvider creates child items
+          wraps in composite CredentialReferenceViewItem / CredentialReferenceControl
+Item:     1 composite item
 ```
 
 ### Flattened simple-record OBJECT (e.g., an unclaimed `{foo, bar}` OBJECT)
 
 ```
-Stage 1: AttributeMatch([my-record])                          — 1 description (the OBJECT)
-Stage 2: FlatteningProvider detects simpleRecord, flattens:
-         → ResolvedAttribute(foo) with fqn="my-record.foo"    — nested description
-         → ResolvedAttribute(bar) with fqn="my-record.bar"
-Items:   2 items, each holds 1 ResolvedAttribute
-         operations() → 1 write-attribute(name="my-record.foo", value=X) each (FQN path)
+Match:    FlatteningHandler claims it → AttributeMatch([my-record])
+Handler:  resolves parent (RBAC captured), derives children:
+          → parent.child("foo") → ResolvedAttribute(foo) with fqn="my-record.foo"
+          → parent.child("bar") → ResolvedAttribute(bar) with fqn="my-record.bar"
+          Each child inherits the parent's readable/writable state.
+          Delegates each child to Pipeline.viewItem/formItem → provider chain.
+Items:    n items, each holds 1 ResolvedAttribute with FQN path
 ```
 
 ### Sibling group (e.g., `path` + `relative-to`)
 
 ```
-Stage 1: AttributeMatch([path, relative-to])                  — 2 descriptions
-Stage 2: resolve each:
-         → ResolvedAttribute(path)
-         → ResolvedAttribute(relative-to)
-Item:    1 item, holds 2 ResolvedAttributes
-         operations() → 2 write-attribute ops (one per attribute)
+Match:    PathRelativeToHandler claims both → AttributeMatch([path, relative-to])
+Handler:  resolves both attributes against context
+          creates composite PathRelativeToViewItem / PathRelativeToFormItem
+Item:     1 composite item, holds 2 ResolvedAttributes
 ```
 
 ### Summary
 
 | Use case | AttributeMatch | ResolvedAttributes | Items | Operations |
 |---|---|---|---|---|
-| Single attribute | 1 desc | 1 resolved | 1 item, 1 resolved | 1 op |
-| Composite (credential-ref) | 1 desc (OBJECT) | 1 resolved | 1 item, 1 resolved | 1 op (whole OBJECT) |
-| Flattened simple-record | 1 desc (OBJECT) | n resolved | n items, each 1 resolved | n ops (FQN paths) |
-| Sibling group | n descs | n resolved | 1 item, n resolved | n ops (separate attrs) |
-
-Entry point: `Pipeline.DEFAULT`
+| Single attribute | unclaimed | 1 resolved | 1 item, 1 resolved | 1 op |
+| Composite (credential-ref) | 1 desc (OBJECT) | 1 parent + n children | 1 composite item | 1 op (whole OBJECT) |
+| Flattened simple-record | 1 desc (OBJECT) | 1 parent + n children | n items | n ops (FQN paths) |
+| Sibling group | n descs | n resolved | 1 composite item | n ops (separate attrs) |
 
 ## Type Abbreviations
 

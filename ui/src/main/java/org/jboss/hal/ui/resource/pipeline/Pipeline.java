@@ -15,187 +15,255 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.pipeline.AttributeMatcher.MatchResult;
+import org.jboss.hal.ui.resource.pipeline.AttributeHandler.MatchResult;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
 /**
- * Transforms resource metadata into view or form items through a two-stage pipeline:
+ * Transforms resource metadata into view or form items through a two-tier architecture:
  * <ol>
- *     <li><b>Match</b> — registered {@link AttributeMatcher}s scan the attribute pool in priority order,
- *         claiming {@link AttributeMatch}es of related attributes. Unclaimed attributes become single-attribute matches.</li>
- *     <li><b>Itemize</b> — for each {@link AttributeMatch}, registered {@link ItemProvider}s are tried in order. The first
- *         provider that matches creates the item(s). Unmatched attributes are handled by the {@link DefaultItemProvider}
- *         catch-all.</li>
+ *     <li><b>Handlers</b> — registered {@link AttributeHandler}s scan the attribute pool in priority order, claiming
+ *         {@link AttributeMatch}es of related attributes. Each handler both claims and produces items for its matches,
+ *         performing resolution internally. Handlers bridge the description world (metadata) and the value world
+ *         (resolved snapshots with RBAC state).</li>
+ *     <li><b>Providers</b> — registered {@link ItemProvider}s handle unclaimed attributes and child attributes delegated by
+ *         handlers. Providers operate in the value world only — they receive already-resolved attributes. Providers are tried
+ *         in registration order; first match wins.</li>
  * </ol>
  * <p>
- * One pipeline, two entry points: {@link #viewItems(PipelineContext)} and {@link #formItems(PipelineContext)}. Stage 1
- * (matching) is identical for both. Stage 2 calls {@link ItemProvider#viewItems(PipelineContext, AttributeMatch)} or
- * {@link ItemProvider#formItems(PipelineContext, AttributeMatch)} depending on the entry point.
+ * Two entry points:
+ * <ul>
+ *     <li><b>Full pipeline</b> — {@link #viewItems(PipelineContext)} and {@link #formItems(PipelineContext)} process all
+ *         attributes in the resource metadata.</li>
+ *     <li><b>Child pipeline</b> — {@link #viewItem(PipelineContext, ResolvedAttribute)} and
+ *         {@link #formItem(PipelineContext, ResolvedAttribute)} produce items for single resolved attributes, used by handlers
+ *         to delegate child attributes to the provider chain.</li>
+ * </ul>
  *
- * @see AttributeMatcher
+ * @see AttributeHandler
  * @see ItemProvider
- * @see AttributeMatch
  */
 public final class Pipeline {
 
     private static final Pipeline instance;
 
     static {
-        // Order is important!
-        List<AttributeMatcher> matchers = List.of(
-                new CredentialReferenceMatcher(),
-                new TimeUnitMatcher(),
-                new FileMatcher(),
-                new PathRelativeToMatcher(),
-                new MapMatcher()
+        // Order matters: handlers run in sequence and each one claims matching attributes from the remaining pool.
+        // Earlier handlers take priority — if CredentialReferenceHandler claims an attribute, FlatteningHandler never sees it.
+        // FlatteningHandler MUST be last because it flattens any remaining composite attributes that weren't claimed
+        // by a specialized handler. Inserting a new handler after FlatteningHandler means it would never see any
+        // composite attributes (they'd already be flattened into scalar items).
+        List<AttributeHandler> handlers = List.of(
+                new CredentialReferenceHandler(),
+                new TimeUnitHandler(),
+                new FileHandler(),
+                new PathRelativeToHandler(),
+                new MapHandler(),
+                new FlatteningHandler()
         );
-        // Order is important!
+        // First matching provider wins. RelativeToProvider handles the special case of path-relative-to siblings;
+        // DefaultProvider is the catch-all fallback for everything else.
         List<ItemProvider> providers = List.of(
-                new CredentialReferenceProvider(),
-                new TimeUnitProvider(),
-                new FileProvider(),
-                new PathRelativeToProvider(),
                 new RelativeToProvider(),
-                new MapProvider(),
-                new FlatteningProvider(),
-                new DefaultItemProvider()
+                new DefaultProvider()
         );
-        instance = new Pipeline(matchers, providers);
+        instance = new Pipeline(handlers, providers);
     }
 
-    /** Returns the shared pipeline instance with all matchers and providers registered in the correct priority order. */
+    /** Returns the shared pipeline instance with all handlers and providers registered in the correct priority order. */
     public static Pipeline instance() {
         return instance;
     }
 
-    private final List<AttributeMatcher> matchers;
+    private final List<AttributeHandler> handlers;
     private final List<ItemProvider> providers;
 
-    Pipeline(List<AttributeMatcher> matchers, List<ItemProvider> providers) {
-        this.matchers = matchers;
+    Pipeline(List<AttributeHandler> handlers, List<ItemProvider> providers) {
+        this.handlers = handlers;
         this.providers = providers;
     }
 
-    /** Runs the pipeline and produces view items for all attributes in the resource metadata. */
+    // ------------------------------------------------------ full pipeline (top-level entry points)
+
+    /** Runs the full pipeline and produces view items for all attributes in the resource metadata. */
     public List<ViewItem> viewItems(PipelineContext context) {
-        List<AttributeMatch> groups = group(context.resourceDescription().attributes());
-        return itemizeView(context, groups);
+        return viewItems(context, context.resourceDescription().attributes());
     }
 
-    /**
-     * Produces a single view item for a resolved attribute by running it through the provider chain. Used by composite view
-     * items to get decomposable items for child or sibling attributes — callers typically use {@link ViewItem#valueElement()}
-     * to embed the rendered value in a custom layout.
-     */
-    public ViewItem viewItem(PipelineContext context, ResolvedAttribute attribute) {
-        AttributeMatch match = AttributeMatch.single(attribute.description());
-        for (ItemProvider provider : providers) {
-            if (provider.matches(match)) {
-                List<ViewItem> result = provider.viewItems(context, match);
-                if (result != null && !result.isEmpty()) {
-                    return result.get(0);
-                }
-            }
-        }
-        return null;
-    }
+    /** Runs the full pipeline and produces view items for the given attributes. */
+    public List<ViewItem> viewItems(PipelineContext context, Iterable<AttributeDescription> attributes) {
+        List<AttributeDescription> pool = toPool(attributes);
+        Map<String, Integer> originalOrder = originalOrder(pool);
 
-    /** Runs the pipeline and produces form items for all attributes in the resource metadata. */
-    public List<FormItem> formItems(PipelineContext context) {
-        List<AttributeMatch> groups = group(context.resourceDescription().attributes());
-        return itemizeForm(context, groups);
-    }
-
-    /** Runs the pipeline and produces form items for operation parameters (used by dialog classes). */
-    public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> parameters) {
-        List<AttributeMatch> groups = group(parameters);
-        return itemizeForm(context, groups);
-    }
-
-    public FormItem formItem(PipelineContext context, ResolvedAttribute attribute) {
-        AttributeMatch match = AttributeMatch.single(attribute.description());
-        for (ItemProvider provider : providers) {
-            if (provider.matches(match)) {
-                List<FormItem> result = provider.formItems(context, match);
-                if (result != null && !result.isEmpty()) {
-                    return result.get(0);
-                }
-            }
-        }
-        return null;
-    }
-
-    // ------------------------------------------------------ stage 1: match
-
-    private List<AttributeMatch> group(Iterable<AttributeDescription> attributes) {
-        List<AttributeDescription> pool = new ArrayList<>();
-        Map<String, Integer> originalOrder = new HashMap<>();
-        int index = 0;
-        for (AttributeDescription ad : attributes) {
-            pool.add(ad);
-            originalOrder.put(ad.name(), index++);
-        }
-
-        List<AttributeMatch> groups = new ArrayList<>();
+        List<HandledMatch> handledMatches = new ArrayList<>();
         List<AttributeDescription> remaining = pool;
-        for (AttributeMatcher matcher : matchers) {
-            MatchResult result = matcher.match(remaining);
-            groups.addAll(result.groups());
+
+        for (AttributeHandler handler : handlers) {
+            MatchResult result = handler.match(remaining);
+            for (AttributeMatch match : result.matches()) {
+                handledMatches.add(new HandledMatch(handler, match));
+            }
             remaining = result.remaining();
         }
 
-        for (AttributeDescription ad : remaining) {
-            groups.add(AttributeMatch.single(ad));
-        }
-
-        groups.sort((g1, g2) -> {
-            int pos1 = originalOrder.getOrDefault(g1.primary().name(), Integer.MAX_VALUE);
-            int pos2 = originalOrder.getOrDefault(g2.primary().name(), Integer.MAX_VALUE);
-            return Integer.compare(pos1, pos2);
-        });
-
-        return groups;
-    }
-
-    // ------------------------------------------------------ stage 2: itemize
-
-    private List<ViewItem> itemizeView(PipelineContext context, List<AttributeMatch> groups) {
+        List<ItemOrMatch> sorted = sortByOriginalOrder(handledMatches, remaining, originalOrder);
         List<ViewItem> items = new ArrayList<>();
-        for (AttributeMatch group : groups) {
-            for (ItemProvider provider : providers) {
-                if (provider.matches(group)) {
-                    List<ViewItem> result = provider.viewItems(context, group);
-                    if (result != null) {
-                        items.addAll(result);
-                        break;
-                    }
+        for (ItemOrMatch entry : sorted) {
+            if (entry.handledMatch != null) {
+                List<ViewItem> result = entry.handledMatch.handler.viewItems(context, entry.handledMatch.match);
+                if (result != null) {
+                    items.addAll(result);
+                }
+            } else {
+                ResolvedAttribute ra = ResolvedAttribute.resolve(context, entry.unclaimed);
+                ViewItem item = provideViewItem(context, ra);
+                if (item != null) {
+                    items.add(item);
                 }
             }
         }
         return items;
     }
 
-    private List<FormItem> itemizeForm(PipelineContext context, List<AttributeMatch> groups) {
+    /** Runs the full pipeline and produces form items for all attributes in the resource metadata. */
+    public List<FormItem> formItems(PipelineContext context) {
+        return formItems(context, context.resourceDescription().attributes());
+    }
+
+    /** Runs the full pipeline and produces form items for the given attributes (also used for operation parameters). */
+    public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> attributes) {
+        List<AttributeDescription> pool = toPool(attributes);
+        Map<String, Integer> originalOrder = originalOrder(pool);
+
+        List<HandledMatch> handledMatches = new ArrayList<>();
+        List<AttributeDescription> remaining = pool;
+
+        for (AttributeHandler handler : handlers) {
+            MatchResult result = handler.match(remaining);
+            for (AttributeMatch match : result.matches()) {
+                handledMatches.add(new HandledMatch(handler, match));
+            }
+            remaining = result.remaining();
+        }
+
+        List<ItemOrMatch> sorted = sortByOriginalOrder(handledMatches, remaining, originalOrder);
         List<FormItem> items = new ArrayList<>();
-        for (AttributeMatch group : groups) {
-            for (ItemProvider provider : providers) {
-                if (provider.matches(group)) {
-                    List<FormItem> result = provider.formItems(context, group);
-                    if (result != null) {
-                        items.addAll(result);
-                        break;
-                    }
+        for (ItemOrMatch entry : sorted) {
+            if (entry.handledMatch != null) {
+                List<FormItem> result = entry.handledMatch.handler.formItems(context, entry.handledMatch.match);
+                if (result != null) {
+                    items.addAll(result);
+                }
+            } else {
+                ResolvedAttribute ra = ResolvedAttribute.resolve(context, entry.unclaimed);
+                FormItem item = provideFormItem(context, ra);
+                if (item != null) {
+                    items.add(item);
                 }
             }
         }
         return items;
+    }
+
+    // ------------------------------------------------------ child pipeline (recursive entry points)
+
+    /**
+     * Produces a single view item for an already-resolved attribute by running it through the provider chain. Used by handlers
+     * to delegate child or sibling attributes.
+     */
+    public ViewItem viewItem(PipelineContext context, ResolvedAttribute ra) {
+        return provideViewItem(context, ra);
+    }
+
+    /**
+     * Produces a single form item for an already-resolved attribute by running it through the provider chain. Used by handlers
+     * to delegate child or sibling attributes.
+     */
+    public FormItem formItem(PipelineContext context, ResolvedAttribute ra) {
+        return provideFormItem(context, ra);
+    }
+
+    // ------------------------------------------------------ provider chain
+
+    private ViewItem provideViewItem(PipelineContext context, ResolvedAttribute ra) {
+        for (ItemProvider provider : providers) {
+            if (provider.handles(ra)) {
+                ViewItem item = provider.viewItem(context, ra);
+                if (item != null) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    private FormItem provideFormItem(PipelineContext context, ResolvedAttribute ra) {
+        for (ItemProvider provider : providers) {
+            if (provider.handles(ra)) {
+                FormItem item = provider.formItem(context, ra);
+                if (item != null) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    // ------------------------------------------------------ internal
+
+    private List<AttributeDescription> toPool(Iterable<AttributeDescription> attributes) {
+        List<AttributeDescription> pool = new ArrayList<>();
+        for (AttributeDescription ad : attributes) {
+            pool.add(ad);
+        }
+        return pool;
+    }
+
+    private Map<String, Integer> originalOrder(List<AttributeDescription> pool) {
+        Map<String, Integer> order = new HashMap<>();
+        int index = 0;
+        for (AttributeDescription ad : pool) {
+            order.put(ad.name(), index++);
+        }
+        return order;
+    }
+
+    private List<ItemOrMatch> sortByOriginalOrder(List<HandledMatch> handledMatches,
+            List<AttributeDescription> unclaimed, Map<String, Integer> originalOrder) {
+        List<ItemOrMatch> all = new ArrayList<>();
+        for (HandledMatch hm : handledMatches) {
+            all.add(new ItemOrMatch(hm, null));
+        }
+        for (AttributeDescription ad : unclaimed) {
+            all.add(new ItemOrMatch(null, ad));
+        }
+        all.sort((a, b) -> {
+            String nameA = a.primaryName();
+            String nameB = b.primaryName();
+            int posA = originalOrder.getOrDefault(nameA, Integer.MAX_VALUE);
+            int posB = originalOrder.getOrDefault(nameB, Integer.MAX_VALUE);
+            return Integer.compare(posA, posB);
+        });
+        return all;
+    }
+
+    private record HandledMatch(AttributeHandler handler, AttributeMatch match) {}
+
+    private record ItemOrMatch(HandledMatch handledMatch, AttributeDescription unclaimed) {
+        String primaryName() {
+            if (handledMatch != null) {
+                return handledMatch.match.primary().name();
+            }
+            return unclaimed.name();
+        }
     }
 }

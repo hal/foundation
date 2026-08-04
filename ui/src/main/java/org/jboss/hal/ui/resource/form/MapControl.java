@@ -22,7 +22,7 @@ import java.util.Map;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Property;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.help.HelperText;
 import org.patternfly.component.label.Label;

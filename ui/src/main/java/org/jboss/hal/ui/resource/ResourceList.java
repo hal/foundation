@@ -502,25 +502,29 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
 
     private void onFilterChanged(Filter<ChildResource> filter, String origin) {
         if (dataList != null) {
-            int matchingItems;
-            if (filter.defined()) {
-                matchingItems = 0;
-                for (DataListItem item : dataList.items()) {
-                    String text = item.element().textContent;
-                    boolean match = filter.match(new ChildResource(text, null, false, true));
-                    item.classList().toggle(modifier(filtered), !match);
-                    if (match) {
-                        matchingItems++;
-                    }
-                }
-                toggle(noMatch, listContainer, matchingItems == 0);
-            } else {
-                matchingItems = total.get();
-                toggle(noMatch, listContainer, false);
-                dataList.items().forEach(dli -> dli.classList().remove(modifier(filtered)));
-            }
+            int matchingItems = filter.defined() ? applyFilter(filter) : clearFilter();
             visible.set(matchingItems);
         }
+    }
+
+    private int applyFilter(Filter<ChildResource> filter) {
+        int matches = 0;
+        for (DataListItem item : dataList.items()) {
+            String text = item.element().textContent;
+            boolean match = filter.match(new ChildResource(text, null, false, true));
+            item.classList().toggle(modifier(filtered), !match);
+            if (match) {
+                matches++;
+            }
+        }
+        toggle(noMatch, listContainer, matches == 0);
+        return matches;
+    }
+
+    private int clearFilter() {
+        toggle(noMatch, listContainer, false);
+        dataList.items().forEach(dli -> dli.classList().remove(modifier(filtered)));
+        return total.get();
     }
 
     // ------------------------------------------------------ actions

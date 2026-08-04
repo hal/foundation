@@ -120,9 +120,9 @@
  *
  * <h2>Pipeline integration</h2>
  * <p>
- * Form items are created by the pipeline's item providers. The {@code DefaultItemProvider} dispatches by attribute type and
- * metadata to the appropriate {@code NativeControl} implementation. Specialized providers (e.g. {@code MapProvider})
- * handle composite matches. Composite form items use the pipeline to create child items, then compose their
- * {@code EditableControl}s into a single form group.
+ * Form items are created by the pipeline's handlers and providers. The {@link org.jboss.hal.ui.resource.pipeline.DefaultProvider}
+ * dispatches by attribute type and metadata to the appropriate {@code NativeControl} implementation. Handlers (e.g.
+ * {@link org.jboss.hal.ui.resource.pipeline.MapHandler}) handle composite matches. Composite form items use the pipeline to
+ * create child items, then compose their {@code EditableControl}s into a single form group.
  */
 package org.jboss.hal.ui.resource.form;

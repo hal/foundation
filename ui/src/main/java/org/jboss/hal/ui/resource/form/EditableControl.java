@@ -18,16 +18,16 @@ package org.jboss.hal.ui.resource.form;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineFlags;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.help.HelperText;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
-import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope.EXISTING_RESOURCE;
-import static org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope.NEW_RESOURCE;
+import static org.jboss.hal.ui.resource.PipelineFlags.Scope.EXISTING_RESOURCE;
+import static org.jboss.hal.ui.resource.PipelineFlags.Scope.NEW_RESOURCE;
 
 /**
  * The composable unit of a form item: a {@link NativeControl} + optional {@link ExpressionToggle} behind a unified, mode-aware

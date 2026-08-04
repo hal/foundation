@@ -5,8 +5,7 @@ Matches the `file` OBJECT attribute on logging handlers — an OBJECT with `path
 ## Status
 
 - **Implemented**: yes
-- **Matcher**: `FileMatcher`
-- **Provider**: `FileProvider`
+- **Handler**: `FileHandler`
 - **Priority**: —
 
 ## Attributes — 8 occurrences

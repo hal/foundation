@@ -33,10 +33,10 @@ import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Placeholder;
-import org.jboss.hal.ui.resource.pipeline.PipelineFlags.Scope;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
+import org.jboss.hal.ui.resource.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.modal.ModalHeaderTitle;
 import org.patternfly.component.wizard.Wizard;
@@ -106,7 +106,21 @@ class AddResourceDialogs {
                                 .add(code(resource))
                                 .add(" and fill in the required fields.")));
 
-        WizardStep selectLocation = wizardStep("select-location", "Select location")
+        return new Promise<>((resolve, reject) -> modal().size(lg).top()
+                .addWizard(wizard
+                        .addItem(selectLocationStep(wizard, templates, resource))
+                        .addItem(addResourceStep(wizard, resource))
+                        .onCancel((event, wzd) -> resolve.onInvoke(new ModelNode()))
+                        .onFinish((event, wzd) -> {
+                            ModelNode modelNode = wzd.context().get(Keys.MODEL_NODE);
+                            resolve.onInvoke(modelNode);
+                        }))
+                .appendToBody()
+                .open());
+    }
+
+    private static WizardStep selectLocationStep(Wizard wizard, List<AddressTemplate> templates, String resource) {
+        return wizardStep("select-location", "Select location")
                 .onEnter((wzd, step) -> wzd.footer().nextButton().disabled(!wzd.context().has(Keys.FINDER_TEMPLATE)))
                 .add(stack().gutter()
                         .addItem(stackItem()
@@ -143,50 +157,42 @@ class AddResourceDialogs {
                                 return Promise.resolve(true);
                             });
                 });
+    }
 
-        return new Promise<>((resolve, reject) -> modal().size(lg).top()
-                .addWizard(wizard
-                        .addItem(selectLocation)
-                        .addItem(wizardStep("add-resource", "Add resource")
-                                .customButtonName(next, "Add")
-                                .onEnter((wzd, step) -> {
-                                    AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);
-                                    Metadata metadata = wizard.context().get(Keys.METADATA);
-                                    OperationDescription operationDescription = metadata.resourceDescription()
-                                            .operations()
-                                            .get(ADD);
-                                    removeChildrenFrom(step);
-                                    if (operationDescription.isDefined()) {
-                                        ResourceForm pipelineForm = resourceForm(template, metadata, operationDescription,
-                                                resource, false);
-                                        step.add(div().css(halComponent(HalClasses.resource)).add(pipelineForm));
-                                        wzd.context().store(Keys.RESOURCE_FORM, pipelineForm);
-                                    } else {
-                                        step.add(emptyState()
-                                                .status(danger)
-                                                .text("No add operation")
-                                                .addBody(emptyStateBody()
-                                                        .add("There's no add operation defined for ")
-                                                        .add(code(template.toString()))
-                                                        .add(". Please select another template.")));
-                                    }
-                                })
-                                .nextIfPromised((wzd, current, next) -> {
-                                    AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);
-                                    ResourceForm pipelineForm = wizard.context().get(Keys.RESOURCE_FORM);
-                                    return addResource(template, pipelineForm)
-                                            .then(modelNode -> {
-                                                wzd.context().store(Keys.MODEL_NODE, modelNode);
-                                                return Promise.resolve(modelNode.isDefined());
-                                            });
-                                }))
-                        .onCancel((event, wzd) -> resolve.onInvoke(new ModelNode()))
-                        .onFinish((event, wzd) -> {
-                            ModelNode modelNode = wzd.context().get(Keys.MODEL_NODE);
-                            resolve.onInvoke(modelNode);
-                        }))
-                .appendToBody()
-                .open());
+    private static WizardStep addResourceStep(Wizard wizard, String resource) {
+        return wizardStep("add-resource", "Add resource")
+                .customButtonName(next, "Add")
+                .onEnter((wzd, step) -> {
+                    AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);
+                    Metadata metadata = wizard.context().get(Keys.METADATA);
+                    OperationDescription operationDescription = metadata.resourceDescription()
+                            .operations()
+                            .get(ADD);
+                    removeChildrenFrom(step);
+                    if (operationDescription.isDefined()) {
+                        ResourceForm pipelineForm = resourceForm(template, metadata, operationDescription,
+                                resource, false);
+                        step.add(div().css(halComponent(HalClasses.resource)).add(pipelineForm));
+                        wzd.context().store(Keys.RESOURCE_FORM, pipelineForm);
+                    } else {
+                        step.add(emptyState()
+                                .status(danger)
+                                .text("No add operation")
+                                .addBody(emptyStateBody()
+                                        .add("There's no add operation defined for ")
+                                        .add(code(template.toString()))
+                                        .add(". Please select another template.")));
+                    }
+                })
+                .nextIfPromised((wzd, current, next) -> {
+                    AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);
+                    ResourceForm pipelineForm = wizard.context().get(Keys.RESOURCE_FORM);
+                    return addResource(template, pipelineForm)
+                            .then(modelNode -> {
+                                wzd.context().store(Keys.MODEL_NODE, modelNode);
+                                return Promise.resolve(modelNode.isDefined());
+                            });
+                });
     }
 
     static Promise<ModelNode> addResourceModal(AddressTemplate template, String resource, boolean singleton) {

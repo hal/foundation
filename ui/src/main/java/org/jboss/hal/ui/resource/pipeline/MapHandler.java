@@ -15,7 +15,12 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+
+import java.util.List;
+
+import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.MapControl;
 import org.jboss.hal.ui.resource.form.MapOperationStrategy;
@@ -23,21 +28,18 @@ import org.jboss.hal.ui.resource.form.StandardFormItem;
 import org.jboss.hal.ui.resource.view.MapViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
-import java.util.List;
-
 import static java.util.Collections.singletonList;
-import static org.jboss.hal.ui.resource.pipeline.AttributeMatcher.hasSimpleValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.hasSimpleValueType;
+import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
 
 /**
- * Provider for free-form key-value map attributes. Matches OBJECT attributes with a simple VALUE_TYPE (detected by
- * {@link MapMatcher} in stage 1). Creates {@link MapViewItem} for read-only display and a {@link StandardFormItem} with
- * {@link MapControl} for editing.
+ * Handler for free-form key-value map attributes. Claims OBJECT attributes with a simple scalar VALUE_TYPE.
  */
-class MapProvider implements ItemProvider {
+class MapHandler implements AttributeHandler {
 
     @Override
-    public boolean matches(AttributeMatch match) {
-        return match.isSingle() && hasSimpleValueType(match.primary());
+    public MatchResult match(List<AttributeDescription> pool) {
+        return partition(pool, ad -> hasSimpleValueType(ad));
     }
 
     @Override

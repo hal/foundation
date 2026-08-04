@@ -4,7 +4,7 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.patternfly.component.list.DescriptionListTerm;
 import org.patternfly.core.Roles;
 

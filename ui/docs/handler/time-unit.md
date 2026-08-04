@@ -5,8 +5,7 @@ Matches `keepalive-time` OBJECT attributes — a pattern with `time` (LONG) and 
 ## Status
 
 - **Implemented**: yes
-- **Matcher**: `TimeUnitMatcher`
-- **Provider**: `TimeUnitProvider`
+- **Handler**: `TimeUnitHandler`
 - **Priority**: —
 
 ## Attributes — 8 occurrences

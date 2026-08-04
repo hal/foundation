@@ -17,12 +17,12 @@ package org.jboss.hal.ui.resource.table;
 
 import java.util.function.Function;
 
-import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.ResourceDescription;
 import org.patternfly.component.table.Td;
+import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.component.table.TitleCell;
 import org.patternfly.component.table.Tr;
 import org.patternfly.style.Variable;
@@ -85,7 +85,6 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                             tr.addChildren(attribute.valueTypeAttributeDescriptions(),
                                     new AttributeRow(resource, true));
                         } else {
-                            // TODO
                             ((HTMLElement) titleCell.containerDelegate()).style.setProperty("cursor", "initial");
                         }
                     } else {
@@ -104,28 +103,15 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
         if (attribute.hasDefined(STORAGE)) {
             String storageId = Id.unique(attribute.name(), STORAGE);
             String storage = attribute.get(STORAGE).asString();
-            Variable minWidth = utilVar("min-width", "MinWidth");
             if (CONFIGURATION.equals(storage)) {
-                td.add(span().id(storageId)
-                        .add(database())
-                        .add(tooltip(By.id(storageId))
-                                .css(util("min-width"))
-                                .style(minWidth.name, "10ch")
-                                .text("Configuration")));
+                td.add(iconWithTooltip(storageId, database(), "Configuration"));
             } else if (RUNTIME.equals(storage)) {
-                td.add(span().id(storageId)
-                        .add(memory())
-                        .add(tooltip(By.id(storageId))
-                                .css(util("min-width"))
-                                .style(minWidth.name, "10ch")
-                                .text("Memory")));
+                td.add(iconWithTooltip(storageId, memory(), "Memory"));
             } else {
-                // TODO
-                td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
+                emptyCell(td);
             }
         } else {
-            // TODO
-            td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
+            emptyCell(td);
         }
     }
 
@@ -135,34 +121,35 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
             String accessType = attribute.get(ACCESS_TYPE).asString();
             switch (accessType) {
                 case READ_WRITE:
-                    td.add(span().id(accessTypeId)
-                            .add(penToSquare())
-                            .add(tooltip(By.id(accessTypeId))
-                                    .style("min-width", "7ch")
-                                    .text("read-write")));
+                    td.add(iconWithTooltip(accessTypeId, penToSquare(), "read-write"));
                     break;
                 case READ_ONLY:
-                    td.add(span().id(accessTypeId)
-                            .add(lock())
-                            .add(tooltip(By.id(accessTypeId))
-                                    .style("min-width", "7ch")
-                                    .text("read-only")));
+                    td.add(iconWithTooltip(accessTypeId, lock(), "read-only"));
                     break;
                 case METRIC:
-                    td.add(span().id(accessTypeId)
-                            .add(trendUp())
-                            .add(tooltip(By.id(accessTypeId))
-                                    .style("min-width", "7ch")
-                                    .text("metric")));
+                    td.add(iconWithTooltip(accessTypeId, trendUp(), "metric"));
                     break;
                 default:
-                    // TODO
-                    td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
+                    emptyCell(td);
                     break;
             }
         } else {
-            // TODO
-            td.element().innerHTML = SafeHtmlUtils.fromSafeConstant("&nbsp;").asString();
+            emptyCell(td);
         }
+    }
+
+    private HTMLElement iconWithTooltip(String id, PredefinedIcon icon, String text) {
+        Variable minWidth = utilVar("min-width", "MinWidth");
+        return span().id(id)
+                .add(icon)
+                .add(tooltip(By.id(id))
+                        .css(util("min-width"))
+                        .style(minWidth.name, "10ch")
+                        .text(text))
+                .element();
+    }
+
+    private void emptyCell(Td td) {
+        td.element().textContent = " ";
     }
 }

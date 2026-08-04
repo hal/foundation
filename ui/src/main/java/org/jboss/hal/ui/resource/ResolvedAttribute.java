@@ -21,14 +21,12 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
-import org.jboss.hal.ui.resource.pipeline.PipelineContext;
 
 /**
  * A snapshot of an attribute's description, current value, and security state. Created by resolving an
- * {@link AttributeDescription} against a {@link PipelineContext}. This is the data that flows into
- * {@link org.jboss.hal.ui.resource.view.ViewItem} and {@link org.jboss.hal.ui.resource.form.FormItem} constructors.
+ * {@link AttributeDescription} against a {@link PipelineContext}.
  * <p>
- * For single attributes and composites, items hold one {@code ResolvedAttribute}. For sibling groups, items hold a list.
+ * The {@link #child(String)} method navigates into OBJECT sub-attributes, inheriting the parent's readable/writable state.
  *
  * @see PipelineContext
  */
@@ -47,7 +45,7 @@ public record ResolvedAttribute(
     }
 
     /**
-     * Resolves a single {@link AttributeDescription} against the given {@link PipelineContext}: looks up the attribute's
+     * Resolves a single {@link AttributeDescription} against the given {@link PipelineContext}: it looks up the attribute's
      * current value and RBAC state (readable/writable) to produce an immutable snapshot. This is the low-level primitive used
      * by pipeline providers and by {@code AttributeMatch#resolveAll(PipelineContext)} for batch resolution.
      */
@@ -56,7 +54,7 @@ public record ResolvedAttribute(
                 description,
                 context.value(description),
                 context.readable(description),
-                context.writable(description));
+                context.writable(description) && !description.readOnly());
     }
 
     public ResolvedAttribute child(String name) {

@@ -5,8 +5,7 @@ Matches the `credential-reference` family of OBJECT attributes — a well-known 
 ## Status
 
 - **Implemented**: yes
-- **Matcher**: `CredentialReferenceMatcher`
-- **Provider**: `CredentialReferenceProvider`
+- **Handler**: `CredentialReferenceHandler`
 - **Priority**: —
 
 ## Attributes — 49 occurrences
@@ -23,7 +22,7 @@ Matches the `credential-reference` family of OBJECT attributes — a well-known 
 
 ## Modes
 
-A `credential-reference` OBJECT has four sub-attributes: `store`, `alias`, `clear-text`, `type`. The `CredentialReferenceProvider.mode()` method derives three modes from the current value:
+A `credential-reference` OBJECT has four sub-attributes: `store`, `alias`, `clear-text`, `type`. The `CredentialReferenceHandler.mode()` method derives three modes from the current value:
 
 | Mode | Condition | Meaning |
 |---|---|---|

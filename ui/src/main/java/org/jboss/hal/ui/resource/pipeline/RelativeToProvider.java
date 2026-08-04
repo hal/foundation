@@ -15,33 +15,28 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import java.util.List;
-
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.RelativeToControl;
 import org.jboss.hal.ui.resource.form.StandardFormItem;
 
-import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 
 /**
- * Provider for standalone {@code *relative-to} attributes that were not claimed by the {@link PathRelativeToMatcher} (no
- * sibling path attribute found). FIP only — uses default view rendering.
+ * Provider for standalone {@code *relative-to} attributes that were not claimed by the {@link PathRelativeToHandler} (no
+ * sibling path attribute found). Form-item-only — uses default view rendering.
  */
 class RelativeToProvider implements ItemProvider {
 
     @Override
-    public boolean matches(AttributeMatch match) {
-        if (!match.isSingle()) {
-            return false;
-        }
-        return match.primary().name().endsWith(RELATIVE_TO);
+    public boolean handles(ResolvedAttribute ra) {
+        return ra.name().endsWith(RELATIVE_TO);
     }
 
     @Override
-    public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
-        ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra, new RelativeToControl()));
+    public FormItem formItem(PipelineContext context, ResolvedAttribute ra) {
+        return new StandardFormItem<>(context, ra.fqn(), ra, new RelativeToControl());
     }
 }

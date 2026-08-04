@@ -17,7 +17,7 @@ import {defineConfig} from 'vite';
 import {resolve} from 'path';
 import {existsSync, createReadStream} from 'fs';
 
-const j2clDir = resolve(__dirname, 'target/console');
+const j2clDir = resolve(import.meta.dirname, 'target/console');
 
 function serveJ2cl() {
     return {
@@ -56,21 +56,21 @@ export default defineConfig(({mode}) => {
             port: 1234,
             open: '/',
             fs: {
-                allow: [resolve(__dirname, '../..')]
+                allow: [resolve(import.meta.dirname, '../..')]
             },
             watch: {
                 ignored: ['!**/target/console/**']
             }
         },
         build: {
-            outDir: resolve(__dirname, outDir),
+            outDir: resolve(import.meta.dirname, outDir),
             emptyOutDir: false,
             cssMinify: isTestSuite ? false : 'esbuild',
             minify: !isTestSuite,
             chunkSizeWarningLimit: 2200,
             rollupOptions: {
                 input: {
-                    index: resolve(__dirname, 'src/web/index.html')
+                    index: resolve(import.meta.dirname, 'src/web/index.html')
                 }
             }
         }

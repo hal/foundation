@@ -6,7 +6,7 @@ Handles all simple-type attributes: STRING (including enum dropdowns with allowe
 
 - **Implemented**: yes
 - **Matcher**: n/a (default fallback — no matcher needed)
-- **Provider**: `DefaultItemProvider`
+- **Provider**: `DefaultProvider`
 - **Priority**: —
 
 ## Attributes
