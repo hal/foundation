@@ -18,7 +18,7 @@ package org.jboss.hal.op.configuration;
 import jakarta.enterprise.context.Dependent;
 
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.op.finder.ColumnProvider;
+import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;

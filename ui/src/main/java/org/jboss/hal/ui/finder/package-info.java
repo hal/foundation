@@ -22,6 +22,12 @@
  * <p>
  * Key components:
  * <dl>
+ * <dt>{@link org.jboss.hal.ui.finder.ColumnRegistry}</dt>
+ * <dd>Collects all {@link org.jboss.hal.ui.finder.ColumnProvider} implementations at startup and makes them available by
+ * identifier for building the finder navigation.</dd>
+ * <dt>{@link org.jboss.hal.ui.finder.ColumnProvider}</dt>
+ * <dd>Interface for finder column suppliers, registered in the {@link org.jboss.hal.ui.finder.ColumnRegistry} by their
+ * identifier.</dd>
  * <dt>{@link org.jboss.hal.ui.finder.FinderBricks}</dt>
  * <dd>Brick class with factory methods for finder columns, CRUD actions, and preview panel layouts (see
  * {@linkplain org.jboss.hal.ui brick pattern}).</dd>

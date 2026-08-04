@@ -27,7 +27,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
-import org.jboss.hal.op.finder.ColumnProvider;
+import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
 import org.patternfly.extension.finder.FinderPreview;

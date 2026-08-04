@@ -20,8 +20,8 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.op.finder.ColumnProvider;
-import org.jboss.hal.op.finder.ColumnRegistry;
+import org.jboss.hal.ui.finder.ColumnProvider;
+import org.jboss.hal.ui.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static java.util.Arrays.asList;

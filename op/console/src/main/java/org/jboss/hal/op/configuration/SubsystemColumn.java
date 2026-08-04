@@ -21,7 +21,7 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.op.finder.ColumnProvider;
+import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.core.Humanize.capitalCase;

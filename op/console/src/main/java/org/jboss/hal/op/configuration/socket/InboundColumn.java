@@ -17,7 +17,7 @@ package org.jboss.hal.op.configuration.socket;
 
 import jakarta.enterprise.context.Dependent;
 
-import org.jboss.hal.op.finder.ColumnProvider;
+import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
 import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketBindingColumn;

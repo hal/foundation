@@ -19,8 +19,8 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
-import org.jboss.hal.op.finder.ColumnProvider;
-import org.jboss.hal.op.finder.ColumnRegistry;
+import org.jboss.hal.ui.finder.ColumnProvider;
+import org.jboss.hal.ui.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.icon.IconSets.far;
 import org.patternfly.icon.IconSets.fas;
