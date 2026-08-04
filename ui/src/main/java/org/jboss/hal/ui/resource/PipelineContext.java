@@ -54,6 +54,11 @@ public record PipelineContext(AddressTemplate template, Metadata metadata, Model
         return securityContext().readable(name);
     }
 
+    /** Returns {@code true} if the attribute is read-only; {@code false} otherwise */
+    public boolean readOnly(AttributeDescription description) {
+        return description.readOnly();
+    }
+
     /** Returns whether the given attribute is writable according to the security context. */
     public boolean writable(AttributeDescription description) {
         String name = description.nested() ? description.root().name() : description.name();

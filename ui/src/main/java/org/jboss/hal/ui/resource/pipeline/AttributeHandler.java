@@ -38,7 +38,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
  * <p>
  * Handlers run in priority order during matching. Each handler receives the remaining pool (attributes not yet claimed by
  * higher-priority handlers) and returns a {@link MatchResult} with claimed matches and remaining attributes. The same handler
- * then produces items for its claimed matches — no separate provider needed, no dual matching.
+ * then produces items for its claimed matches.
  *
  * @see ItemProvider
  * @see Pipeline

@@ -24,7 +24,7 @@ import static java.util.Collections.unmodifiableList;
 
 /**
  * Attributes claimed together by an {@link AttributeHandler} in the match phase. Lives in the description world — carries raw
- * metadata descriptions, not values or RBAC state.
+ * metadata descriptions, not values.
  * <p>
  * A match can hold:
  * <ul>
@@ -40,7 +40,7 @@ public record AttributeMatch(String name, List<AttributeDescription> description
     }
 
     /** Creates a match containing multiple related attributes (e.g. sibling path + relative-to). */
-    public static AttributeMatch of(String name, List<AttributeDescription> descriptions) {
+    public static AttributeMatch multiple(String name, List<AttributeDescription> descriptions) {
         if (descriptions == null || descriptions.isEmpty()) {
             throw new IllegalArgumentException("AttributeMatch must contain at least one attribute");
         }

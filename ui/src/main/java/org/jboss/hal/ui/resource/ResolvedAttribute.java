@@ -34,6 +34,7 @@ public record ResolvedAttribute(
         AttributeDescription description,
         ModelNode value,
         boolean readable,
+        boolean readOnly,
         boolean writable) {
 
     /** Finds a resolved attribute by name from a list of siblings. Returns an undefined attribute if not found. */
@@ -41,7 +42,7 @@ public record ResolvedAttribute(
         return attributes.stream()
                 .filter(ra -> ra.name().equals(name))
                 .findFirst()
-                .orElse(new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, false));
+                .orElse(new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, true, false));
     }
 
     /**
@@ -54,7 +55,8 @@ public record ResolvedAttribute(
                 description,
                 context.value(description),
                 context.readable(description),
-                context.writable(description) && !description.readOnly());
+                context.readOnly(description),
+                context.writable(description));
     }
 
     public ResolvedAttribute child(String name) {
@@ -63,10 +65,11 @@ public record ResolvedAttribute(
             AttributeDescription childDescription = descriptions.get(name);
             if (childDescription != null) {
                 ModelNode childNode = value.hasDefined(name) ? value.get(name) : new ModelNode();
-                return new ResolvedAttribute(childDescription, childNode, readable, writable);
+                // flags are inherited from parent!
+                return new ResolvedAttribute(childDescription, childNode, readable, readOnly, writable);
             }
         }
-        return new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, false);
+        return new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, true, false);
     }
 
     /** Returns the dot-separated fully qualified name, used for DMR write-attribute operations. */

@@ -285,7 +285,7 @@ class AddResourceDialogs {
         nameDescription.get(ACCESS_TYPE).set(READ_WRITE);
         nameDescription.get(EXPRESSIONS_ALLOWED).set(false);
 
-        ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, true);
+        ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, false, true);
         StringControl nameControl = new StringControl();
         StandardFormItem<HTMLElement> nameItem = new StandardFormItem<>(context, NAME, ra, nameControl);
         if (value != null) {

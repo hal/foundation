@@ -64,7 +64,7 @@ class PathRelativeToHandler implements AttributeHandler {
             }
 
             if (path != null && !claimed.contains(path.name())) {
-                groups.add(AttributeMatch.of(path.name(), Arrays.asList(path, ad)));
+                groups.add(AttributeMatch.multiple(path.name(), Arrays.asList(path, ad)));
                 claimed.add(path.name());
                 claimed.add(ad.name());
             }

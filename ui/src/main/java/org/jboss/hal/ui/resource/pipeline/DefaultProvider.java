@@ -15,10 +15,9 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
+import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-
-import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.ui.resource.form.CapabilitiesReferenceControl;
 import org.jboss.hal.ui.resource.form.CapabilityReferenceControl;
 import org.jboss.hal.ui.resource.form.FormItem;
@@ -60,7 +59,7 @@ class DefaultProvider implements ItemProvider {
         if (!ra.readable()) {
             return new StandardFormItem<>(context, identifier, ra, new RestrictedControl());
         }
-        if (!ra.writable()) {
+        if (ra.readOnly() || !ra.writable()) {
             return new StandardFormItem<>(context, identifier, ra, new ReadOnlyControl());
         }
         if (!ra.description().hasDefined(TYPE)) {
