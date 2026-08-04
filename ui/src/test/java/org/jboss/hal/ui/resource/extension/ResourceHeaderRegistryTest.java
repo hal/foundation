@@ -153,7 +153,7 @@ class ResourceHeaderRegistryTest {
 
     @Test
     void appliesToReceivesConcreteTemplate() {
-        AddressTemplate captured[] = new AddressTemplate[1];
+        AddressTemplate[] captured = new AddressTemplate[1];
         ResourceHeaderProvider p = provider("subsystem=*",
                 (env, tmpl) -> { captured[0] = tmpl; return true; });
         ResourceHeaderRegistry registry = registry(p);
