@@ -22,7 +22,7 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.resource.ResourceHeader;
+import org.jboss.hal.ui.resource.shell.ResourceHeader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,82 +44,11 @@ class ResourceHeaderRegistryTest {
                 Version.EMPTY_VERSION, Version.EMPTY_VERSION, STANDALONE);
     }
 
-    // ------------------------------------------------------ no match
+    // ------------------------------------------------------ empty registry
 
     @Test
     void noMatchWhenEmpty() {
         ResourceHeaderRegistry registry = registry();
-        Optional<ResourceHeaderProvider> result = registry.lookup(environment,
-                AddressTemplate.ofTrusted("subsystem=datasources"));
-        assertFalse(result.isPresent());
-    }
-
-    @Test
-    void noMatchWhenKeysDiffer() {
-        ResourceHeaderRegistry registry = registry(
-                provider("interface=*"));
-        Optional<ResourceHeaderProvider> result = registry.lookup(environment,
-                AddressTemplate.ofTrusted("subsystem=datasources"));
-        assertFalse(result.isPresent());
-    }
-
-    // ------------------------------------------------------ exact match
-
-    @Test
-    void exactMatchSingleSegment() {
-        ResourceHeaderProvider p = provider("interface=*");
-        ResourceHeaderRegistry registry = registry(p);
-        Optional<ResourceHeaderProvider> result = registry.lookup(environment,
-                AddressTemplate.ofTrusted("interface=public"));
-        assertTrue(result.isPresent());
-        assertEquals(p, result.get());
-    }
-
-    @Test
-    void exactMatchMultipleSegments() {
-        ResourceHeaderProvider p = provider("subsystem=datasources/data-source=*");
-        ResourceHeaderRegistry registry = registry(p);
-        Optional<ResourceHeaderProvider> result = registry.lookup(environment,
-                AddressTemplate.ofTrusted("subsystem=datasources/data-source=ExampleDS"));
-        assertTrue(result.isPresent());
-        assertEquals(p, result.get());
-    }
-
-    // ------------------------------------------------------ prefix match
-
-    @Test
-    void prefixMatchSelectsLongest() {
-        ResourceHeaderProvider shallow = provider("subsystem=*");
-        ResourceHeaderProvider mid = provider("subsystem=datasources");
-        ResourceHeaderProvider deep = provider("subsystem=datasources/data-source=*");
-        ResourceHeaderRegistry registry = registry(shallow, mid, deep);
-
-        Optional<ResourceHeaderProvider> result = registry.lookup(environment,
-                AddressTemplate.ofTrusted("subsystem=datasources/data-source=ExampleDS"));
-        assertTrue(result.isPresent());
-        assertEquals(deep, result.get());
-    }
-
-    // ------------------------------------------------------ exact value beats wildcard
-
-    @Test
-    void exactValueBeatsWildcardAtSameDepth() {
-        ResourceHeaderProvider wildcard = provider("subsystem=*");
-        ResourceHeaderProvider exact = provider("subsystem=logging");
-        ResourceHeaderRegistry registry = registry(wildcard, exact);
-
-        Optional<ResourceHeaderProvider> result = registry.lookup(environment,
-                AddressTemplate.ofTrusted("subsystem=logging/logger=com.example"));
-        assertTrue(result.isPresent());
-        assertEquals(exact, result.get());
-    }
-
-    // ------------------------------------------------------ pattern longer than input
-
-    @Test
-    void patternLongerThanInputDoesNotMatch() {
-        ResourceHeaderRegistry registry = registry(
-                provider("subsystem=datasources/data-source=*"));
         Optional<ResourceHeaderProvider> result = registry.lookup(environment,
                 AddressTemplate.ofTrusted("subsystem=datasources"));
         assertFalse(result.isPresent());

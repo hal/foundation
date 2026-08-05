@@ -15,12 +15,12 @@
  */
 package org.jboss.hal.ui.resource.extension;
 
-import elemental2.promise.Promise;
-
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.resource.ResourceHeader;
+import org.jboss.hal.ui.resource.shell.ResourceHeader;
+
+import elemental2.promise.Promise;
 
 /**
  * Extension point for providing custom resource headers. Implementations are discovered via CDI and registered in
@@ -40,15 +40,13 @@ import org.jboss.hal.ui.resource.ResourceHeader;
  * Providers can fully replace the default header or augment it:
  * <pre>
  * // Full replacement — ignore defaultHeader
- * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata,
- *         ResourceHeader defaultHeader) {
+ * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader) {
  *     return Promise.resolve(resourceHeader(template, metadata)
  *             .add(p().text("Extra information")));
  * }
  *
  * // Augmentation — add extra content after loading data
- * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata,
- *         ResourceHeader defaultHeader) {
+ * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader) {
  *     return dispatcher.execute(operation).then(result -&gt; {
  *         defaultHeader.add(p().text(result.get("jndi-name").asString()));
  *         return Promise.resolve(defaultHeader);
@@ -78,14 +76,13 @@ public interface ResourceHeaderProvider {
     }
 
     /**
-     * Creates a custom header for the given resource. Returns a promise to allow providers to load runtime data
-     * asynchronously before building the header.
+     * Creates a custom header for the given resource. Returns a promise to allow providers to load runtime data asynchronously
+     * before building the header.
      *
      * @param template      the concrete resource template being rendered
      * @param metadata      the resource's management model metadata
-     * @param defaultHeader the default {@link ResourceHeader}, fully configured but lazily built. The provider can
-     *                      use it for augmentation (wrap with extra content) or ignore it for full replacement
-     *                      (no build cost if unused).
+     * @param defaultHeader the default {@link ResourceHeader}, fully configured but lazily built. The provider can use it for
+     *                      augmentation (wrap with extra content) or ignore it for full replacement (no build cost if unused).
      */
     Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader);
 }

@@ -54,7 +54,7 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
@@ -94,12 +94,12 @@ import static org.patternfly.style.Classes.util;
  * Reusable UI fragments ("bricks") for composing form items. Following the brick pattern used throughout the console (see
  * {@link org.jboss.hal.ui.brick}), this is a {@code final} utility class with only {@code static} factory methods.
  * <p>
- * Provides shared building blocks for {@link EditableControl}, {@link StandardFormItem}, and {@link NativeControl}
+ * Provides shared building blocks for {@link EditableControl}, {@link DefaultFormItem}, and {@link NativeControl}
  * implementations: labels with description popovers and stability badges, read-only controls with expression resolve buttons,
  * placeholder application, and validation helper text.
  *
  * @see EditableControl
- * @see StandardFormItem
+ * @see DefaultFormItem
  * @see org.jboss.hal.ui.brick
  */
 final class FormItemBricks {

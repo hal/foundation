@@ -4,22 +4,27 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.jboss.hal.dmr.Operation;
-import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.StatementContext;
-import org.jboss.hal.ui.resource.ResourceHeader;
+import org.jboss.hal.ui.resource.shell.ResourceHeader;
 import org.jboss.hal.ui.resource.extension.ResourceHeaderProvider;
 import org.patternfly.component.IconPosition;
-import org.patternfly.icon.IconSets;
+import org.patternfly.icon.PredefinedIcon;
 
 import elemental2.promise.Promise;
 
+import static org.jboss.elemento.Elements.small;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.JNDI_NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.ui.brick.JndiBricks.renderJndiName;
+import static org.patternfly.icon.IconSets.fas.database;
+import static org.patternfly.token.Token.globalIconColorDisabled;
+import static org.patternfly.token.Token.globalIconColorStatusSuccessDefault;
 
 @ApplicationScoped
 public class DataSourceHeader implements ResourceHeaderProvider {
@@ -41,12 +46,18 @@ public class DataSourceHeader implements ResourceHeaderProvider {
     @Override
     public Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata,
             ResourceHeader defaultHeader) {
-        ResourceAddress address = template.resolve(statementContext);
-        Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION)
+        Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
+                .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
         return dispatcher.execute(operation).then(result -> {
-            defaultHeader.iconAndText(IconSets.fas.database(), template.last().value, IconPosition.start);
+            boolean enabled = result.hasDefined(ENABLED) && result.get(ENABLED).asBoolean();
+            // --pf-t--global--icon--color--disabled
+            // --pf-t--global--icon--color--status--success--default
+            PredefinedIcon icon = database().style("color",
+                    enabled ? globalIconColorStatusSuccessDefault.var : globalIconColorDisabled.var);
+            defaultHeader.iconAndText(icon, template.last().value, IconPosition.start);
+            defaultHeader.textDelegate().append(small(enabled ? "enabled" : "disabled").element());
             if (result.hasDefined(JNDI_NAME)) {
                 defaultHeader.add(renderJndiName(result.get(JNDI_NAME).asString()));
             }

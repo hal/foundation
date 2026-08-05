@@ -31,7 +31,7 @@ import static org.jboss.hal.ui.resource.PipelineFlags.Scope.NEW_RESOURCE;
 
 /**
  * The composable unit of a form item: a {@link NativeControl} + optional {@link ExpressionToggle} behind a unified, mode-aware
- * API. This is the primary building block for both standalone form items ({@link StandardFormItem}) and composite form items
+ * API. This is the primary building block for both standalone form items ({@link DefaultFormItem}) and composite form items
  * ({@link PathRelativeToFormItem}).
  * <p>
  * All behavioral methods ({@link #modelNode()}, {@link #isModified()}, {@link #validate()}, {@link #resetValidation()})
@@ -47,7 +47,7 @@ import static org.jboss.hal.ui.resource.PipelineFlags.Scope.NEW_RESOURCE;
  * @param <C> the PatternFly component type of the native control
  * @see NativeControl
  * @see ExpressionToggle
- * @see StandardFormItem
+ * @see DefaultFormItem
  */
 public final class EditableControl<C> implements IsElement<HTMLElement> {
 

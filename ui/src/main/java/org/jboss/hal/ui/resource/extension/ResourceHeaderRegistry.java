@@ -18,6 +18,7 @@ package org.jboss.hal.ui.resource.extension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import jakarta.ejb.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,7 +27,9 @@ import jakarta.inject.Inject;
 
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.Segment;
+import org.jboss.hal.meta.TemplateMatcher;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * CDI-managed registry that collects all {@link ResourceHeaderProvider} implementations at startup and provides
@@ -63,56 +66,9 @@ public class ResourceHeaderRegistry {
      * {@link ResourceHeaderProvider#scope()} wins. Returns {@link Optional#empty()} if no provider matches.
      */
     public Optional<ResourceHeaderProvider> lookup(Environment environment, AddressTemplate template) {
-        ResourceHeaderProvider best = null;
-        int bestSegments = -1;
-        int bestExactValues = -1;
-
-        for (ResourceHeaderProvider provider : providers) {
-            if (!provider.appliesTo(environment, template)) {
-                continue;
-            }
-            Match match = match(provider.scope(), template);
-            if (match.matches) {
-                if (match.segments > bestSegments ||
-                        (match.segments == bestSegments && match.exactValues > bestExactValues)) {
-                    best = provider;
-                    bestSegments = match.segments;
-                    bestExactValues = match.exactValues;
-                }
-            }
-        }
-        return Optional.ofNullable(best);
-    }
-
-    // ------------------------------------------------------ internal
-
-    private Match match(AddressTemplate pattern, AddressTemplate input) {
-        List<Segment> patternSegments = pattern.segments();
-        List<Segment> inputSegments = input.segments();
-        if (patternSegments.isEmpty() || patternSegments.size() > inputSegments.size()) {
-            return Match.NO_MATCH;
-        }
-
-        int exactValues = 0;
-        for (int i = 0; i < patternSegments.size(); i++) {
-            Segment ps = patternSegments.get(i);
-            Segment is = inputSegments.get(i);
-            if (!ps.key.equals(is.key)) {
-                return Match.NO_MATCH;
-            }
-            if ("*".equals(ps.value)) {
-                continue;
-            }
-            if (!ps.value.equals(is.value)) {
-                return Match.NO_MATCH;
-            }
-            exactValues++;
-        }
-        return new Match(true, patternSegments.size(), exactValues);
-    }
-
-    private record Match(boolean matches, int segments, int exactValues) {
-
-        static final Match NO_MATCH = new Match(false, 0, 0);
+        List<ResourceHeaderProvider> eligible = providers.stream()
+                .filter(p -> p.appliesTo(environment, template))
+                .collect(toList());
+        return TemplateMatcher.bestMatch(eligible, ResourceHeaderProvider::scope, template);
     }
 }

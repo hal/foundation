@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.shell;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.ui.resource.ResourceTabs;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.page.PageSection;
 

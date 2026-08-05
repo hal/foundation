@@ -29,7 +29,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
 
 /**
- * Strategy for producing DMR operations from a form item's current state. Injected into {@link StandardFormItem} at
+ * Strategy for producing DMR operations from a form item's current state. Injected into {@link DefaultFormItem} at
  * construction time. Composite form items like {@link PathRelativeToFormItem} use the {@link #writeOrUndefine} utility
  * directly.
  * <p>
@@ -37,7 +37,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERAT
  * {@code undefine-attribute} operation. Custom implementations like {@link MapOperationStrategy} produce granular operations
  * (e.g. {@code map-put}/{@code map-remove}) for attribute types that require per-entry operations.
  *
- * @see StandardFormItem
+ * @see DefaultFormItem
  * @see PathRelativeToFormItem
  * @see MapOperationStrategy
  */

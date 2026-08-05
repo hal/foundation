@@ -53,7 +53,7 @@
  *   <dd>Manages expression/native mode switching: the expression text input, container swapping, tooltip lifecycle, and
  *       expression validation. Created automatically by {@code EditableControl} when the attribute allows expressions and the
  *       native control does not handle them in mixed mode.</dd>
- *   <dt>{@link org.jboss.hal.ui.resource.form.StandardFormItem StandardFormItem&lt;C&gt;}</dt>
+ *   <dt>{@link DefaultFormItem StandardFormItem&lt;C&gt;}</dt>
  *   <dd>The standard {@link org.jboss.hal.ui.resource.form.FormItem FormItem} for single-attribute controls. A thin visual
  *       shell that wraps an {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} in a PatternFly
  *       {@code FormGroup} with a label and an {@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy}. Most

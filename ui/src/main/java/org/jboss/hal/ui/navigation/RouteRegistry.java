@@ -16,15 +16,14 @@
 package org.jboss.hal.ui.navigation;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.Segment;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
+import org.jboss.hal.meta.TemplateMatcher;
 
 /**
  * Central registry that holds all {@link RouteBinding}s and provides lookup in both directions:
@@ -71,60 +70,14 @@ public class RouteRegistry {
      * one with the longest matching prefix wins; ties are broken by the number of exact (non-wildcard) value matches.
      */
     public Optional<RouteBinding> byTemplate(AddressTemplate template) {
-        RouteBinding bestBinding = null;
-        int bestSegments = -1;
-        int bestExactValues = -1;
-
-        for (RouteBinding binding : bindings.values()) {
-            AddressTemplate resolved = new StatementContextResolver(statementContext).resolve(binding.template());
-            Match match = match(resolved, template);
-            if (match.matches) {
-                if (match.segments > bestSegments ||
-                        (match.segments == bestSegments && match.exactValues > bestExactValues)) {
-                    bestBinding = binding;
-                    bestSegments = match.segments;
-                    bestExactValues = match.exactValues;
-                }
-            }
-        }
-        return Optional.ofNullable(bestBinding);
+        StatementContextResolver resolver = new StatementContextResolver(statementContext);
+        return TemplateMatcher.bestMatch(bindings.values(),
+                binding -> resolver.resolve(binding.template()), template);
     }
 
     /** Navigates to the best matching route for the given template, falling back to the fallback route. */
     public void goTo(AddressTemplate template) {
         byTemplate(template).ifPresentOrElse(binding -> placeManager.goTo(binding.route(), binding.routeParams(template)),
                 () -> placeManager.goTo(fallbackRoute, template.template));
-    }
-
-    // ------------------------------------------------------ internal
-
-    private Match match(AddressTemplate pattern, AddressTemplate input) {
-        List<Segment> patternSegments = pattern.segments();
-        List<Segment> inputSegments = input.segments();
-        if (patternSegments.isEmpty() || patternSegments.size() > inputSegments.size()) {
-            return Match.NO_MATCH;
-        }
-
-        int exactValues = 0;
-        for (int i = 0; i < patternSegments.size(); i++) {
-            Segment ps = patternSegments.get(i);
-            Segment is = inputSegments.get(i);
-            if (!ps.key.equals(is.key)) {
-                return Match.NO_MATCH;
-            }
-            if ("*".equals(ps.value)) {
-                continue;
-            }
-            if (!ps.value.equals(is.value)) {
-                return Match.NO_MATCH;
-            }
-            exactValues++;
-        }
-        return new Match(true, patternSegments.size(), exactValues);
-    }
-
-    private record Match(boolean matches, int segments, int exactValues) {
-
-        static final Match NO_MATCH = new Match(false, 0, 0);
     }
 }

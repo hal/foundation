@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.shell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,15 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
+import org.jboss.hal.ui.resource.PipelineFlags.Scope;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.grouping.AutoGrouping;
 import org.jboss.hal.ui.resource.grouping.GroupingSupport;
-import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
-import org.jboss.hal.ui.resource.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.view.ResourceView;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -62,11 +65,11 @@ import static org.jboss.hal.ui.brick.DomBricks.toggle;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.error;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.resource.ResourceData.State.EDIT;
-import static org.jboss.hal.ui.resource.ResourceData.State.ERROR;
-import static org.jboss.hal.ui.resource.ResourceData.State.NO_ATTRIBUTES;
-import static org.jboss.hal.ui.resource.ResourceData.State.VIEW;
-import static org.jboss.hal.ui.resource.ResourceDataToolbar.resourceDataToolbar;
+import static org.jboss.hal.ui.resource.shell.ResourceData.State.EDIT;
+import static org.jboss.hal.ui.resource.shell.ResourceData.State.ERROR;
+import static org.jboss.hal.ui.resource.shell.ResourceData.State.NO_ATTRIBUTES;
+import static org.jboss.hal.ui.resource.shell.ResourceData.State.VIEW;
+import static org.jboss.hal.ui.resource.shell.ResourceDataToolbar.resourceDataToolbar;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
 import static org.patternfly.component.button.Button.button;

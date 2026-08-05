@@ -20,7 +20,7 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.RelativeToControl;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.DefaultFormItem;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 
@@ -37,6 +37,6 @@ class RelativeToProvider implements ItemProvider {
 
     @Override
     public FormItem formItem(PipelineContext context, ResolvedAttribute ra) {
-        return new StandardFormItem<>(context, ra.fqn(), ra, new RelativeToControl());
+        return new DefaultFormItem<>(context, ra.fqn(), ra, new RelativeToControl());
     }
 }

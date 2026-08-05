@@ -22,8 +22,8 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.label.Label;
 
 import elemental2.dom.HTMLElement;
@@ -31,17 +31,21 @@ import elemental2.dom.HTMLElement;
 import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.dmr.JndiName.isJndiName;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALLOWED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.JNDI_NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 import static org.jboss.hal.dmr.ModelType.BOOLEAN;
 import static org.jboss.hal.dmr.ModelType.LIST;
 import static org.jboss.hal.dmr.ModelType.OBJECT;
+import static org.jboss.hal.dmr.ModelType.STRING;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
 import static org.jboss.hal.ui.brick.CodeBricks.modelNodeCode;
+import static org.jboss.hal.ui.brick.JndiBricks.renderJndiName;
 import static org.jboss.hal.ui.resource.view.CapabilityReferenceLabel.capabilityReferenceLabel;
 import static org.jboss.hal.ui.resource.view.ViewItemDefaults.NUM_LABELS;
 import static org.patternfly.component.label.LabelGroup.labelGroup;
@@ -54,8 +58,7 @@ import static org.patternfly.style.Color.grey;
 /**
  * Default view item for single attributes. Handles all standard types: BOOLEAN (switch), simple types (plain text, unit,
  * allowed values), LIST (inline list or JSON), and OBJECT (JSON). Used by
- * {@link org.jboss.hal.ui.resource.pipeline.DefaultProvider} and
- * {@link org.jboss.hal.ui.resource.pipeline.FlatteningHandler}.
+ * {@link org.jboss.hal.ui.resource.pipeline.DefaultProvider} and {@link org.jboss.hal.ui.resource.pipeline.FlatteningHandler}.
  */
 public class DefaultViewItem extends AbstractViewItem {
 
@@ -79,7 +82,11 @@ public class DefaultViewItem extends AbstractViewItem {
         if (type == BOOLEAN) {
             return booleanValue(attribute);
         } else if (type.simple()) {
-            return simpleValue(attribute, context.template());
+            if (type == STRING && attribute().fqn().contains(JNDI_NAME) && isJndiName(attribute.value().asString())) {
+                return renderJndiName(attribute.value().asString());
+            } else {
+                return simpleValue(attribute, context.template());
+            }
         } else if (type == LIST) {
             return listValue(attribute);
         } else if (type == OBJECT) {

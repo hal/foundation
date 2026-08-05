@@ -23,7 +23,7 @@ import java.util.List;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.DefaultFormItem;
 import org.jboss.hal.ui.resource.form.TimeUnitControl;
 import org.jboss.hal.ui.resource.view.TimeUnitViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -70,6 +70,6 @@ class TimeUnitHandler implements AttributeHandler {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra, new TimeUnitControl()));
+        return singletonList(new DefaultFormItem<>(context, ra.fqn(), ra, new TimeUnitControl()));
     }
 }

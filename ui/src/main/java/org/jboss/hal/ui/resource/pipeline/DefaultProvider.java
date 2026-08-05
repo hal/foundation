@@ -25,7 +25,7 @@ import org.jboss.hal.ui.resource.form.NumberInputControl;
 import org.jboss.hal.ui.resource.form.ReadOnlyControl;
 import org.jboss.hal.ui.resource.form.RestrictedControl;
 import org.jboss.hal.ui.resource.form.SelectControl;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.DefaultFormItem;
 import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.form.StringListControl;
 import org.jboss.hal.ui.resource.form.SwitchControl;
@@ -41,7 +41,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 /**
  * Catch-all provider that handles all attributes with type-based rendering. Must be registered last in the provider chain.
  */
-class DefaultProvider implements ItemProvider {
+public class DefaultProvider implements ItemProvider {
 
     @Override
     public boolean handles(ResolvedAttribute ra) {
@@ -57,31 +57,31 @@ class DefaultProvider implements ItemProvider {
     public FormItem formItem(PipelineContext context, ResolvedAttribute ra) {
         String identifier = ra.fqn();
         if (!ra.readable()) {
-            return new StandardFormItem<>(context, identifier, ra, new RestrictedControl());
+            return new DefaultFormItem<>(context, identifier, ra, new RestrictedControl());
         }
         if (ra.readOnly() || !ra.writable()) {
-            return new StandardFormItem<>(context, identifier, ra, new ReadOnlyControl());
+            return new DefaultFormItem<>(context, identifier, ra, new ReadOnlyControl());
         }
         if (!ra.description().hasDefined(TYPE)) {
-            return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());
+            return new DefaultFormItem<>(context, identifier, ra, new UnsupportedControl());
         }
         ModelType type = ra.description().get(TYPE).asType();
         switch (type) {
             case BOOLEAN:
-                return new StandardFormItem<>(context, identifier, ra, new SwitchControl());
+                return new DefaultFormItem<>(context, identifier, ra, new SwitchControl());
 
             case INT:
             case LONG:
             case DOUBLE:
-                return new StandardFormItem<>(context, identifier, ra, new NumberInputControl());
+                return new DefaultFormItem<>(context, identifier, ra, new NumberInputControl());
 
             case STRING:
                 if (ra.description().hasDefined(ALLOWED)) {
-                    return new StandardFormItem<>(context, identifier, ra, new SelectControl());
+                    return new DefaultFormItem<>(context, identifier, ra, new SelectControl());
                 } else if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                    return new StandardFormItem<>(context, identifier, ra, new CapabilityReferenceControl());
+                    return new DefaultFormItem<>(context, identifier, ra, new CapabilityReferenceControl());
                 } else {
-                    return new StandardFormItem<>(context, identifier, ra, new StringControl());
+                    return new DefaultFormItem<>(context, identifier, ra, new StringControl());
                 }
 
             case LIST:
@@ -91,16 +91,16 @@ class DefaultProvider implements ItemProvider {
                         : null;
                 if (valueType == ModelType.STRING) {
                     if (ra.description().hasDefined(CAPABILITY_REFERENCE)) {
-                        return new StandardFormItem<>(context, identifier, ra, new CapabilitiesReferenceControl());
+                        return new DefaultFormItem<>(context, identifier, ra, new CapabilitiesReferenceControl());
                     } else {
-                        return new StandardFormItem<>(context, identifier, ra, new StringListControl());
+                        return new DefaultFormItem<>(context, identifier, ra, new StringListControl());
                     }
                 }
-                return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());
+                return new DefaultFormItem<>(context, identifier, ra, new UnsupportedControl());
 
             case OBJECT:
             default:
-                return new StandardFormItem<>(context, identifier, ra, new UnsupportedControl());
+                return new DefaultFormItem<>(context, identifier, ra, new UnsupportedControl());
         }
     }
 }

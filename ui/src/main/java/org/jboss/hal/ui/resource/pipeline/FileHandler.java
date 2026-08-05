@@ -23,7 +23,7 @@ import java.util.List;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.FileControl;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.DefaultFormItem;
 import org.jboss.hal.ui.resource.view.FileViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
@@ -53,6 +53,6 @@ class FileHandler implements AttributeHandler {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra, new FileControl()));
+        return singletonList(new DefaultFormItem<>(context, ra.fqn(), ra, new FileControl()));
     }
 }

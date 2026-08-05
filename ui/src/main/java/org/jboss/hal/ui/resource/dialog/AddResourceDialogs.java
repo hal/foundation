@@ -30,7 +30,7 @@ import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.DefaultFormItem;
 import org.jboss.hal.ui.resource.form.StringControl;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.PipelineContext;
@@ -287,7 +287,7 @@ class AddResourceDialogs {
 
         ResolvedAttribute ra = new ResolvedAttribute(nameDescription, new ModelNode(), true, false, true);
         StringControl nameControl = new StringControl();
-        StandardFormItem<HTMLElement> nameItem = new StandardFormItem<>(context, NAME, ra, nameControl);
+        DefaultFormItem<HTMLElement> nameItem = new DefaultFormItem<>(context, NAME, ra, nameControl);
         if (value != null) {
             nameControl.textInput().value(value);
         }

@@ -55,7 +55,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover
 import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.descriptionOnly;
 import static org.jboss.hal.ui.Format.duration;
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.card.Card.card;
 import static org.patternfly.component.card.CardBody.cardBody;

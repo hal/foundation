@@ -26,7 +26,7 @@ import org.patternfly.layout.flex.Flex;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.patternfly.component.list.List.list;

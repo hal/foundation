@@ -36,7 +36,7 @@ import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
  * Must run after all composite handlers (credential-reference, time-unit, file, map) which claim known OBJECT structures at
  * higher priority.
  */
-class FlatteningHandler implements AttributeHandler {
+public class FlatteningHandler implements AttributeHandler {
 
     @Override
     public MatchResult match(List<AttributeDescription> pool) {

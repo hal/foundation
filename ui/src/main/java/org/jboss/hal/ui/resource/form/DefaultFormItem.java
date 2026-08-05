@@ -67,7 +67,7 @@ import static org.patternfly.component.form.FormGroupControl.formGroupControl;
  * @see OperationStrategy
  * @see FormItemBricks
  */
-public final class StandardFormItem<C> implements FormItem {
+public final class DefaultFormItem<C> implements FormItem {
 
     private final String identifier;
     private final ResolvedAttribute attribute;
@@ -75,12 +75,12 @@ public final class StandardFormItem<C> implements FormItem {
     private final OperationStrategy operationStrategy;
     private final FormGroup formGroup;
 
-    public StandardFormItem(PipelineContext context, String identifier, ResolvedAttribute attribute,
+    public DefaultFormItem(PipelineContext context, String identifier, ResolvedAttribute attribute,
             NativeControl<C> nativeControl) {
         this(context, identifier, attribute, nativeControl, OperationStrategy.WRITE_ATTRIBUTE);
     }
 
-    public StandardFormItem(PipelineContext context, String identifier, ResolvedAttribute attribute,
+    public DefaultFormItem(PipelineContext context, String identifier, ResolvedAttribute attribute,
             NativeControl<C> nativeControl, OperationStrategy operationStrategy) {
         this.identifier = identifier;
         this.attribute = attribute;

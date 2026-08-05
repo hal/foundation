@@ -24,7 +24,7 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.MapControl;
 import org.jboss.hal.ui.resource.form.MapOperationStrategy;
-import org.jboss.hal.ui.resource.form.StandardFormItem;
+import org.jboss.hal.ui.resource.form.DefaultFormItem;
 import org.jboss.hal.ui.resource.view.MapViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
 
@@ -51,7 +51,7 @@ class MapHandler implements AttributeHandler {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new StandardFormItem<>(context, ra.fqn(), ra,
+        return singletonList(new DefaultFormItem<>(context, ra.fqn(), ra,
                 new MapControl(), MapOperationStrategy.INSTANCE));
     }
 }

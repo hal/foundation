@@ -13,7 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.shell;
+
 import org.jboss.hal.model.filter.AccessTypeAttribute;
 import org.jboss.hal.model.filter.DefinedAttribute;
 import org.jboss.hal.model.filter.DeprecatedAttribute;

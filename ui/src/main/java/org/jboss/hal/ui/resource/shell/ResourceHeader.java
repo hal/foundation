@@ -1,4 +1,4 @@
-package org.jboss.hal.ui.resource;
+package org.jboss.hal.ui.resource.shell;
 
 import org.jboss.elemento.ElementAttributeMethods;
 import org.jboss.elemento.ElementClassListMethods;
@@ -27,7 +27,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.p;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
-import static org.jboss.hal.ui.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.layout.flex.AlignItems.center;
