@@ -16,12 +16,16 @@
 package org.jboss.hal.ui.resource;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.env.Environment;
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.page.PageSection;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.page.PageBreadcrumb.pageBreadcrumb;
 import static org.patternfly.component.page.PageGroup.pageGroup;
 import static org.patternfly.component.page.PageSection.pageSection;
@@ -52,8 +56,8 @@ public class ResourceShell implements IsElement<HTMLElement> {
     // ------------------------------------------------------ factory
 
     /** Creates a new resource shell for the given template and metadata. */
-    public static ResourceShell resourceShell() {
-        return new ResourceShell();
+    public static ResourceShell resourceShell(AddressTemplate template, Metadata metadata) {
+        return new ResourceShell(template, metadata);
     }
 
     // ------------------------------------------------------ instance
@@ -61,8 +65,12 @@ public class ResourceShell implements IsElement<HTMLElement> {
     private final PageGroup stickyGroup;
     private final PageSection contentSection;
     private final HTMLElement root;
+    private final AddressTemplate template;
+    private final Metadata metadata;
 
-    ResourceShell() {
+    ResourceShell(AddressTemplate template, Metadata metadata) {
+        this.template = template;
+        this.metadata = metadata;
         this.root = div()
                 .add(stickyGroup = pageGroup().sticky(top))
                 .add(contentSection = pageSection())
@@ -92,7 +100,13 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     /** Adds a header (name, stability label, description) to the sticky header area. */
     public ResourceShell addHeader(ResourceHeader header) {
-        stickyGroup.addSection(pageSection().add(header));
+        Environment environment = uic().environment();
+        uic().resourceHeaderRegistry().lookup(environment, template).ifPresentOrElse(provider -> {
+            provider.createHeader(template, metadata, header).then(customHeader -> {
+                stickyGroup.addSection(pageSection().add(customHeader));
+                return null;
+            });
+        }, () -> stickyGroup.addSection(pageSection().add(header)));
         return this;
     }
 

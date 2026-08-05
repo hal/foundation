@@ -28,7 +28,7 @@
  * <dd>Layout shell that accepts breadcrumb, header, and content (tabs or resource list).</dd>
  * <dt>{@link org.jboss.hal.ui.resource.ResourceBreadcrumb}</dt>
  * <dd>Clickable breadcrumb trail for resource addresses with copy-to-clipboard.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ResourceHeader}</dt>
+ * <dt>{@link ResourceHeader}</dt>
  * <dd>Resource name, stability label, and description.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.ResourceTabs}</dt>
  * <dd>Tab container with Data, Attributes, Operations, and Capabilities perspectives.</dd>

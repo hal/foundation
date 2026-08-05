@@ -15,12 +15,12 @@
  */
 package org.jboss.hal.ui.resource.extension;
 
-import org.jboss.elemento.IsElement;
+import elemental2.promise.Promise;
+
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.ResourceHeader;
-
-import elemental2.dom.HTMLElement;
 
 /**
  * Extension point for providing custom resource headers. Implementations are discovered via CDI and registered in
@@ -30,36 +30,45 @@ import elemental2.dom.HTMLElement;
  * <ul>
  *     <li>{@link #scope()} — the address template pattern it applies to (supports wildcards, matched via best-prefix)</li>
  *     <li>{@link #appliesTo(Environment, AddressTemplate)} — runtime activation condition</li>
- *     <li>{@link #createHeader(ResourceContext, ResourceHeader)} — the custom header factory</li>
+ *     <li>{@link #createHeader(AddressTemplate, Metadata, ResourceHeader)} — the custom header factory</li>
  * </ul>
  * <p>
- * Providers can fully replace the default header or augment it by wrapping the passed {@code defaultHeader}:
+ * Providers that need runtime data (attribute values) should inject the required services (e.g., {@code Dispatcher},
+ * {@code StatementContext}) via CDI and load data themselves in
+ * {@link #createHeader(AddressTemplate, Metadata, ResourceHeader)}.
+ * <p>
+ * Providers can fully replace the default header or augment it:
  * <pre>
  * // Full replacement — ignore defaultHeader
- * public IsElement&lt;HTMLElement&gt; createHeader(ResourceContext context, ResourceHeader defaultHeader) {
- *     return content().add(title(1, _3xl, "Custom Title"));
+ * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata,
+ *         ResourceHeader defaultHeader) {
+ *     return Promise.resolve(resourceHeader(template, metadata)
+ *             .add(p().text("Extra information")));
  * }
  *
- * // Augmentation — wrap defaultHeader with extra content
- * public IsElement&lt;HTMLElement&gt; createHeader(ResourceContext context, ResourceHeader defaultHeader) {
- *     return div()
- *             .add(defaultHeader)
- *             .add(button("Test Connection"));
+ * // Augmentation — add extra content after loading data
+ * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata,
+ *         ResourceHeader defaultHeader) {
+ *     return dispatcher.execute(operation).then(result -&gt; {
+ *         defaultHeader.add(p().text(result.get("jndi-name").asString()));
+ *         return Promise.resolve(defaultHeader);
+ *     });
  * }
  * </pre>
  */
 public interface ResourceHeaderProvider {
 
     /**
-     * The address template pattern this provider applies to. Supports wildcards
-     * (e.g., {@code /subsystem=datasources/data-source=*}). Matched via best-prefix against the concrete template
-     * being rendered.
+     * The address template pattern this provider applies to. Supports wildcards (e.g.,
+     * {@code /subsystem=datasources/data-source=*}). Matched via best-prefix against the concrete template being rendered.
      */
     AddressTemplate scope();
 
     /**
-     * Whether this provider applies for the given environment and concrete resource template. Called at lookup time
-     * when the environment is fully populated. Defaults to {@code true}.
+     * Additional runtime activation condition beyond structural {@link #scope()} matching. While {@link #scope()} defines the
+     * address pattern this provider applies to, this method handles runtime conditions such as operation mode, stability level,
+     * or product version. It can also inspect concrete template values such as the resource name in the last segment. Defaults
+     * to {@code true}.
      *
      * @param environment the runtime environment (operation mode, stability, product version, etc.)
      * @param template    the concrete resource template being rendered
@@ -69,12 +78,14 @@ public interface ResourceHeaderProvider {
     }
 
     /**
-     * Creates a custom header for the given resource.
+     * Creates a custom header for the given resource. Returns a promise to allow providers to load runtime data
+     * asynchronously before building the header.
      *
-     * @param context       the resource context with template, metadata, and current attribute values
+     * @param template      the concrete resource template being rendered
+     * @param metadata      the resource's management model metadata
      * @param defaultHeader the default {@link ResourceHeader}, fully configured but lazily built. The provider can
      *                      use it for augmentation (wrap with extra content) or ignore it for full replacement
      *                      (no build cost if unused).
      */
-    IsElement<HTMLElement> createHeader(ResourceContext context, ResourceHeader defaultHeader);
+    Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader);
 }

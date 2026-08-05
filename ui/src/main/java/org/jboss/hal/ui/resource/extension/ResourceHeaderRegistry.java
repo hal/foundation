@@ -57,8 +57,10 @@ public class ResourceHeaderRegistry {
     }
 
     /**
-     * Finds the best matching provider for the given environment and template. Returns {@link Optional#empty()} if no
-     * provider matches.
+     * Finds the best matching provider for the given environment and template. Only providers whose
+     * {@link ResourceHeaderProvider#appliesTo(Environment, AddressTemplate)} returns {@code true} are considered, so callers
+     * do not need to re-check activation conditions. Among eligible providers, the one with the best prefix match against
+     * {@link ResourceHeaderProvider#scope()} wins. Returns {@link Optional#empty()} if no provider matches.
      */
     public Optional<ResourceHeaderProvider> lookup(Environment environment, AddressTemplate template) {
         ResourceHeaderProvider best = null;

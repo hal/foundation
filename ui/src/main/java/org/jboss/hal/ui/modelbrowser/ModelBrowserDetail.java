@@ -24,6 +24,7 @@ import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
+import org.jboss.hal.ui.resource.ResourceHeader;
 import org.jboss.hal.ui.resource.ResourceList.ChildResource;
 import org.jboss.hal.ui.resource.ResourceShell;
 import org.patternfly.core.OuiaSupport;
@@ -52,7 +53,7 @@ import static org.jboss.hal.ui.resource.ResourceTabs.resourceTabs;
  * The panel includes a breadcrumb trail for navigation and a copy-to-clipboard button for the resource address.
  * <p>
  * Delegates to the reusable resource components ({@link ResourceShell}, {@link org.jboss.hal.ui.resource.ResourceBreadcrumb},
- * {@link org.jboss.hal.ui.resource.ResourceHeader}, {@link org.jboss.hal.ui.resource.ResourceTabs},
+ * {@link ResourceHeader}, {@link org.jboss.hal.ui.resource.ResourceTabs},
  * {@link org.jboss.hal.ui.resource.ResourceList}) for rendering.
  */
 class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserDetail> {
@@ -86,7 +87,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
         removeChildrenFrom(root);
         uic().metadataRepository().lookup(mbn.template, metadata -> {
             int rootSize = modelBrowser.root.size();
-            ResourceShell shell = resourceShell()
+            ResourceShell shell = resourceShell(mbn.template, metadata)
                     .contentCss(halComponent(HalClasses.modelBrowser, detail, content))
                     .addBreadcrumb(resourceBreadcrumb(mbn.template, metadata)
                             .onSegmentClick((item, template, depth) -> {
@@ -97,9 +98,20 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
                                 }
                             }))
                     .addHeader(resourceHeader(mbn.template, metadata)
-                            .customTitle(titleFor(mbn))
-                            .showStability(mbn.type != ModelBrowserNode.Type.SINGLETON_FOLDER)
-                            .showDescription(mbn.type != ModelBrowserNode.Type.SINGLETON_FOLDER));
+                            .run(rh -> {
+                                switch (mbn.type) {
+                                    case SINGLETON_FOLDER -> rh.textDelegate().appendChild(span()
+                                            .add("Singleton child resources of ")
+                                            .add(code().text(mbn.name))
+                                            .element());
+                                    case FOLDER -> rh.textDelegate().appendChild(span()
+                                            .add("Child resources of ")
+                                            .add(code().text(mbn.name))
+                                            .element());
+                                    default -> rh.defaultText();
+                                }
+                            })
+                            .addDescription());
 
             switch (mbn.type) {
                 case SINGLETON_FOLDER:
@@ -134,13 +146,5 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
             missing.add(new ChildResource(child.name, childTemplate, true, false));
         }
         return missing;
-    }
-
-    private HTMLElement titleFor(ModelBrowserNode mbn) {
-        return switch (mbn.type) {
-            case SINGLETON_FOLDER -> span().add("Singleton child resources of ").add(code().text(mbn.name)).element();
-            case FOLDER -> span().add("Child resources of ").add(code().text(mbn.name)).element();
-            default -> span().text(mbn.name).element();
-        };
     }
 }

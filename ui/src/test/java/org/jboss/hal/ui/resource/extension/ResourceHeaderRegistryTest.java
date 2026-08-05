@@ -18,15 +18,15 @@ package org.jboss.hal.ui.resource.extension;
 import java.util.List;
 import java.util.Optional;
 
-import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.ResourceHeader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import elemental2.dom.HTMLElement;
+import elemental2.promise.Promise;
 
 import static org.jboss.hal.env.OperationMode.STANDALONE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -155,7 +155,10 @@ class ResourceHeaderRegistryTest {
     void appliesToReceivesConcreteTemplate() {
         AddressTemplate[] captured = new AddressTemplate[1];
         ResourceHeaderProvider p = provider("subsystem=*",
-                (env, tmpl) -> { captured[0] = tmpl; return true; });
+                (env, tmpl) -> {
+                    captured[0] = tmpl;
+                    return true;
+                });
         ResourceHeaderRegistry registry = registry(p);
 
         AddressTemplate input = AddressTemplate.ofTrusted("subsystem=logging");
@@ -171,6 +174,7 @@ class ResourceHeaderRegistryTest {
 
     @FunctionalInterface
     interface AppliesToFn {
+
         boolean test(Environment env, AddressTemplate template);
     }
 
@@ -192,7 +196,7 @@ class ResourceHeaderRegistryTest {
             }
 
             @Override
-            public IsElement<HTMLElement> createHeader(ResourceContext context,
+            public Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata,
                     ResourceHeader defaultHeader) {
                 return null; // not tested here
             }
