@@ -39,12 +39,16 @@ public interface HalClasses {
     String goto_ = "goto";
     String groupBody = "group-body";
     String groups = "groups";
+    String jndi = "jndi";
     String modelBrowser = "model-browser";
     String name = "name";
     String rbacHidden = "rbac-hidden";
     String resource = "resource";
     String restricted = "restricted";
     String results = "results";
+    String scheme = "scheme";
+    String segment = "segment";
+    String slash = "slash";
     String stabilityLevel = "stability-level";
     String status = "status";
     String tree = "tree";

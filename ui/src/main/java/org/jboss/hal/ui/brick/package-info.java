@@ -38,6 +38,9 @@
  * <dt>{@link org.jboss.hal.ui.brick.ExpressionBricks}</dt>
  * <dd>Colour-coded rendering of WildFly expressions ({@code ${name:default}}) with nested expression support, and icon
  * suppliers for expression-related toggle buttons.</dd>
+ * <dt>{@link org.jboss.hal.ui.brick.JndiBricks}</dt>
+ * <dd>Colour-coded rendering of JNDI names ({@code java:jboss/datasources/ExampleDS}) with distinct styling for the scheme,
+ * separators, path segments, and resource name.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.ServerStateBricks}</dt>
  * <dd>Colour-coded PatternFly labels for server runtime states: configuration state, running mode, running state, and
  * suspend state.</dd>
