@@ -15,15 +15,16 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import org.jboss.hal.ui.resource.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.pipeline.AttributeHandler.MatchResult;
 import org.jboss.hal.ui.resource.view.ViewItem;
@@ -59,7 +60,7 @@ public final class Pipeline {
     static {
         // Order matters: handlers run in sequence and each one claims matching attributes from the remaining pool.
         // Earlier handlers take priority — if CredentialReferenceHandler claims an attribute, FlatteningHandler never sees it.
-        // FlatteningHandler MUST be last because it flattens any remaining composite attributes that weren't claimed
+        // FlatteningHandler MUST be last because it flattens any remaining composite attributes not claimed
         // by a specialized handler. Inserting a new handler after FlatteningHandler means it would never see any
         // composite attributes (they'd already be flattened into scalar items).
         List<AttributeHandler> handlers = List.of(
@@ -70,7 +71,7 @@ public final class Pipeline {
                 new MapHandler(),
                 new FlatteningHandler()
         );
-        // First matching provider wins. RelativeToProvider handles the special case of path-relative-to siblings;
+        // The first matching provider wins. RelativeToProvider handles the special case of path-relative-to siblings;
         // DefaultProvider is the catch-all fallback for everything else.
         List<ItemProvider> providers = List.of(
                 new RelativeToProvider(),
@@ -101,37 +102,9 @@ public final class Pipeline {
 
     /** Runs the full pipeline and produces view items for the given attributes. */
     public List<ViewItem> viewItems(PipelineContext context, Iterable<AttributeDescription> attributes) {
-        List<AttributeDescription> pool = toPool(attributes);
-        Map<String, Integer> originalOrder = originalOrder(pool);
-
-        List<HandledMatch> handledMatches = new ArrayList<>();
-        List<AttributeDescription> remaining = pool;
-
-        for (AttributeHandler handler : handlers) {
-            MatchResult result = handler.match(remaining);
-            for (AttributeMatch match : result.matches()) {
-                handledMatches.add(new HandledMatch(handler, match));
-            }
-            remaining = result.remaining();
-        }
-
-        List<ItemOrMatch> sorted = sortByOriginalOrder(handledMatches, remaining, originalOrder);
-        List<ViewItem> items = new ArrayList<>();
-        for (ItemOrMatch entry : sorted) {
-            if (entry.handledMatch != null) {
-                List<ViewItem> result = entry.handledMatch.handler.viewItems(context, entry.handledMatch.match);
-                if (result != null) {
-                    items.addAll(result);
-                }
-            } else {
-                ResolvedAttribute ra = ResolvedAttribute.resolve(context, entry.unclaimed);
-                ViewItem item = provideViewItem(context, ra);
-                if (item != null) {
-                    items.add(item);
-                }
-            }
-        }
-        return items;
+        return items(context, attributes,
+                (handler, match) -> handler.viewItems(context, match),
+                ra -> provideViewItem(context, ra));
     }
 
     /** Runs the full pipeline and produces form items for all attributes in the resource metadata. */
@@ -141,6 +114,14 @@ public final class Pipeline {
 
     /** Runs the full pipeline and produces form items for the given attributes (also used for operation parameters). */
     public List<FormItem> formItems(PipelineContext context, Iterable<AttributeDescription> attributes) {
+        return items(context, attributes,
+                (handler, match) -> handler.formItems(context, match),
+                ra -> provideFormItem(context, ra));
+    }
+
+    private <T> List<T> items(PipelineContext context, Iterable<AttributeDescription> attributes,
+            BiFunction<AttributeHandler, AttributeMatch, List<T>> handlerFunction,
+            Function<ResolvedAttribute, T> providerFunction) {
         List<AttributeDescription> pool = toPool(attributes);
         Map<String, Integer> originalOrder = originalOrder(pool);
 
@@ -156,16 +137,16 @@ public final class Pipeline {
         }
 
         List<ItemOrMatch> sorted = sortByOriginalOrder(handledMatches, remaining, originalOrder);
-        List<FormItem> items = new ArrayList<>();
+        List<T> items = new ArrayList<>();
         for (ItemOrMatch entry : sorted) {
             if (entry.handledMatch != null) {
-                List<FormItem> result = entry.handledMatch.handler.formItems(context, entry.handledMatch.match);
+                List<T> result = handlerFunction.apply(entry.handledMatch.handler, entry.handledMatch.match);
                 if (result != null) {
                     items.addAll(result);
                 }
             } else {
                 ResolvedAttribute ra = ResolvedAttribute.resolve(context, entry.unclaimed);
-                FormItem item = provideFormItem(context, ra);
+                T item = providerFunction.apply(ra);
                 if (item != null) {
                     items.add(item);
                 }
@@ -259,6 +240,7 @@ public final class Pipeline {
     private record HandledMatch(AttributeHandler handler, AttributeMatch match) {}
 
     private record ItemOrMatch(HandledMatch handledMatch, AttributeDescription unclaimed) {
+
         String primaryName() {
             if (handledMatch != null) {
                 return handledMatch.match.primary().name();
