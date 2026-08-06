@@ -21,7 +21,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.ResourceTabs;
 import org.jboss.hal.ui.resource.event.ResourceEvents;
-import org.jboss.hal.ui.resource.extension.ResourceHeaderRegistry;
+import org.jboss.hal.ui.resource.extension.ResourceExtensions;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.page.PageSection;
 
@@ -68,7 +68,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
     private final AddressTemplate template;
     private final Metadata metadata;
     private final Environment environment;
-    private final ResourceHeaderRegistry headerRegistry;
+    private final ResourceExtensions extensions;
     private final PageGroup stickyGroup;
     private final PageSection contentSection;
     private final HTMLElement root;
@@ -78,7 +78,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
         this.template = template;
         this.metadata = metadata;
         this.environment = uic().environment();
-        this.headerRegistry = uic().resourceHeaderRegistry();
+        this.extensions = uic().resourceExtensions();
         this.root = div()
                 .add(stickyGroup = pageGroup().sticky(top))
                 .add(contentSection = pageSection())
@@ -110,7 +110,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     /** Adds a header (name, stability label, description) to the sticky header area. */
     public ResourceShell addHeader(ResourceHeader header) {
-        headerRegistry.lookup(environment, template).ifPresentOrElse(
+        extensions.resourceHeaderRegistry().lookup(environment, template).ifPresentOrElse(
                 provider ->
                         provider.createHeader(template, metadata, header)
                                 .then(customHeader -> {

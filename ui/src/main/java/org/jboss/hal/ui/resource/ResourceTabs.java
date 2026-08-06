@@ -155,7 +155,7 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     private HTMLElement build() {
         Tabs tbs = tabs();
         for (TabDescriptor descriptor : descriptors) {
-            org.patternfly.component.tabs.TabContent tc = tabContent();
+            var tc = tabContent();
             if (descriptor.css != null) {
                 tc.css(descriptor.css);
             }
