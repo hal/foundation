@@ -66,29 +66,30 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
 
     // ------------------------------------------------------ instance
 
-    record TabDescriptor(String id, String title, Supplier<IsElement<?>> content, String css) {}
+    public static final String DATA_TAB = "resource-tabs-data";
+    public static final String ATTRIBUTES_TAB = "resource-tabs-attributes";
+    public static final String OPERATIONS_TAB = "resource-tabs-operations";
+    public static final String CAPABILITIES_TAB = "resource-tabs-capabilities";
 
-    private final AddressTemplate template;
-    private final Metadata metadata;
+    record TabDescriptor(String id, String title, Supplier<HTMLElement> content, String css) {}
+
     private final List<TabDescriptor> descriptors;
     private String initialSelection;
     private BiConsumer<String, Boolean> onSelect;
     private HTMLElement root;
 
     ResourceTabs(AddressTemplate template, Metadata metadata) {
-        this.template = template;
-        this.metadata = metadata;
         this.descriptors = new ArrayList<>();
-        this.descriptors.add(new TabDescriptor("data", "Data",
-                () -> resourceData(template, metadata), util("pt-md")));
+        this.descriptors.add(new TabDescriptor(DATA_TAB, "Data",
+                () -> resourceData(template, metadata).element(), util("pt-md")));
         if (!metadata.resourceDescription().attributes().isEmpty()) {
-            this.descriptors.add(new TabDescriptor("attributes", "Attributes",
-                    () -> new AttributesTable(metadata), util("pt-md")));
+            this.descriptors.add(new TabDescriptor(ATTRIBUTES_TAB, "Attributes",
+                    () -> new AttributesTable(metadata).element(), util("pt-md")));
         }
-        this.descriptors.add(new TabDescriptor("operations", "Operations",
-                () -> new OperationsTable(template, metadata), util("pt-md")));
-        this.descriptors.add(new TabDescriptor("capabilities", "Capabilities",
-                () -> new CapabilitiesTable(metadata), null));
+        this.descriptors.add(new TabDescriptor(OPERATIONS_TAB, "Operations",
+                () -> new OperationsTable(template, metadata).element(), util("pt-md")));
+        this.descriptors.add(new TabDescriptor(CAPABILITIES_TAB, "Capabilities",
+                () -> new CapabilitiesTable(metadata).element(), null));
     }
 
     @Override
@@ -125,15 +126,15 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     }
 
     /** Adds a tab at the end. Must be called before {@link #element()}. */
-    public ResourceTabs addTab(String id, String title, IsElement<?> content) {
-        descriptors.add(new TabDescriptor(id, title, () -> content, util("pt-md")));
+    public ResourceTabs addTab(String id, String title, HTMLElement element) {
+        descriptors.add(new TabDescriptor(id, title, () -> element, util("pt-md")));
         return this;
     }
 
     /** Adds a tab at the given position. The index is clamped to the valid range. Must be called before {@link #element()}. */
-    public ResourceTabs addTab(int index, String id, String title, IsElement<?> content) {
+    public ResourceTabs addTab(int index, String id, String title, HTMLElement element) {
         int clamped = Math.max(0, Math.min(index, descriptors.size()));
-        descriptors.add(clamped, new TabDescriptor(id, title, () -> content, util("pt-md")));
+        descriptors.add(clamped, new TabDescriptor(id, title, () -> element, util("pt-md")));
         return this;
     }
 
@@ -144,11 +145,11 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     }
 
     /** Replaces the content of an existing tab. No-op if the identifier is not found. Must be called before {@link #element()}. */
-    public ResourceTabs replaceTab(String id, IsElement<?> content) {
+    public ResourceTabs replaceTab(String id, HTMLElement element) {
         for (int i = 0; i < descriptors.size(); i++) {
             TabDescriptor d = descriptors.get(i);
             if (d.id.equals(id)) {
-                descriptors.set(i, new TabDescriptor(d.id, d.title, () -> content, d.css));
+                descriptors.set(i, new TabDescriptor(d.id, d.title, () -> element, d.css));
                 break;
             }
         }

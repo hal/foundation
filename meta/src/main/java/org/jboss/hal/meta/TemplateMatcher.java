@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.meta;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -101,6 +102,39 @@ public final class TemplateMatcher {
             if (match.matches) {
                 if (match.segments > bestSegments ||
                         (match.segments == bestSegments && match.exactValues > bestExactValues)) {
+                    best = candidate;
+                    bestSegments = match.segments;
+                    bestExactValues = match.exactValues;
+                }
+            }
+        }
+        return Optional.ofNullable(best);
+    }
+
+    /**
+     * Finds the best matching candidate from an iterable of candidates, where each candidate may declare multiple pattern
+     * templates. Each candidate's pattern templates are extracted using {@code templatesFn} and each is matched against the
+     * input. The candidate with the best {@link Match} across all its templates (most segments, then most exact values) wins.
+     *
+     * @param candidates  the candidates to search
+     * @param templatesFn extracts the pattern templates from each candidate
+     * @param input       the template to match against
+     * @param <T>         the candidate type
+     * @return the best matching candidate, or {@link Optional#empty()} if none match
+     */
+    public static <T> Optional<T> bestMatchMultiple(Iterable<T> candidates,
+            Function<T, ? extends Collection<AddressTemplate>> templatesFn,
+            AddressTemplate input) {
+        T best = null;
+        int bestSegments = -1;
+        int bestExactValues = -1;
+
+        for (T candidate : candidates) {
+            for (AddressTemplate pattern : templatesFn.apply(candidate)) {
+                Match match = match(pattern, input);
+                if (match.matches &&
+                        (match.segments > bestSegments ||
+                                (match.segments == bestSegments && match.exactValues > bestExactValues))) {
                     best = candidate;
                     bestSegments = match.segments;
                     bestExactValues = match.exactValues;

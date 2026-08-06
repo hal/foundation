@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.ui.resource.extension;
 
+import java.util.Set;
+
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
@@ -28,7 +30,7 @@ import elemental2.promise.Promise;
  * <p>
  * Each provider declares:
  * <ul>
- *     <li>{@link #scope()} — the address template pattern it applies to (supports wildcards, matched via best-prefix)</li>
+ *     <li>{@link #scopes()} — the address template patterns it applies to (supports wildcards, matched via best-prefix)</li>
  *     <li>{@link #appliesTo(Environment, AddressTemplate)} — runtime activation condition</li>
  *     <li>{@link #customizeTabs(AddressTemplate, Metadata, ResourceTabs)} — the tab customization factory</li>
  * </ul>
@@ -56,14 +58,14 @@ import elemental2.promise.Promise;
 public interface ResourceTabsProvider {
 
     /**
-     * The address template pattern this provider applies to. Supports wildcards (e.g.,
+     * The address template patterns this provider applies to. Supports wildcards (e.g.,
      * {@code /subsystem=elytron/credential-store=*}). Matched via best-prefix against the concrete template being rendered.
      */
-    AddressTemplate scope();
+    Set<AddressTemplate> scopes();
 
     /**
-     * Additional runtime activation condition beyond structural {@link #scope()} matching. While {@link #scope()} defines the
-     * address pattern this provider applies to, this method handles runtime conditions such as operation mode, stability level,
+     * Additional runtime activation condition beyond structural {@link #scopes()} matching. While {@link #scopes()} defines the
+     * address patterns this provider applies to, this method handles runtime conditions such as operation mode, stability level,
      * or product version. It can also inspect concrete template values such as the resource name in the last segment. Defaults
      * to {@code true}.
      *

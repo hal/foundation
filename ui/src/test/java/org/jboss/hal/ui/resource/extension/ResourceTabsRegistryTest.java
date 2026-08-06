@@ -17,6 +17,7 @@ package org.jboss.hal.ui.resource.extension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
@@ -115,8 +116,8 @@ class ResourceTabsRegistryTest {
         AddressTemplate scopeTemplate = AddressTemplate.ofTrusted(scope);
         return new ResourceTabsProvider() {
             @Override
-            public AddressTemplate scope() {
-                return scopeTemplate;
+            public Set<AddressTemplate> scopes() {
+                return Set.of(scopeTemplate);
             }
 
             @Override

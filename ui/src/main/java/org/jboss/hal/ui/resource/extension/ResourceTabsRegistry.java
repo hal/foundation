@@ -28,15 +28,15 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 
 import static java.util.stream.Collectors.toList;
-import static org.jboss.hal.meta.TemplateMatcher.bestMatch;
+import static org.jboss.hal.meta.TemplateMatcher.bestMatchMultiple;
 
 /**
  * CDI-managed registry that collects all {@link ResourceTabsProvider} implementations at startup and provides best-prefix
  * template matching at lookup time.
  * <p>
- * The matching algorithm compares the provider's {@link ResourceTabsProvider#scope()} segments against the input template
- * segments left-to-right. When multiple providers match, the one with the longest matching prefix wins; ties are broken by the
- * number of exact (non-wildcard) value matches. Only providers where
+ * The matching algorithm compares each of the provider's {@link ResourceTabsProvider#scopes()} segments against the input
+ * template segments left-to-right. When multiple providers match, the one with the longest matching prefix wins; ties are
+ * broken by the number of exact (non-wildcard) value matches. Only providers where
  * {@link ResourceTabsProvider#appliesTo(Environment, AddressTemplate)} returns {@code true} are considered.
  */
 @Startup
@@ -62,12 +62,12 @@ public class ResourceTabsRegistry {
      * Finds the best matching provider for the given environment and template. Only providers whose
      * {@link ResourceTabsProvider#appliesTo(Environment, AddressTemplate)} returns {@code true} are considered, so callers do
      * not need to re-check activation conditions. Among eligible providers, the one with the best prefix match against
-     * {@link ResourceTabsProvider#scope()} wins. Returns {@link Optional#empty()} if no provider matches.
+     * {@link ResourceTabsProvider#scopes()} wins. Returns {@link Optional#empty()} if no provider matches.
      */
     public Optional<ResourceTabsProvider> lookup(Environment environment, AddressTemplate template) {
         List<ResourceTabsProvider> eligible = providers.stream()
                 .filter(p -> p.appliesTo(environment, template))
                 .collect(toList());
-        return bestMatch(eligible, ResourceTabsProvider::scope, template);
+        return bestMatchMultiple(eligible, ResourceTabsProvider::scopes, template);
     }
 }

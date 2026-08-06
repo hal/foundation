@@ -1,5 +1,8 @@
 package org.jboss.hal.op.configuration.datasource;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -42,8 +45,11 @@ public class DataSourceHeader implements ResourceHeaderProvider {
     }
 
     @Override
-    public AddressTemplate scope() {
-        return AddressTemplate.ofTrusted("subsystem=datasources/data-source=*");
+    public Set<AddressTemplate> scopes() {
+        Set<AddressTemplate> scopes = new HashSet<>();
+        scopes.add(AddressTemplate.ofTrusted("subsystem=datasources/data-source=*"));
+        scopes.add(AddressTemplate.ofTrusted("subsystem=datasources/xa-data-source=*"));
+        return scopes;
     }
 
     @Override
