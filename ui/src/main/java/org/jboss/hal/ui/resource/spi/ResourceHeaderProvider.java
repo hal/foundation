@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.extension;
+package org.jboss.hal.ui.resource.spi;
 
 import java.util.Set;
 
@@ -25,7 +25,7 @@ import org.jboss.hal.ui.resource.shell.ResourceHeader;
 import elemental2.promise.Promise;
 
 /**
- * Extension point for providing custom resource headers. Implementations are discovered via CDI and registered in
+ * SPI for providing custom resource headers. Implementations are discovered via CDI and registered in
  * {@link ResourceHeaderRegistry}.
  * <p>
  * Each provider declares:

@@ -13,15 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.ui.resource.extension;
+package org.jboss.hal.ui.resource.spi;
 
 /**
- * Groups all resource extension registries into a single record. Accessed via
- * {@link org.jboss.hal.ui.UIContext#resourceExtensions()}.
+ * Groups all resource SPI registries into a single record. Accessed via
+ * {@link org.jboss.hal.ui.UIContext#resourceRegistries()}.
  *
  * @param resourceHeaderRegistry the registry for custom {@link ResourceHeaderProvider resource header} providers
  * @param resourceTabsRegistry the registry for custom {@link ResourceTabsProvider resource tabs} providers
  */
-public record ResourceExtensions(ResourceHeaderRegistry resourceHeaderRegistry,
-        ResourceTabsRegistry resourceTabsRegistry) {
+public record ResourceRegistries(ResourceHeaderRegistry resourceHeaderRegistry,
+                                 ResourceTabsRegistry resourceTabsRegistry) {
 }

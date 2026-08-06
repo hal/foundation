@@ -33,9 +33,9 @@ import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.tree.ModelTree;
 import org.jboss.hal.ui.navigation.RouteRegistry;
-import org.jboss.hal.ui.resource.extension.ResourceExtensions;
-import org.jboss.hal.ui.resource.extension.ResourceHeaderRegistry;
-import org.jboss.hal.ui.resource.extension.ResourceTabsRegistry;
+import org.jboss.hal.ui.resource.spi.ResourceRegistries;
+import org.jboss.hal.ui.resource.spi.ResourceHeaderRegistry;
+import org.jboss.hal.ui.resource.spi.ResourceTabsRegistry;
 
 /**
  * Holds common classes often needed in UI elements.
@@ -72,7 +72,7 @@ public class UIContext {
     private final ModelTree modelTree;
     private final Notifications notifications;
     private final PlaceManager placeManager;
-    private final ResourceExtensions resourceExtensions;
+    private final ResourceRegistries resourceRegistries;
     private final RouteRegistry routeRegistry;
     private final Settings settings;
     private final StatementContext statementContext;
@@ -104,7 +104,7 @@ public class UIContext {
         this.modelTree = modelTree;
         this.notifications = notifications;
         this.placeManager = placeManager;
-        this.resourceExtensions = new ResourceExtensions(resourceHeaderRegistry, resourceTabsRegistry);
+        this.resourceRegistries = new ResourceRegistries(resourceHeaderRegistry, resourceTabsRegistry);
         this.routeRegistry = routeRegistry;
         this.settings = settings;
         this.statementContext = statementContext;
@@ -155,9 +155,9 @@ public class UIContext {
         return placeManager;
     }
 
-    /** Returns the resource extensions for looking up custom resource providers. */
-    public ResourceExtensions resourceExtensions() {
-        return resourceExtensions;
+    /** Returns the SPI registries for looking up custom resource providers. */
+    public ResourceRegistries resourceRegistries() {
+        return resourceRegistries;
     }
 
     /** Returns the route registry for navigating to routes by address template. */

@@ -20,7 +20,7 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.event.ResourceEvents;
-import org.jboss.hal.ui.resource.extension.ResourceExtensions;
+import org.jboss.hal.ui.resource.spi.ResourceRegistries;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.page.PageSection;
 
@@ -67,7 +67,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
     private final AddressTemplate template;
     private final Metadata metadata;
     private final Environment environment;
-    private final ResourceExtensions extensions;
+    private final ResourceRegistries registries;
     private final PageGroup stickyGroup;
     private final PageSection contentSection;
     private final HTMLElement root;
@@ -77,7 +77,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
         this.template = template;
         this.metadata = metadata;
         this.environment = uic().environment();
-        this.extensions = uic().resourceExtensions();
+        this.registries = uic().resourceRegistries();
         this.root = div()
                 .add(stickyGroup = pageGroup().sticky(top))
                 .add(contentSection = pageSection())
@@ -109,7 +109,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     /** Adds a header (name, stability label, description) to the sticky header area. */
     public ResourceShell addHeader(ResourceHeader header) {
-        extensions.resourceHeaderRegistry().lookup(environment, template).ifPresentOrElse(
+        registries.resourceHeaderRegistry().lookup(environment, template).ifPresentOrElse(
                 provider ->
                         provider.createHeader(template, metadata, header)
                                 .then(customHeader -> {
@@ -126,7 +126,7 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     /** Adds a tabbed resource view to the content area. */
     public ResourceShell addTabs(ResourceTabs tabs) {
-        extensions.resourceTabsRegistry().lookup(environment, template).ifPresentOrElse(
+        registries.resourceTabsRegistry().lookup(environment, template).ifPresentOrElse(
                 provider ->
                         provider.customizeTabs(template, metadata, tabs)
                                 .then(customTabs -> {

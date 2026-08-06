@@ -54,8 +54,8 @@
  * items for composite attributes (credential-reference, time-unit, file); providers handle unclaimed leaf attributes.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.grouping}</dt>
  * <dd>Grouping strategies for organizing resource items into named sections.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.extension}</dt>
- * <dd>Extension points for custom resource headers and tabs.</dd>
+ * <dt>{@link org.jboss.hal.ui.resource.spi}</dt>
+ * <dd>SPI for custom resource headers and tabs, discoverable via CDI from any JAR on the classpath.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource;

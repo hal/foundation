@@ -14,7 +14,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.ui.resource.event.ResourceEvents;
-import org.jboss.hal.ui.resource.extension.ResourceHeaderProvider;
+import org.jboss.hal.ui.resource.spi.ResourceHeaderProvider;
 import org.jboss.hal.ui.resource.shell.ResourceHeader;
 import org.patternfly.component.label.Label;
 
