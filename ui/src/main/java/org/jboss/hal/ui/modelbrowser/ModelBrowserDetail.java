@@ -39,7 +39,7 @@ import static org.jboss.hal.resources.HalClasses.content;
 import static org.jboss.hal.resources.HalClasses.detail;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.ResourceTabs.resourceTabs;
+import static org.jboss.hal.ui.resource.shell.ResourceTabs.resourceTabs;
 import static org.jboss.hal.ui.resource.shell.ResourceBreadcrumb.resourceBreadcrumb;
 import static org.jboss.hal.ui.resource.shell.ResourceHeader.resourceHeader;
 import static org.jboss.hal.ui.resource.shell.ResourceList.resourceList;
@@ -50,12 +50,12 @@ import static org.jboss.hal.ui.resource.shell.ResourceShell.resourceShell;
  * <p>
  * For folder nodes, displays a {@link org.jboss.hal.ui.resource.shell.ResourceList} of child resources. For resource nodes,
  * displays a tabbed view with data, attributes, operations, and capabilities tabs via
- * {@link org.jboss.hal.ui.resource.ResourceTabs}. The panel includes a breadcrumb trail for navigation and a copy-to-clipboard
+ * {@link org.jboss.hal.ui.resource.shell.ResourceTabs}. The panel includes a breadcrumb trail for navigation and a copy-to-clipboard
  * button for the resource address.
  * <p>
  * Delegates to the reusable resource components ({@link ResourceShell},
  * {@link org.jboss.hal.ui.resource.shell.ResourceBreadcrumb}, {@link ResourceHeader},
- * {@link org.jboss.hal.ui.resource.ResourceTabs}, {@link org.jboss.hal.ui.resource.shell.ResourceList}) for rendering.
+ * {@link org.jboss.hal.ui.resource.shell.ResourceTabs}, {@link org.jboss.hal.ui.resource.shell.ResourceList}) for rendering.
  */
 class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelBrowserDetail> {
 

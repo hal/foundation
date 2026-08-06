@@ -34,8 +34,6 @@
  * <dd>Record bundling template, metadata, resource values, and flags for pipeline processing.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.PipelineFlags}</dt>
  * <dd>Record with Scope/Placeholder enums configuring pipeline behavior.</dd>
- * <dt>{@link org.jboss.hal.ui.resource.ResourceTabs}</dt>
- * <dd>Tab container with Data, Attributes, Operations, and Capabilities perspectives.</dd>
  * </dl>
  * <p>
  * Sub-packages by concern:
@@ -57,7 +55,7 @@
  * <dt>{@link org.jboss.hal.ui.resource.grouping}</dt>
  * <dd>Grouping strategies for organizing resource items into named sections.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.extension}</dt>
- * <dd>Extension points for custom resource headers.</dd>
+ * <dd>Extension points for custom resource headers and tabs.</dd>
  * </dl>
  */
 package org.jboss.hal.ui.resource;

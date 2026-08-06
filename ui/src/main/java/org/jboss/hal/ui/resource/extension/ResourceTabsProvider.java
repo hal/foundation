@@ -18,7 +18,7 @@ package org.jboss.hal.ui.resource.extension;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.resource.ResourceTabs;
+import org.jboss.hal.ui.resource.shell.ResourceTabs;
 
 import elemental2.promise.Promise;
 

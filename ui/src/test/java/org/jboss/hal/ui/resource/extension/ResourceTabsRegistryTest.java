@@ -22,7 +22,7 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.resource.ResourceTabs;
+import org.jboss.hal.ui.resource.shell.ResourceTabs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
