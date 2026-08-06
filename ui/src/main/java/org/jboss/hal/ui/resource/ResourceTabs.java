@@ -15,7 +15,10 @@
  */
 package org.jboss.hal.ui.resource;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
@@ -63,8 +66,11 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
 
     // ------------------------------------------------------ instance
 
+    record TabDescriptor(String id, String title, Supplier<IsElement<?>> content, String css) {}
+
     private final AddressTemplate template;
     private final Metadata metadata;
+    private final List<TabDescriptor> descriptors;
     private String initialSelection;
     private BiConsumer<String, Boolean> onSelect;
     private HTMLElement root;
@@ -72,6 +78,17 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     ResourceTabs(AddressTemplate template, Metadata metadata) {
         this.template = template;
         this.metadata = metadata;
+        this.descriptors = new ArrayList<>();
+        this.descriptors.add(new TabDescriptor("data", "Data",
+                () -> resourceData(template, metadata), util("pt-md")));
+        if (!metadata.resourceDescription().attributes().isEmpty()) {
+            this.descriptors.add(new TabDescriptor("attributes", "Attributes",
+                    () -> new AttributesTable(metadata), util("pt-md")));
+        }
+        this.descriptors.add(new TabDescriptor("operations", "Operations",
+                () -> new OperationsTable(template, metadata), util("pt-md")));
+        this.descriptors.add(new TabDescriptor("capabilities", "Capabilities",
+                () -> new CapabilitiesTable(metadata), null));
     }
 
     @Override
@@ -107,26 +124,44 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
         return this;
     }
 
+    public ResourceTabs addTab(String id, String title, IsElement<?> content) {
+        descriptors.add(new TabDescriptor(id, title, () -> content, util("pt-md")));
+        return this;
+    }
+
+    public ResourceTabs addTab(int index, String id, String title, IsElement<?> content) {
+        descriptors.add(index, new TabDescriptor(id, title, () -> content, util("pt-md")));
+        return this;
+    }
+
+    public ResourceTabs removeTab(String id) {
+        descriptors.removeIf(d -> d.id.equals(id));
+        return this;
+    }
+
+    public ResourceTabs replaceTab(String id, IsElement<?> content) {
+        for (int i = 0; i < descriptors.size(); i++) {
+            TabDescriptor d = descriptors.get(i);
+            if (d.id.equals(id)) {
+                descriptors.set(i, new TabDescriptor(d.id, d.title, () -> content, d.css));
+                break;
+            }
+        }
+        return this;
+    }
+
     // ------------------------------------------------------ internal
 
     private HTMLElement build() {
-        Tabs tbs = tabs()
-                .addItem(tab("data", "Data")
-                        .addContent(tabContent().css(util("pt-md"))
-                                .add(resourceData(template, metadata))))
-                .run(t -> {
-                    if (!metadata.resourceDescription().attributes().isEmpty()) {
-                        t.addItem(tab("attributes", "Attributes")
-                                .addContent(tabContent().css(util("pt-md"))
-                                        .add(new AttributesTable(metadata))));
-                    }
-                })
-                .addItem(tab("operations", "Operations")
-                        .addContent(tabContent().css(util("pt-md"))
-                                .add(new OperationsTable(template, metadata))))
-                .addItem(tab("capabilities", "Capabilities")
-                        .addContent(tabContent()
-                                .add(new CapabilitiesTable(metadata))));
+        Tabs tbs = tabs();
+        for (TabDescriptor descriptor : descriptors) {
+            org.patternfly.component.tabs.TabContent tc = tabContent();
+            if (descriptor.css != null) {
+                tc.css(descriptor.css);
+            }
+            tbs.addItem(tab(descriptor.id, descriptor.title)
+                    .addContent(tc.add(descriptor.content.get())));
+        }
 
         if (initialSelection != null) {
             tbs.initialSelection(initialSelection);
