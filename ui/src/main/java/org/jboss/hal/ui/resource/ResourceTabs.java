@@ -124,21 +124,26 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
         return this;
     }
 
+    /** Adds a tab at the end. Must be called before {@link #element()}. */
     public ResourceTabs addTab(String id, String title, IsElement<?> content) {
         descriptors.add(new TabDescriptor(id, title, () -> content, util("pt-md")));
         return this;
     }
 
+    /** Adds a tab at the given position. The index is clamped to the valid range. Must be called before {@link #element()}. */
     public ResourceTabs addTab(int index, String id, String title, IsElement<?> content) {
-        descriptors.add(index, new TabDescriptor(id, title, () -> content, util("pt-md")));
+        int clamped = Math.max(0, Math.min(index, descriptors.size()));
+        descriptors.add(clamped, new TabDescriptor(id, title, () -> content, util("pt-md")));
         return this;
     }
 
+    /** Removes a tab by its identifier. No-op if the identifier is not found. Must be called before {@link #element()}. */
     public ResourceTabs removeTab(String id) {
         descriptors.removeIf(d -> d.id.equals(id));
         return this;
     }
 
+    /** Replaces the content of an existing tab. No-op if the identifier is not found. Must be called before {@link #element()}. */
     public ResourceTabs replaceTab(String id, IsElement<?> content) {
         for (int i = 0; i < descriptors.size(); i++) {
             TabDescriptor d = descriptors.get(i);
