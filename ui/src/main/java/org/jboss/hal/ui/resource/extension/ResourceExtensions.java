@@ -20,6 +20,8 @@ package org.jboss.hal.ui.resource.extension;
  * {@link org.jboss.hal.ui.UIContext#resourceExtensions()}.
  *
  * @param resourceHeaderRegistry the registry for custom {@link ResourceHeaderProvider resource header} providers
+ * @param resourceTabsRegistry the registry for custom {@link ResourceTabsProvider resource tabs} providers
  */
-public record ResourceExtensions(ResourceHeaderRegistry resourceHeaderRegistry) {
+public record ResourceExtensions(ResourceHeaderRegistry resourceHeaderRegistry,
+        ResourceTabsRegistry resourceTabsRegistry) {
 }

@@ -18,7 +18,8 @@
  * Extension points for the resource shell components. Providers are CDI beans that declare an address template
  * {@link org.jboss.hal.ui.resource.extension.ResourceHeaderProvider#scope() scope} and optional runtime
  * {@link org.jboss.hal.ui.resource.extension.ResourceHeaderProvider#appliesTo activation conditions}. The registries
- * ({@link org.jboss.hal.ui.resource.extension.ResourceHeaderRegistry}) collect all providers at startup and return the
+ * ({@link org.jboss.hal.ui.resource.extension.ResourceHeaderRegistry},
+ * {@link org.jboss.hal.ui.resource.extension.ResourceTabsRegistry}) collect all providers at startup and return the
  * best-matching one at lookup time. Providers that need runtime data (attribute values) inject the required services via CDI
  * and load data themselves. All registries are grouped in {@link org.jboss.hal.ui.resource.extension.ResourceExtensions}.
  */

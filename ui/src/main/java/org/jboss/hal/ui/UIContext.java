@@ -35,6 +35,7 @@ import org.jboss.hal.meta.tree.ModelTree;
 import org.jboss.hal.ui.navigation.RouteRegistry;
 import org.jboss.hal.ui.resource.extension.ResourceExtensions;
 import org.jboss.hal.ui.resource.extension.ResourceHeaderRegistry;
+import org.jboss.hal.ui.resource.extension.ResourceTabsRegistry;
 
 /**
  * Holds common classes often needed in UI elements.
@@ -89,6 +90,7 @@ public class UIContext {
             Notifications notifications,
             PlaceManager placeManager,
             ResourceHeaderRegistry resourceHeaderRegistry,
+            ResourceTabsRegistry resourceTabsRegistry,
             RouteRegistry routeRegistry,
             Settings settings,
             StatementContext statementContext
@@ -102,7 +104,7 @@ public class UIContext {
         this.modelTree = modelTree;
         this.notifications = notifications;
         this.placeManager = placeManager;
-        this.resourceExtensions = new ResourceExtensions(resourceHeaderRegistry);
+        this.resourceExtensions = new ResourceExtensions(resourceHeaderRegistry, resourceTabsRegistry);
         this.routeRegistry = routeRegistry;
         this.settings = settings;
         this.statementContext = statementContext;

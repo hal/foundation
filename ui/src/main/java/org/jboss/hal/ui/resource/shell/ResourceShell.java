@@ -127,7 +127,14 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     /** Adds a tabbed resource view to the content area. */
     public ResourceShell addTabs(ResourceTabs tabs) {
-        contentSection.add(tabs);
+        extensions.resourceTabsRegistry().lookup(environment, template).ifPresentOrElse(
+                provider ->
+                        provider.customizeTabs(template, metadata, tabs)
+                                .then(customTabs -> {
+                                    contentSection.add(customTabs);
+                                    return null;
+                                }),
+                () -> contentSection.add(tabs));
         return this;
     }
 
