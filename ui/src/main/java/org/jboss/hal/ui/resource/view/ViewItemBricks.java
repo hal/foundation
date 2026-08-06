@@ -146,7 +146,8 @@ class ViewItemBricks {
     }
 
     static HTMLElement expressionValue(ResolvedAttribute attribute) {
-        HTMLElement resolveButton = button().plain().inline().icon(resolveExpressionIcon().get())
+        HTMLElement resolveButton = button().plain().inline().noPadding().css(util("ml-sm"))
+                .icon(resolveExpressionIcon().get())
                 .onClick((e, b) -> uic().notifications().send(nyi()))
                 .element();
         return span()

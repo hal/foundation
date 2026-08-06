@@ -3,34 +3,37 @@ package org.jboss.hal.op.configuration.datasource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
+import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.StatementContext;
-import org.jboss.hal.ui.resource.shell.ResourceHeader;
+import org.jboss.hal.ui.resource.event.ResourceEvents;
 import org.jboss.hal.ui.resource.extension.ResourceHeaderProvider;
-import org.patternfly.component.IconPosition;
-import org.patternfly.icon.PredefinedIcon;
+import org.jboss.hal.ui.resource.shell.ResourceHeader;
+import org.patternfly.component.label.Label;
 
 import elemental2.promise.Promise;
 
-import static org.jboss.elemento.Elements.small;
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTES_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_RUNTIME;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.JNDI_NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
-import static org.jboss.hal.ui.brick.JndiBricks.renderJndiName;
+import static org.patternfly.component.Severity.success;
+import static org.patternfly.component.label.Label.label;
 import static org.patternfly.icon.IconSets.fas.database;
-import static org.patternfly.token.Token.globalIconColorDisabled;
-import static org.patternfly.token.Token.globalIconColorStatusSuccessDefault;
+import static org.patternfly.icon.IconSets.rhUi.ban;
+import static org.patternfly.style.Color.grey;
 
 @ApplicationScoped
 public class DataSourceHeader implements ResourceHeaderProvider {
 
     private final Dispatcher dispatcher;
     private final StatementContext statementContext;
+    private Label statusLabel;
 
     @Inject
     public DataSourceHeader(Dispatcher dispatcher, StatementContext statementContext) {
@@ -44,24 +47,44 @@ public class DataSourceHeader implements ResourceHeaderProvider {
     }
 
     @Override
+    public boolean appliesTo(Environment environment, AddressTemplate template) {
+        return template.fullyQualified();
+    }
+
+    @Override
     public Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata,
             ResourceHeader defaultHeader) {
+        return readDataSource(template).then(dataSource -> Promise.resolve(dataSourceHeader(dataSource, defaultHeader)));
+    }
+
+    private Promise<ModelNode> readDataSource(AddressTemplate template) {
         Operation operation = new Operation.Builder(template.resolve(statementContext), READ_RESOURCE_OPERATION)
                 .param(ATTRIBUTES_ONLY, true)
                 .param(INCLUDE_RUNTIME, true)
                 .build();
-        return dispatcher.execute(operation).then(result -> {
-            boolean enabled = result.hasDefined(ENABLED) && result.get(ENABLED).asBoolean();
-            // --pf-t--global--icon--color--disabled
-            // --pf-t--global--icon--color--status--success--default
-            PredefinedIcon icon = database().style("color",
-                    enabled ? globalIconColorStatusSuccessDefault.var : globalIconColorDisabled.var);
-            defaultHeader.iconAndText(icon, template.last().value, IconPosition.start);
-            defaultHeader.textDelegate().append(small(enabled ? "enabled" : "disabled").element());
-            if (result.hasDefined(JNDI_NAME)) {
-                defaultHeader.add(renderJndiName(result.get(JNDI_NAME).asString()));
-            }
-            return Promise.resolve(defaultHeader);
-        });
+        return dispatcher.execute(operation);
+    }
+
+    private ResourceHeader dataSourceHeader(ModelNode dataSource, ResourceHeader defaultHeader) {
+        statusLabel = statusLabel(dataSource);
+        ResourceHeader resourceHeader = defaultHeader
+                .icon(database())
+                .addLabel(statusLabel);
+
+        ResourceEvents.Modified.listen(resourceHeader.element(), details ->
+                readDataSource(details.template).then(modifiedDataSource -> {
+                    failSafeRemoveFromParent(statusLabel);
+                    statusLabel = statusLabel(modifiedDataSource);
+                    resourceHeader.addLabel(statusLabel);
+                    return null;
+                }));
+
+        return resourceHeader;
+    }
+
+    private Label statusLabel(ModelNode dataSource) {
+        return dataSource.hasDefined(ENABLED) && dataSource.get(ENABLED).asBoolean()
+                ? label("enabled").status(success).outline()
+                : label("disabled", grey).outline().icon(ban());
     }
 }

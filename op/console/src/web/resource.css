@@ -23,6 +23,7 @@
     --hal-resource-label-width-on-lg: 23ch;
     --hal-resource-label-width-on-xl: 25ch;
     --hal-resource-label-width-on-2xl: 28ch;
+    --hal-resource-view-item-min-height: 26px;
 }
 
 .hal-c-resource__groups {
@@ -85,6 +86,11 @@
     --pf-v6-c-description-list--m-horizontal__term--width-on-lg: var(--hal-resource-label-width-on-lg);
     --pf-v6-c-description-list--m-horizontal__term--width-on-xl: var(--hal-resource-label-width-on-xl);
     --pf-v6-c-description-list--m-horizontal__term--width-on-2xl: var(--hal-resource-label-width-on-2xl);
+
+    .pf-v6-c-description-list__group {
+        align-items: center;
+        min-height: var(--hal-resource-view-item-min-height);
+    }
 }
 
 .hal-c-resource__view-unit {

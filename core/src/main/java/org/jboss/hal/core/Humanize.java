@@ -84,6 +84,16 @@ public class Humanize {
         return new Humanize(CAPITAL).enumeration(names, conjunction);
     }
 
+    /**
+     * Abbreviates the given text to a specified maximum length. If the text is longer than the maximum length, it attempts to
+     * truncate it at a word boundary near the maximum length and appends an ellipsis (" …"). If no word boundary is found, the
+     * text is simply truncated at the maximum length.
+     *
+     * @param text      The input text to abbreviate. Can be null, in which case the method returns null.
+     * @param maxLength The maximum length of the abbreviated text. Must be greater than 0.
+     * @return The abbreviated text. If the input text is null or shorter than or equal to the maximum length, the original text
+     * is returned.
+     */
     public static String abbreviate(String text, int maxLength) {
         if (text == null || text.length() <= maxLength) {
             return text;

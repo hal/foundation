@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import org.jboss.hal.ui.resource.ResourceItem;
 
+import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Humanize.sentenceCase;
 
 /**
@@ -84,8 +85,5 @@ public final class GroupingSupport {
         }
         result.putAll(namedGroups);
         return result;
-    }
-
-    private GroupingSupport() {
     }
 }

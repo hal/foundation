@@ -18,7 +18,6 @@ package org.jboss.hal.ui.resource.extension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import jakarta.ejb.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,17 +26,17 @@ import jakarta.inject.Inject;
 
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.TemplateMatcher;
 
 import static java.util.stream.Collectors.toList;
+import static org.jboss.hal.meta.TemplateMatcher.bestMatch;
 
 /**
- * CDI-managed registry that collects all {@link ResourceHeaderProvider} implementations at startup and provides
- * best-prefix template matching at lookup time.
+ * CDI-managed registry that collects all {@link ResourceHeaderProvider} implementations at startup and provides best-prefix
+ * template matching at lookup time.
  * <p>
- * The matching algorithm compares the provider's {@link ResourceHeaderProvider#scope()} segments against the input
- * template segments left-to-right. When multiple providers match, the one with the longest matching prefix wins;
- * ties are broken by the number of exact (non-wildcard) value matches. Only providers where
+ * The matching algorithm compares the provider's {@link ResourceHeaderProvider#scope()} segments against the input template
+ * segments left-to-right. When multiple providers match, the one with the longest matching prefix wins; ties are broken by the
+ * number of exact (non-wildcard) value matches. Only providers where
  * {@link ResourceHeaderProvider#appliesTo(Environment, AddressTemplate)} returns {@code true} are considered.
  */
 @Startup
@@ -61,14 +60,14 @@ public class ResourceHeaderRegistry {
 
     /**
      * Finds the best matching provider for the given environment and template. Only providers whose
-     * {@link ResourceHeaderProvider#appliesTo(Environment, AddressTemplate)} returns {@code true} are considered, so callers
-     * do not need to re-check activation conditions. Among eligible providers, the one with the best prefix match against
+     * {@link ResourceHeaderProvider#appliesTo(Environment, AddressTemplate)} returns {@code true} are considered, so callers do
+     * not need to re-check activation conditions. Among eligible providers, the one with the best prefix match against
      * {@link ResourceHeaderProvider#scope()} wins. Returns {@link Optional#empty()} if no provider matches.
      */
     public Optional<ResourceHeaderProvider> lookup(Environment environment, AddressTemplate template) {
         List<ResourceHeaderProvider> eligible = providers.stream()
                 .filter(p -> p.appliesTo(environment, template))
                 .collect(toList());
-        return TemplateMatcher.bestMatch(eligible, ResourceHeaderProvider::scope, template);
+        return bestMatch(eligible, ResourceHeaderProvider::scope, template);
     }
 }

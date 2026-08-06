@@ -38,21 +38,18 @@ import elemental2.promise.Promise;
  * {@link #createHeader(AddressTemplate, Metadata, ResourceHeader)}.
  * <p>
  * Providers can fully replace the default header or augment it:
- * <pre>
+ * {@snippet :
  * // Full replacement — ignore defaultHeader
- * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader) {
- *     return Promise.resolve(resourceHeader(template, metadata)
- *             .add(p().text("Extra information")));
+ * public Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader) {
+ *     return Promise.resolve(resourceHeader(template, metadata));
  * }
- *
+ *}
+ * {@snippet :
  * // Augmentation — add extra content after loading data
- * public Promise&lt;ResourceHeader&gt; createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader) {
- *     return dispatcher.execute(operation).then(result -&gt; {
- *         defaultHeader.add(p().text(result.get("jndi-name").asString()));
- *         return Promise.resolve(defaultHeader);
- *     });
+ * public Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader) {
+ *     return Promise.resolve(defaultHeader.add(p().text("Extra information")));
  * }
- * </pre>
+ *}
  */
 public interface ResourceHeaderProvider {
 
@@ -81,8 +78,8 @@ public interface ResourceHeaderProvider {
      *
      * @param template      the concrete resource template being rendered
      * @param metadata      the resource's management model metadata
-     * @param defaultHeader the default {@link ResourceHeader}, fully configured but lazily built. The provider can use it for
-     *                      augmentation (wrap with extra content) or ignore it for full replacement (no build cost if unused).
+     * @param defaultHeader the default {@link ResourceHeader}, fully configured. The provider can use it for augmentation (wrap
+     *                      with extra content) or ignore it for full replacement.
      */
     Promise<ResourceHeader> createHeader(AddressTemplate template, Metadata metadata, ResourceHeader defaultHeader);
 }

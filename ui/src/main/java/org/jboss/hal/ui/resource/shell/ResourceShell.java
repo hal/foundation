@@ -20,6 +20,8 @@ import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.ui.resource.ResourceTabs;
+import org.jboss.hal.ui.resource.event.ResourceEvents;
+import org.jboss.hal.ui.resource.extension.ResourceHeaderRegistry;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.page.PageSection;
 
@@ -63,19 +65,26 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ instance
 
+    private final AddressTemplate template;
+    private final Metadata metadata;
+    private final Environment environment;
+    private final ResourceHeaderRegistry headerRegistry;
     private final PageGroup stickyGroup;
     private final PageSection contentSection;
     private final HTMLElement root;
-    private final AddressTemplate template;
-    private final Metadata metadata;
+    private ResourceHeader currentHeader;
 
     ResourceShell(AddressTemplate template, Metadata metadata) {
         this.template = template;
         this.metadata = metadata;
+        this.environment = uic().environment();
+        this.headerRegistry = uic().resourceHeaderRegistry();
         this.root = div()
                 .add(stickyGroup = pageGroup().sticky(top))
                 .add(contentSection = pageSection())
                 .element();
+
+        ResourceEvents.Modified.listen(root, this::onResourceModified);
     }
 
     @Override
@@ -101,13 +110,18 @@ public class ResourceShell implements IsElement<HTMLElement> {
 
     /** Adds a header (name, stability label, description) to the sticky header area. */
     public ResourceShell addHeader(ResourceHeader header) {
-        Environment environment = uic().environment();
-        uic().resourceHeaderRegistry().lookup(environment, template).ifPresentOrElse(provider -> {
-            provider.createHeader(template, metadata, header).then(customHeader -> {
-                stickyGroup.addSection(pageSection().add(customHeader));
-                return null;
-            });
-        }, () -> stickyGroup.addSection(pageSection().add(header)));
+        headerRegistry.lookup(environment, template).ifPresentOrElse(
+                provider ->
+                        provider.createHeader(template, metadata, header)
+                                .then(customHeader -> {
+                                    currentHeader = customHeader;
+                                    stickyGroup.addSection(pageSection().add(customHeader));
+                                    return null;
+                                }),
+                () -> {
+                    currentHeader = header;
+                    stickyGroup.addSection(pageSection().add(header));
+                });
         return this;
     }
 
@@ -121,5 +135,14 @@ public class ResourceShell implements IsElement<HTMLElement> {
     public ResourceShell addResourceList(ResourceList resourceList) {
         contentSection.add(resourceList);
         return this;
+    }
+
+    // ------------------------------------------------------ internal
+
+    private void onResourceModified(ResourceEvents.Modified.Details details) {
+        if (currentHeader != null) {
+            // Forward the event, but DO NOT bubble up! Otherwise, we get a stack overflow.
+            ResourceEvents.Modified.dispatch(currentHeader.element(), details.template, false);
+        }
     }
 }

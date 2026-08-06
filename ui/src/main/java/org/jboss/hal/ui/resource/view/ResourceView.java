@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.elemento.HTMLContainerBuilder;
-import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.grouping.GroupingSupport;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.expandable.ExpandableSection;
 import org.patternfly.filter.Filter;
@@ -31,8 +29,12 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.setVisible;
-import static org.jboss.hal.core.Humanize.capitalCase;
+import static org.jboss.hal.resources.HalClasses.groups;
 import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.resource;
+import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.ui.resource.grouping.GroupingSupport.UNGROUPED;
+import static org.jboss.hal.ui.resource.grouping.GroupingSupport.resolveGroups;
 import static org.patternfly.component.expandable.ExpandableSection.expandableSection;
 import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
@@ -68,7 +70,7 @@ public class ResourceView {
         items.addAll(viewItems);
         groupContainers.clear();
 
-        Map<String, List<ViewItem>> itemGroups = GroupingSupport.resolveGroups(viewItems, grouped);
+        Map<String, List<ViewItem>> itemGroups = resolveGroups(viewItems, grouped);
         if (itemGroups != null) {
             return buildGrouped(itemGroups);
         }
@@ -80,8 +82,7 @@ public class ResourceView {
     }
 
     private HTMLElement buildGrouped(Map<String, List<ViewItem>> itemGroups) {
-        HTMLContainerBuilder<HTMLDivElement> container = div()
-                .css(halComponent(HalClasses.resource, HalClasses.groups));
+        HTMLContainerBuilder<HTMLDivElement> container = div().css(halComponent(resource, groups));
         for (Map.Entry<String, List<ViewItem>> entry : itemGroups.entrySet()) {
             String groupName = entry.getKey();
             List<ViewItem> groupItems = entry.getValue();
@@ -89,12 +90,12 @@ public class ResourceView {
             for (ViewItem item : groupItems) {
                 dl.appendChild(item.element());
             }
-            if (GroupingSupport.UNGROUPED.equals(groupName)) {
+            if (UNGROUPED.equals(groupName)) {
                 container.add(dl);
             } else {
                 ExpandableSection es = expandableSection()
-                        .css(halComponent(HalClasses.resource, group))
-                        .addToggle(expandableSectionToggle(capitalCase(groupName)))
+                        .css(halComponent(resource, group))
+                        .addToggle(expandableSectionToggle(groupName))
                         .addContent(expandableSectionContent().add(dl));
                 container.add(es);
                 groupContainers.add(es.element());
@@ -129,7 +130,7 @@ public class ResourceView {
         return matchingItems;
     }
 
-    /** Clears all filter state, making all items and group containers visible. */
+    /** Clears all filter states, making all items and group containers visible. */
     public void clearFilter() {
         for (ViewItem item : items) {
             item.element().classList.remove(modifier(filtered));
@@ -142,9 +143,13 @@ public class ResourceView {
     // ------------------------------------------------------ static helpers
 
     public static HTMLElement createDescriptionList() {
-        return descriptionList()
-                .orientation(breakpoints(sm, vertical, md, horizontal, lg, horizontal, xl, horizontal, _2xl, horizontal))
-                .css(halComponent(HalClasses.resource, HalClasses.view))
+        return descriptionList().css(halComponent(resource, view))
+                .orientation(breakpoints(
+                        sm, vertical,
+                        md, horizontal,
+                        lg, horizontal,
+                        xl, horizontal,
+                        _2xl, horizontal))
                 .element();
     }
 }
