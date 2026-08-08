@@ -20,6 +20,6 @@
   "devDependencies": {
     "@cyclonedx/cdxgen": "^12.8.2",
     "esbuild": "^0.28.1",
-    "vite": "^8.2.0"
+    "vite": "^8.2.1"
   }
 }
