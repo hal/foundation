@@ -23,3 +23,7 @@
 
 - [halOP](editions/halop.md)
 - [halOS](editions/halos.md)
+
+# Development
+
+- [Building](development/building.md)
