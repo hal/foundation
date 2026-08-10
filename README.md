@@ -17,6 +17,10 @@ The work on the new consoles is in an early state and very much in progress.
 - [PatternFly Java](https://github.com/patternfly-java)
 - [Maven](https://maven.apache.org/), [Vite](https://vite.dev/), and [PNPM](https://pnpm.io/)
 
+# Documentation
+
+Full documentation is available at [hal.github.io/foundation](https://hal.github.io/foundation/).
+
 # halOP (HAL On Premise)
 
 This edition is the successor of the current [HAL management console](https://github.com/hal/console).
