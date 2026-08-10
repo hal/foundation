@@ -16,3 +16,4 @@
 - [Overview](architecture/overview.md)
 - [Resource Shell & SPI](architecture/resource-shell-spi.md)
 - [Attribute Pipeline](architecture/attribute-pipeline.md)
+- [Task Framework](architecture/task-framework.md)
