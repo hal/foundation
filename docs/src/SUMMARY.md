@@ -18,3 +18,8 @@
 - [Attribute Pipeline](architecture/attribute-pipeline.md)
 - [Task Framework](architecture/task-framework.md)
 - [Dashboard](architecture/dashboard-architecture.md)
+
+# Editions
+
+- [halOP](editions/halop.md)
+- [halOS](editions/halos.md)
