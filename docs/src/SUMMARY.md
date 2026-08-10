@@ -10,3 +10,7 @@
 - [Resource Management](features/resource-management.md)
 - [Tasks](features/tasks.md)
 - [Test Automation](features/test-automation.md)
+
+# Architecture
+
+- [Overview](architecture/overview.md)
