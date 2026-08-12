@@ -14,6 +14,7 @@ import org.jboss.elemento.HTMLElementVisibilityMethods;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.ComponentIcon;
 import org.patternfly.component.content.Content;
 import org.patternfly.component.divider.Divider;
@@ -99,6 +100,7 @@ public class ResourceHeader implements
         if (uic().environment().highlightStability(stability)) {
             addLabel(stabilityLabel(stability).element());
         }
+        initOuia(OuiaIds.RESOURCE_HEADER);
     }
 
     @Override
