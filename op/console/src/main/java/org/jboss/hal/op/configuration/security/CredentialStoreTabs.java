@@ -10,8 +10,8 @@ import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.resource.spi.ResourceTabsProvider;
 import org.jboss.hal.ui.resource.shell.ResourceTabs;
+import org.jboss.hal.ui.resource.spi.ResourceTabsProvider;
 
 import elemental2.promise.Promise;
 
