@@ -1,13 +1,15 @@
 # Test Automation
 
-The console is designed to support automated testing through stable, predictable UI component identifiers and a companion NPM package for test suite development.
+The console is designed to support automated testing through stable, predictable UI component identifiers. The companion project [dave](https://github.com/hal/dave) is the end-to-end test suite built with [Playwright](https://playwright.dev/) and TypeScript.
 
 ## OUIA Component IDs
 
-All major UI components in the console are tagged with **OUIA (Open UI Automation) component IDs**. These identifiers provide stable, automation-friendly selectors that do not change when the internal DOM structure or CSS classes are refactored. This ensures that test suites remain reliable across console updates.
+All major UI components in the console are tagged with [OUIA (Open UI Automation)](https://ouia.readthedocs.io/) component IDs, following [PatternFly's testing conventions](https://www.patternfly.org/developer-resources/open-ui-automation). These identifiers provide stable, automation-friendly selectors that do not change when the internal DOM structure or CSS classes are refactored, ensuring that test suites remain reliable across console updates.
 
-## @halconsole/ouia NPM Package
+The OUIA IDs are defined in [`OuiaIds.java`](https://github.com/hal/foundation/blob/main/resources/src/main/java/org/jboss/hal/resources/OuiaIds.java) in this repository.
 
-The **@halconsole/ouia** NPM package provides TypeScript constants and an ID builder function for use in Playwright and other browser automation test suites. This package ensures that your test code uses the same identifiers as the console itself, reducing the risk of selector mismatches and making tests easier to write and maintain.
+## Sync with dave
 
-By using the constants and builder function from the package, your test suite automatically stays in sync with the console's OUIA schema, even as new components are added or existing ones are refactored.
+The dave test suite generates TypeScript constants from `OuiaIds.java` into [`src/selectors/ids.ts`](https://github.com/hal/dave/blob/main/src/selectors/ids.ts) using `pnpm sync:ouia`. This keeps test selectors in sync with the console without requiring a separate package release. A CI check (`pnpm sync:ci`) detects drift and fails if the generated file is out of date.
+
+See the [dave documentation](https://hal.github.io/dave/) for details on the test suite architecture and sync workflow.
