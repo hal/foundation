@@ -16,9 +16,13 @@ hero:
       link: https://github.com/hal/foundation
 ---
 
+<script setup>
+import { withBase } from 'vitepress'
+</script>
+
 <div class="hero-screenshot">
-  <img class="light-only" src="/foundation/media/dashboard.png" alt="HAL Dashboard">
-  <img class="dark-only" src="/foundation/media/dashboard-dark.png" alt="HAL Dashboard">
+  <img class="light-only" :src="withBase('/dashboard.png')" alt="HAL Dashboard">
+  <img class="dark-only" :src="withBase('/dashboard-dark.png')" alt="HAL Dashboard">
 </div>
 
 <style>

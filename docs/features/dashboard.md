@@ -2,7 +2,7 @@
 
 The dashboard provides an at-a-glance overview of key information about your WildFly server or domain. It uses a card-based layout to present essential metrics and status information in an organized, easy-to-scan format.
 
-![Dashboard](../media/dashboard.png)
+![Dashboard](./dashboard.png)
 
 ## Universal Cards
 
@@ -29,4 +29,4 @@ When connected to a domain controller, additional cards provide domain-wide visi
 
 The dashboard adapts to the selected theme and contrast settings, ensuring readability in any visual mode:
 
-![Dashboard dark theme](../media/dashboard-dark.png)
+![Dashboard dark theme](./dashboard-dark.png)

@@ -2,7 +2,7 @@
 
 The model browser is the primary tool for exploring and working with WildFly's management model. It provides a comprehensive view of resources, their attributes, operations, and relationships.
 
-![Model Browser](../media/model-browser.png)
+![Model Browser](./model-browser.png)
 
 ## Navigation and Search
 
@@ -10,7 +10,7 @@ The model browser features a **resizable tree view** for browsing the resource h
 
 **Search capabilities** let you find resources by address, type, or name. The **go-to address** feature allows jumping directly to any resource by entering its management model address. **Clickable breadcrumbs** show your current location in the hierarchy and provide quick navigation to parent resources. You can **copy the current address to the clipboard** for use in CLI commands or scripts.
 
-![Find Resource](../media/find-resource.png)
+![Find Resource](./find-resource.png)
 
 ## Resource Lists and References
 
@@ -23,7 +23,7 @@ The model browser supports **scoped browsing**: when you navigate to a resource 
 When configuring a resource that references another resource, the model browser makes it easy to create those dependencies on the fly, streamlining the configuration workflow:
 
 <video controls width="100%">
-  <source src="../media/add-resources-on-the-fly.mp4" type="video/mp4">
+  <source src="./add-resources-on-the-fly.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -35,11 +35,11 @@ The Data tab displays the current values of a resource's attributes with powerfu
 
 **Attribute groups** organize attributes based on metadata defined in the resource description, making it easier to find related configuration options:
 
-![Attribute Groups](../media/attribute-groups.png)
+![Attribute Groups](./attribute-groups.png)
 
 For resources with many attributes, **auto-grouping** kicks in when 20 or more attributes are present and no metadata-defined groups exist. Attributes are automatically organized into alphabetical letter-range sections (such as "A – D", "E – H") for easier navigation:
 
-![Auto Grouping](../media/auto-grouping.png)
+![Auto Grouping](./auto-grouping.png)
 
 **Attribute descriptions** appear as popovers when you hover over an attribute name, providing context without cluttering the interface. Attributes that reference capabilities show **links to the referenced resources**, with support for multiple references displayed in a popup.
 

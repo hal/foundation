@@ -2,7 +2,7 @@
 
 Tasks provide a use-case-centric approach to completing complex management operations. Unlike the resource-centric views in the model browser, tasks focus on specific administrative workflows that often span multiple subsystems and resources.
 
-![Tasks](../media/tasks.png)
+![Tasks](./tasks.png)
 
 ## Concept
 
@@ -34,7 +34,7 @@ The statistics-enabled task consolidates all resources that define this attribut
 - Assign existing expressions or create new expressions (if supported by the resource)
 
 <video controls width="100%">
-  <source src="../media/statistics-task.mp4" type="video/mp4">
+  <source src="./statistics-task.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
