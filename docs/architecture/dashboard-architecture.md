@@ -25,13 +25,17 @@ The card-based architecture enables:
 
 ### Card Lifecycle
 
-```
-1. Card bean instantiation (CDI injection)
-2. Initialize (subscribe to relevant DMR operations)
-3. Load data (execute DMR operation, handle Promise)
-4. Render (PatternFly card with fetched data)
-5. Update (when relevant DMR events fire or manual refresh)
-6. Dispose (unsubscribe from events)
+```mermaid
+graph TD
+    I[Instantiation<br/><small>CDI injection</small>]
+    Init[Initialize<br/><small>subscribe to DMR ops</small>]
+    L[Load<br/><small>execute DMR, handle Promise</small>]
+    R[Render<br/><small>PatternFly card</small>]
+    U[Update<br/><small>DMR events / refresh</small>]
+    D[Dispose<br/><small>unsubscribe</small>]
+
+    I --> Init --> L --> R --> U --> D
+    U -->|"refresh"| L
 ```
 
 ## Planned Card Set

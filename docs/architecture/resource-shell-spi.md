@@ -10,19 +10,24 @@ The `ResourceShell` provides a composable framework for CRUD operations on WildF
 
 The `ResourceShell` is a pure layout container—all intelligence lives in composed children. The shell itself has no behavior and no data loading. Its composition follows this structure:
 
-```
-ResourceShell
-├── Sticky header group
-│   ├── ResourceBreadcrumb (optional)
-│   └── ResourceHeader (optional)
-└── Content section
-    ├── ResourceTabs (option A)
-    │   ├── Data tab → ResourceData → Pipeline → ResourceView / ResourceForm
-    │   ├── Attributes tab → AttributesTable
-    │   ├── Operations tab → OperationsTable
-    │   └── Capabilities tab → CapabilitiesTable
-    └── ResourceList (option B)
-        └── DataList of child resources
+```mermaid
+%%{init: {"themeVariables": {"fontSize": "2rem"}}}%%
+graph TD
+    RS[ResourceShell] --> SH[Sticky header]
+    RS --> CS[Content]
+
+    SH --> RB["ResourceBreadcrumb (optional)"]
+    SH --> RH["ResourceHeader (optional)"]
+
+    CS -->|Option A| RT[ResourceTabs]
+    CS -->|Option B| RL[ResourceList]
+
+    RT --> DT[Data tab]
+    RT --> AT[Attributes tab]
+    RT --> OT[Operations tab]
+    RT --> CT[Capabilities tab]
+
+    RL --> DL[DataList of child resources]
 ```
 
 The sticky header group remains visible while scrolling through content, providing consistent context for the current resource. The content section flexibly switches between two layouts:

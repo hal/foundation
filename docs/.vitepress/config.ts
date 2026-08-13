@@ -1,11 +1,18 @@
 import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   title: "HAL Foundation",
   description: "Documentation for the HAL management console (halOP & halOS)",
   base: "/foundation/",
 
   ignoreDeadLinks: [/^http:\/\/localhost/],
+
+  vite: {
+    optimizeDeps: {
+      include: ["mermaid"],
+    },
+  },
 
   themeConfig: {
     nav: [
@@ -33,6 +40,8 @@ export default defineConfig({
         text: "Architecture",
         items: [
           { text: "Overview", link: "/architecture/overview" },
+          { text: "Dashboard", link: "/architecture/dashboard-architecture" },
+          { text: "Task Framework", link: "/architecture/task-framework" },
           {
             text: "Resource Shell & SPI",
             link: "/architecture/resource-shell-spi",
@@ -41,8 +50,6 @@ export default defineConfig({
             text: "Attribute Pipeline",
             link: "/architecture/attribute-pipeline",
           },
-          { text: "Task Framework", link: "/architecture/task-framework" },
-          { text: "Dashboard", link: "/architecture/dashboard-architecture" },
         ],
       },
       {
@@ -74,4 +81,4 @@ export default defineConfig({
       message: "Documentation for the HAL management console (halOP & halOS)",
     },
   },
-});
+}));

@@ -14,15 +14,38 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/hal/foundation
-
-features:
-  - title: halOP
-    details: HAL On Premise — successor to the current HAL management console, ships bundled with WildFly or runs as a standalone application.
-    link: /editions/halop
-  - title: halOS
-    details: HAL On OpenShift — future edition for managing WildFly instances on OpenShift (not yet implemented).
-    link: /editions/halos
-  - title: Resources
-    details: Changelog, contributing guide, issue tracker, and community chat.
-    link: https://github.com/hal/foundation
 ---
+
+<div class="hero-screenshot">
+  <img class="light-only" src="/foundation/media/dashboard.png" alt="HAL Dashboard">
+  <img class="dark-only" src="/foundation/media/dashboard-dark.png" alt="HAL Dashboard">
+</div>
+
+<style>
+.hero-screenshot {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+.hero-screenshot img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.dark .hero-screenshot img {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.hero-screenshot .dark-only {
+  display: none;
+}
+
+.dark .hero-screenshot .light-only {
+  display: none;
+}
+
+.dark .hero-screenshot .dark-only {
+  display: block;
+}
+</style>

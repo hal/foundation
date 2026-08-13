@@ -18,9 +18,9 @@ Registered handlers in priority order:
 
 | Priority | Handler | Pattern | Attributes |
 |---|---|---|---|
-| 1 | `CredentialReferenceHandler` | OBJECT with {store, alias, clear-text} | 49 |
-| 2 | `TimeUnitHandler` | OBJECT with {time, unit} | 8 |
-| 3 | `FileHandler` | OBJECT with {path, relative-to} | 8 |
+| 1 | `CredentialReferenceHandler` | OBJECT with `{store, alias, clear-text}` | 49 |
+| 2 | `TimeUnitHandler` | OBJECT with `{time, unit}` | 8 |
+| 3 | `FileHandler` | OBJECT with `{path, relative-to}` | 8 |
 | 4 | `PathRelativeToHandler` | sibling path + relative-to STRING pairs | 31 |
 | 5 | `MapHandler` | OBJECT with simple scalar VALUE_TYPE | 222 |
 | 6 | `FlatteningHandler` | simpleRecord OBJECTs (all simple sub-attributes) | ~80 |
@@ -40,14 +40,16 @@ Registered providers in order:
 
 The pipeline operates through distinct type transformations:
 
-```
-AttributeDescription  — raw metadata from the management model (no values, no RBAC)
-        ↓ handler.match() claims groups
-AttributeMatch        — 1..n descriptions that belong together (still no values)
-        ↓ handler resolves against PipelineContext
-ResolvedAttribute     — 1 description + its current value + readable/writable (snapshot)
-        ↓ handler produces items or delegates to provider chain
-ViewItem / FormItem   — holds 1..n ResolvedAttributes, renders UI
+```mermaid
+graph TD
+    AD["AttributeDescription<br/><small>raw metadata, no values</small>"]
+    AM["AttributeMatch<br/><small>1..n grouped descriptions</small>"]
+    RA["ResolvedAttribute<br/><small>description + value + RBAC</small>"]
+    VI["ViewItem / FormItem<br/><small>1..n resolved attributes</small>"]
+
+    AD -- "handler.match()" --> AM
+    AM -- "resolve against PipelineContext" --> RA
+    RA -- "produce items or delegate to providers" --> VI
 ```
 
 `AttributeMatch` lives in the description world. `ResolvedAttribute` lives in the value world. Handlers bridge the two — they receive matches and context, perform resolution, and either produce items directly or delegate children to the provider chain via `Pipeline.viewItem/formItem`.
@@ -139,12 +141,10 @@ These represent the remaining 7% of uncovered attributes. Implementing the high-
 
 ## Implementation Details
 
-Detailed handler documentation lives alongside the source code in `ui/docs/handler/`. Each handler documents:
+The pipeline source code is in `ui/src/main/java/org/jboss/hal/ui/resource/pipeline/`, with comprehensive package-level Javadoc describing the architecture and data flow. Each handler documents:
 
 - Pattern recognition logic
 - Attribute claiming rules
 - Resolution strategy
 - Item production approach
 - Covered attributes with examples
-
-The pipeline source code is in `ui/src/main/java/org/jboss/hal/ui/resource/pipeline/`, with comprehensive package-level Javadoc describing the architecture and data flow.
