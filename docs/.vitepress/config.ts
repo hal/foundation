@@ -5,7 +5,6 @@ export default defineConfig({
   description: "Documentation for the HAL management console (halOP & halOS)",
   base: "/foundation/",
 
-  srcDir: "src",
   ignoreDeadLinks: [/^http:\/\/localhost/],
 
   themeConfig: {
@@ -64,7 +63,7 @@ export default defineConfig({
     ],
 
     editLink: {
-      pattern: "https://github.com/hal/foundation/edit/main/docs/src/:path",
+      pattern: "https://github.com/hal/foundation/edit/main/docs/:path",
     },
 
     search: {
