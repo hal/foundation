@@ -88,12 +88,14 @@
             <artifactId>patternfly-java-finder</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.j2cl.tools.processors</groupId>
+            <groupId>org.treblereel.j2cl.processors</groupId>
             <artifactId>annotations</artifactId>
+            <version>${version.gwt3.processors}</version>
         </dependency>
         <dependency>
-            <groupId>org.kie.j2cl.tools.processors</groupId>
+            <groupId>org.treblereel.j2cl.processors</groupId>
             <artifactId>processors</artifactId>
+            <version>${version.gwt3.processors}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

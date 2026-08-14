@@ -22,8 +22,8 @@ import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.endpoint.EndpointStorage;
-import org.kie.j2cl.tools.di.annotation.Application;
-import org.kie.j2cl.tools.processors.annotations.GWT3EntryPoint;
+import io.crysknife.annotation.Application;
+import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 import org.patternfly.component.navigation.Navigation;
 
 import static elemental2.dom.DomGlobal.document;
