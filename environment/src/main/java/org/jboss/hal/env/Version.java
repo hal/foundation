@@ -37,7 +37,7 @@ public class Version implements Comparable<Version> {
      *
      * @param version String representation of the version identifier. Leading and trailing whitespace will be ignored.
      * @return A <code>Version</code> object representing the version identifier. If <code>version</code> is <code>null</code>
-     * or the empty string then <code>EMPTY_VERSION</code> will be returned.
+     * or the empty string, then <code>EMPTY_VERSION</code> will be returned.
      * @throws IllegalArgumentException If <code>version</code> is improperly formatted.
      */
     public static Version parseVersion(String version) {

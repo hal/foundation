@@ -6,7 +6,7 @@
  * @externs
  */
 
-// ------------------------------------------------------ popper
+// ------------------------------------------------------ cookies
 
 /** @constructor */
 function Cookies() {
@@ -16,22 +16,27 @@ function Cookies() {
  * @param {string} name
  * @return {string}
  */
-Cookies.prototype.get = function (name) {
+Cookies.get = function (name) {
 };
 
 /**
  * @param {string} name
  * @param {string} value
- * @param {CookieOptions} options
+ * @param {CookieOptions=} options
  * @return {string}
  */
-Cookies.prototype.set = function (name, value, options) {
+Cookies.set = function (name, value, options) {
 };
 
+/**
+ * @param {string} name
+ */
+Cookies.remove = function (name) {
+};
 
 /** @constructor */
 function CookieOptions() {
 }
 
-/** @type {int} */
+/** @type {number} */
 CookieOptions.prototype.expires;

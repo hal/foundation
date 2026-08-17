@@ -12,26 +12,14 @@ var marked = {};
 
 /**
  * @param {string} markdown
- * @return {string}
- */
-marked.parse = function(markdown) {};
-
-/**
- * @param {string} markdown
- * @param {MarkedOptions} options
+ * @param {MarkedOptions=} options
  * @return {string}
  */
 marked.parse = function(markdown, options) {};
 
 /**
  * @param {string} markdown
- * @return {string}
- */
-marked.parseInline = function(markdown) {};
-
-/**
- * @param {string} markdown
- * @param {MarkedOptions} options
+ * @param {MarkedOptions=} options
  * @return {string}
  */
 marked.parseInline = function(markdown, options) {};
@@ -80,13 +68,7 @@ var DOMPurify = {};
 
 /**
  * @param {string} dirty
- * @return {string}
- */
-DOMPurify.sanitize = function(dirty) {};
-
-/**
- * @param {string} dirty
- * @param {DomPurifyConfig} config
+ * @param {DomPurifyConfig=} config
  * @return {string}
  */
 DOMPurify.sanitize = function(dirty, config) {};
@@ -138,4 +120,3 @@ DomPurifyConfig.prototype.IN_PLACE;
 
 /** @type {boolean} */
 DomPurifyConfig.prototype.SANITIZE_DOM;
-
