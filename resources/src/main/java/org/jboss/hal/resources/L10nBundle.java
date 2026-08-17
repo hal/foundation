@@ -15,8 +15,8 @@
  */
 package org.jboss.hal.resources;
 
-import org.kie.j2cl.tools.processors.annotations.TranslationBundle;
-import org.kie.j2cl.tools.processors.annotations.TranslationKey;
+import org.treblereel.j2cl.processors.annotations.TranslationBundle;
+import org.treblereel.j2cl.processors.annotations.TranslationKey;
 
 /**
  * Localization bundle for translated UI strings, processed by the KIE J2CL translation processor.

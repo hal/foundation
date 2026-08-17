@@ -62,9 +62,9 @@
 
             <!-- J2CL / GWT -->
             <dependency>
-                <groupId>org.kie.j2cl.tools</groupId>
+                <groupId>io.crysknife</groupId>
                 <artifactId>bom</artifactId>
-                <version>${version.kie.j2cl.bom}</version>
+                <version>${version.crysknife}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -105,12 +105,12 @@
             <artifactId>elemento-logger</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.j2cl.tools.di</groupId>
-            <artifactId>core</artifactId>
+            <groupId>io.crysknife</groupId>
+            <artifactId>crysknife-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.j2cl.tools.di</groupId>
-            <artifactId>processor</artifactId>
+            <groupId>io.crysknife</groupId>
+            <artifactId>crysknife-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

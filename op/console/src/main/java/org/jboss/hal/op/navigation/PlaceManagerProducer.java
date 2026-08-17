@@ -24,7 +24,7 @@ import org.jboss.elemento.router.AnnotatedPlaces;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.resources.Ids;
-import org.kie.j2cl.tools.di.core.BeanManager;
+import io.crysknife.client.BeanManager;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.component.navigation.NavigationItem;
 
