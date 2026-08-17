@@ -1,17 +1,17 @@
 {
-  "name": "hal-foundation-docs",
-  "version": "0.1.0",
-  "private": true,
-  "packageManager": "pnpm@11.21.0",
-  "type": "module",
-  "scripts": {
-    "docs:dev": "vitepress dev --open",
-    "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
-  },
   "devDependencies": {
     "mermaid": "^11.16.1",
     "vitepress": "^1.6.4",
     "vitepress-plugin-mermaid": "^2.0.17"
-  }
+  },
+  "name": "hal-foundation-docs",
+  "packageManager": "pnpm@11.22.0",
+  "private": true,
+  "scripts": {
+    "docs:build": "vitepress build",
+    "docs:dev": "vitepress dev --open",
+    "docs:preview": "vitepress preview"
+  },
+  "type": "module",
+  "version": "0.1.0"
 }
