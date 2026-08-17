@@ -15,40 +15,34 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.elemento.Id;
+import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler.Mode;
-import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.TextInput;
-import org.patternfly.component.menu.SingleTypeahead;
-import org.patternfly.style.Modifiers.FullWidth;
+import org.patternfly.component.togglegroup.ToggleGroup;
 
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.setVisible;
-import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALIAS;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
-import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
-import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
-import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
-import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.form.Radio.radio;
-import static org.patternfly.component.form.TextInput.textInput;
-import static org.patternfly.component.form.TextInputType.password;
-import static org.patternfly.component.menu.MenuContent.menuContent;
-import static org.patternfly.component.menu.MenuList.menuList;
-import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
-import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
+import static org.jboss.hal.resources.HalClasses.clearText;
+import static org.jboss.hal.resources.HalClasses.credentialReference;
+import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.storeReference;
+import static org.patternfly.component.SelectionMode.single;
+import static org.patternfly.component.togglegroup.ToggleGroup.toggleGroup;
+import static org.patternfly.component.togglegroup.ToggleGroupItem.toggleGroupItem;
+import static org.patternfly.style.Classes.component;
+import static org.patternfly.style.Classes.form;
 
 /**
  * {@link NativeControl} for credential reference attributes. Radio mode selection (Not configured / Clear text / Credential
@@ -56,148 +50,59 @@ import static org.patternfly.component.menu.SingleTypeahead.singleTypeahead;
  */
 public final class CredentialReferenceControl implements NativeControl<HTMLElement> {
 
-    private enum SelectedMode {
-        NOT_CONFIGURED, CLEAR_TEXT, CREDENTIAL_STORE
-    }
-
-    private static final String RADIO_GROUP = "credential-reference-mode";
+    private static final String MODE_KEY = "credential-reference-mode";
 
     private Mode originalMode;
-    private SelectedMode selectedMode;
-    private String capability;
-    private TextInput clearTextInput;
-    private HTMLElement clearTextPanel;
-    private SingleTypeahead storeTypeahead;
-    private TextInput aliasInput;
-    private TextInput storePasswordInput;
-    private TextInput typeInput;
-    private HTMLElement storePanel;
-    private FormGroupControl formGroupControl;
+    private Mode selectedMode;
+    private FormItem storeFormItem;
+    private FormItem aliasFormItem;
+    private FormItem clearText0FormItem;
+    private FormItem clearText1FormItem;
+    private FormItem typeFormItem;
+    private HTMLContainerBuilder<HTMLDivElement> clearTextContainer;
+    private HTMLContainerBuilder<HTMLDivElement> storeReferenceContainer;
+
 
     @Override
     public HTMLElement create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         originalMode = CredentialReferenceHandler.mode(attribute.value());
-        resolveCapability(attribute);
 
-        String radioGroup = Id.build(identifier, RADIO_GROUP);
-        HTMLElement noneRadioContainer = createNoneRadio(identifier, radioGroup, attribute);
-        createClearTextPanel(identifier, attribute);
-        createStorePanel(context, identifier, attribute);
-        initializeMode();
+        // Without detachFromParent() the label would be "Credential store / ..."
+        Pipeline pipeline = Pipeline.instance();
+        storeFormItem = pipeline.formItem(context, attribute.child(STORE).detachFromParent());
+        aliasFormItem = pipeline.formItem(context, attribute.child(ALIAS).detachFromParent());
+        clearText0FormItem = pipeline.formItem(context, attribute.child(CLEAR_TEXT).detachFromParent());
+        clearText1FormItem = pipeline.formItem(context, attribute.child(CLEAR_TEXT).detachFromParent());
+        typeFormItem = pipeline.formItem(context, attribute.child(TYPE).detachFromParent());
 
-        return div()
-                .add(noneRadioContainer)
-                .add(radio(Id.build(identifier, "clear-text-radio"), radioGroup, "Clear text")
-                        .value(originalMode == Mode.CLEAR_TEXT)
-                        .onChange((e, r, checked) -> {
-                            if (checked) {
-                                switchMode(SelectedMode.CLEAR_TEXT);
-                            }
-                        }))
-                .add(clearTextPanel)
-                .add(radio(Id.build(identifier, "store-radio"), radioGroup, "Credential store")
-                        .value(originalMode == Mode.STORE_REFERENCE)
-                        .onChange((e, r, checked) -> {
-                            if (checked) {
-                                switchMode(SelectedMode.CREDENTIAL_STORE);
-                            }
-                        }))
-                .add(storePanel)
+        clearTextContainer = div().css(component(form), halComponent(credentialReference, clearText))
+                .add(clearText0FormItem);
+        storeReferenceContainer = div().css(component(form), halComponent(credentialReference, storeReference))
+                .add(storeFormItem)
+                .add(aliasFormItem)
+                .add(clearText1FormItem)
+                .add(typeFormItem);
+
+        ToggleGroup toggleGroup = toggleGroup(single)
+                .onSingleSelect((e, item, selected) -> selectMode(item.get(MODE_KEY)))
+                .addItem(toggleGroupItem(Mode.UNDEFINED.name())
+                        .store(MODE_KEY, Mode.UNDEFINED)
+                        .iconAndText(Mode.UNDEFINED.icon, "Undefined"))
+                .addItem(toggleGroupItem(Mode.CLEAR_TEXT.name())
+                        .store(MODE_KEY, Mode.CLEAR_TEXT)
+                        .iconAndText(Mode.CLEAR_TEXT.icon, "Clear text"))
+                .addItem(toggleGroupItem(Mode.STORE_REFERENCE.name())
+                        .store(MODE_KEY, Mode.STORE_REFERENCE)
+                        .iconAndText(Mode.STORE_REFERENCE.icon, "Credential store"));
+
+        selectMode(originalMode);
+        toggleGroup.select(originalMode.name(), true, false);
+
+        return div().css(halComponent(credentialReference))
+                .add(toggleGroup)
+                .add(clearTextContainer)
+                .add(storeReferenceContainer)
                 .element();
-    }
-
-    private void resolveCapability(ResolvedAttribute attribute) {
-        AttributeDescriptions nested = attribute.description().valueTypeAttributeDescriptions();
-        AttributeDescription storeDescription = nested.get(STORE);
-        if (storeDescription != null && storeDescription.hasDefined(CAPABILITY_REFERENCE)) {
-            capability = storeDescription.get(CAPABILITY_REFERENCE).asString();
-        }
-        if (capability == null) {
-            capability = "org.wildfly.security.credential-store";
-        }
-    }
-
-    private HTMLElement createNoneRadio(String identifier, String radioGroup, ResolvedAttribute attribute) {
-        HTMLElement noneRadioContainer = div()
-                .add(radio(Id.build(identifier, "none"), radioGroup, "Not configured")
-                        .value(originalMode == Mode.UNDEFINED)
-                        .onChange((e, r, checked) -> {
-                            if (checked) {
-                                switchMode(SelectedMode.NOT_CONFIGURED);
-                            }
-                        }))
-                .element();
-        if (attribute.description().required()) {
-            setVisible(noneRadioContainer, false);
-        }
-        return noneRadioContainer;
-    }
-
-    private void createClearTextPanel(String identifier, ResolvedAttribute attribute) {
-        clearTextInput = textInput(password, Id.build(identifier, "clear-text"));
-        if (originalMode == Mode.CLEAR_TEXT && attribute.value().hasDefined(CLEAR_TEXT)) {
-            clearTextInput.value(attribute.value().get(CLEAR_TEXT).asString());
-        }
-        clearTextPanel = div().css("cr-nested-fields")
-                .add(fieldRow("Password", clearTextInput.element()))
-                .element();
-    }
-
-    private void createStorePanel(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        aliasInput = textInput(Id.build(identifier, "alias"));
-        storePasswordInput = textInput(password, Id.build(identifier, "store-password"));
-        storePasswordInput.placeholder("New password for alias...");
-        typeInput = textInput(Id.build(identifier, "type"));
-        typeInput.placeholder("PasswordCredential");
-
-        if (originalMode == Mode.STORE_REFERENCE) {
-            if (attribute.value().hasDefined(ALIAS)) {
-                aliasInput.value(attribute.value().get(ALIAS).asString());
-            }
-            if (attribute.value().hasDefined(TYPE)) {
-                typeInput.value(attribute.value().get(TYPE).asString());
-            }
-        }
-
-        storeTypeahead = singleTypeahead(searchReloadInput(Id.build(identifier, "store"))
-                .plain()
-                .placeholder("Select or create store...")
-                .onReload((e, c) -> storeTypeahead.menu().reload()))
-                .applyToMenuToggle(FullWidth::fullWidth)
-                .allowNewItems(value -> "Add \"" + value + "\"...",
-                        value -> newItem(value, capability))
-                .addMenu(singleSelectMenu()
-                        .addContent(menuContent()
-                                .addList(menuList()
-                                        .addItems(capabilityItems(context.template(), capability)))));
-        if (originalMode == Mode.STORE_REFERENCE && attribute.value().hasDefined(STORE)) {
-            FormItemBricks.failSafeSelectValue(storeTypeahead, attribute.value().get(STORE).asString());
-        }
-
-        storePanel = div().css("cr-nested-fields")
-                .add(fieldRow("Store", storeTypeahead.element()))
-                .add(fieldRow("Alias", aliasInput.element()))
-                .add(fieldRow("Password", storePasswordInput.element(),
-                        span().css("cr-optional-label").text("(optional)").element()))
-                .add(fieldRow("Type", typeInput.element(),
-                        span().css("cr-optional-label").text("(optional)").element()))
-                .element();
-    }
-
-    private void initializeMode() {
-        switch (originalMode) {
-            case STORE_REFERENCE:
-                selectedMode = SelectedMode.CREDENTIAL_STORE;
-                break;
-            case CLEAR_TEXT:
-                selectedMode = SelectedMode.CLEAR_TEXT;
-                break;
-            default:
-                selectedMode = SelectedMode.NOT_CONFIGURED;
-                break;
-        }
-        setVisible(clearTextPanel, selectedMode == SelectedMode.CLEAR_TEXT);
-        setVisible(storePanel, selectedMode == SelectedMode.CREDENTIAL_STORE);
     }
 
     @Override
@@ -209,21 +114,30 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
     public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
         ModelNode result = new ModelNode();
         switch (selectedMode) {
-            case NOT_CONFIGURED:
+            case UNDEFINED:
                 break;
             case CLEAR_TEXT:
-                result.get(CLEAR_TEXT).set(clearTextValue());
-                break;
-            case CREDENTIAL_STORE:
-                result.get(STORE).set(storeValue());
-                result.get(ALIAS).set(aliasValue());
-                String pw = storePasswordValue();
-                if (!pw.isEmpty()) {
-                    result.get(CLEAR_TEXT).set(pw);
+                ModelNode clearText0ModelNode = clearText0FormItem.editableControl().modelNode();
+                if (clearText0ModelNode.isDefined()) {
+                    result.get(CLEAR_TEXT).set(clearText0ModelNode);
                 }
-                String type = typeValue();
-                if (!type.isEmpty()) {
-                    result.get(TYPE).set(type);
+                break;
+            case STORE_REFERENCE:
+                ModelNode storeModelNode = storeFormItem.editableControl().modelNode();
+                ModelNode aliasModelNode = aliasFormItem.editableControl().modelNode();
+                ModelNode clearText1ModelNode = clearText1FormItem.editableControl().modelNode();
+                ModelNode typeModelNode = typeFormItem.editableControl().modelNode();
+                if (storeModelNode.isDefined()) {
+                    result.get(STORE).set(storeModelNode);
+                }
+                if (aliasModelNode.isDefined()) {
+                    result.get(ALIAS).set(aliasModelNode);
+                }
+                if (clearText1ModelNode.isDefined()) {
+                    result.get(CLEAR_TEXT).set(clearText1ModelNode);
+                }
+                if (typeModelNode.isDefined()) {
+                    result.get(TYPE).set(typeModelNode);
                 }
                 break;
         }
@@ -232,133 +146,52 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
 
     @Override
     public boolean isModifiedForNew(HTMLElement control, ResolvedAttribute attribute) {
-        return selectedMode != SelectedMode.NOT_CONFIGURED;
+        return selectedMode != Mode.UNDEFINED;
     }
 
     @Override
     public boolean isModifiedForExisting(HTMLElement control, ResolvedAttribute attribute, boolean wasDefined) {
-        Mode currentMode = selectedModeToMode();
-        if (currentMode != originalMode) {
+        if (selectedMode != originalMode) {
             return true;
         }
-        switch (selectedMode) {
-            case CLEAR_TEXT:
-                String originalClearText = attribute.value().hasDefined(CLEAR_TEXT)
-                        ? attribute.value().get(CLEAR_TEXT).asString() : "";
-                return !originalClearText.equals(clearTextValue());
-            case CREDENTIAL_STORE:
-                String originalStore = attribute.value().hasDefined(STORE) ? attribute.value().get(STORE).asString() : "";
-                String originalAlias = attribute.value().hasDefined(ALIAS) ? attribute.value().get(ALIAS).asString() : "";
-                String originalType = attribute.value().hasDefined(TYPE) ? attribute.value().get(TYPE).asString() : "";
-                if (!originalStore.equals(storeValue()) || !originalAlias.equals(aliasValue())) {
-                    return true;
-                }
-                if (!originalType.equals(typeValue())) {
-                    return true;
-                }
-                return !storePasswordValue().isEmpty();
-            default:
-                return wasDefined;
-        }
+
+        return switch (selectedMode) {
+            case CLEAR_TEXT -> clearText0FormItem.isModified();
+            case STORE_REFERENCE -> storeFormItem.isModified() ||
+                    aliasFormItem.isModified() ||
+                    clearText1FormItem.isModified() ||
+                    typeFormItem.isModified();
+            default -> false;
+        };
     }
 
     @Override
     public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl fgc) {
-        this.formGroupControl = fgc;
-        switch (selectedMode) {
-            case CLEAR_TEXT:
-                if (clearTextValue().isEmpty()) {
-                    clearTextInput.validated(error);
-                    fgc.addHelperText(FormItemBricks.requiredHelperText(attribute));
-                    return false;
-                }
-                return true;
-            case CREDENTIAL_STORE:
-                boolean valid = true;
-                if (storeValue().isEmpty()) {
-                    storeTypeahead.menuToggle().validated(error);
-                    valid = false;
-                }
-                if (aliasValue().isEmpty()) {
-                    aliasInput.validated(error);
-                    valid = false;
-                }
-                if (!valid) {
-                    fgc.addHelperText(FormItemBricks.requiredHelperText(attribute));
-                }
-                return valid;
-            default:
-                return true;
-        }
+        return switch (selectedMode) {
+            case CLEAR_TEXT -> clearText0FormItem.validate();
+            case STORE_REFERENCE -> storeFormItem.validate() &&
+                    aliasFormItem.validate() &&
+                    clearText1FormItem.validate() &&
+                    typeFormItem.validate();
+            default -> true;
+        };
     }
 
     @Override
     public void resetValidation(HTMLElement control) {
-        clearTextInput.resetValidation();
-        aliasInput.resetValidation();
-        if (storeTypeahead != null) {
-            storeTypeahead.menuToggle().resetValidation();
-        }
+        storeFormItem.resetValidation();
+        aliasFormItem.resetValidation();
+        clearText0FormItem.resetValidation();
+        clearText1FormItem.resetValidation();
+        typeFormItem.resetValidation();
     }
 
     // ------------------------------------------------------ internal
 
-    private void switchMode(SelectedMode mode) {
-        selectedMode = mode;
-        setVisible(clearTextPanel, mode == SelectedMode.CLEAR_TEXT);
-        setVisible(storePanel, mode == SelectedMode.CREDENTIAL_STORE);
+    private void selectMode(Mode mode) {
+        this.selectedMode = mode;
+        setVisible(clearTextContainer, selectedMode == Mode.CLEAR_TEXT);
+        setVisible(storeReferenceContainer, selectedMode == Mode.STORE_REFERENCE);
         resetValidation(null);
-        if (formGroupControl != null) {
-            formGroupControl.removeHelperText();
-        }
-    }
-
-    private Mode selectedModeToMode() {
-        switch (selectedMode) {
-            case CLEAR_TEXT:
-                return Mode.CLEAR_TEXT;
-            case CREDENTIAL_STORE:
-                return Mode.STORE_REFERENCE;
-            default:
-                return Mode.UNDEFINED;
-        }
-    }
-
-    private String clearTextValue() {
-        return FormItemBricks.safeValue(clearTextInput);
-    }
-
-    private String storeValue() {
-        return storeTypeahead != null
-                ? (storeTypeahead.menuToggle().searchInput().value() != null
-                        ? storeTypeahead.menuToggle().searchInput().value() : "")
-                : "";
-    }
-
-    private String aliasValue() {
-        return FormItemBricks.safeValue(aliasInput);
-    }
-
-    private String storePasswordValue() {
-        return FormItemBricks.safeValue(storePasswordInput);
-    }
-
-    private String typeValue() {
-        return FormItemBricks.safeValue(typeInput);
-    }
-
-    private static HTMLElement fieldRow(String labelText, HTMLElement fieldControl) {
-        return fieldRow(labelText, fieldControl, null);
-    }
-
-    private static HTMLElement fieldRow(String labelText, HTMLElement fieldControl, HTMLElement suffix) {
-        HTMLElement row = div().css("cr-field-row")
-                .add(span().css("cr-field-label").text(labelText))
-                .add(div().css("cr-field-input").add(fieldControl))
-                .element();
-        if (suffix != null) {
-            row.appendChild(suffix);
-        }
-        return row;
     }
 }

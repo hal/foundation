@@ -63,7 +63,7 @@ public class AttributeDescription extends NamedNode implements Description {
         this.parent = null;
     }
 
-    AttributeDescription(String name, ModelNode modelNode) {
+    public AttributeDescription(String name, ModelNode modelNode) {
         super(name, modelNode);
         this.parent = null;
     }

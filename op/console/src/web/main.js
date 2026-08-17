@@ -26,8 +26,9 @@ import "dompurify"
 // Variables second
 import "./variables.css"
 
-// Remaining third (a-z)
+// Remaining (a-z)
 import "./capability.css"
+import "./credential-reference.css"
 import "./dashboard.css"
 import "./expression.css"
 import "./finder.css"

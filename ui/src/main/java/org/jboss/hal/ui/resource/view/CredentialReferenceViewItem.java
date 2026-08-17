@@ -86,7 +86,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
         ResolvedAttribute aliasAttribute = attribute.child(ALIAS);
         ViewItem storeItem = Pipeline.instance().viewItem(context, storeAttribute);
 
-        root.appendChild(label("Credential store").status(success).element());
+        root.appendChild(label("Credential store").status(success).icon(Mode.STORE_REFERENCE.icon).element());
         root.appendChild(storeItem.valueElement());
         if (aliasAttribute.isDefined()) {
             ViewItem aliasItem = Pipeline.instance().viewItem(context, aliasAttribute);
@@ -111,7 +111,7 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
                 })
                 .element();
 
-        root.appendChild(label("Clear text").status(info).element());
+        root.appendChild(label("Clear text").status(info).icon(Mode.CLEAR_TEXT.icon).element());
         root.appendChild(maskedElement);
         root.appendChild(showButton);
     }

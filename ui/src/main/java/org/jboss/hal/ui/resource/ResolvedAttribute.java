@@ -72,6 +72,14 @@ public record ResolvedAttribute(
         return new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, true, false);
     }
 
+    public ResolvedAttribute detachFromParent() {
+        if (description.parent() != null) {
+            return new ResolvedAttribute(new AttributeDescription(description.name(), description.modelNode()), value,
+                    readable, readOnly, writable);
+        }
+        return this;
+    }
+
     /** Returns the dot-separated fully qualified name, used for DMR write-attribute operations. */
     public String fqn() {
         return description.fullyQualifiedName();

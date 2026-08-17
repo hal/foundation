@@ -15,18 +15,19 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import org.jboss.hal.ui.resource.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.CredentialReferenceControl;
-import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.DefaultFormItem;
+import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.view.CredentialReferenceViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
+import org.patternfly.icon.IconSets;
+import org.patternfly.icon.PredefinedIcon;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALIAS;
@@ -34,6 +35,9 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
 import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.hasObjectValueType;
 import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
+import static org.patternfly.icon.IconSets.fas.ban;
+import static org.patternfly.icon.IconSets.fas.fileLines;
+import static org.patternfly.icon.IconSets.fas.shieldHalved;
 
 /**
  * Handler for credential reference composite attributes. Claims OBJECT attributes with the credential reference structure
@@ -43,9 +47,16 @@ public class CredentialReferenceHandler implements AttributeHandler {
 
     /** The credential reference mode derived from which sub-attributes have values. */
     public enum Mode {
-        STORE_REFERENCE,
-        CLEAR_TEXT,
-        UNDEFINED
+        UNDEFINED(ban()),
+        CLEAR_TEXT(IconSets.far.fileLines()),
+        STORE_REFERENCE(shieldHalved()),
+        ;
+
+        public final PredefinedIcon icon;
+
+        Mode(PredefinedIcon icon) {
+            this.icon = icon;
+        }
     }
 
     /** Detects the credential reference mode from the attribute's current value. */

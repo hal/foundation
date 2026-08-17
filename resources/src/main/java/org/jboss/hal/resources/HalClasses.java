@@ -25,9 +25,10 @@ public interface HalClasses {
 
     String body = "body";
     String capabilityReference = "capability-reference";
+    String clearText = "clear-text";
     String colon = "colon";
-    String credentialReference = "credential-reference";
     String compositeLabel = "composite-label";
+    String credentialReference = "credential-reference";
     String content = "content";
     String copy = "copy";
     String curlyBraces = "curly-braces";
@@ -51,6 +52,7 @@ public interface HalClasses {
     String slash = "slash";
     String stabilityLevel = "stability-level";
     String status = "status";
+    String storeReference = "store-reference";
     String tree = "tree";
     String unit = "unit";
     String undefined = "undefined";
