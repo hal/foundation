@@ -16,11 +16,9 @@
 package org.jboss.hal.ui.resource.form;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
-import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.form.TextInput;
 import org.patternfly.component.menu.SingleTypeahead;
 
 import elemental2.dom.HTMLElement;
@@ -32,14 +30,6 @@ import static org.patternfly.component.ValidationStatus.error;
  * {@link NativeControl} for standalone {@code relative-to} attributes not paired with a sibling path attribute.
  */
 public final class RelativeToControl implements NativeControl<SingleTypeahead> {
-
-    private TextInput input;
-    private PipelineFlags flags;
-
-    /** Returns the underlying text input, e.g. to pre-fill a value before the form is shown. */
-    public TextInput textInput() {
-        return input;
-    }
 
     @Override
     public boolean handlesMixedExpressions() {
