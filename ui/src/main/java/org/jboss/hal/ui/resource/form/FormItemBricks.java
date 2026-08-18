@@ -21,9 +21,9 @@ import org.jboss.elemento.Elements;
 import org.jboss.elemento.HTMLInputElementBuilder;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.AsyncItems;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
@@ -54,14 +54,14 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
-import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
+import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.resource.PipelineFlags.Placeholder.DEFAULT_VALUE;
+import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.form.FormGroupControl.formGroupControl;
@@ -263,11 +263,13 @@ final class FormItemBricks {
                 .placeholder("");
         SingleTypeahead typeahead = SingleTypeahead.singleTypeahead(searchReloadInput)
                 .applyToMenuToggle(Modifiers.FullWidth::fullWidth)
-                .allowNewItems(value -> "Add \"" + value + "\"...", createItem)
                 .addMenu(singleSelectMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
                                         .addItems(asyncItems))));
+        if (createItem != null) {
+            typeahead.allowNewItems(value -> "Add \"" + value + "\"...", createItem);
+        }
         searchReloadInput.onReload((e, c) -> typeahead.menu().reload());
 
         if (attribute.value().isDefined()) {

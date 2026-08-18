@@ -23,6 +23,7 @@ import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler.Mode;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.patternfly.component.form.FormGroupControl;
+import org.patternfly.component.menu.SingleTypeahead;
 import org.patternfly.component.togglegroup.ToggleGroup;
 
 import elemental2.dom.HTMLDivElement;
@@ -45,8 +46,8 @@ import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.form;
 
 /**
- * {@link NativeControl} for credential reference attributes. Radio mode selection (Not configured / Clear text / Credential
- * store) with mode-specific fields.
+ * {@link NativeControl} for credential reference attributes. Toggle group selection (Undefined / Clear text / Credential store)
+ * with mode-specific fields.
  */
 public final class CredentialReferenceControl implements NativeControl<HTMLElement> {
 
@@ -59,6 +60,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
     private FormItem clearText0FormItem;
     private FormItem clearText1FormItem;
     private FormItem typeFormItem;
+    private CredentialStoreAliasControl aliasControl;
     private HTMLContainerBuilder<HTMLDivElement> clearTextContainer;
     private HTMLContainerBuilder<HTMLDivElement> storeReferenceContainer;
 
@@ -70,7 +72,8 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         // Without detachFromParent() the label would be "Credential store / ..."
         Pipeline pipeline = Pipeline.instance();
         storeFormItem = pipeline.formItem(context, attribute.child(STORE).detachFromParent());
-        aliasFormItem = pipeline.formItem(context, attribute.child(ALIAS).detachFromParent());
+        aliasControl = new CredentialStoreAliasControl();
+        aliasFormItem = new DefaultFormItem<>(context, ALIAS, attribute.child(ALIAS).detachFromParent(), aliasControl);
         clearText0FormItem = pipeline.formItem(context, attribute.child(CLEAR_TEXT).detachFromParent());
         clearText1FormItem = pipeline.formItem(context, attribute.child(CLEAR_TEXT).detachFromParent());
         typeFormItem = pipeline.formItem(context, attribute.child(TYPE).detachFromParent());
@@ -95,6 +98,14 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
                         .store(MODE_KEY, Mode.STORE_REFERENCE)
                         .iconAndText(Mode.STORE_REFERENCE.icon, "Credential store"));
 
+        SingleTypeahead storeTypeahead = (SingleTypeahead) storeFormItem.editableControl().control();
+        storeTypeahead.menuToggle().searchInput().onClear((e, c) -> aliasControl.update(null));
+        storeTypeahead.menuToggle().searchInput().onInput((e, c, value) -> aliasControl.update(value));
+        storeTypeahead.menu().onSingleSelect((e, item, selected) -> {
+            if (selected) {
+                aliasControl.update(item.identifier());
+            }
+        });
         selectMode(originalMode);
         toggleGroup.select(originalMode.name(), true, false);
 
