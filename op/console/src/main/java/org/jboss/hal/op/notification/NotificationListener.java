@@ -175,17 +175,17 @@ public class NotificationListener {
 
     private NotificationDrawerHeader lookupNotificationDrawerHeader() {
         return componentRegistry().lookupSubComponent(ComponentType.NotificationDrawer,
-                NotificationDrawerHeader.SUB_COMPONENT_NAME);
+                NotificationDrawerHeader.SUB_COMPONENT_ID);
     }
 
     private NotificationDrawerBody lookupNotificationDrawerBody() {
         return componentRegistry().lookupSubComponent(ComponentType.NotificationDrawer,
-                NotificationDrawerBody.SUB_COMPONENT_NAME);
+                NotificationDrawerBody.SUB_COMPONENT_ID);
     }
 
     private NotificationDrawerList lookupNotificationDrawerList() {
         return componentRegistry().lookupSubComponent(ComponentType.NotificationDrawer,
-                NotificationDrawerList.SUB_COMPONENT_NAME);
+                NotificationDrawerList.SUB_COMPONENT_ID);
     }
 
     // ------------------------------------------------------ internal factory methods

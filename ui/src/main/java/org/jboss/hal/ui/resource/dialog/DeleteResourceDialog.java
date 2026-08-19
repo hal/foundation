@@ -38,9 +38,9 @@ import static org.patternfly.style.Size.sm;
  * Opens a small modal asking the user to confirm deletion of the resource identified by the given address template. Resolves
  * the promise to a {@link ModelNode} with value {@code true} on success, or to an undefined {@link ModelNode} if canceled.
  */
-class DeleteResourceDialog {
+public class DeleteResourceDialog {
 
-    static Promise<ModelNode> deleteResourceModal(AddressTemplate template) {
+    public static Promise<ModelNode> deleteResourceModal(AddressTemplate template) {
         AddressTemplate resolvedTemplate = new StatementContextResolver(uic().statementContext()).resolve(template);
         String name = capitalCase(resolvedTemplate.last().value);
         return new Promise<>((resolve, reject) -> modal().size(sm)
@@ -65,8 +65,7 @@ class DeleteResourceDialog {
                                     reject.onInvoke(error);
                                     return null;
                                 }))
-                        .addButton(button("Cancel").link()
-                                .ouiaId(OuiaIds.CANCEL_BTN), (__, m) -> {
+                        .addButton(button("Cancel").link().ouiaId(OuiaIds.CANCEL_BTN), (__, m) -> {
                             m.close();
                             resolve.onInvoke(new ModelNode());
                         }))

@@ -26,9 +26,9 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
-import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.view.ResourceView;
 import org.jboss.hal.ui.resource.view.ViewItem;
 import org.patternfly.component.content.ContentType;
@@ -42,9 +42,9 @@ import org.patternfly.layout.stack.Stack;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceModal;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.deleteResourceModal;
 import static org.jboss.hal.ui.finder.FinderSupport.childResources;
+import static org.jboss.hal.ui.resource.dialog.AddResourceDialogs.addResourceModal;
+import static org.jboss.hal.ui.resource.dialog.DeleteResourceDialog.deleteResourceModal;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.extension.finder.FinderColumn.finderColumn;
@@ -74,8 +74,9 @@ public final class FinderBricks {
      * per-item "view" and "delete" actions, a search bar (shown when there are 5+ items), and an optional preview panel
      * displaying selected resource attributes.
      * <p>
-     * The "view" action navigates to the resource page using the {@link org.jboss.hal.ui.navigation.RouteRegistry RouteRegistry}
-     * to find the best matching route for the item's address template.
+     * The "view" action navigates to the resource page using the
+     * {@link org.jboss.hal.ui.navigation.RouteRegistry RouteRegistry} to find the best matching route for the item's address
+     * template.
      *
      * @param id                a unique identifier for the column and its OUIA test IDs
      * @param header            the column header text

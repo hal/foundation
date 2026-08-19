@@ -23,6 +23,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.ui.resource.dialog.AddResourceDialogs;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.table.Tbody;
@@ -40,7 +41,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceModal;
+import static org.jboss.hal.ui.resource.dialog.AddResourceDialogs.addResourceModal;
 import static org.patternfly.component.Ordered.DATA_ORDER;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;

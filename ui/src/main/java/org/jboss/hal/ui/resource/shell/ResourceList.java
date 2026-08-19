@@ -30,6 +30,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.model.filter.NameAttribute;
 import org.patternfly.component.emptystate.EmptyState;
+import org.patternfly.component.emptystate.EmptyStateActions;
 import org.patternfly.component.list.DataList;
 import org.patternfly.component.list.DataListCell;
 import org.patternfly.component.list.DataListItem;
@@ -107,7 +108,7 @@ import static org.patternfly.style.Variable.componentVar;
  * Automatically detects the loading strategy from the template:
  * <ul>
  * <li>Wildcard templates (ending with {@code =*}): uses {@code read-children-names} on the parent address with the child type
- * as parameter. This lists instances of a specific child type (e.g., all {@code core-service} singletons).</li>
+ * as a parameter. This lists instances of a specific child type (e.g., all {@code core-service} singletons).</li>
  * <li>Fully qualified templates: uses {@code read-children-types} with {@code include-singletons=true} on the template address.
  * This lists all child types of a resource.</li>
  * </ul>
@@ -384,7 +385,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
         setVisible(toolbar, false);
         removeChildrenFrom(listContainer);
 
-        org.patternfly.component.emptystate.EmptyStateActions actions = emptyStateActions();
+        EmptyStateActions actions = emptyStateActions();
         if (!missing.isEmpty()) {
             if (missing.size() == 1) {
                 ChildResource m = missing.get(0);

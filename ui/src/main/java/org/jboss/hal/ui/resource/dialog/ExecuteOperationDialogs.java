@@ -25,18 +25,19 @@ import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.security.SecurityContext;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.OuiaIds;
-import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.ResourceForm;
-import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.PipelineFlags;
 import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
 import org.jboss.hal.ui.resource.PipelineFlags.Scope;
+import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.form.ResourceForm;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.patternfly.layout.stack.StackItem;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.setVisible;
+import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
@@ -53,12 +54,10 @@ import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.style.Size.lg;
 
-import static org.jboss.hal.core.Notification.error;
-
 /** Brick class that creates modal dialogs for executing WildFly management operations with parameter input. */
-class ExecuteOperationDialogs {
+public class ExecuteOperationDialogs {
 
-    static void executeOperationModal(AddressTemplate template, String operation) {
+    public static void executeOperationModal(AddressTemplate template, String operation) {
         uic().metadataRepository().lookup(template)
                 .then(metadata -> {
                     OperationDescription operationDescription = metadata.resourceDescription().operations().get(operation);
@@ -66,7 +65,7 @@ class ExecuteOperationDialogs {
                         String title = template.template + ":" + operation + "()";
                         boolean parameters = !operationDescription.parameters().isEmpty();
                         StackItem resultContainer = stackItem();
-                        ResourceForm pipelineForm = operationForm(template, metadata, operationDescription);
+                        ResourceForm form = operationForm(template, metadata, operationDescription);
                         modal().size(lg).top()
                                 .ouiaId(OuiaIds.EXECUTE_MODAL)
                                 .addHeader(modalHeader()
@@ -76,19 +75,19 @@ class ExecuteOperationDialogs {
                                         .add(stack().gutter()
                                                 .addItem(stackItem().fill(parameters)
                                                         .add(div().css(halComponent(HalClasses.resource))
-                                                                .add(pipelineForm)))
+                                                                .add(form)))
                                                 .addItem(resultContainer)))
                                 .addFooter(modalFooter()
                                         .addButton(button("Execute").primary()
                                                 .ouiaId(OuiaIds.EXECUTE_BTN), (__, m) ->
-                                                executeOperation(template, operationDescription, pipelineForm,
+                                                executeOperation(template, operationDescription, form,
                                                         resultContainer))
                                         .addButton(button("Close").link()
                                                 .ouiaId(OuiaIds.CLOSE_BTN), (__, m) -> m.close()))
                                 .appendToBody()
                                 .open();
                         if (!parameters) {
-                            executeOperation(template, operationDescription, pipelineForm, resultContainer);
+                            executeOperation(template, operationDescription, form, resultContainer);
                         }
                     } else {
                         uic().notifications().send(error("Operation failed", "No operation definition found for " + operation));
@@ -101,7 +100,7 @@ class ExecuteOperationDialogs {
                 });
     }
 
-    private static ResourceForm operationForm(AddressTemplate template, Metadata metadata,
+    public static ResourceForm operationForm(AddressTemplate template, Metadata metadata,
             OperationDescription operationDescription) {
         // Operation parameters are always editable when the operation itself is executable.
         // The original security context may restrict attribute-level access, but operation
@@ -111,27 +110,27 @@ class ExecuteOperationDialogs {
         PipelineContext context = new PipelineContext(template, rwxMetadata, new ModelNode(),
                 new PipelineFlags(Scope.NEW_RESOURCE, Placeholder.DEFAULT_VALUE));
         List<FormItem> items = Pipeline.instance().formItems(context, operationDescription.parameters());
-        ResourceForm pipelineForm = new ResourceForm();
+        ResourceForm form = new ResourceForm();
         for (FormItem item : items) {
             if (!item.attribute().description().deprecation().isDefined()) {
-                pipelineForm.addItem(item);
+                form.addItem(item);
             }
         }
-        return pipelineForm;
+        return form;
     }
 
     private static void executeOperation(AddressTemplate template, OperationDescription operationDescription,
-            ResourceForm pipelineForm, StackItem resultContainer) {
+            ResourceForm form, StackItem resultContainer) {
         boolean execute = true;
         boolean parameters = !operationDescription.parameters().isEmpty();
         int lines = parameters ? 7 : 5;
 
-        pipelineForm.resetValidation();
+        form.resetValidation();
         removeChildrenFrom(resultContainer);
         if (parameters) {
-            if (!pipelineForm.validate()) {
+            if (!form.validate()) {
                 execute = false;
-                pipelineForm.validationAlert("Operation failed");
+                form.validationAlert("Operation failed");
             }
         }
 
@@ -139,11 +138,11 @@ class ExecuteOperationDialogs {
             Operation.Builder builder = new Operation.Builder(template.resolve(uic().statementContext()),
                     operationDescription.name());
             if (parameters) {
-                builder.payload(pipelineForm.modelNode());
+                builder.payload(form.modelNode());
             }
             uic().dispatcher().execute(builder.build())
                     .then(result -> {
-                        pipelineForm.addAlert(alert(success, "Operation successfully executed").inline());
+                        form.addAlert(alert(success, "Operation successfully executed").inline());
                         setVisible(resultContainer, result.isDefined());
                         if (result.isDefined()) {
                             resultContainer.add(modelNodeCode(result, lines));
@@ -151,7 +150,7 @@ class ExecuteOperationDialogs {
                         return null;
                     })
                     .catch_(err -> {
-                        pipelineForm.addAlert(alert(danger, "Operation failed").inline());
+                        form.addAlert(alert(danger, "Operation failed").inline());
                         resultContainer.add(errorCode(String.valueOf(err), lines));
                         return null;
                     });

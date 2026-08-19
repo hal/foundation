@@ -24,6 +24,7 @@ import org.jboss.elemento.flow.Task;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Segment;
+import org.jboss.hal.ui.resource.dialog.AddResourceDialogs;
 import org.patternfly.component.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
@@ -41,8 +42,8 @@ import static org.jboss.elemento.flow.Flow.sequential;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceModal;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceWizard;
+import static org.jboss.hal.ui.resource.dialog.AddResourceDialogs.addResourceModal;
+import static org.jboss.hal.ui.resource.dialog.AddResourceDialogs.addResourceWizard;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 
 /**
@@ -52,8 +53,8 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
 class CapabilityReferenceSupport {
 
     /**
-     * Returns an async item loader that queries the capability registry for suggestions matching the given capability name
-     * and template, returning them as sorted menu items.
+     * Returns an async item loader that queries the capability registry for suggestions matching the given capability name and
+     * template, returning them as sorted menu items.
      */
     static AsyncItems<MenuList, MenuItem> capabilityItems(AddressTemplate template, String capability) {
         return menuList -> uic().capabilityRegistry().suggestCapabilities(template, capability)

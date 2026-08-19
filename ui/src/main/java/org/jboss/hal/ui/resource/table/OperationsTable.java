@@ -27,6 +27,7 @@ import org.jboss.hal.meta.description.ResourceDescription;
 import org.jboss.hal.model.filter.GlobalOperationsAttribute;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
+import org.jboss.hal.ui.resource.dialog.ExecuteOperationDialogs;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.list.List;
 import org.patternfly.component.table.Tbody;
@@ -47,15 +48,15 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.DESCRIPTION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOVE;
 import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.halModifier;
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescription;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeName;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
-import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.brick.DescriptionBricks.operationDescription;
+import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
-import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.resource.dialog.ExecuteOperationDialogs.executeOperationModal;
 import static org.jboss.hal.ui.resource.table.OperationsToolbar.operationsToolbar;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.executeOperationModal;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.List.list;
@@ -147,7 +148,8 @@ public class OperationsTable implements IsElement<HTMLElement> {
                                                                 operation.name())) {
                                                             td.add(span().css(component(table, text))
                                                                     .add(button("Execute").tertiary()
-                                                                            .ouiaId(OuiaIds.ouia("operation", operation.name(), "execute", "btn"))
+                                                                            .ouiaId(OuiaIds.ouia("operation", operation.name(),
+                                                                                    "execute", "btn"))
                                                                             .onClick((e, c) -> execute(operation))));
                                                         }
                                                     }));

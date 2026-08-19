@@ -23,7 +23,6 @@ import java.util.TreeMap;
 
 import org.jboss.hal.ui.resource.ResourceItem;
 
-import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.core.Humanize.sentenceCase;
 
 /**
@@ -76,7 +75,7 @@ public final class GroupingSupport {
             if (grp == null) {
                 ungrouped.add(item);
             } else {
-                namedGroups.computeIfAbsent(grp, k -> new ArrayList<>()).add(item);
+                namedGroups.computeIfAbsent(sentenceCase(grp), k -> new ArrayList<>()).add(item);
             }
         }
         LinkedHashMap<String, List<T>> result = new LinkedHashMap<>();

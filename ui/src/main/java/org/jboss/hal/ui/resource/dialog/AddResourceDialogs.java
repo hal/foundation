@@ -92,9 +92,9 @@ import static org.patternfly.token.Token.globalFontSizeXs;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
 /** Brick class that creates add-resource wizard and add-resource modal dialogs for WildFly management resources. */
-class AddResourceDialogs {
+public class AddResourceDialogs {
 
-    static Promise<ModelNode> addResourceWizard(List<AddressTemplate> templates, String resource) {
+    public static Promise<ModelNode> addResourceWizard(List<AddressTemplate> templates, String resource) {
         Wizard wizard = wizard()
                 .visitRequired()
                 .addHeader(wizardHeader()
@@ -195,7 +195,7 @@ class AddResourceDialogs {
                 });
     }
 
-    static Promise<ModelNode> addResourceModal(AddressTemplate template, String resource, boolean singleton) {
+    public static Promise<ModelNode> addResourceModal(AddressTemplate template, String resource, boolean singleton) {
         ModalHeaderTitle title;
         AddressTemplate resolved;
         if (singleton) {

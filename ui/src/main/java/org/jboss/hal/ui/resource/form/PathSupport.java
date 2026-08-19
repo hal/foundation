@@ -4,6 +4,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.ui.resource.dialog.AddResourceDialogs;
 import org.patternfly.component.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
@@ -19,7 +20,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.dialog.DialogBricks.addResourceModal;
+import static org.jboss.hal.ui.resource.dialog.AddResourceDialogs.addResourceModal;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 
 class PathSupport {
