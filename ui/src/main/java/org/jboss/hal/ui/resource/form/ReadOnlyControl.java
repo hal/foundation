@@ -48,6 +48,11 @@ public final class ReadOnlyControl implements NativeControl<HTMLElement> {
     }
 
     @Override
+    public void disable(HTMLElement control) {
+        // noop
+    }
+
+    @Override
     public ModelNode modelNode(HTMLElement control, ResolvedAttribute attribute) {
         return new ModelNode();
     }

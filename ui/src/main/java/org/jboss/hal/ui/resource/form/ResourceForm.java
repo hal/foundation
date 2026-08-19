@@ -26,8 +26,8 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.resource.grouping.GroupingSupport;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.grouping.GroupingSupport;
 import org.patternfly.component.alert.Alert;
 import org.patternfly.component.expandable.ExpandableSection;
 import org.patternfly.component.form.Form;
@@ -53,8 +53,8 @@ import static org.patternfly.style.Classes.group;
 import static org.patternfly.style.Classes.modifier;
 
 /**
- * Builds and manages the editable form for resource attributes. Handles both flat and grouped layouts using expandable
- * sections for attribute groups. Provides validation, model node collection, and alert display.
+ * Builds and manages the editable form for resource attributes. Handles both flat and grouped layouts using expandable sections
+ * for attribute groups. Provides validation, model node collection, and alert display.
  * <p>
  * Used by dialog classes (add resource, execute operation) and by {@code ResourceData} for inline editing.
  */
@@ -192,6 +192,13 @@ public class ResourceForm implements IsElement<HTMLElement> {
     }
 
     // ------------------------------------------------------ accessors
+
+    public FormItem item(String identifier) {
+        return items.stream()
+                .filter(item -> item.identifier().equals(identifier))
+                .findFirst()
+                .orElse(null);
+    }
 
     public List<FormItem> items() {
         return items;

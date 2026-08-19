@@ -113,6 +113,11 @@ public final class SelectControl implements NativeControl<FormSelect> {
     }
 
     @Override
+    public void disable(FormSelect control) {
+        control.disabled();
+    }
+
+    @Override
     public void afterSwitchedToNativeMode(FormSelect control, ResolvedAttribute attribute) {
         boolean wasDefined = attribute.value().isDefined();
         FormItemBricks.afterSwitchedToSelectControl(wasDefined, attribute, control);

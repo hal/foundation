@@ -101,6 +101,11 @@ final class CredentialStoreAliasControl implements NativeControl<SingleTypeahead
     }
 
     @Override
+    public void disable(SingleTypeahead control) {
+        control.disabled();
+    }
+
+    @Override
     public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
         FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
     }

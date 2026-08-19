@@ -66,6 +66,8 @@ public interface NativeControl<C> {
     /** Returns {@code true} if the control's value represents a modification for an existing resource. */
     boolean isModifiedForExisting(C control, ResolvedAttribute attribute, boolean wasDefined);
 
+    void disable(C control);
+
     /** Validates the control's current value. Returns {@code true} if valid. */
     default boolean validate(C control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         return true;

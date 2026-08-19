@@ -87,4 +87,9 @@ public final class SwitchControl implements NativeControl<Switch> {
                 .addItem(flexItem().add(control))
                 .element();
     }
+
+    @Override
+    public void disable(Switch control) {
+        control.disabled();
+    }
 }

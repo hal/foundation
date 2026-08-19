@@ -107,6 +107,11 @@ public final class StringListControl implements NativeControl<FilterInput> {
         }
     }
 
+    @Override
+    public void disable(FilterInput control) {
+        control.disabled();
+    }
+
     private void setValues(FilterInput fi, List<String> values) {
         fi.labelGroup().clear();
         fi.labelGroup().addItems(values, value -> fi.textToLabel().apply(value));

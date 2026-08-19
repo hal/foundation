@@ -17,8 +17,8 @@ package org.jboss.hal.ui.resource.form;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.help.HelperText;
 
 import elemental2.dom.HTMLElement;
@@ -91,5 +91,10 @@ public final class UnsupportedControl implements NativeControl<HTMLElement> {
     @Override
     public HelperText nativeHelperText() {
         return HelperText.helperText("The type of this attribute is not yet supported: " + formatType, warning);
+    }
+
+    @Override
+    public void disable(HTMLElement control) {
+        // noop
     }
 }

@@ -42,8 +42,7 @@ public class CredentialStoreTabs implements ResourceTabsProvider {
 
     @Override
     public Promise<ResourceTabs> customizeTabs(AddressTemplate template, Metadata metadata, ResourceTabs defaultTabs) {
-        return Promise.resolve(defaultTabs
-                .addTab(1, "credential-store-aliases", "Aliases",
-                        aliasManager(dispatcher, template).element()));
+        return Promise.resolve(defaultTabs.addTab(1, "credential-store-aliases", "Aliases",
+                aliasManager(dispatcher, template, metadata).element()));
     }
 }

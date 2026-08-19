@@ -152,6 +152,11 @@ public final class DefaultFormItem<C> implements FormItem {
     }
 
     @Override
+    public void disable() {
+        editableControl.disable();
+    }
+
+    @Override
     public List<Operation> operations(ResourceAddress address) {
         return operationStrategy.operations(this, address);
     }

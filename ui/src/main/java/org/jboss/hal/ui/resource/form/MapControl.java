@@ -120,6 +120,11 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
+    public void disable(FilterInput control) {
+        control.disabled();
+    }
+
+    @Override
     public void afterSwitchedToNativeMode(FilterInput control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
             setLabels(control, originalEntries);

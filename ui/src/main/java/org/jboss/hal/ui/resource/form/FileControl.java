@@ -90,4 +90,10 @@ public final class FileControl implements NativeControl<HTMLElement> {
         pathControl.resetValidation();
         relativeToControl.resetValidation();
     }
+
+    @Override
+    public void disable(HTMLElement control) {
+        pathControl.disable();
+        relativeToControl.disable();
+    }
 }

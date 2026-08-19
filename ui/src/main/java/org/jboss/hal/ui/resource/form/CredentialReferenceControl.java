@@ -60,6 +60,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
     private FormItem clearText0FormItem;
     private FormItem clearText1FormItem;
     private FormItem typeFormItem;
+    private ToggleGroup toggleGroup;
     private CredentialStoreAliasControl aliasControl;
     private HTMLContainerBuilder<HTMLDivElement> clearTextContainer;
     private HTMLContainerBuilder<HTMLDivElement> storeReferenceContainer;
@@ -86,7 +87,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
                 .add(clearText1FormItem)
                 .add(typeFormItem);
 
-        ToggleGroup toggleGroup = toggleGroup(single)
+        toggleGroup = toggleGroup(single)
                 .onSingleSelect((e, item, selected) -> selectMode(item.get(MODE_KEY)))
                 .addItem(toggleGroupItem(Mode.UNDEFINED.name())
                         .store(MODE_KEY, Mode.UNDEFINED)
@@ -195,6 +196,16 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         clearText0FormItem.resetValidation();
         clearText1FormItem.resetValidation();
         typeFormItem.resetValidation();
+    }
+
+    @Override
+    public void disable(HTMLElement control) {
+        toggleGroup.disabled();
+        storeFormItem.disable();
+        aliasFormItem.disable();
+        clearText0FormItem.disable();
+        clearText1FormItem.disable();
+        typeFormItem.disable();
     }
 
     // ------------------------------------------------------ internal

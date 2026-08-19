@@ -131,6 +131,11 @@ public final class StringControl implements NativeControl<HTMLElement> {
         input.resetValidation();
     }
 
+    @Override
+    public void disable(HTMLElement control) {
+        input.disabled();
+    }
+
     private String textValue() {
         return FormItemBricks.safeValue(input);
     }

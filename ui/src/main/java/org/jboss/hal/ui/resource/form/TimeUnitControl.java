@@ -90,4 +90,10 @@ public final class TimeUnitControl implements NativeControl<HTMLElement> {
         timeControl.resetValidation();
         unitControl.resetValidation();
     }
+
+    @Override
+    public void disable(HTMLElement control) {
+        timeControl.disable();
+        unitControl.disable();
+    }
 }

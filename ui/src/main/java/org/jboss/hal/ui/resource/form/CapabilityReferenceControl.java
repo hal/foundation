@@ -91,6 +91,11 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     }
 
     @Override
+    public void disable(SingleTypeahead control) {
+        control.disabled();
+    }
+
+    @Override
     public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
         FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
     }

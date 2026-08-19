@@ -114,6 +114,12 @@ public class PathRelativeToFormItem implements FormItem {
     }
 
     @Override
+    public void disable() {
+        pathControl.disable();
+        relativeToControl.disable();
+    }
+
+    @Override
     public List<Operation> operations(ResourceAddress address) {
         List<Operation> ops = new ArrayList<>();
         if (pathControl.isModified()) {

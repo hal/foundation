@@ -113,6 +113,11 @@ public final class CapabilitiesReferenceControl implements NativeControl<MultiTy
     }
 
     @Override
+    public void disable(MultiTypeahead control) {
+        control.disabled();
+    }
+
+    @Override
     public void afterSwitchedToNativeMode(MultiTypeahead control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
             setValues(control, modelValues(attribute));

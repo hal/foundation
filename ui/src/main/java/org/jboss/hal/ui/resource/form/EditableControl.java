@@ -98,6 +98,10 @@ public final class EditableControl<C> implements IsElement<HTMLElement> {
         return switchableContainer;
     }
 
+    public void disable() {
+        nativeControl.disable(control);
+    }
+
     // ------------------------------------------------------ accessors
 
     /** Returns the resolved attribute this control edits. */
@@ -106,12 +110,12 @@ public final class EditableControl<C> implements IsElement<HTMLElement> {
     }
 
     /** Returns the native control strategy. */
-    NativeControl<C> nativeControl() {
+    public NativeControl<C> nativeControl() {
         return nativeControl;
     }
 
     /** Returns the native control instance. */
-    C control() {
+    public C control() {
         return control;
     }
 

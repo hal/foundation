@@ -47,6 +47,8 @@ public interface FormItem extends ResourceItem {
     /** Clears any validation state (error messages, visual indicators). */
     void resetValidation();
 
+    void disable();
+
     /**
      * Produces the DMR operations needed to persist this form item's current value. Returns an empty list if the item has not
      * been modified. The operations are flat-mapped with all other form items' operations into a single composite operation.

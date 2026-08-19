@@ -93,6 +93,11 @@ public final class RelativeToControl implements NativeControl<SingleTypeahead> {
         FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
     }
 
+    @Override
+    public void disable(SingleTypeahead control) {
+        control.disabled();
+    }
+
     private String value(SingleTypeahead control) {
         return control != null ? control.menuToggle().searchInput().value() : "";
     }

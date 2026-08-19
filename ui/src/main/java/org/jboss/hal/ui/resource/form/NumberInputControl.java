@@ -171,6 +171,16 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
     }
 
     @Override
+    public void disable(HTMLElement control) {
+        if (allowedValuesControl != null) {
+            allowedValuesControl.disabled();
+        }
+        if (minMaxControl != null) {
+            minMaxControl.disabled();
+        }
+    }
+
+    @Override
     public void afterSwitchedToNativeMode(HTMLElement control, ResolvedAttribute attribute) {
         boolean wasDefined = attribute.value().isDefined();
         if (allowedValuesControl != null) {
