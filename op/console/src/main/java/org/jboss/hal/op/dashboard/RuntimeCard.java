@@ -49,11 +49,11 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE_TYPE;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
+import static org.jboss.hal.ui.Format.humanReadableBytes;
+import static org.jboss.hal.ui.Format.percent;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.descriptionOnly;
-import static org.jboss.hal.ui.Format.humanReadableBytes;
-import static org.jboss.hal.ui.Format.percent;
 import static org.patternfly.chart.Data.data;
 import static org.patternfly.chart.LegendOrientation.vertical;
 import static org.patternfly.chart.Padding.padding;

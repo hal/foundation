@@ -34,7 +34,6 @@ import org.patternfly.component.card.Card;
 import org.patternfly.component.card.CardBody;
 import org.patternfly.component.list.DescriptionListDescription;
 import org.patternfly.component.list.DescriptionListGroup;
-import org.patternfly.icon.IconSets;
 import org.patternfly.style.Size;
 
 import elemental2.dom.HTMLElement;
@@ -51,10 +50,10 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATIO
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESULT;
 import static org.jboss.hal.op.dashboard.Dashboard.dashboardEmptyState;
 import static org.jboss.hal.op.dashboard.Dashboard.dlg;
+import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.CodeBricks.errorCode;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.descriptionOnly;
-import static org.jboss.hal.ui.Format.duration;
 import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.card.Card.card;

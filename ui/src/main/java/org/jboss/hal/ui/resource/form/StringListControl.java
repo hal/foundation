@@ -18,8 +18,8 @@ package org.jboss.hal.ui.resource.form;
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.label.Label;
 import org.patternfly.component.textinputgroup.FilterInput;

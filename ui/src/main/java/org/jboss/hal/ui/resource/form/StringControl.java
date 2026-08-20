@@ -15,11 +15,10 @@
  */
 package org.jboss.hal.ui.resource.form;
 
-import org.jboss.elemento.By;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.PipelineFlags;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.TextInput;

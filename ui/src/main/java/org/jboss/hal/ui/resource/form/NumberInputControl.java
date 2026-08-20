@@ -20,11 +20,12 @@ import java.util.List;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormSelect;
 import org.patternfly.component.form.TextInput;
+import org.patternfly.component.help.HelperText;
 
 import elemental2.dom.HTMLElement;
 
@@ -42,7 +43,6 @@ import static org.patternfly.component.form.FormSelect.formSelect;
 import static org.patternfly.component.form.FormSelectOption.formSelectOption;
 import static org.patternfly.component.form.TextInput.textInput;
 import static org.patternfly.component.form.TextInputType.number;
-import org.patternfly.component.help.HelperText;
 
 /**
  * {@link NativeControl} for numeric attributes (INT, LONG, DOUBLE). Uses either a {@link FormSelect} for allowed-values

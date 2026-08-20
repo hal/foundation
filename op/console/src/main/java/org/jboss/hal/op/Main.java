@@ -22,9 +22,10 @@ import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.endpoint.EndpointStorage;
-import io.crysknife.annotation.Application;
-import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 import org.patternfly.component.navigation.Navigation;
+import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
+
+import io.crysknife.annotation.Application;
 
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.insertFirst;

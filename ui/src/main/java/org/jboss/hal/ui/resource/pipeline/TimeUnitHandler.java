@@ -15,15 +15,14 @@
  */
 package org.jboss.hal.ui.resource.pipeline;
 
-import org.jboss.hal.ui.resource.PipelineContext;
-import org.jboss.hal.ui.resource.ResolvedAttribute;
-
 import java.util.List;
 
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
-import org.jboss.hal.ui.resource.form.FormItem;
+import org.jboss.hal.ui.resource.PipelineContext;
+import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.form.DefaultFormItem;
+import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.TimeUnitControl;
 import org.jboss.hal.ui.resource.view.TimeUnitViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;

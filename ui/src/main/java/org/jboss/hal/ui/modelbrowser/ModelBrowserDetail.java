@@ -39,11 +39,11 @@ import static org.jboss.hal.resources.HalClasses.content;
 import static org.jboss.hal.resources.HalClasses.detail;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.resource.shell.ResourceTabs.resourceTabs;
 import static org.jboss.hal.ui.resource.shell.ResourceBreadcrumb.resourceBreadcrumb;
 import static org.jboss.hal.ui.resource.shell.ResourceHeader.resourceHeader;
 import static org.jboss.hal.ui.resource.shell.ResourceList.resourceList;
 import static org.jboss.hal.ui.resource.shell.ResourceShell.resourceShell;
+import static org.jboss.hal.ui.resource.shell.ResourceTabs.resourceTabs;
 
 /**
  * Right-side detail panel of the model browser showing information about the selected resource.

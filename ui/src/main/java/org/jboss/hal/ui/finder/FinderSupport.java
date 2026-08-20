@@ -19,19 +19,19 @@ import java.util.function.Function;
 
 import org.jboss.hal.dmr.ModelDescriptionConstants;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.resources.Keys;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.WildcardResolver;
+import org.jboss.hal.resources.Keys;
 import org.patternfly.component.AsyncItems;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
-import org.patternfly.extension.finder.ResolvedFinderPath;
 import org.patternfly.extension.finder.FinderPreview;
 import org.patternfly.extension.finder.PreviewHandler;
+import org.patternfly.extension.finder.ResolvedFinderPath;
 
 import elemental2.promise.Promise;
 

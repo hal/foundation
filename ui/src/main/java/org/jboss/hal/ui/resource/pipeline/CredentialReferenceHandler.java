@@ -36,7 +36,6 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
 import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.hasObjectValueType;
 import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
 import static org.patternfly.icon.IconSets.fas.ban;
-import static org.patternfly.icon.IconSets.fas.fileLines;
 import static org.patternfly.icon.IconSets.fas.shieldHalved;
 
 /**

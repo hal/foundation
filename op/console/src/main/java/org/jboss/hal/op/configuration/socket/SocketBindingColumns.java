@@ -21,8 +21,8 @@ import org.patternfly.extension.finder.ResolvedFinderSegment;
 
 import static java.util.Arrays.asList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
-import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 import static org.jboss.hal.resources.Keys.RESOURCE_NAME;
+import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 
 /**
  * Shared factory for socket binding finder columns. Builds a CRUD column that resolves its address template from the selected

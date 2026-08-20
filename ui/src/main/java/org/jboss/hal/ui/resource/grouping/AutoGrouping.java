@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.jboss.hal.core.Humanize;
-
 import static org.jboss.hal.core.Humanize.abbreviate;
 
 /**

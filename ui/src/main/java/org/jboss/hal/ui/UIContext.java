@@ -33,8 +33,8 @@ import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.tree.ModelTree;
 import org.jboss.hal.ui.navigation.RouteRegistry;
-import org.jboss.hal.ui.resource.spi.ResourceRegistries;
 import org.jboss.hal.ui.resource.spi.ResourceHeaderRegistry;
+import org.jboss.hal.ui.resource.spi.ResourceRegistries;
 import org.jboss.hal.ui.resource.spi.ResourceTabsRegistry;
 
 /**

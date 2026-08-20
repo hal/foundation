@@ -15,11 +15,11 @@
  */
 package org.jboss.hal.ui.resource.view;
 
+import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler.Mode;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
-import org.jboss.hal.ui.resource.PipelineContext;
 
 import elemental2.dom.HTMLElement;
 
@@ -33,7 +33,6 @@ import static org.jboss.hal.resources.HalClasses.resource;
 import static org.jboss.hal.resources.HalClasses.view;
 import static org.patternfly.component.Severity.info;
 import static org.patternfly.component.Severity.success;
-import static org.patternfly.component.Severity.warning;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;

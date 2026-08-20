@@ -24,10 +24,10 @@ import org.jboss.elemento.router.AnnotatedPlaces;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.resources.Ids;
-import io.crysknife.client.BeanManager;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.component.navigation.NavigationItem;
 
+import io.crysknife.client.BeanManager;
 
 /**
  * CDI producer for the application-scoped {@link PlaceManager}. Configures the router with the base path, root element, title

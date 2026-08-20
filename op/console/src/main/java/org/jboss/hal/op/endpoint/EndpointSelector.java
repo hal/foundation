@@ -21,7 +21,6 @@ import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.menu.SingleSelect;
 import org.patternfly.core.OuiaSupport;
-import org.patternfly.style.Placement;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.URL;

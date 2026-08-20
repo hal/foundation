@@ -22,13 +22,10 @@ import org.patternfly.component.ComponentType;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.textinputgroup.BaseSearchInput;
 import org.patternfly.handler.ComponentHandler;
-import org.patternfly.icon.IconSets;
 
 import static org.jboss.elemento.Elements.setVisible;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.textinputgroup.TextInputGroupUtilities.textInputGroupUtilities;
-import static org.patternfly.icon.IconSets.fas.rotateRight;
-import static org.patternfly.icon.IconSets.fas.xmark;
 import static org.patternfly.icon.IconSets.rhUi.close;
 import static org.patternfly.icon.IconSets.rhUi.refresh;
 

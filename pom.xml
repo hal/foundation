@@ -219,6 +219,7 @@
                                     <exclude>**/*license*.txt</exclude>
                                     <exclude>**/.dockerignore</exclude>
                                     <exclude>**/.pnpm-store/**</exclude>
+                                    <exclude>**/.vitepress/**</exclude>
                                     <exclude>**/dist/**</exclude>
                                     <exclude>**/Dockerfile*</exclude>
                                     <exclude>**/banner.txt</exclude>

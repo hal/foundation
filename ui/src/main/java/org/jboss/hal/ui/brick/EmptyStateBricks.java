@@ -18,12 +18,12 @@ package org.jboss.hal.ui.brick;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.filter.Filter;
 
+import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.emptystate.EmptyState.emptyState;
 import static org.patternfly.component.emptystate.EmptyStateActions.emptyStateActions;
 import static org.patternfly.component.emptystate.EmptyStateBody.emptyStateBody;
 import static org.patternfly.component.emptystate.EmptyStateFooter.emptyStateFooter;
-import static org.patternfly.component.Severity.danger;
 import static org.patternfly.icon.IconSets.fas.ban;
 import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 

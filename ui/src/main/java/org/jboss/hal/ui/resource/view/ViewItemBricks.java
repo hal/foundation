@@ -1,7 +1,20 @@
+/*
+ *  Copyright 2024 Red Hat
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package org.jboss.hal.ui.resource.view;
 
-import org.jboss.hal.dmr.ModelDescriptionConstants;
-import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.PipelineContext;
@@ -16,8 +29,6 @@ import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.wrapHtmlContainer;
 import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.core.Notification.nyi;
-import static org.jboss.hal.dmr.JndiName.isJndiName;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.JNDI_NAME;
 import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
@@ -26,7 +37,6 @@ import static org.jboss.hal.resources.HalClasses.restricted;
 import static org.jboss.hal.resources.HalClasses.stabilityLevel;
 import static org.jboss.hal.resources.HalClasses.undefined;
 import static org.jboss.hal.resources.HalClasses.view;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover;
 import static org.jboss.hal.ui.brick.AttributeBricks.pathRelativeTo;
@@ -34,7 +44,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
-import static org.jboss.hal.ui.brick.JndiBricks.renderJndiName;
+import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
