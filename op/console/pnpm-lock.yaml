@@ -40,8 +40,8 @@ importers:
         version: 3.4.13
     devDependencies:
       '@cyclonedx/cdxgen':
-        specifier: ^12.8.3
-        version: 12.8.3
+        specifier: ^12.8.4
+        version: 12.8.4
       esbuild:
         specifier: ^0.28.2
         version: 0.28.2
@@ -219,8 +219,8 @@ packages:
     engines: {node: '>=20.0.0'}
     hasBin: true
 
-  '@cyclonedx/cdxgen@12.8.3':
-    resolution: {integrity: sha512-EfLTkLRjzfWGUdSngTV+yOl8VkNv+mkpC6J7IuuzSumB7FsZFPsPG4EHiGKqoZdeXjdJN1zloXSedw7cW6cF/w==}
+  '@cyclonedx/cdxgen@12.8.4':
+    resolution: {integrity: sha512-9EMER2beUSU7fvKgVaYOnYCFqAHrY3bQ7ERenh29/Edku0ctEXzYdov6vCmjmo/hSBH+JtvA7+j1U884MVYFOA==}
     engines: {node: ^20 || ^22 || ^24 || ^25 || ^26, pnpm: '>=10'}
     hasBin: true
 
@@ -1756,7 +1756,7 @@ snapshots:
       '@cdxgen/safer-exec-linux-arm64': 0.15.0
     optional: true
 
-  '@cyclonedx/cdxgen@12.8.3':
+  '@cyclonedx/cdxgen@12.8.4':
     dependencies:
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
