@@ -16,6 +16,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Add grouped layout toggle for resources with many attributes
 - Add composable resource page components — ResourceShell, ResourceList, ResourceTabs, ResourceBreadcrumb, ResourceHeader
 - Add pinnable subsystem column in the configuration finder
+- Add credential store alias management with full CRUD, disable support, and multi-scope extensions
+- Add credential store alias lookup control
+- Add `ResourceTabsProvider` and `ResourceTabsRegistry` extension point, wired into UIContext and ResourceShell
+- Add `ResourceHeaderRegistry` with best-prefix matching and `appliesTo` filtering
+- Add `ResourceContext` and `ResourceHeaderProvider` for custom resource headers
+- Add `DataSourceHeader` provider for datasource-specific resource headers
+- Add `JndiName` parser, `TemplateMatcher` utility, and JNDI name rendering with colour-coded bricks
+- Add VitePress documentation site replacing mdBook — architecture overview, deep dives, and feature pages
 
 ### Changed
 
@@ -26,12 +34,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Rewrite `RelativeToControl` as typeahead with file-system path support
 - Migrate WildFly subsystem to non-deprecated `ServiceInstaller.BlockingBuilder` API
 - Clean up DMR module — extract shared `formatAsJSON`, use `StandardCharsets.UTF_8`, stream-based `Operation.toString()`
+- Redesign `ResourceHeader` as composable element with icon, label, and extension point integration
+- Rename resource extension package to SPI
+- Move `ResourceTabs` into the shell package
+- Move `ColumnProvider` and `ColumnRegistry` from op/console to ui module
+- Rewrite pipeline with handler/provider architecture
+- Simplify `ResourceShell` API and use PFJ component types
+- Remove `DialogBricks` facade and expose dialog classes directly
+- Migrate expression and reload icons to rhUi icon set
+- Simplify credential reference control with toggle group and mode-based layout
 
 ### Removed
 
 - Remove old view/form item factories and inheritance tree — replaced by pipeline matchers, providers, and `NativeControl`
 - Remove `FormItemFlags`, `FormItemInputMode`, `GroupingStrategy`, `MetadataGrouping` — replaced by `PipelineFlags`, `InputMode`, `GroupingSupport`
 - Remove `ExecuteOperationDialog` stub and unused `CrudOperations` injection from socket binding columns
+- Remove mdBook documentation — content consolidated into VitePress docs site
 
 ### Fixed
 
@@ -39,14 +57,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix tooltip placement for model browser back/forward buttons
 - Fix missing remove button and Add button for singleton/non-singleton folders in model browser
 - Fix `selectedItems()` in `CapabilitiesReferenceControl`
+- Fix disabled form fields in operation execution dialogs
+- Fix J2CL externs for js-cookie, marked, and DOMPurify
+- Fix pnpm catalog references for PatternFly Java dependencies
+- Fix OUIA ID on ResourceHeader
+- Override vulnerable undici and tar transitive dependencies
 
 ### Upgrades
 
 - Bump PatternFly Java to 0.9.5
-- Bump Quarkus platform to 3.37.4
+- Bump Quarkus platform to 3.38.0
 - Bump WildFly BOM to 41.0.0.Final
+- Bump PatternFly to 6.6.1
+- Migrate from KIE to Crysknife/Treblereel coordinates
 - Bump Maven managed dependencies and plugins
 - Bump npm dependencies and packageManager versions
+- Bump GitHub Actions (checkout v7, setup-java v5.7.0, deploy-pages v5, upload-pages-artifact v5, podman-login v2)
 
 ## [0.4.0] - 2026-07-06
 
