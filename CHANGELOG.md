@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-20
+
 ### Added
 
 - Add attribute-to-item pipeline for resource view/form rendering — two-stage matcher/provider architecture replacing the old factory-based approach
@@ -456,7 +458,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/hal/foundation/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/hal/foundation/compare/v0.3.8...v0.4.0
 [0.3.8]: https://github.com/hal/foundation/compare/v0.3.7...v0.3.8
 [0.3.7]: https://github.com/hal/foundation/compare/v0.3.6...v0.3.7
