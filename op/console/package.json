@@ -1,15 +1,4 @@
 {
-  "name": "hal-op",
-  "type": "module",
-  "packageManager": "pnpm@11.22.0",
-  "private": true,
-  "scripts": {
-    "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
-    "build:standalone": "vite build --config vite.config.js --mode standalone",
-    "build:test-suite": "vite build --config vite.config.js --mode test-suite",
-    "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --json-pretty --only patternfly --only dompurify",
-    "watch": "vite --config vite.config.js"
-  },
   "dependencies": {
     "@patternfly-java/charts": "catalog:pfj",
     "@patternfly-java/core": "catalog:pfj",
@@ -21,5 +10,16 @@
     "@cyclonedx/cdxgen": "^12.8.4",
     "esbuild": "^0.28.2",
     "vite": "^8.2.2"
-  }
+  },
+  "name": "hal-op",
+  "packageManager": "pnpm@11.24.0",
+  "private": true,
+  "scripts": {
+    "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
+    "build:standalone": "vite build --config vite.config.js --mode standalone",
+    "build:test-suite": "vite build --config vite.config.js --mode test-suite",
+    "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --json-pretty --only patternfly --only dompurify",
+    "watch": "vite --config vite.config.js"
+  },
+  "type": "module"
 }
