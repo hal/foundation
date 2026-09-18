@@ -84,14 +84,14 @@
         <version.checkstyle.config>1.0.8.Final</version.checkstyle.config>
         <version.corepack>v0.35.0</version.corepack>
         <version.crysknife>0.11</version.crysknife>
-        <version.elemento>2.5.6</version.elemento>
+        <version.elemento>2.5.7</version.elemento>
         <version.gwt.event>1.0.0-RC1</version.gwt.event>
         <version.gwt.safehtml>1.0.0-RC1</version.gwt.safehtml>
         <version.junit>6.1.3</version.junit>
         <version.j2cl.processors>0.11</version.j2cl.processors>
         <version.mockito>5.23.0</version.mockito>
         <version.node>v26.3.0</version.node>
-        <version.patternfly.java>0.9.7</version.patternfly.java>
+        <version.patternfly.java>0.10.1-SNAPSHOT</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.11.0</version.central.publishing.plugin>

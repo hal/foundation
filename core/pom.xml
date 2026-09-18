@@ -56,7 +56,11 @@
         </dependency>
         <dependency>
             <groupId>org.patternfly</groupId>
-            <artifactId>patternfly-java-j2cl</artifactId>
+            <artifactId>patternfly-java-components</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.patternfly</groupId>
+            <artifactId>patternfly-java-layouts</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.elemento</groupId>
