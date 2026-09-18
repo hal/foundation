@@ -16,7 +16,6 @@
 package org.jboss.hal.ui.modelbrowser;
 
 import java.util.EnumSet;
-import java.util.Set;
 
 import org.jboss.elemento.Id;
 import org.jboss.elemento.Key;
@@ -26,23 +25,19 @@ import org.jboss.hal.meta.tree.TraverseContinuation;
 import org.jboss.hal.meta.tree.TraverseOperation;
 import org.jboss.hal.meta.tree.TraverseType;
 import org.jboss.hal.resources.OuiaIds;
+import org.jboss.hal.ui.component.ResourceAddressTypeahead;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.patternfly.component.button.Button;
-import org.patternfly.component.form.Form;
-import org.patternfly.component.form.FormGroup;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.Radio;
 import org.patternfly.component.form.TextArea;
 import org.patternfly.component.form.TextInput;
-import org.patternfly.component.list.DescriptionList;
 import org.patternfly.component.list.List;
 import org.patternfly.component.list.ListItem;
 import org.patternfly.component.modal.Modal;
-import org.patternfly.component.popover.Popover;
 import org.patternfly.core.Timeouts;
 import org.patternfly.layout.flex.FlexItem;
 import org.patternfly.layout.flex.Gap;
-import org.patternfly.style.Breakpoint;
 
 import elemental2.dom.HTMLElement;
 
@@ -61,6 +56,7 @@ import static org.jboss.hal.resources.HalClasses.modelBrowser;
 import static org.jboss.hal.resources.HalClasses.results;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noResults;
+import static org.jboss.hal.ui.component.ResourceAddressTypeahead.resourceAddressTypeahead;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.divider.Divider.divider;
@@ -94,6 +90,7 @@ import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.Gap.sm;
 import static org.patternfly.layout.grid.Grid.grid;
 import static org.patternfly.layout.grid.GridItem.gridItem;
+import static org.patternfly.style.Breakpoint.md;
 import static org.patternfly.style.Breakpoints.breakpoints;
 import static org.patternfly.style.Classes.search;
 import static org.patternfly.style.Classes.util;
@@ -103,9 +100,9 @@ import static org.patternfly.token.Token.globalTextColorDisabled;
 /**
  * Modal dialog to search for resources in the management model tree.
  * <p>
- * Users can search by name within a configurable scope (address, type, or name) using either contains or equals comparison.
- * The search traverses the model tree starting from an optional root address and can exclude specified subtrees. Matching
- * resources are displayed as clickable links that navigate to the resource in the tree.
+ * Users can search by name within a configurable scope (address, type, or name) using either contains or equals comparison. The
+ * search traverses the model tree starting from an optional root address and can exclude specified subtrees. Matching resources
+ * are displayed as clickable links that navigate to the resource in the tree.
  */
 class FindResource {
 
@@ -118,7 +115,7 @@ class FindResource {
     private final List matchingResources;
     private final FormGroupControl nameControl;
     private final TextInput nameInput;
-    private final TextInput rootInput;
+    private final ResourceAddressTypeahead rootInput;
     private final TextArea excludeTextArea;
     private final Radio scopeAddressRadio;
     private final Radio scopeTypeRadio;
@@ -133,14 +130,14 @@ class FindResource {
         this.trigger = trigger;
         this.continuation = new TraverseContinuation();
 
-        String baseId = "search-resource";
-        String nameId = Id.build(baseId, "name");
-        String rootId = Id.build(baseId, "root");
-        String excludeId = Id.build(baseId, "exclude");
-        String scopeId = Id.build(baseId, "scope");
-        String comparisonId = Id.build(baseId, "comparison");
+        var baseId = "search-resource";
+        var nameId = Id.build(baseId, "name");
+        var rootId = Id.build(baseId, "root");
+        var excludeId = Id.build(baseId, "exclude");
+        var scopeId = Id.build(baseId, "scope");
+        var comparisonId = Id.build(baseId, "comparison");
 
-        DescriptionList scopeDescription = descriptionList().horizontal().compact()
+        var scopeDescription = descriptionList().horizontal().compact()
                 .addItem(descriptionListGroup(Id.build(scopeId, "address-help"))
                         .addTerm(descriptionListTerm("Address"))
                         .addDescription(descriptionListDescription()
@@ -178,7 +175,7 @@ class FindResource {
                                                 .add(strong().text("Example"))
                                                 .add("DS")))));
 
-        DescriptionList comparisonDescription = descriptionList().horizontal().compact()
+        var comparisonDescription = descriptionList().horizontal().compact()
                 .addItem(descriptionListGroup(Id.build(comparisonId, "contains-help"))
                         .addTerm(descriptionListTerm("contains"))
                         .addDescription(descriptionListDescription()
@@ -202,7 +199,7 @@ class FindResource {
                                                 .add("/subsystem=datasources/data-source=")
                                                 .add(strong().text("ExampleDS"))))));
 
-        Popover scopeInfo = popover()
+        var scopeInfo = popover()
                 .autoWidth()
                 .addHeader(popoverHeader().text("Where to search"))
                 .addBody(popoverBody()
@@ -211,7 +208,7 @@ class FindResource {
                                 .addItem(flexItem().add(scopeDescription))
                                 .addItem(flexItem().add(div().text("The search is case insensitive by default.")))));
 
-        Popover comparisonInfo = popover()
+        var comparisonInfo = popover()
                 .autoWidth()
                 .addHeader(popoverHeader().text("How to search"))
                 .addBody(popoverBody()
@@ -220,7 +217,7 @@ class FindResource {
                                 .addItem(flexItem().add(comparisonDescription))
                                 .addItem(flexItem().add(div().text("The search is case insensitive by default.")))));
 
-        FormGroup nameFormGroup = formGroup(nameId).required()
+        var nameFormGroup = formGroup(nameId).required()
                 .addLabel(formGroupLabel("Name"))
                 .addControl(nameControl = formGroupControl()
                         .addControl(nameInput = textInput(nameId)
@@ -231,24 +228,31 @@ class FindResource {
                                     }
                                 })));
 
-        rootInput = textInput(rootId).value(rootAddress);
+        rootInput = resourceAddressTypeahead(rootId).value(rootAddress);
         if (scoped) {
-            rootInput.readonly();
+            rootInput.disabled(true);
         }
         rootInput.on(keydown, e -> {
+            if (Key.Escape.match(e)) {
+                if (rootInput.expanded()) {
+                    e.stopPropagation();
+                }
+            }
             if (Key.Enter.match(e)) {
-                search();
+                if (!rootInput.expanded()) {
+                    search();
+                }
             }
         });
-        FormGroup rootFormGroup = formGroup(rootId)
+        var rootFormGroup = formGroup(rootId)
                 .addLabel(formGroupLabel("Root"))
                 .addControl(formGroupControl()
-                        .addControl(rootInput)
+                        .add(rootInput)
                         .addHelperText(helperText(scoped
                                 ? "Search is limited to this resource and its children."
                                 : "Leave empty to search the whole model.")));
 
-        FormGroup excludeFormGroup = formGroup(excludeId)
+        var excludeFormGroup = formGroup(excludeId)
                 .addLabel(formGroupLabel("Exclude"))
                 .addControl(formGroupControl()
                         .addControl(excludeTextArea = textArea(excludeId)
@@ -257,7 +261,7 @@ class FindResource {
                                 .value("/core-service"))
                         .addHelperText(helperText("Enter resource addresses to exclude (separated by line breaks)")));
 
-        FormGroup scopeFormGroup = formGroup(scopeId).role(radiogroup)
+        var scopeFormGroup = formGroup(scopeId).role(radiogroup)
                 .addLabel(formGroupLabel("Scope").noPaddingTop().help("Where to search", scopeInfo))
                 .addControl(formGroupControl().inline()
                         .addRadio(scopeAddressRadio = radio(Id.build(scopeId, "address"), scopeId, "Address"))
@@ -265,7 +269,7 @@ class FindResource {
                         .addRadio(scopeNameRadio = radio(Id.build(scopeId, "name"), scopeId, "Name")
                                 .value(true, false)));
 
-        FormGroup comparisonFormGroup = formGroup(comparisonId).role(radiogroup)
+        var comparisonFormGroup = formGroup(comparisonId).role(radiogroup)
                 .addLabel(formGroupLabel("Comparison").noPaddingTop().help("How to search", comparisonInfo))
                 .addControl(formGroupControl().inline()
                         .addRadio(comparisonContainsRadio = radio(Id.build(comparisonId, "contains"),
@@ -274,8 +278,8 @@ class FindResource {
                                 .value(true, false))
                         .addRadio(radio(Id.build(comparisonId, "equals"), comparisonId, "equals")));
 
-        Form searchForm = form().horizontal()
-                .add(grid().gutter().columns(breakpoints(Breakpoint.md, 6))
+        var searchForm = form().horizontal()
+                .add(grid().gutter().columns(breakpoints(md, 6))
                         .addItem(gridItem().span(12).add(nameFormGroup))
                         .addItem(gridItem().span(12).add(rootFormGroup))
                         .addItem(gridItem().span(12).add(excludeFormGroup))
@@ -335,6 +339,7 @@ class FindResource {
             if (nameInput.value().isEmpty()) {
                 nameControl.addHelperText(helperText("Must not be empty", error));
                 nameInput.validated(error);
+                // TODO Validate rootInput
             } else {
                 nameControl.removeHelperText();
                 nameInput.resetValidation();
@@ -344,18 +349,18 @@ class FindResource {
                 setVisible(searchResults, true);
                 setVisible(noResults, false);
 
-                String name = nameInput.value();
-                Set<String> exclude = stream(excludeTextArea.value().split("\\r?\\n"))
+                var name = nameInput.value();
+                var exclude = stream(excludeTextArea.value().split("\\r?\\n"))
                         .filter(s -> !s.trim().isEmpty())
                         .collect(toSet());
-                boolean contains = comparisonContainsRadio.value();
-                AddressTemplate rootTemplate = AddressTemplate.ofTrusted(rootInput.value());
+                var contains = comparisonContainsRadio.value();
+                var rootTemplate = rootInput.addressTemplate() == null ? AddressTemplate.root() : rootInput.addressTemplate();
                 timeout = setTimeout(__ -> searchButton.text("Stop").startProgress(), Timeouts.LOADING_TIMEOUT);
                 uic().modelTree().traverse(continuation, rootTemplate, exclude, EnumSet.noneOf(TraverseType.class),
                                 TraverseOperation.NOOP,
                                 (template, undefined, traverseContext) -> {
                                     status.text("Process " + template.toString());
-                                    String argument = "";
+                                    var argument = "";
                                     if (scopeAddressRadio.value()) {
                                         argument = template.template;
                                     } else if (scopeTypeRadio.value()) {
@@ -364,7 +369,7 @@ class FindResource {
                                         argument = template.last().value;
                                     }
                                     argument = argument == null ? "" : argument;
-                                    boolean match = contains
+                                    var match = contains
                                             ? argument.toLowerCase().contains(name.toLowerCase())
                                             : argument.equalsIgnoreCase(name);
                                     if (match) {
