@@ -44,7 +44,7 @@
  * <dt>{@link org.jboss.hal.ui.brick.ServerStateBricks}</dt>
  * <dd>Colour-coded PatternFly labels for server runtime states: configuration state, running mode, running state, and
  * suspend state.</dd>
- * <dt>{@link org.jboss.hal.ui.brick.StabilityLabel}</dt>
+ * <dt>{@link StabilityLabel}</dt>
  * <dd>PatternFly label component displaying WildFly stability levels with appropriate icons and colours.</dd>
  * <dt>{@link org.jboss.hal.ui.brick.StabilityBricks}</dt>
  * <dd>Maps stability levels (experimental, preview, community, default) to PatternFly statuses and icons.</dd>
@@ -57,3 +57,5 @@
  * @see org.jboss.hal.ui
  */
 package org.jboss.hal.ui.brick;
+
+import org.jboss.hal.ui.component.StabilityLabel;

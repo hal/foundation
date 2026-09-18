@@ -27,6 +27,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.capabilityItems;
 import static org.jboss.hal.ui.resource.form.CapabilityReferenceSupport.newItem;
+import static org.jboss.hal.ui.resource.form.FormItemBricks.singleTypeahead;
 import static org.patternfly.component.ValidationStatus.error;
 
 /**
@@ -39,7 +40,7 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     @Override
     public SingleTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
-        return FormItemBricks.singleTypeahead(identifier, attribute,
+        return singleTypeahead(identifier, attribute,
                 value -> newItem(value, capability), capabilityItems(context.template(), capability));
     }
 

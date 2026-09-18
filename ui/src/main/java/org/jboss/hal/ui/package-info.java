@@ -26,7 +26,7 @@
  * operations, and metadata repository.</dd>
  * <dt>{@link org.jboss.hal.ui.Format}</dt>
  * <dd>Locale-aware formatters for file sizes, durations, and percentages using the Internationalization API.</dd>
- * <dt>{@link org.jboss.hal.ui.brick.StabilityLabel}</dt>
+ * <dt>{@link StabilityLabel}</dt>
  * <dd>PatternFly label component displaying WildFly stability levels with appropriate icons and colors.</dd>
  * <dt>{@link org.jboss.hal.ui.DOMPurify} / {@link org.jboss.hal.ui.DOMPurifyConfig}</dt>
  * <dd>J2CL bindings for the DOMPurify HTML sanitizer library.</dd>
@@ -62,3 +62,5 @@
  * @see org.jboss.hal.ui.resource
  */
 package org.jboss.hal.ui;
+
+import org.jboss.hal.ui.component.StabilityLabel;

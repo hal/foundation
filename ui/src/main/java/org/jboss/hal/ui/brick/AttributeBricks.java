@@ -48,7 +48,7 @@ import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.component.popover.PopoverBody.popoverBody;

@@ -150,4 +150,4 @@ Style: 4-space indent, UTF-8, max line length 128, LF line endings.
 
 ## Issue Tracker
 
-Issues are tracked in JIRA: https://issues.redhat.com/projects/HAL
+Issues are tracked in GitHub: https://github.com/hal/foundation/issues

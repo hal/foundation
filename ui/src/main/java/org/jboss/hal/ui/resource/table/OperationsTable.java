@@ -53,7 +53,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.attributeName;
 import static org.jboss.hal.ui.brick.DescriptionBricks.operationDescription;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.resource.dialog.ExecuteOperationDialogs.executeOperationModal;
 import static org.jboss.hal.ui.resource.table.OperationsToolbar.operationsToolbar;
 import static org.patternfly.component.button.Button.button;

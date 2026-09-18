@@ -59,7 +59,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescriptionPopover
 import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.resource.PipelineFlags.Placeholder.DEFAULT_VALUE;
 import static org.jboss.hal.ui.resource.form.SearchReloadInput.searchReloadInput;
 import static org.patternfly.component.ValidationStatus.error;

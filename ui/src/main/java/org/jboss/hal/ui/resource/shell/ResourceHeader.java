@@ -30,7 +30,7 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.patternfly.componentgroup.pageheader.PageHeader.pageHeader;
 
 /**

@@ -44,7 +44,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.slashSeparator;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.all;
 import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
 import static org.jboss.hal.ui.brick.ExpressionBricks.resolveExpressionIcon;
-import static org.jboss.hal.ui.brick.StabilityLabel.stabilityLabel;
+import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.icon.Icon.icon;
 import static org.patternfly.component.list.DescriptionListTerm.descriptionListTerm;
