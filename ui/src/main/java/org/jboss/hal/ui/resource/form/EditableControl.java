@@ -28,6 +28,8 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.hal.ui.resource.PipelineFlags.Scope.EXISTING_RESOURCE;
 import static org.jboss.hal.ui.resource.PipelineFlags.Scope.NEW_RESOURCE;
+import static org.patternfly.component.ValidationStatus.error;
+import static org.patternfly.component.help.HelperText.helperText;
 
 /**
  * The composable unit of a form item: a {@link NativeControl} + optional {@link ExpressionToggle} behind a unified, mode-aware
@@ -153,7 +155,15 @@ public final class EditableControl<C> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ validation
 
-    /** Validates the current input, dispatching to expression or native mode. */
+    /**
+     * Validates the current input against per-item constraints (required fields, numeric ranges, etc.). Dispatches to
+     * {@link ExpressionToggle#validateExpression} in expression mode or
+     * {@link NativeControl#validate(Object, ResolvedAttribute, FormGroupControl)} in native mode. Per-item validation runs
+     * before form-level validation in {@link ResourceForm#validate()}.
+     *
+     * @see NativeControl#validate(Object, ResolvedAttribute, FormGroupControl)
+     * @see #showError(String)
+     */
     public boolean validate() {
         if (expressionToggle != null && expressionToggle.inputMode() == InputMode.EXPRESSION) {
             return expressionToggle.validateExpression(validationTarget, attribute);
@@ -161,7 +171,32 @@ public final class EditableControl<C> implements IsElement<HTMLElement> {
         return nativeControl.validate(control, attribute, validationTarget);
     }
 
-    /** Resets validation state on both native and expression controls, restoring the correct helper text. */
+    /**
+     * Shows an external error message on this control and marks it as visually invalid. Called by form-level validation when a
+     * cross-field constraint (requires, alternatives) is violated for this item. Dispatches to
+     * {@link ExpressionToggle#markInvalid()} in expression mode or {@link NativeControl#markInvalid(Object)} in native mode.
+     *
+     * @see FormValidation
+     * @see NativeControl#markInvalid(Object)
+     */
+    public void showError(String message) {
+        if (validationTarget != null) {
+            validationTarget.removeHelperText();
+            validationTarget.addHelperText(helperText(message, error));
+        }
+        if (expressionToggle != null && expressionToggle.inputMode() == InputMode.EXPRESSION) {
+            expressionToggle.markInvalid();
+        } else {
+            nativeControl.markInvalid(control);
+        }
+    }
+
+    /**
+     * Resets all validation state on both native and expression controls, restoring the correct mode-aware helper text. Called
+     * during {@link ResourceForm#resetValidation()} before a new validation cycle.
+     *
+     * @see NativeControl#resetValidation(Object)
+     */
     public void resetValidation() {
         nativeControl.resetValidation(control);
         if (expressionToggle != null) {

@@ -118,11 +118,16 @@ public final class StringControl implements NativeControl<HTMLElement> {
     @Override
     public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && textValue().isEmpty()) {
-            input.validated(error);
+            markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void markInvalid(HTMLElement control) {
+        input.validated(error);
     }
 
     @Override

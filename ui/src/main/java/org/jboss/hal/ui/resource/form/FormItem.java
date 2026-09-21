@@ -41,11 +41,32 @@ public interface FormItem extends ResourceItem {
     /** Returns whether the value has been modified from its original. */
     boolean isModified();
 
-    /** Validates the current input. Returns {@code true} if valid. */
+    // ------------------------------------------------------ validation
+
+    /**
+     * Validates the current input against per-item constraints. Delegates to {@link EditableControl#validate()}.
+     *
+     * @see EditableControl#validate()
+     */
     boolean validate();
 
-    /** Clears any validation state (error messages, visual indicators). */
+    /**
+     * Shows an external error message on this form item and marks it as visually invalid. Called by
+     * {@link ResourceForm#validate()} when a {@link FormValidation} detects a cross-field constraint violation involving this
+     * item. Delegates to {@link EditableControl#showError(String)}.
+     *
+     * @see FormValidation
+     * @see EditableControl#showError(String)
+     */
+    default void showError(String message) {}
+
+    /**
+     * Clears all validation state (error messages, visual indicators). Called during
+     * {@link ResourceForm#resetValidation()} before a new validation cycle.
+     */
     void resetValidation();
+
+    // ------------------------------------------------------ state
 
     void disable();
 

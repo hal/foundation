@@ -100,11 +100,16 @@ public final class CapabilitiesReferenceControl implements NativeControl<MultiTy
     @Override
     public boolean validate(MultiTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && getValues(control).isEmpty()) {
-            control.menuToggle().validated(error);
+            markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void markInvalid(MultiTypeahead control) {
+        control.menuToggle().validated(error);
     }
 
     @Override

@@ -76,11 +76,16 @@ public final class RelativeToControl implements NativeControl<SingleTypeahead> {
     @Override
     public boolean validate(SingleTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && value(control).isEmpty()) {
-            control.menuToggle().validated(error);
+            markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void markInvalid(SingleTypeahead control) {
+        control.menuToggle().validated(error);
     }
 
     @Override

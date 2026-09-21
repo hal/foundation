@@ -55,10 +55,10 @@ import static org.patternfly.component.form.FormGroupControl.formGroupControl;
  * Usage (from pipeline item providers):
  * <pre>{@code
  * // simple — default WRITE_ATTRIBUTE operations
- * new StandardFormItem<>(context, identifier, attribute, new SelectControl());
+ * new DefaultFormItem<>(context, identifier, attribute, new SelectControl());
  *
  * // custom operations — e.g. map-put / map-remove
- * new StandardFormItem<>(context, identifier, attribute, new MapControl(), MapOperationStrategy.INSTANCE);
+ * new DefaultFormItem<>(context, identifier, attribute, new MapControl(), MapOperationStrategy.INSTANCE);
  * }</pre>
  *
  * @param <C> the PatternFly component type of the native control
@@ -139,9 +139,18 @@ public final class DefaultFormItem<C> implements FormItem {
         return editableControl != null && editableControl.isModified();
     }
 
+    // ------------------------------------------------------ validation
+
     @Override
     public boolean validate() {
         return editableControl == null || editableControl.validate();
+    }
+
+    @Override
+    public void showError(String message) {
+        if (editableControl != null) {
+            editableControl.showError(message);
+        }
     }
 
     @Override

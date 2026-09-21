@@ -80,11 +80,16 @@ public final class StringListControl implements NativeControl<FilterInput> {
     @Override
     public boolean validate(FilterInput control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && getValues(control).isEmpty()) {
-            control.validated(error);
+            markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void markInvalid(FilterInput control) {
+        control.validated(error);
     }
 
     @Override

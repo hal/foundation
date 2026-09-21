@@ -232,6 +232,12 @@ public final class ExpressionToggle {
         return true;
     }
 
+    /** Marks the expression text input as visually invalid. */
+    void markInvalid() {
+        textControl.validated(error);
+    }
+
+    /** Resets validation state on the expression text input. */
     void resetValidation() {
         textControl.resetValidation();
     }

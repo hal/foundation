@@ -53,11 +53,11 @@
  *   <dd>Manages expression/native mode switching: the expression text input, container swapping, tooltip lifecycle, and
  *       expression validation. Created automatically by {@code EditableControl} when the attribute allows expressions and the
  *       native control does not handle them in mixed mode.</dd>
- *   <dt>{@link DefaultFormItem StandardFormItem&lt;C&gt;}</dt>
+ *   <dt>{@link org.jboss.hal.ui.resource.form.DefaultFormItem DefaultFormItem&lt;C&gt;}</dt>
  *   <dd>The standard {@link org.jboss.hal.ui.resource.form.FormItem FormItem} for single-attribute controls. A thin visual
  *       shell that wraps an {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} in a PatternFly
  *       {@code FormGroup} with a label and an {@link org.jboss.hal.ui.resource.form.OperationStrategy OperationStrategy}. Most
- *       form items in the console are {@code StandardFormItem}s.</dd>
+ *       form items in the console are {@code DefaultFormItem}s.</dd>
  * </dl>
  *
  * <h3>Shared utilities</h3>
@@ -68,8 +68,9 @@
  *       value selection for {@code FormSelect} and {@code SingleTypeahead} controls.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm}</dt>
  *   <dd>The form container. Aggregates a list of {@link org.jboss.hal.ui.resource.form.FormItem FormItem}s, orchestrates
- *       validation across all items, collects their DMR operations into a single composite, and manages grouped/flat layouts
- *       with expandable sections.</dd>
+ *       per-item and form-level validation, collects their DMR operations into a single composite, and manages grouped/flat
+ *       layouts with expandable sections. Automatically detects cross-field constraints (requires, alternatives) from attribute
+ *       metadata and wires up {@link org.jboss.hal.ui.resource.form.FormValidation FormValidation} instances.</dd>
  * </dl>
  *
  * <h2>How the pieces fit together</h2>
@@ -77,7 +78,7 @@
  * The composition hierarchy for a typical single-attribute form item is:
  * <pre>
  * ResourceForm
- *   └── StandardFormItem (implements FormItem)
+ *   └── DefaultFormItem (implements FormItem)
  *         ├── FormItemBricks.label(...)        → FormGroupLabel
  *         ├── EditableControl                  → mode-aware control container
  *         │     ├── NativeControl              → widget strategy (e.g. SelectControl)
@@ -87,16 +88,93 @@
  * <p>
  * Composite form items (e.g. {@link org.jboss.hal.ui.resource.form.PathRelativeToFormItem PathRelativeToFormItem}) implement
  * {@link org.jboss.hal.ui.resource.form.FormItem FormItem} directly and use the pipeline to create child
- * {@code StandardFormItem}s, then extract their {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl}s via
+ * {@code DefaultFormItem}s, then extract their {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl}s via
  * {@link org.jboss.hal.ui.resource.form.FormItem#editableControl()} to embed them in a custom layout. This reuses the full
  * expression support, validation, and value reading of each child without duplicating any logic.
+ *
+ * <h2>Validation API</h2>
+ * <p>
+ * Validation operates at two levels — per-item and form-level — with three operations at each layer:
+ * {@code validate()}, {@code showError()}/{@code markInvalid()}, and {@code resetValidation()}.
+ *
+ * <h3>API layers</h3>
+ * <pre>
+ * ┌─────────────────────────────────────────────────────────────────────────────┐
+ * │ ResourceForm (orchestrator)                                                │
+ * │   validate()         → per-item validation, then form-level validation     │
+ * │   validationAlert()  → form-level error alerts above the form              │
+ * │   resetValidation()  → resets all items + clears form alerts               │
+ * ├─────────────────────────────────────────────────────────────────────────────┤
+ * │ FormItem (public API per item)                                             │
+ * │   validate()         → per-item check (delegates to EditableControl)       │
+ * │   showError(msg)     → external error display (form-level validation)      │
+ * │   resetValidation()  → clears all validation state                         │
+ * ├─────────────────────────────────────────────────────────────────────────────┤
+ * │ EditableControl (mode-aware dispatch)                                      │
+ * │   validate()         → dispatches to ExpressionToggle or NativeControl     │
+ * │   showError(msg)     → helper text + markInvalid (mode-aware)              │
+ * │   resetValidation()  → resets both native and expression controls          │
+ * ├─────────────────────────────────────────────────────────────────────────────┤
+ * │ NativeControl / ExpressionToggle (widget-level)                            │
+ * │   validate(...)      → checks value + markInvalid + helper text            │
+ * │   markInvalid(...)   → visual marking only (red border, error icon)        │
+ * │   resetValidation()  → resets visual state                                 │
+ * └─────────────────────────────────────────────────────────────────────────────┘
+ * </pre>
+ *
+ * <h3>Per-item validation</h3>
+ * <p>
+ * Each {@link org.jboss.hal.ui.resource.form.NativeControl NativeControl} validates its own value via
+ * {@link org.jboss.hal.ui.resource.form.NativeControl#validate validate()} (e.g. required field checks, numeric range
+ * validation). When validation fails, the control calls {@link org.jboss.hal.ui.resource.form.NativeControl#markInvalid
+ * markInvalid()} to set the visual error state and adds error helper text on the {@code FormGroupControl}.
+ * {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} dispatches to the expression toggle or native control
+ * based on the current {@link org.jboss.hal.ui.resource.form.InputMode InputMode}.
+ *
+ * <h3>Form-level validation</h3>
+ * <p>
+ * {@link org.jboss.hal.ui.resource.form.FormValidation FormValidation} implementations validate cross-field constraints derived
+ * from WildFly management model metadata. {@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm} automatically
+ * detects {@code requires} and {@code alternatives} relationships between form items and wires up the appropriate validators:
+ * <ul>
+ *   <li>{@link org.jboss.hal.ui.resource.form.RequiredByValidation RequiredByValidation} — if attribute A requires B, and A is
+ *       non-empty, B must also be non-empty</li>
+ *   <li>{@link org.jboss.hal.ui.resource.form.NotMoreThanOneAlternativeValidation NotMoreThanOneAlternativeValidation} — at
+ *       most one attribute in an alternatives group may have a non-empty value</li>
+ *   <li>{@link org.jboss.hal.ui.resource.form.ExactlyOneAlternativeValidation ExactlyOneAlternativeValidation} — among required
+ *       alternatives, exactly one must be defined</li>
+ * </ul>
+ * <p>
+ * Each {@link org.jboss.hal.ui.resource.form.FormValidation FormValidation} returns a
+ * {@link org.jboss.hal.ui.resource.form.FormValidation.Result Result} containing a form-level message and per-item error
+ * messages. {@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm} displays form-level errors as alerts above the
+ * form (rendered as a list when multiple errors exist) and calls {@link org.jboss.hal.ui.resource.form.FormItem#showError
+ * showError()} on affected items to show inline error messages and mark the controls as visually invalid.
+ *
+ * <h3>Separation of concerns</h3>
+ * <p>
+ * The three validation operations have distinct responsibilities:
+ * <ul>
+ *   <li>{@code validate()} — checks whether a value is valid (the logic). Per-item validation checks individual field
+ *       constraints; form-level validation checks cross-field relationships.</li>
+ *   <li>{@code showError()} / {@code markInvalid()} — displays an error without checking any logic. {@code showError()} on
+ *       {@link org.jboss.hal.ui.resource.form.EditableControl EditableControl} handles both the helper text and the visual
+ *       marking (dispatching {@code markInvalid()} to the correct control based on mode). {@code markInvalid()} on
+ *       {@link org.jboss.hal.ui.resource.form.NativeControl NativeControl} handles only the visual marking (red border,
+ *       error icon).</li>
+ *   <li>{@code resetValidation()} — clears all validation state (visual markers, helper text, alerts). Called before each new
+ *       validation cycle to ensure a clean slate.</li>
+ * </ul>
  *
  * <h2>Data and control flow</h2>
  * <p>
  * When the user saves the form, {@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm} iterates over all form items:
  * <ol>
- *   <li><b>Validation</b> — each {@code FormItem.validate()} delegates to {@code EditableControl.validate()}, which dispatches
- *       to the expression toggle or native control based on the current mode.</li>
+ *   <li><b>Per-item validation</b> — each {@code FormItem.validate()} delegates to {@code EditableControl.validate()}, which
+ *       dispatches to the expression toggle or native control based on the current mode.</li>
+ *   <li><b>Form-level validation</b> — each {@link org.jboss.hal.ui.resource.form.FormValidation FormValidation} examines all
+ *       items for cross-field constraint violations (requires, alternatives). Failed items are marked with
+ *       {@code FormItem.showError()}.</li>
  *   <li><b>Modification detection</b> — each {@code FormItem.isModified()} delegates to {@code EditableControl.isModified()},
  *       which checks scope ({@code NEW_RESOURCE} vs {@code EXISTING_RESOURCE}) and dispatches to the native control's
  *       {@code isModifiedForNew()} or {@code isModifiedForExisting()}.</li>

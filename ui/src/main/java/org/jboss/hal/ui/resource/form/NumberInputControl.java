@@ -131,33 +131,43 @@ public final class NumberInputControl implements NativeControl<HTMLElement> {
     public boolean validate(HTMLElement control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (allowedValuesControl != null) {
             if (FormItemBricks.requiredOnItsOwn(attribute) && UNDEFINED.equals(allowedValuesControl.value())) {
-                allowedValuesControl.validated(error);
+                markInvalid(control);
                 formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
                 return false;
             }
         } else if (minMaxControl != null) {
             String value = minMaxControl.value();
             if (FormItemBricks.requiredOnItsOwn(attribute) && value.isEmpty()) {
-                minMaxControl.validated(error);
+                markInvalid(control);
                 formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
                 return false;
             } else if (!value.isEmpty()) {
                 ModelType type = attribute.description().get(TYPE).asType();
                 if (!isNumeric(value, type)) {
-                    minMaxControl.validated(error);
+                    markInvalid(control);
                     formGroupControl.addHelperText(HelperText.helperText(
                             "The value is not a number. Only values of type " + type.name() + " are allowed.", error));
                     return false;
                 }
                 String rangeError = checkRange(value, type, attribute.description());
                 if (rangeError != null) {
-                    minMaxControl.validated(error);
+                    markInvalid(control);
                     formGroupControl.addHelperText(HelperText.helperText(rangeError, error));
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    @Override
+    public void markInvalid(HTMLElement control) {
+        if (allowedValuesControl != null) {
+            allowedValuesControl.validated(error);
+        }
+        if (minMaxControl != null) {
+            minMaxControl.validated(error);
+        }
     }
 
     @Override

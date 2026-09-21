@@ -44,7 +44,8 @@
  * <dt>{@link org.jboss.hal.ui.resource.view}</dt>
  * <dd>Read-only display of resource attributes using description lists.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.form}</dt>
- * <dd>Editable form items for resource attributes.</dd>
+ * <dd>Editable form items for resource attributes, with per-item and form-level validation for cross-field constraints
+ * (requires, alternatives).</dd>
  * <dt>{@link org.jboss.hal.ui.resource.dialog}</dt>
  * <dd>Modal dialogs for resource CRUD operations and operation execution.</dd>
  * <dt>{@link org.jboss.hal.ui.resource.table}</dt>

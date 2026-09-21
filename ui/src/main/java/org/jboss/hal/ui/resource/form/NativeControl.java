@@ -34,8 +34,8 @@ import elemental2.dom.HTMLElement;
  *   <li><b>Value reading</b> — {@link #modelNode(Object, ResolvedAttribute)}</li>
  *   <li><b>Modification detection</b> — {@link #isModifiedForNew(Object, ResolvedAttribute)} and
  *       {@link #isModifiedForExisting(Object, ResolvedAttribute, boolean)}</li>
- *   <li><b>Validation</b> — {@link #validate(Object, ResolvedAttribute, FormGroupControl)} and
- *       {@link #resetValidation(Object)}</li>
+ *   <li><b>Validation</b> — {@link #validate(Object, ResolvedAttribute, FormGroupControl)},
+ *       {@link #markInvalid(Object)}, and {@link #resetValidation(Object)}</li>
  *   <li><b>Mode-aware helper text</b> — {@link #nativeHelperText()} for native mode and {@link #expressionHelperText()} for
  *       expression mode, both returning {@link HelperText} components that support rich content with nested elements</li>
  *   <li><b>Custom container layout</b> — {@link #nativeContainer(Object, ExpressionToggle)} for controls that need a
@@ -51,6 +51,8 @@ import elemental2.dom.HTMLElement;
  */
 public interface NativeControl<C> {
 
+    // ------------------------------------------------------ creation and value
+
     /** Creates the PatternFly control component. Called once during construction. */
     C create(PipelineContext context, String identifier, ResolvedAttribute attribute);
 
@@ -60,22 +62,54 @@ public interface NativeControl<C> {
     /** Reads the current value from the control as a DMR model node. Returns an undefined node for "no value". */
     ModelNode modelNode(C control, ResolvedAttribute attribute);
 
+    // ------------------------------------------------------ modification tracking
+
     /** Returns {@code true} if the control's value represents a modification for a new resource. */
     boolean isModifiedForNew(C control, ResolvedAttribute attribute);
 
     /** Returns {@code true} if the control's value represents a modification for an existing resource. */
     boolean isModifiedForExisting(C control, ResolvedAttribute attribute, boolean wasDefined);
 
-    void disable(C control);
+    // ------------------------------------------------------ validation
 
-    /** Validates the control's current value. Returns {@code true} if valid. */
+    /**
+     * Validates the control's current value. Checks per-item constraints (required fields, numeric ranges, etc.). When
+     * validation fails, implementations should call {@link #markInvalid(Object)} and show error helper text on the
+     * {@code formGroupControl}. Returns {@code true} if the value is valid.
+     *
+     * @see #markInvalid(Object)
+     * @see #resetValidation(Object)
+     */
     default boolean validate(C control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         return true;
     }
 
-    /** Resets any validation state on the control. */
+    /**
+     * Marks the control as visually invalid (e.g. red border, error icon) without checking any validation logic. Called by
+     * {@link EditableControl#showError(String)} when form-level validation detects a cross-field constraint violation for this
+     * item. Also called by {@link #validate(Object, ResolvedAttribute, FormGroupControl)} when per-item validation fails.
+     * <p>
+     * The default implementation is a no-op — override in controls that support visual validation state.
+     *
+     * @see #validate(Object, ResolvedAttribute, FormGroupControl)
+     * @see #resetValidation(Object)
+     */
+    default void markInvalid(C control) {
+    }
+
+    /**
+     * Resets any validation state on the control (visual marking, error indicators). Called during
+     * {@link ResourceForm#resetValidation()} before a new validation cycle.
+     *
+     * @see #validate(Object, ResolvedAttribute, FormGroupControl)
+     * @see #markInvalid(Object)
+     */
     default void resetValidation(C control) {
     }
+
+    // ------------------------------------------------------ state and layout
+
+    void disable(C control);
 
     /** Called after switching from expression mode back to native mode. Restore control state here. */
     default void afterSwitchedToNativeMode(C control, ResolvedAttribute attribute) {

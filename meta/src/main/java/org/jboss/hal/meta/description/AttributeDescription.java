@@ -27,6 +27,7 @@ import org.jboss.hal.dmr.Property;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_CONSTRAINTS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ATTRIBUTE_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
@@ -34,6 +35,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.METRIC;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.NILLABLE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ONLY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRED;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SENSITIVE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
@@ -119,6 +121,30 @@ public class AttributeDescription extends NamedNode implements Description {
     /** @return the measurement unit of this attribute (e.g., {@code "MILLISECONDS"}), or {@code null} */
     public String unit() {
         return hasDefined(UNIT) ? get(UNIT).asString() : null;
+    }
+
+    /** @return the list of attribute names this attribute requires, or an empty list */
+    public List<String> requires() {
+        if (hasDefined(REQUIRES)) {
+            List<String> names = new ArrayList<>();
+            for (ModelNode node : get(REQUIRES).asList()) {
+                names.add(node.asString());
+            }
+            return names;
+        }
+        return Collections.emptyList();
+    }
+
+    /** @return the list of attribute names that are mutually exclusive with this attribute, or an empty list */
+    public List<String> alternatives() {
+        if (hasDefined(ALTERNATIVES)) {
+            List<String> names = new ArrayList<>();
+            for (ModelNode node : get(ALTERNATIVES).asList()) {
+                names.add(node.asString());
+            }
+            return names;
+        }
+        return Collections.emptyList();
     }
 
     // ------------------------------------------------------ nested

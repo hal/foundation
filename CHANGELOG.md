@@ -9,12 +9,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add form-level validation for cross-field constraints — `FormValidation` interface with `RequiredByValidation`, `NotMoreThanOneAlternativeValidation`, and `ExactlyOneAlternativeValidation` implementations, auto-detected from `requires` and `alternatives` management model metadata
+- Add `AttributeDescription.requires()` and `AttributeDescription.alternatives()` typed accessor methods
+- Add `FormItem.showError()` and `NativeControl.markInvalid()` for external error marking from form-level validation
 - Add `ListSimpleRecordHandler` for LIST attributes with simple-record value-type — covers 26 attribute instances (19 definitions) including `realms`, `global-modules`, `permissions`, `match-rules`, and `filters`
 - Add `ListSimpleRecordViewItem` — compact PatternFly table with pipeline-delegated cells and capability reference navigation
 - Add `ListSimpleRecordFormItem` — editable table with Add/Edit/Delete actions and modal-based record editing using pipeline-produced typed form controls
 - Add `AttributeDescription.listOfSimpleRecords()` detection method
 - Add `ResolvedAttribute.listEntry()` for per-entry resolution in LIST attributes
 - Add pure unit tests for all pipeline handler match logic (36 tests) and attribute type detection (11 tests)
+
+### Changed
+
+- Refactor validation API into layered architecture — `ResourceForm` orchestrates per-item and form-level validation, `EditableControl` dispatches mode-aware validation, `NativeControl` handles widget-level marking
+- Extract `markInvalid()` from `validate()` in all `NativeControl` implementations for reuse by form-level validation
 
 ## [0.5.0] - 2026-08-20
 

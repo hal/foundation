@@ -36,14 +36,18 @@ import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
 
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.li;
 import static org.jboss.elemento.Elements.setVisible;
+import static org.jboss.elemento.Elements.ul;
 import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.resource;
 import static org.patternfly.component.Severity.danger;
 import static org.patternfly.component.alert.Alert.alert;
+import static org.patternfly.component.alert.AlertDescription.alertDescription;
 import static org.patternfly.component.expandable.ExpandableSection.expandableSection;
 import static org.patternfly.component.expandable.ExpandableSectionContent.expandableSectionContent;
 import static org.patternfly.component.expandable.ExpandableSectionToggle.expandableSectionToggle;
@@ -62,11 +66,15 @@ public class ResourceForm implements IsElement<HTMLElement> {
 
     private final Form form;
     private final List<FormItem> items;
+    private final List<FormValidation> formValidations;
+    private final List<FormValidation.Result> formValidationResults;
     private final List<HTMLElement> groupContainers;
 
     public ResourceForm() {
         this.form = form().css(halComponent(resource, Classes.form)).horizontal();
         this.items = new ArrayList<>();
+        this.formValidations = new ArrayList<>();
+        this.formValidationResults = new ArrayList<>();
         this.groupContainers = new ArrayList<>();
     }
 
@@ -75,6 +83,7 @@ public class ResourceForm implements IsElement<HTMLElement> {
     public ResourceForm addItem(FormItem item) {
         items.add(item);
         form.add(item.element());
+        detectFormValidations();
         return this;
     }
 
@@ -85,11 +94,12 @@ public class ResourceForm implements IsElement<HTMLElement> {
         Map<String, List<FormItem>> itemGroups = GroupingSupport.resolveGroups(formItems, grouped);
         if (itemGroups != null) {
             addGrouped(itemGroups);
-            return this;
+        } else {
+            for (FormItem item : formItems) {
+                form.add(item.element());
+            }
         }
-        for (FormItem item : formItems) {
-            form.add(item.element());
-        }
+        detectFormValidations();
         return this;
     }
 
@@ -117,15 +127,54 @@ public class ResourceForm implements IsElement<HTMLElement> {
         }
     }
 
-    // ------------------------------------------------------ validation and data
+    // ------------------------------------------------------ validation
 
+    /**
+     * Resets all validation state: per-item validation on each {@link FormItem}, and form-level alerts. Called before each new
+     * validation cycle.
+     */
     public void resetValidation() {
         items.forEach(FormItem::resetValidation);
+        form.clearAlerts();
     }
 
+    /**
+     * Validates the form in two phases:
+     * <ol>
+     *   <li><b>Per-item validation</b> — calls {@link FormItem#validate()} on each item to check individual field constraints
+     *       (required fields, numeric ranges, expression syntax).</li>
+     *   <li><b>Form-level validation</b> — runs each {@link FormValidation} to check cross-field constraints (requires,
+     *       alternatives). Failed items are marked via {@link FormItem#showError(String)} with per-item error messages.</li>
+     * </ol>
+     * Returns {@code true} only if both phases pass with no errors. Form-level error messages are collected and rendered by
+     * {@link #validationAlert(String)}.
+     */
     public boolean validate() {
-        return items.stream().allMatch(FormItem::validate);
+        boolean itemsValid = items.stream().allMatch(FormItem::validate);
+        formValidationResults.clear();
+        for (FormValidation validation : formValidations) {
+            FormValidation.Result result = validation.validate(items);
+            if (result != null) {
+                formValidationResults.add(result);
+                for (Map.Entry<String, String> entry : result.itemErrors().entrySet()) {
+                    FormItem item = FormValidation.findItem(items, entry.getKey());
+                    if (item != null) {
+                        item.showError(entry.getValue());
+                    }
+                }
+            }
+        }
+        return itemsValid && formValidationResults.isEmpty();
     }
+
+    private void detectFormValidations() {
+        formValidations.clear();
+        formValidations.addAll(RequiredByValidation.fromItems(items));
+        formValidations.addAll(NotMoreThanOneAlternativeValidation.fromItems(items));
+        formValidations.addAll(ExactlyOneAlternativeValidation.fromItems(items));
+    }
+
+    // ------------------------------------------------------ data
 
     public ModelNode modelNode() {
         ModelNode payload = new ModelNode();
@@ -147,12 +196,25 @@ public class ResourceForm implements IsElement<HTMLElement> {
     // ------------------------------------------------------ alerts
 
     public void addAlert(Alert alert) {
-        form.add(alert);
+        form.addAlert(alert);
     }
 
     public void validationAlert(String title) {
-        form.add(alert(danger, title).inline()
-                .addDescription("Please fix the validation errors before saving."));
+        if (formValidationResults.isEmpty()) {
+            addAlert(alert(danger, title).inline()
+                    .addDescription("Please fix the validation errors before saving."));
+        } else if (formValidationResults.size() == 1) {
+            addAlert(alert(danger, title).inline()
+                    .addDescription(formValidationResults.get(0).message()));
+        } else {
+            Alert validationAlert = alert(danger, title).inline();
+            HTMLContainerBuilder<HTMLUListElement> list = ul();
+            for (FormValidation.Result result : formValidationResults) {
+                list.add(li().text(result.message()));
+            }
+            validationAlert.addDescription(alertDescription().add(list));
+            addAlert(validationAlert);
+        }
     }
 
     // ------------------------------------------------------ filtering

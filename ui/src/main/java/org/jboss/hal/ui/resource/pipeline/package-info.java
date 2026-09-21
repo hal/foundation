@@ -35,6 +35,7 @@
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.FileHandler} — OBJECT with {path, relative-to}</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.PathRelativeToHandler} — sibling path + relative-to STRING pairs</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.MapHandler} — OBJECT with simple scalar VALUE_TYPE</li>
+ *     <li>{@link org.jboss.hal.ui.resource.pipeline.ListSimpleRecordHandler} — LIST of OBJECT with all simple/LIST-of-simple sub-attributes</li>
  *     <li>{@link org.jboss.hal.ui.resource.pipeline.FlatteningHandler} — simpleRecord OBJECTs (all simple sub-attributes)</li>
  * </ol>
  *

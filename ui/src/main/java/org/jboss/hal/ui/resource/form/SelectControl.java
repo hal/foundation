@@ -100,11 +100,16 @@ public final class SelectControl implements NativeControl<FormSelect> {
     @Override
     public boolean validate(FormSelect control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && UNDEFINED.equals(control.value())) {
-            control.validated(error);
+            markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void markInvalid(FormSelect control) {
+        control.validated(error);
     }
 
     @Override
