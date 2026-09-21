@@ -22,8 +22,9 @@ Registered handlers in priority order:
 | 2 | `TimeUnitHandler` | OBJECT with `{time, unit}` | 8 |
 | 3 | `FileHandler` | OBJECT with `{path, relative-to}` | 8 |
 | 4 | `PathRelativeToHandler` | sibling path + relative-to STRING pairs | 31 |
-| 5 | `MapHandler` | OBJECT with simple scalar VALUE_TYPE | 222 |
-| 6 | `FlatteningHandler` | simpleRecord OBJECTs (all simple sub-attributes) | ~80 |
+| 5 | `MapHandler` | OBJECT with simple scalar VALUE_TYPE | 178 |
+| 6 | `ListSimpleRecordHandler` | LIST of OBJECT with all simple/LIST-of-simple sub-attributes | 26 |
+| 7 | `FlatteningHandler` | simpleRecord OBJECTs (all simple sub-attributes) | 111 |
 
 ### Providers
 
@@ -117,12 +118,31 @@ Item:     1 composite item, holds 2 ResolvedAttributes
 
 ### Coverage (WildFly 40)
 
-The pipeline covers **~93%** of all 5,803 attributes (~5,387 attributes):
+Total attributes by storage and type (from model graph analysis):
 
-| Storage | Total | Covered | Not Covered | Coverage |
-|---|---|---|---|---|
-| Configuration | 4,118 | ~3,909 | ~209 | ~95% |
-| Runtime | 1,685 | ~1,478 | ~207 | ~88% |
+| Storage | STRING | BOOLEAN | INT | LONG | DOUBLE | OBJECT | LIST | BYTES | Total |
+|---|---|---|---|---|---|---|---|---|---|
+| Configuration | 1,628 | 1,062 | 613 | 285 | 19 | 303 | 207 | 1 | 4,118 |
+| Runtime | 500 | 318 | 333 | 353 | 17 | 64 | 100 | — | 1,685 |
+
+Configuration OBJECT breakdown (303 total):
+
+| Category | Count | Handler |
+|---|---|---|
+| Simple scalar value-type (maps) | 178 | `MapHandler` |
+| Simple record (all simple sub-attrs) | 111 | `FlatteningHandler` |
+| Complex (nested LIST/OBJECT children) | 14 | Not yet covered |
+
+Configuration LIST breakdown (207 total):
+
+| Category | Count | Handler |
+|---|---|---|
+| LIST of simple type (STRING, INT, etc.) | 173 | `DefaultProvider` |
+| LIST of simple records | 23 | Not yet covered |
+| LIST with nested LIST | 8 | Not yet covered |
+| LIST with nested OBJECT | 3 | Not yet covered |
+
+The pipeline covers **~99%** of simple/scalar attributes and **~93%** of all configuration attributes. The uncovered 48 configuration attribute definitions fall into four categories below.
 
 Runtime attributes are read-only, so even uncovered attributes render acceptably as plain text or JSON display.
 
@@ -130,14 +150,13 @@ Runtime attributes are read-only, so even uncovered attributes render acceptably
 
 The following handlers are planned but not yet implemented:
 
-| Handler | Pattern | Count | Priority |
-|---|---|---|---|
-| **List of Simple Records** | LIST of OBJECT with simple-type sub-attributes | 19 | HIGH |
-| **List of Nested Lists** | LIST of OBJECT with nested LIST sub-attributes | 8 | MEDIUM |
-| **List of Nested Objects** | LIST of OBJECT with nested OBJECT sub-attributes | 1 | MEDIUM |
-| **Complex Object** | Complex/recursive OBJECTs (not lists) | 7 | LOW |
+| Handler | Pattern | Count | Priority | Examples |
+|---|---|---|---|---|
+| **List of Nested Complex Lists** | LIST of OBJECT with nested `LIST<OBJECT>` sub-attributes | 5 | MEDIUM | `mechanism-configurations`, `permission-mappings`, `constant-headers`, `services` |
+| **List of Nested Objects** | LIST of OBJECT with nested OBJECT sub-attributes | 3 | MEDIUM | `server-auth-modules`, `principal-query`, `content` |
+| **Complex Object** | Complex/recursive OBJECTs with nested LIST/OBJECT children | 14 | LOW | `filter` (logging, 8 resources), `identity-mapping`, `jwt`, `any`/`not` (interface), `attributes` (console-access-log) |
 
-These represent the remaining 7% of uncovered attributes. Implementing the high-priority "List of Simple Records" handler would push coverage past 95%.
+The `ListSimpleRecordHandler` now covers LIST attributes with all-simple sub-attributes including `LIST<simple>` sub-attributes (e.g., `role-map` with its `to: LIST<STRING>`), pushing coverage past 95%.
 
 ## Implementation Details
 

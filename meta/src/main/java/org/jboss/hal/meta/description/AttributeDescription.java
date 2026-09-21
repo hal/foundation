@@ -216,32 +216,15 @@ public class AttributeDescription extends NamedNode implements Description {
      * {@linkplain ModelType#simple() simple attributes} or lists of simple attributes.
      */
     public boolean simpleRecord() {
-        try {
-            ModelType type = get(TYPE).asType();
-            if (type == OBJECT) {
-                ModelType valueType = get(VALUE_TYPE).getType();
-                if (valueType == OBJECT) {
-                    List<Property> properties = get(VALUE_TYPE).asPropertyList();
-                    for (Property property : properties) {
-                        ModelType propertyType = property.getValue().get(TYPE).asType();
-                        if (propertyType == ModelType.LIST) {
-                            ModelType listValueType = property.getValue().has(VALUE_TYPE)
-                                    ? property.getValue().get(VALUE_TYPE).asType()
-                                    : null;
-                            if (listValueType == null || !listValueType.simple()) {
-                                return false;
-                            }
-                        } else if (!propertyType.simple()) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            }
-            return false;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return hasSimpleValueTypeProperties(OBJECT, false);
+    }
+
+    /**
+     * Checks if the attribute description is of type {@link ModelType#LIST} with an object value-type that only contains
+     * {@linkplain ModelType#simple() simple attributes} or lists of simple attributes.
+     */
+    public boolean listOfSimpleRecords() {
+        return hasSimpleValueTypeProperties(LIST, true);
     }
 
     /**
@@ -270,5 +253,34 @@ public class AttributeDescription extends NamedNode implements Description {
 
     private boolean failSafeBoolean(String name) {
         return hasDefined(name) && get(name).asBoolean(false);
+    }
+
+    private boolean hasSimpleValueTypeProperties(ModelType expectedType, boolean requireNonEmpty) {
+        try {
+            ModelType type = get(TYPE).asType();
+            if (type == expectedType) {
+                ModelType valueType = get(VALUE_TYPE).getType();
+                if (valueType == OBJECT) {
+                    List<Property> properties = get(VALUE_TYPE).asPropertyList();
+                    for (Property property : properties) {
+                        ModelType propertyType = property.getValue().get(TYPE).asType();
+                        if (propertyType == ModelType.LIST) {
+                            ModelType listValueType = property.getValue().has(VALUE_TYPE)
+                                    ? property.getValue().get(VALUE_TYPE).asType()
+                                    : null;
+                            if (listValueType == null || !listValueType.simple()) {
+                                return false;
+                            }
+                        } else if (!propertyType.simple()) {
+                            return false;
+                        }
+                    }
+                    return !requireNonEmpty || !properties.isEmpty();
+                }
+            }
+            return false;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

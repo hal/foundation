@@ -69,6 +69,7 @@ public final class Pipeline {
                 new FileHandler(),
                 new PathRelativeToHandler(),
                 new MapHandler(),
+                new ListSimpleRecordHandler(),
                 new FlatteningHandler()
         );
         // The first matching provider wins. RelativeToProvider handles the special case of path-relative-to siblings;
