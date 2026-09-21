@@ -20,14 +20,15 @@ import java.util.List;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.form.DefaultFormItem;
 import org.jboss.hal.ui.resource.form.FormItem;
-import org.jboss.hal.ui.resource.form.ListSimpleRecordControl;
+import org.jboss.hal.ui.resource.form.ListSimpleRecordFormItem;
 import org.jboss.hal.ui.resource.view.ListSimpleRecordViewItem;
 import org.jboss.hal.ui.resource.view.ViewItem;
+import org.patternfly.component.table.Tr;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
+import static org.patternfly.component.table.Td.td;
 
 /**
  * Handler for LIST attributes whose value-type is an OBJECT with all simple sub-attributes. It claims LIST attributes that
@@ -37,7 +38,20 @@ import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
  * {@code global-modules}, {@code match-rules}, {@code permissions}, {@code realms}, {@code filters}, and others where each list
  * entry is a flat record of simple fields.
  */
-class ListSimpleRecordHandler implements AttributeHandler {
+public class ListSimpleRecordHandler implements AttributeHandler {
+
+    // shared code to add cells used in view and form items
+    public static void addCells(PipelineContext context, ResolvedAttribute entry, List<AttributeDescription> columns, Tr row) {
+        for (AttributeDescription col : columns) {
+            ResolvedAttribute child = entry.child(col.name());
+            ViewItem cellViewItem = Pipeline.instance().viewItem(context, child.detachFromParent());
+            if (cellViewItem != null) {
+                row.add(td(col.name()).add(cellViewItem.valueElement()));
+            } else {
+                row.add(td(col.name()));
+            }
+        }
+    }
 
     @Override
     public MatchResult match(List<AttributeDescription> pool) {
@@ -53,6 +67,6 @@ class ListSimpleRecordHandler implements AttributeHandler {
     @Override
     public List<FormItem> formItems(PipelineContext context, AttributeMatch match) {
         ResolvedAttribute ra = ResolvedAttribute.resolve(context, match.primary());
-        return singletonList(new DefaultFormItem<>(context, ra.fqn(), ra, new ListSimpleRecordControl()));
+        return singletonList(new ListSimpleRecordFormItem(context, ra.fqn(), ra));
     }
 }

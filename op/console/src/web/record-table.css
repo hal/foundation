@@ -1,0 +1,55 @@
+/**
+ *  Copyright 2024 Red Hat
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.hal-c-resource__record-table {
+    .pf-v6-c-description-list__term {
+        align-self: start;
+    }
+
+    .pf-v6-c-table {
+        --pf-v6-c-table--cell--first-last-child--PaddingInline: 0;
+        --pf-v6-c-table--m-compact__th--PaddingBlockStart: 0;
+    }
+
+    .pf-v6-c-table__th.pf-v6-c-table__action .pf-v6-c-button {
+        --pf-v6-c-button--PaddingBlockStart: 0;
+        --pf-v6-c-button--PaddingBlockEnd: 0;
+    }
+
+    .hal-c-capability-reference {
+        align-items: baseline;
+        gap: var(--pf-t--global--spacer--xs);
+    }
+
+    .hal-c-capability-reference > .pf-v6-c-label {
+        --pf-v6-c-label--PaddingBlockStart: 0;
+        --pf-v6-c-label--PaddingBlockEnd: 0;
+        --pf-v6-c-label--PaddingInlineStart: 0;
+        --pf-v6-c-label--PaddingInlineEnd: 0;
+        --pf-v6-c-label--BorderRadius: 0;
+        --pf-v6-c-label--BackgroundColor: transparent;
+        --pf-v6-c-label--BorderColor: transparent;
+
+        .pf-v6-c-label__text {
+            font-size: 0;
+        }
+
+        .pf-v6-c-label__text::after {
+            font-size: var(--pf-t--global--font--size--xs);
+            content: "↗";
+        }
+    }
+}

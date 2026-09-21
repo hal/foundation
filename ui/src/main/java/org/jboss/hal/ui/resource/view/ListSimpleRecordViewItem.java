@@ -23,14 +23,14 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.pipeline.Pipeline;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.core.Humanize.sentenceCase;
 import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.recordTable;
 import static org.jboss.hal.resources.HalClasses.resource;
-import static org.jboss.hal.resources.HalClasses.view;
+import static org.jboss.hal.ui.resource.pipeline.ListSimpleRecordHandler.addCells;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.table.Table.table;
@@ -41,7 +41,6 @@ import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
 import static org.patternfly.style.Classes.fitContent;
 import static org.patternfly.style.Classes.modifier;
-import static org.patternfly.style.Classes.table;
 
 /**
  * View item for LIST attributes with simple-record value-type. Renders the list entries as a compact PatternFly table with
@@ -56,7 +55,7 @@ public class ListSimpleRecordViewItem extends AbstractViewItem {
     public ListSimpleRecordViewItem(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         super(identifier, attribute);
         this.valueElement = ViewItemBricks.valueElement(context, attribute, this::definedValue);
-        this.root = descriptionListGroup(identifier).css(halComponent(resource, view, table))
+        this.root = descriptionListGroup(identifier).css(halComponent(resource, recordTable))
                 .addTerm(ViewItemBricks.label(context, attribute.description()))
                 .addDescription(descriptionListDescription().add(valueElement))
                 .element();
@@ -79,21 +78,12 @@ public class ListSimpleRecordViewItem extends AbstractViewItem {
         int index = 0;
         for (ModelNode item : items) {
             var row = tr(identifier() + "-" + index);
-            ResolvedAttribute entry = attribute.listEntry(item);
-            for (AttributeDescription col : columns) {
-                ResolvedAttribute child = entry.child(col.name());
-                ViewItem cellViewItem = Pipeline.instance().viewItem(context, child.detachFromParent());
-                if (cellViewItem != null) {
-                    row.add(td(col.name()).add(cellViewItem.valueElement()));
-                } else {
-                    row.add(td(col.name()));
-                }
-            }
+            addCells(context, attribute.listEntry(item), columns, row);
             body.addRow(row);
             index++;
         }
 
-        return table().compact()
+        return table().compact().noBorders()
                 .addHead(thead().addRow(headRow))
                 .addBody(body)
                 .element();

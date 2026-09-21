@@ -65,6 +65,7 @@ The pipeline handles four distinct attribute patterns:
 | **Composite OBJECT** | 1 OBJECT desc | 1 parent + n children | 1 composite item | `credential-reference` |
 | **Flattened simple-record** | 1 OBJECT desc | 1 parent + n children | n items with FQN paths | `{foo, bar}` OBJECT |
 | **Sibling group** | n descs | n resolved | 1 composite item | `path` + `relative-to` |
+| **List of simple records** | 1 LIST desc | 1 parent, n entries × m children | 1 table item | `realms`, `global-modules` |
 
 #### Single Attribute
 
@@ -114,6 +115,18 @@ Handler:  resolves both attributes against context
 Item:     1 composite item, holds 2 ResolvedAttributes
 ```
 
+#### List of Simple Records
+
+A LIST where each entry is an OBJECT with all simple sub-attributes.
+
+```
+Match:    ListSimpleRecordHandler claims it → AttributeMatch([realms])
+Handler:  resolves parent, iterates list entries via listEntry()
+          for each entry, delegates children to provider chain via child().detachFromParent()
+          renders as compact table (view) or editable table with modal form (edit)
+Item:     1 table item, n entries × m children
+```
+
 ## Current State & Open Work
 
 ### Coverage (WildFly 40)
@@ -138,11 +151,11 @@ Configuration LIST breakdown (207 total):
 | Category | Count | Handler |
 |---|---|---|
 | LIST of simple type (STRING, INT, etc.) | 173 | `DefaultProvider` |
-| LIST of simple records | 23 | Not yet covered |
-| LIST with nested LIST | 8 | Not yet covered |
+| LIST of simple records (incl. `LIST<simple>` sub-attrs) | 26 | `ListSimpleRecordHandler` |
+| LIST with nested `LIST<OBJECT>` | 5 | Not yet covered |
 | LIST with nested OBJECT | 3 | Not yet covered |
 
-The pipeline covers **~99%** of simple/scalar attributes and **~93%** of all configuration attributes. The uncovered 48 configuration attribute definitions fall into four categories below.
+The pipeline covers **~99%** of simple/scalar attributes and **~95%** of all configuration attributes. The remaining ~22 uncovered configuration attribute definitions fall into three categories below.
 
 Runtime attributes are read-only, so even uncovered attributes render acceptably as plain text or JSON display.
 

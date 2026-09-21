@@ -93,40 +93,6 @@
     }
 }
 
-.hal-c-resource__view-table.pf-v6-c-description-list__group {
-    align-items: start;
-
-}
-
-.hal-c-resource__view-table .pf-v6-c-table {
-    --pf-v6-c-table--cell--first-last-child--PaddingInline: 0;
-    --pf-v6-c-table--m-compact__th--PaddingBlockStart: 0;
-
-    .hal-c-capability-reference {
-        align-items: baseline;
-        gap: var(--pf-t--global--spacer--xs);
-    }
-
-    .hal-c-capability-reference > .pf-v6-c-label {
-        --pf-v6-c-label--PaddingBlockStart: 0;
-        --pf-v6-c-label--PaddingBlockEnd: 0;
-        --pf-v6-c-label--PaddingInlineStart: 0;
-        --pf-v6-c-label--PaddingInlineEnd: 0;
-        --pf-v6-c-label--BorderRadius: 0;
-        --pf-v6-c-label--BackgroundColor: transparent;
-        --pf-v6-c-label--BorderColor: transparent;
-
-        .pf-v6-c-label__text {
-            font-size: 0;
-        }
-
-        .pf-v6-c-label__text::after {
-            font-size: var(--pf-t--global--font--size--xs);
-            content: "↗";
-        }
-    }
-}
-
 .hal-c-resource__view-unit {
     color: var(--pf-t--global--text--color--200);
     font-size: var(--pf-t--global--font--size--sm);

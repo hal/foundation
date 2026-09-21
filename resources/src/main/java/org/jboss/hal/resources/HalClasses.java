@@ -44,6 +44,7 @@ public interface HalClasses {
     String modelBrowser = "model-browser";
     String name = "name";
     String rbacHidden = "rbac-hidden";
+    String recordTable = "record-table";
     String resource = "resource";
     String restricted = "restricted";
     String results = "results";
