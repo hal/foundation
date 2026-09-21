@@ -40,10 +40,10 @@ public class OperationsFilter extends Filter<OperationDescription> {
         super(FilterOperator.AND);
         this.showGlobalOperations = showGlobalOperations;
         add(new NameAttribute<>(NamedNode::name));
-        add(new ParametersAttribute<>());
-        add(new ReturnValueAttribute<>());
+        add(new ParametersAttribute());
+        add(new ReturnValueAttribute());
         add(new DeprecatedAttribute<>(od -> od));
-        add(new GlobalOperationsAttribute<>());
+        add(new GlobalOperationsAttribute());
     }
 
     @Override

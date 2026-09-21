@@ -21,7 +21,7 @@ import org.patternfly.filter.FilterAttribute;
 /**
  * Filter attribute matching whether an operation has parameters.
  */
-public class ParametersAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
+public class ParametersAttribute extends FilterAttribute<OperationDescription, Boolean> {
 
     /** Filter attribute name constant. */
     public static final String NAME = "parameters";

@@ -21,7 +21,7 @@ import org.patternfly.filter.FilterAttribute;
 /**
  * Filter attribute matching whether an operation has a return value.
  */
-public class ReturnValueAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
+public class ReturnValueAttribute extends FilterAttribute<OperationDescription, Boolean> {
 
     /** Filter attribute name constant. */
     public static final String NAME = "return-value";

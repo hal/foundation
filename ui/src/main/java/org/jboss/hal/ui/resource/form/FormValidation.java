@@ -48,11 +48,6 @@ public interface FormValidation {
             this.message = message;
             this.itemErrors = Collections.unmodifiableMap(itemErrors);
         }
-
-        /** Creates a result with a form-level message only, without per-item errors. */
-        public Result(String message) {
-            this(message, Collections.emptyMap());
-        }
     }
 
     /**

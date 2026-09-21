@@ -32,13 +32,13 @@ public class ResourceFilter extends Filter<ResolvedAttribute> {
 
     ResourceFilter() {
         super(FilterOperator.AND);
-        add(new NameAttribute<>(ra -> ra.name()));
-        add(new TypesAttribute<>(ra -> ra.description()));
-        add(new DefinedAttribute<>(ra -> ra.value()));
-        add(new RequiredAttribute<>(ra -> ra.description()));
-        add(new DeprecatedAttribute<>(ra -> ra.description()));
-        add(new StorageAttribute<>(ra -> ra.description()));
-        add(new AccessTypeAttribute<>(ra -> ra.description()));
-        add(new ExpressionAttribute<>(ra -> ra.description()));
+        add(new NameAttribute<>(ResolvedAttribute::name));
+        add(new TypesAttribute<>(ResolvedAttribute::description));
+        add(new DefinedAttribute<>(ResolvedAttribute::value));
+        add(new RequiredAttribute<>(ResolvedAttribute::description));
+        add(new DeprecatedAttribute<>(ResolvedAttribute::description));
+        add(new StorageAttribute<>(ResolvedAttribute::description));
+        add(new AccessTypeAttribute<>(ResolvedAttribute::description));
+        add(new ExpressionAttribute<>(ResolvedAttribute::description));
     }
 }

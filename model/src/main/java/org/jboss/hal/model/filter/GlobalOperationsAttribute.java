@@ -21,7 +21,7 @@ import org.patternfly.filter.FilterAttribute;
 /**
  * Filter attribute matching whether an operation is a global operation.
  */
-public class GlobalOperationsAttribute<T> extends FilterAttribute<OperationDescription, Boolean> {
+public class GlobalOperationsAttribute extends FilterAttribute<OperationDescription, Boolean> {
 
     /** Filter attribute name constant. */
     public static final String NAME = "global-operations";
