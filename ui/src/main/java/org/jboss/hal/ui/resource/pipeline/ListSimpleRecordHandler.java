@@ -30,8 +30,8 @@ import static java.util.Collections.singletonList;
 import static org.jboss.hal.ui.resource.pipeline.AttributeHandler.partition;
 
 /**
- * Handler for LIST attributes whose value-type is an OBJECT with all simple sub-attributes. Claims LIST attributes that match
- * the {@link AttributeDescription#listOfSimpleRecords()} pattern and produces table-based view/form items.
+ * Handler for LIST attributes whose value-type is an OBJECT with all simple sub-attributes. It claims LIST attributes that
+ * match the {@link AttributeDescription#listOfSimpleRecords()} pattern and produces table-based view/form items.
  * <p>
  * Must run before {@link FlatteningHandler} but after all composite handlers. The handler covers attributes like
  * {@code global-modules}, {@code match-rules}, {@code permissions}, {@code realms}, {@code filters}, and others where each list

@@ -15,27 +15,38 @@
  */
 package org.jboss.hal.ui.resource.view;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
-import org.jboss.hal.dmr.Property;
+import org.jboss.hal.meta.description.AttributeDescription;
+import org.jboss.hal.meta.description.AttributeDescriptions;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
+import org.jboss.hal.ui.resource.pipeline.Pipeline;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.hal.ui.resource.view.ViewItemDefaults.NUM_LABELS;
-import static org.patternfly.component.label.Label.label;
-import static org.patternfly.component.label.LabelGroup.labelGroup;
+import static org.jboss.hal.core.Humanize.sentenceCase;
+import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.resource;
+import static org.jboss.hal.resources.HalClasses.view;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
-import static org.patternfly.style.Color.purple;
+import static org.patternfly.component.table.Table.table;
+import static org.patternfly.component.table.Tbody.tbody;
+import static org.patternfly.component.table.Td.td;
+import static org.patternfly.component.table.Th.th;
+import static org.patternfly.component.table.Thead.thead;
+import static org.patternfly.component.table.Tr.tr;
+import static org.patternfly.style.Classes.fitContent;
+import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Classes.table;
 
 /**
- * View item for LIST attributes with simple-record value-type. Renders each list entry as a compact label showing the record's
- * key values joined by commas.
+ * View item for LIST attributes with simple-record value-type. Renders the list entries as a compact PatternFly table with
+ * column headers derived from the value-type sub-attribute names. Each cell delegates to the attribute pipeline for
+ * type-appropriate rendering.
  */
 public class ListSimpleRecordViewItem extends AbstractViewItem {
 
@@ -45,31 +56,47 @@ public class ListSimpleRecordViewItem extends AbstractViewItem {
     public ListSimpleRecordViewItem(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         super(identifier, attribute);
         this.valueElement = ViewItemBricks.valueElement(context, attribute, this::definedValue);
-        this.root = descriptionListGroup(identifier)
+        this.root = descriptionListGroup(identifier).css(halComponent(resource, view, table))
                 .addTerm(ViewItemBricks.label(context, attribute.description()))
                 .addDescription(descriptionListDescription().add(valueElement))
                 .element();
     }
 
     private HTMLElement definedValue(PipelineContext context, ResolvedAttribute attribute) {
-        List<ModelNode> items = attribute.value().asList();
-        return labelGroup()
-                .numLabels(NUM_LABELS)
-                .addItems(items, item -> {
-                    String summary = recordSummary(item);
-                    return label(Id.build(identifier(), summary), summary, purple);
-                })
-                .element();
-    }
-
-    private String recordSummary(ModelNode record) {
-        if (record.isDefined() && record.getType() == org.jboss.hal.dmr.ModelType.OBJECT) {
-            return record.asPropertyList().stream()
-                    .filter(p -> p.getValue().isDefined())
-                    .map(p -> p.getValue().asString())
-                    .collect(Collectors.joining(", "));
+        AttributeDescriptions descriptions = attribute.description().valueTypeAttributeDescriptions();
+        List<AttributeDescription> columns = new ArrayList<>();
+        for (AttributeDescription ad : descriptions) {
+            columns.add(ad);
         }
-        return record.asString();
+
+        List<ModelNode> items = attribute.value().asList();
+        var headRow = tr(identifier() + "-head");
+        for (AttributeDescription col : columns) {
+            headRow.add(th(col.name()).css(modifier(fitContent)).text(sentenceCase(col.name())));
+        }
+
+        var body = tbody();
+        int index = 0;
+        for (ModelNode item : items) {
+            var row = tr(identifier() + "-" + index);
+            ResolvedAttribute entry = attribute.listEntry(item);
+            for (AttributeDescription col : columns) {
+                ResolvedAttribute child = entry.child(col.name());
+                ViewItem cellViewItem = Pipeline.instance().viewItem(context, child.detachFromParent());
+                if (cellViewItem != null) {
+                    row.add(td(col.name()).add(cellViewItem.valueElement()));
+                } else {
+                    row.add(td(col.name()));
+                }
+            }
+            body.addRow(row);
+            index++;
+        }
+
+        return table().compact()
+                .addHead(thead().addRow(headRow))
+                .addBody(body)
+                .element();
     }
 
     @Override

@@ -60,18 +60,31 @@ public record ResolvedAttribute(
     }
 
     public ResolvedAttribute child(String name) {
-        if (description.simpleRecord()) {
+        if (description.simpleRecord() || description.listOfSimpleRecords()) {
             AttributeDescriptions descriptions = description.valueTypeAttributeDescriptions();
             AttributeDescription childDescription = descriptions.get(name);
             if (childDescription != null) {
                 ModelNode childNode = value.hasDefined(name) ? value.get(name) : new ModelNode();
-                // flags are inherited from parent!
                 return new ResolvedAttribute(childDescription, childNode, readable, readOnly, writable);
             }
         }
         return new ResolvedAttribute(AttributeDescription.undefined(), new ModelNode(), false, true, false);
     }
 
+    /**
+     * Creates a resolved attribute for a single entry within a LIST attribute. The entry value is an OBJECT from the list, and
+     * child attributes can be accessed via {@link #child(String)} on the returned instance.
+     */
+    public ResolvedAttribute listEntry(ModelNode entryValue) {
+        return new ResolvedAttribute(description, entryValue, readable, readOnly, writable);
+    }
+
+    /**
+     * Detaches the current resolved attribute from its parent and creates a new instance with the same properties. If the
+     * attribute does not have a parent, this method returns the current instance.
+     *
+     * @return a new {@code ResolvedAttribute} instance without parent association, or the current instance if no parent exists
+     */
     public ResolvedAttribute detachFromParent() {
         if (description.parent() != null) {
             return new ResolvedAttribute(new AttributeDescription(description.name(), description.modelNode()), value,
