@@ -91,7 +91,7 @@
         <version.j2cl.processors>0.11</version.j2cl.processors>
         <version.mockito>5.23.0</version.mockito>
         <version.node>v26.3.0</version.node>
-        <version.patternfly.java>0.10.1-SNAPSHOT</version.patternfly.java>
+        <version.patternfly.java>0.10.1</version.patternfly.java>
 
         <!-- Plugin versions -->
         <version.central.publishing.plugin>0.11.0</version.central.publishing.plugin>
