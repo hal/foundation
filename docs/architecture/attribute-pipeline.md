@@ -20,10 +20,10 @@ Registered handlers in priority order:
 |---|---|---|---|
 | 1 | `CredentialReferenceHandler` | OBJECT with `{store, alias, clear-text}` | 49 |
 | 2 | `TimeUnitHandler` | OBJECT with `{time, unit}` | 8 |
-| 3 | `FileHandler` | OBJECT with `{path, relative-to}` | 8 |
+| 3 | `FileHandler` | OBJECT with `{path, relative-to}` | 9 |
 | 4 | `PathRelativeToHandler` | sibling path + relative-to STRING pairs | 31 |
 | 5 | `MapHandler` | OBJECT with simple scalar VALUE_TYPE | 178 |
-| 6 | `ListSimpleRecordHandler` | LIST of OBJECT with all simple/LIST-of-simple sub-attributes | 26 |
+| 6 | `ListSimpleRecordHandler` | LIST of OBJECT with all simple/LIST-of-simple sub-attributes | 27 |
 | 7 | `FlatteningHandler` | simpleRecord OBJECTs (all simple sub-attributes) | 111 |
 
 ### Providers
@@ -136,26 +136,28 @@ Total attributes by storage and type (from model graph analysis):
 | Storage | STRING | BOOLEAN | INT | LONG | DOUBLE | OBJECT | LIST | BYTES | Total |
 |---|---|---|---|---|---|---|---|---|---|
 | Configuration | 1,628 | 1,062 | 613 | 285 | 19 | 303 | 207 | 1 | 4,118 |
+| — deprecated | 96 | 72 | 10 | 1 | — | 8 | 21 | — | 208 |
+| — active | 1,532 | 990 | 603 | 284 | 19 | 295 | 186 | 1 | 3,910 |
 | Runtime | 500 | 318 | 333 | 353 | 17 | 64 | 100 | — | 1,685 |
 
-Configuration OBJECT breakdown (303 total):
+Configuration OBJECT breakdown (303 total, 8 deprecated):
 
-| Category | Count | Handler |
-|---|---|---|
-| Simple scalar value-type (maps) | 178 | `MapHandler` |
-| Simple record (all simple sub-attrs) | 111 | `FlatteningHandler` |
-| Complex (nested LIST/OBJECT children) | 14 | Not yet covered |
+| Category | Count | Deprecated | Active | Handler |
+|---|---|---|---|---|
+| Simple scalar value-type (maps) | 178 | 0 | 178 | `MapHandler` |
+| Simple record (all simple sub-attrs) | 111 | 0 | 111 | `FlatteningHandler` |
+| Complex (nested LIST/OBJECT children) | 14 | 8 | 6 | Not yet covered |
 
-Configuration LIST breakdown (207 total):
+Configuration LIST breakdown (207 total, 21 deprecated):
 
-| Category | Count | Handler |
-|---|---|---|
-| LIST of simple type (STRING, INT, etc.) | 173 | `DefaultProvider` |
-| LIST of simple records (incl. `LIST<simple>` sub-attrs) | 26 | `ListSimpleRecordHandler` |
-| LIST with nested `LIST<OBJECT>` | 5 | Not yet covered |
-| LIST with nested OBJECT | 3 | Not yet covered |
+| Category | Count | Deprecated | Active | Handler |
+|---|---|---|---|---|
+| LIST of simple type (STRING, INT, etc.) | 173 | 21 | 152 | `DefaultProvider` |
+| LIST of simple records (incl. `LIST<simple>` sub-attrs) | 27 | 0 | 27 | `ListSimpleRecordHandler` |
+| LIST with nested `LIST<OBJECT>` | 5 | 0 | 5 | Not yet covered |
+| LIST with nested OBJECT | 2 | 0 | 2 | Not yet covered |
 
-The pipeline covers **~99%** of simple/scalar attributes and **~95%** of all configuration attributes. The remaining ~22 uncovered configuration attribute definitions fall into three categories below.
+The pipeline covers **~99%** of simple/scalar attributes and **~95%** of all configuration attributes. Excluding deprecated attributes (208 of 4,118), active coverage rises to **~97%** with only **13 active uncovered** attribute definitions remaining.
 
 Runtime attributes are read-only, so even uncovered attributes render acceptably as plain text or JSON display.
 
@@ -163,13 +165,13 @@ Runtime attributes are read-only, so even uncovered attributes render acceptably
 
 The following handlers are planned but not yet implemented:
 
-| Handler | Pattern | Count | Priority | Examples |
-|---|---|---|---|---|
-| **List of Nested Complex Lists** | LIST of OBJECT with nested `LIST<OBJECT>` sub-attributes | 5 | MEDIUM | `mechanism-configurations`, `permission-mappings`, `constant-headers`, `services` |
-| **List of Nested Objects** | LIST of OBJECT with nested OBJECT sub-attributes | 3 | MEDIUM | `server-auth-modules`, `principal-query`, `content` |
-| **Complex Object** | Complex/recursive OBJECTs with nested LIST/OBJECT children | 14 | LOW | `filter` (logging, 8 resources), `identity-mapping`, `jwt`, `any`/`not` (interface), `attributes` (console-access-log) |
+| Handler | Pattern | Count | Deprecated | Active | Priority | Examples |
+|---|---|---|---|---|---|---|
+| **List of Nested Complex Lists** | LIST of OBJECT with nested `LIST<OBJECT>` sub-attributes | 5 | 0 | 5 | MEDIUM | `mechanism-configurations`, `permission-mappings`, `constant-headers`, `services` |
+| **List of Nested Objects** | LIST of OBJECT with nested OBJECT sub-attributes | 2 | 0 | 2 | MEDIUM | `server-auth-modules`, `principal-query` |
+| **Complex Object** | Complex/recursive OBJECTs with nested LIST/OBJECT children | 14 | 8 | 6 | LOW | `filter` (logging, 8 resources, **all deprecated** — use `filter-spec`), `identity-mapping`, `jwt`, `any`/`not` (interface), `attributes` (console-access-log), `new-item-template` |
 
-The `ListSimpleRecordHandler` now covers LIST attributes with all-simple sub-attributes including `LIST<simple>` sub-attributes (e.g., `role-map` with its `to: LIST<STRING>`), pushing coverage past 95%.
+The `ListSimpleRecordHandler` now covers LIST attributes with all-simple sub-attributes including `LIST<simple>` sub-attributes (e.g., `role-map` with its `to: LIST<STRING>`), pushing coverage past 95%. Excluding deprecated attributes, active coverage is ~97% with only 13 active uncovered attribute definitions remaining.
 
 ## Implementation Details
 
