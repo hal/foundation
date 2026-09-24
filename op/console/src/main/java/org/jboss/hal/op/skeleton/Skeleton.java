@@ -33,10 +33,12 @@ import elemental2.dom.HTMLElement;
 
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
 import static org.jboss.hal.op.notification.NotificationElements.notificationElements;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -65,9 +67,9 @@ import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Height;
 
 /**
- * Main application skeleton that assembles the full page layout: masthead with logo, navigation toolbar, notification
- * badge and drawer, theme selector, optional endpoint selector, and main content area. When the server runs at a
- * non-default stability level, a {@link StabilityBanner} is shown above the page.
+ * Main application skeleton that assembles the full page layout: masthead with logo, navigation toolbar, notification badge and
+ * drawer, theme selector, optional endpoint selector, and main content area. When the server runs at a non-default stability
+ * level, a {@link StabilityBanner} is shown above the page.
  */
 public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, Skeleton> {
 
@@ -94,10 +96,14 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
         NotificationElements notificationElements = notificationElements();
 
         Toolbar toolbar = toolbar().ouiaId(OuiaIds.MASTHEAD_TOOLBAR).css(modifier(fullHeight), modifier(static_))
+                .registerComponent()
                 .addContent(toolbarContent()
                         .add(toolbarItem().css(modifier("overflow-container"))
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
+                                .addItem(toolbarItem().add(button().plain().icon(span()
+                                        .html(SafeHtmlUtils.fromSafeConstant(Resources.INSTANCE.mgt().getText()))
+                                        .element())))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal")
                                         .placement(bottomEnd)))

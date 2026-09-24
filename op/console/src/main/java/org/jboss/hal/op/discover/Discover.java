@@ -21,8 +21,9 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Subscription;
 import org.jboss.hal.env.Environment;
+import org.jboss.hal.op.mgt.ModelGraphTools;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.jboss.elemento.flow.Flow.parallel;
 
 /**
@@ -33,11 +34,12 @@ import static org.jboss.elemento.flow.Flow.parallel;
 public class Discover {
 
     @Inject Environment environment;
+    @Inject ModelGraphTools mgt;
 
     /** Starts all discovery tasks in parallel and returns a subscription to observe the result. */
     public Subscription<FlowContext> run() {
-        return parallel(new FlowContext(), asList(
-                new CheckModelGraphTool(environment.productVersion())
+        return parallel(new FlowContext(), singletonList(
+                new CheckModelGraphTools(mgt)
         )).failFast(false);
     }
 }
