@@ -64,4 +64,3 @@ public class Bootstrap {
         )).failFast(true);
     }
 }
-
