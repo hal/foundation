@@ -34,6 +34,7 @@ export default withMermaid(defineConfig({
     nav: [
       { text: "Features", link: "/features/overview" },
       { text: "Architecture", link: "/architecture/overview" },
+      { text: "Model Graph Tools", link: "/model-graph-tools/" },
       { text: "Editions", link: "/editions/halop" },
     ],
 
@@ -66,6 +67,12 @@ export default withMermaid(defineConfig({
             text: "Attribute Pipeline",
             link: "/architecture/attribute-pipeline",
           },
+        ],
+      },
+      {
+        text: "Model Graph Tools",
+        items: [
+          { text: "Overview", link: "/model-graph-tools/" },
         ],
       },
       {
