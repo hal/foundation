@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@patternfly-java/charts": "0.10.0",
-    "@patternfly-java/core": "0.10.0",
-    "@patternfly-java/finder": "0.10.0",
+    "@patternfly-java/charts": "0.10.1",
+    "@patternfly-java/core": "0.10.1",
+    "@patternfly-java/finder": "0.10.1",
     "@patternfly/patternfly": "^6.6.1",
     "dompurify": "^3.4.15"
   },
