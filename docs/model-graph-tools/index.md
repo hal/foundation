@@ -113,7 +113,7 @@ Clicking the indicator opens a panel where you can check availability again or l
 
 ## Available Versions
 
-MGT container images are published for recent WildFly releases. Visit the [container registry on Quay.io](https://quay.io/repository/halconsole/mgt?tab=tags) to see all available tags.
+MGT container images are published for recent WildFly releases. Visit the [container registry on Quay.io](https://quay.io/repository/modelgraphtools/model?tab=tags) to see all available tags.
 
 ## Further Reading
 

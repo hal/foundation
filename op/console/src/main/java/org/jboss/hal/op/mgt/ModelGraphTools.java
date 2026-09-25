@@ -25,7 +25,8 @@ import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
 
 import static elemental2.dom.DomGlobal.fetch;
-import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS;
+import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndicator;
+import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_SIDECAR;
 import static org.jboss.hal.resources.Urls.replaceVersion;
 
 /**
@@ -48,13 +49,20 @@ public class ModelGraphTools {
         this.environment = environment;
     }
 
+    public void refresh() {
+        ping().then((result) -> {
+            modelGraphToolsIndicator(this).active(result);
+            return null;
+        });
+    }
+
     /**
      * Checks whether a matching MGT container is running by sending a GET request to the {@code /api/identity} endpoint.
      * Returns a promise that resolves to {@code true} if the container responds with a 200 status, or {@code false} otherwise.
      */
     public Promise<Boolean> ping() {
         int port = HTTP_PORT_BASE + environment.productVersion().major() * 10 + environment.productVersion().minor();
-        String url = replaceVersion(MODEL_GRAPH_TOOLS, String.valueOf(port));
+        String url = replaceVersion(MODEL_GRAPH_TOOLS_SIDECAR, String.valueOf(port));
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -64,7 +72,7 @@ public class ModelGraphTools {
         return fetch(url, init)
                 .then(response -> {
                     if (response.ok) {
-                        response.json()
+                        return response.json()
                                 .then(identity -> {
                                     logger.info("Model graph tools for WildFly %s available: %o",
                                             environment.productVersion(), identity);
@@ -78,8 +86,8 @@ public class ModelGraphTools {
                     } else {
                         logger.info("Model graph tools for WildFly %s not available: %d",
                                 environment.productVersion(), response.status);
+                        return Promise.resolve(false);
                     }
-                    return Promise.resolve(false);
                 })
                 .catch_(error -> {
                     logger.info("Model graph tools for WildFly %s not available: %s",

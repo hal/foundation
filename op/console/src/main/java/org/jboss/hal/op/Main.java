@@ -18,12 +18,14 @@ package org.jboss.hal.op;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.EventType;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.discover.Discover;
 import org.jboss.hal.op.endpoint.EndpointStorage;
+import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.patternfly.component.navigation.Navigation;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 
@@ -47,8 +49,10 @@ public class Main {
     @Inject Bootstrap bootstrap;
     @Inject Discover discover;
     @Inject EndpointStorage endpointStorage;
+    @Inject ModelGraphTools modelGraphTools;
     @Inject Navigation navigation;
     @Inject PlaceManager placeManager;
+    @Inject Visibility visibility;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -60,9 +64,17 @@ public class Main {
         bootstrap.run().subscribe(context -> {
             if (context.isSuccessful()) {
                 logger.debug("Bootstrap completed");
-                insertFirst(document.body, skeleton(endpointStorage, navigation));
+                insertFirst(document.body, skeleton(navigation, endpointStorage, modelGraphTools));
                 placeManager.start();
                 discover.run().subscribe(__ -> logger.debug("Discovery completed"));
+                document.addEventListener(EventType.visibilitychange.name, event -> {
+                    if (document.visibilityState.equals("visible")) {
+                        visibility.visible();
+                    } else {
+                        visibility.hidden();
+                    }
+                });
+
             } else {
                 logger.debug("Bootstrap failed");
                 BootstrapError error = context.pop(BootstrapError.UNKNOWN);

@@ -18,6 +18,7 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.endpoint.EndpointStorage;
+import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Ids;
@@ -33,12 +34,11 @@ import elemental2.dom.HTMLElement;
 
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
+import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndicator;
 import static org.jboss.hal.op.notification.NotificationElements.notificationElements;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -76,8 +76,8 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     // ------------------------------------------------------ factory
 
     /** Creates a new skeleton with the given endpoint storage and navigation component. */
-    public static Skeleton skeleton(EndpointStorage endpointStorage, Navigation navigation) {
-        return new Skeleton(endpointStorage, navigation);
+    public static Skeleton skeleton(Navigation navigation, EndpointStorage endpointStorage, ModelGraphTools modelGraphTools) {
+        return new Skeleton(navigation, endpointStorage, modelGraphTools);
     }
 
     // ------------------------------------------------------ instance
@@ -86,7 +86,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     private final HTMLElement root;
     private StabilityBanner stabilityBanner;
 
-    Skeleton(EndpointStorage endpointStorage, Navigation navigation) {
+    Skeleton(Navigation navigation, EndpointStorage endpointStorage, ModelGraphTools modelGraphTools) {
         MastheadLogo logo = mastheadLogo("/")
                 .ouiaId(OuiaIds.MASTHEAD_LOGO)
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
@@ -101,12 +101,10 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                         .add(toolbarItem().css(modifier("overflow-container"))
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
-                                .addItem(toolbarItem().add(button().plain().icon(span()
-                                        .html(SafeHtmlUtils.fromSafeConstant(Resources.INSTANCE.mgt().getText()))
-                                        .element())))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal")
                                         .placement(bottomEnd)))
+                                .addItem(toolbarItem().add(modelGraphToolsIndicator(modelGraphTools)))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
                                         group.addItem(toolbarItem().add(endpointSelector(endpointStorage)));

@@ -21,6 +21,8 @@ import org.jboss.hal.op.mgt.ModelGraphTools;
 
 import elemental2.promise.Promise;
 
+import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndicator;
+
 /**
  * Discovery task that checks whether a matching model graph tools container is running. The port is derived from the WildFly
  * product version: {@code 7000 + major * 10 + minor}. For example, WildFly 41.0 maps to port 7410.
@@ -36,7 +38,10 @@ class CheckModelGraphTools implements Task<FlowContext> {
     @Override
     public Promise<FlowContext> apply(FlowContext context) {
         return mgt.ping()
-                .then((__) -> context.resolve())
+                .then((result) -> {
+                    modelGraphToolsIndicator(mgt).active(result);
+                    return context.resolve();
+                })
                 .catch_(error -> context.resolve());
     }
 }
