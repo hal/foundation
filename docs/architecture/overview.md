@@ -1,6 +1,6 @@
 # Architecture Overview
 
-HAL Foundation is a modern Java-based management console for WildFly and JBoss, compiled to JavaScript via J2CL and packaged for web deployment. The architecture balances enterprise requirements with web-native patterns, leveraging dependency injection, asynchronous operations, and a layered module structure.
+HAL Foundation is a modern Java-based HAL management console for WildFly and JBoss, compiled to JavaScript via J2CL and packaged for web deployment. The architecture balances enterprise requirements with web-native patterns, leveraging dependency injection, asynchronous operations, and a layered module structure.
 
 ## Technical Stack
 

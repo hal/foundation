@@ -16,7 +16,7 @@
 package org.jboss.hal.resources;
 
 /**
- * Links used in HAL. Can contain specific placeholders for version, language, etc.
+ * Links used in HAL. Can contain specific placeholders for a version, language, etc.
  */
 public interface Urls {
 
@@ -40,6 +40,9 @@ public interface Urls {
 
     /** Relative path to the management interface DMR endpoint. */
     String MANAGEMENT = "/management";
+
+    /** Local model graph tools container. */
+    String MODEL_GRAPH_TOOLS = "http://localhost:%v/api/identity";
 
     /** Documentation link for stability levels; contains the {@code %v} version placeholder. */
     String STABILITY_LEVELS = "https://docs.wildfly.org/%v/Admin_Guide.html#Feature_stability_levels";

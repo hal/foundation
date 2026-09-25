@@ -25,6 +25,8 @@ import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
 
 import static elemental2.dom.DomGlobal.fetch;
+import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS;
+import static org.jboss.hal.resources.Urls.replaceVersion;
 
 /**
  * CDI service for interacting with the model graph tools (MGT) sidecar container. The MGT container provides a REST API backed
@@ -52,7 +54,7 @@ public class ModelGraphTools {
      */
     public Promise<Boolean> ping() {
         int port = HTTP_PORT_BASE + environment.productVersion().major() * 10 + environment.productVersion().minor();
-        String url = "http://localhost:" + port + "/api/identity";
+        String url = replaceVersion(MODEL_GRAPH_TOOLS, String.valueOf(port));
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -71,7 +73,7 @@ public class ModelGraphTools {
                                 .catch_(error -> {
                                     logger.error("Failed to parse model graph tools identity for WildFly %s: %s",
                                             environment.productVersion(), String.valueOf(error));
-                                    return Promise.reject(error);
+                                    return Promise.resolve(false);
                                 });
                     } else {
                         logger.info("Model graph tools for WildFly %s not available: %d",
@@ -82,7 +84,7 @@ public class ModelGraphTools {
                 .catch_(error -> {
                     logger.info("Model graph tools for WildFly %s not available: %s",
                             environment.productVersion(), error);
-                    return Promise.reject(error);
+                    return Promise.resolve(false);
                 });
     }
 }

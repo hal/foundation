@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: HAL Foundation
-  tagline: Next-generation management console for WildFly and JBoss EAP
+  tagline: Next-generation HAL management console for WildFly and JBoss EAP
   actions:
     - theme: brand
       text: Features

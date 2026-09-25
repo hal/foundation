@@ -84,8 +84,9 @@ Once the MGT container is running and detected by the console, you gain access t
 
 ### For Console Users
 
+- **Universal search**: A global search bar queries resources, attributes, operations, and capabilities in one go. Results link directly to the matching configuration page in the console, so you can jump from a search term like `buffer-pool` straight to the right subsystem form.
 - **Richer metadata**: The console can display additional context about resources, attributes, and operations drawn from the full management model graph.
-- **Cross-version awareness**: MGT knows the complete model for a specific WildFly version, so the console can highlight version-specific details that the live server's management API alone does not expose.
+- **Capability cross-references**: For any capability, the console can show which resources reference it — answering "where is this used?" with one click and linking to each dependent configuration page.
 
 ### For AI-Assisted Development
 
