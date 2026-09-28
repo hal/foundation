@@ -192,8 +192,8 @@ importers:
         specifier: ^0.28.2
         version: 0.28.2
       vite:
-        specifier: ^8.3.0
-        version: 8.3.0(esbuild@0.28.2)(yaml@2.9.0)
+        specifier: ^8.3.1
+        version: 8.3.1(esbuild@0.28.2)(yaml@2.9.0)
 
 packages:
 
@@ -1668,8 +1668,8 @@ packages:
     peerDependencies:
       react: '>=16.6.0'
 
-  vite@8.3.0:
-    resolution: {integrity: sha512-lhZBVvEHefgE+HQZC9O7EBJgCU/nVzFNl7vkS4RE0APtWLP02/8QVIkQtzBxPquh7lq5/78NHipTj7ODQ6XuyQ==}
+  vite@8.3.1:
+    resolution: {integrity: sha512-/bvH9E9tmCXRGp2uXY3WbOldqpTwFkbha/8ANaEQ6VkxhH60KyqLwgZq6lG2y+4uT55x9+9eUHMpQ7uGnOCKjA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3212,7 +3212,7 @@ snapshots:
       react: 19.3.0
       victory-core: 37.3.6(react@19.3.0)
 
-  vite@8.3.0(esbuild@0.28.2)(yaml@2.9.0):
+  vite@8.3.1(esbuild@0.28.2)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
