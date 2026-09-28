@@ -57,6 +57,7 @@ public interface HalClasses {
     String tree = "tree";
     String unit = "unit";
     String undefined = "undefined";
+    String universalSearch = "universal-search";
     String value = "value";
     String view = "view";
 

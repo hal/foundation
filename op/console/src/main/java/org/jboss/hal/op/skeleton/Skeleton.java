@@ -21,8 +21,10 @@ import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
+import org.jboss.hal.op.search.UniversalSearchEvent;
 import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.OuiaIds;
+import org.patternfly.component.button.Button;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.component.page.MastheadLogo;
 import org.patternfly.component.page.Page;
@@ -52,6 +54,7 @@ import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.componentgroup.theme.ThemeSelector.themeSelector;
+import static org.patternfly.icon.IconSets.rhUi.search;
 import static org.patternfly.layout.flex.Direction.column;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
@@ -101,9 +104,10 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                         .add(toolbarItem().css(modifier("overflow-container"))
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
+                                .addItem(toolbarItem().add(Button.button(search()).plain()
+                                        .onClick((e, c) -> UniversalSearchEvent.dispatch(c.element()))))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
-                                .addItem(toolbarItem().add(themeSelector("hal")
-                                        .placement(bottomEnd)))
+                                .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)))
                                 .addItem(toolbarItem().add(modelGraphToolsIndicator(modelGraphTools)))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {

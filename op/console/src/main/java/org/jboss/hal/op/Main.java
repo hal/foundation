@@ -18,12 +18,12 @@ package org.jboss.hal.op;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
-import org.jboss.elemento.EventType;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.PlaceManager;
+import org.jboss.hal.core.ActivityTracker;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
-import org.jboss.hal.op.discover.Discover;
+import org.jboss.hal.op.discovery.Discovery;
 import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.patternfly.component.navigation.Navigation;
@@ -34,6 +34,7 @@ import io.crysknife.annotation.Application;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
+import static org.jboss.hal.op.search.UniversalSearch.registerUniversalSearch;
 import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
 
@@ -47,12 +48,11 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     @Inject Bootstrap bootstrap;
-    @Inject Discover discover;
+    @Inject Discovery discovery;
     @Inject EndpointStorage endpointStorage;
     @Inject ModelGraphTools modelGraphTools;
     @Inject Navigation navigation;
     @Inject PlaceManager placeManager;
-    @Inject Visibility visibility;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -63,23 +63,29 @@ public class Main {
     void init() {
         bootstrap.run().subscribe(context -> {
             if (context.isSuccessful()) {
-                logger.debug("Bootstrap completed");
-                insertFirst(document.body, skeleton(navigation, endpointStorage, modelGraphTools));
-                placeManager.start();
-                discover.run().subscribe(__ -> logger.debug("Discovery completed"));
-                document.addEventListener(EventType.visibilitychange.name, event -> {
-                    if (document.visibilityState.equals("visible")) {
-                        visibility.visible();
-                    } else {
-                        visibility.hidden();
-                    }
-                });
-
+                afterBootstrap();
             } else {
                 logger.debug("Bootstrap failed");
                 BootstrapError error = context.pop(BootstrapError.UNKNOWN);
                 insertFirst(document.body, errorSkeleton().add(bootstrapError(error)));
             }
         });
+    }
+
+    private void afterBootstrap() {
+        logger.debug("Bootstrap completed");
+        insertFirst(document.body, skeleton(navigation, endpointStorage, modelGraphTools));
+        registerUniversalSearch();
+        placeManager.start();
+        discovery.run().subscribe(__ -> afterDiscovery());
+    }
+
+    private void afterDiscovery() {
+        logger.debug("Discovery completed");
+        ActivityTracker at = new ActivityTracker(
+                () -> modelGraphTools.refresh(),
+                () -> {
+                });
+        at.start();
     }
 }
