@@ -32,7 +32,6 @@ import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuType.menu;
-import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
 
 /**
  * A typeahead component for navigating and selecting WildFly management resource addresses. As the user types an address (e.g.,
@@ -66,7 +65,7 @@ public class ResourceAddressTypeahead implements
     ResourceAddressTypeahead(String id) {
         this.lastSlashCount = 0;
         this.lastEqualsCount = 0;
-        this.searchInput = searchInput(id)
+        this.searchInput = SearchInput.searchInput(id)
                 .addMenu(menu(menu, single)
                         .scrollable()
                         .addContent(menuContent()
@@ -121,6 +120,10 @@ public class ResourceAddressTypeahead implements
 
     public boolean expanded() {
         return searchInput.expanded();
+    }
+
+    public SearchInput searchInput() {
+        return searchInput;
     }
 
     @Override

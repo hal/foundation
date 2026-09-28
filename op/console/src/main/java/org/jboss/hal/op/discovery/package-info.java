@@ -19,8 +19,8 @@
  * {@link org.jboss.hal.op.bootstrap bootstrap} pipeline, which is sequential and required, discovery tasks are parallel and
  * fire-and-forget — failures are logged but never block the console.
  *
- * <p>The {@link org.jboss.hal.op.discover.Discover} class orchestrates the parallel execution. Individual tasks implement
+ * <p>The {@link Discovery} class orchestrates the parallel execution. Individual tasks implement
  * {@link org.jboss.elemento.flow.Task} and probe the environment for optional capabilities (e.g. whether a matching
  * Model Graph Tool container is available).
  */
-package org.jboss.hal.op.discover;
+package org.jboss.hal.op.discovery;

@@ -32,7 +32,7 @@ import org.jboss.hal.ui.resource.PipelineFlags;
 import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
 import org.jboss.hal.ui.resource.PipelineFlags.Scope;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.jboss.hal.ui.resource.event.ResourceEvents;
+import org.jboss.hal.ui.resource.ResourceEvents;
 import org.jboss.hal.ui.resource.form.FormItem;
 import org.jboss.hal.ui.resource.form.ResourceForm;
 import org.jboss.hal.ui.resource.grouping.AutoGrouping;

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.discover;
+package org.jboss.hal.op.discovery;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -31,7 +31,7 @@ import static org.jboss.elemento.flow.Flow.parallel;
  * {@link org.jboss.hal.op.bootstrap.Bootstrap}, failures here are silently logged and never block the console.
  */
 @ApplicationScoped
-public class Discover {
+public class Discovery {
 
     @Inject Environment environment;
     @Inject ModelGraphTools mgt;

@@ -101,7 +101,9 @@ class AttributesToolbar implements IsElement<HTMLElement> {
                                         .filterAttributes(StorageAttribute.NAME, AccessTypeAttribute.NAME)
                                         .filterToLabels(FilterLabels::storageAccessTypeLabels)))
                         .addItem(toolbarItem()
-                                .add(button("Clear all filters").link().inline().onClick((e, c) -> filter.resetAll()))));
+                                .add(button("Save filter").link().inline())
+                                .add(button("Clear all filters").link().inline().onClick((e, c) -> filter.resetAll()))
+                        ));
     }
 
     @Override

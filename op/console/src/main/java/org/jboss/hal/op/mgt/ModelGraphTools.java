@@ -20,6 +20,7 @@ import jakarta.inject.Inject;
 
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.env.Environment;
+import org.jboss.hal.env.Version;
 
 import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
@@ -61,8 +62,7 @@ public class ModelGraphTools {
      * Returns a promise that resolves to {@code true} if the container responds with a 200 status, or {@code false} otherwise.
      */
     public Promise<Boolean> ping() {
-        int port = HTTP_PORT_BASE + environment.productVersion().major() * 10 + environment.productVersion().minor();
-        String url = replaceVersion(MODEL_GRAPH_TOOLS_SIDECAR, String.valueOf(port));
+        String url = replaceVersion(MODEL_GRAPH_TOOLS_SIDECAR, String.valueOf(port(environment.productVersion())));
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -94,5 +94,9 @@ public class ModelGraphTools {
                             environment.productVersion(), error);
                     return Promise.resolve(false);
                 });
+    }
+
+    private int port(Version version) {
+        return HTTP_PORT_BASE + version.major() * 10 + version.minor();
     }
 }

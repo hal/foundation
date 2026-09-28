@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.discover;
+package org.jboss.hal.op.discovery;
 
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
@@ -25,7 +25,8 @@ import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndic
 
 /**
  * Discovery task that checks whether a matching model graph tools container is running. The port is derived from the WildFly
- * product version: {@code 7000 + major * 10 + minor}. For example, WildFly 41.0 maps to port 7410.
+ * product version: {@code 7000 + major * 10 + minor}. For example, WildFly 41.0 maps to port 7410. Delegates to
+ * {@link ModelGraphTools}.
  */
 class CheckModelGraphTools implements Task<FlowContext> {
 

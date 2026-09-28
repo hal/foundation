@@ -17,8 +17,8 @@ package org.jboss.hal.ui.modelbrowser;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.ui.component.ResourceAddressTypeahead;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
-import org.patternfly.component.form.TextInput;
 import org.patternfly.overlay.Overlay;
 import org.patternfly.style.Classes;
 
@@ -35,10 +35,10 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
 import static org.jboss.hal.resources.HalClasses.results;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.component.ResourceAddressTypeahead.resourceAddressTypeahead;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;
-import static org.patternfly.component.form.TextInput.textInput;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.icon.IconSets.far.compass;
@@ -63,15 +63,16 @@ class GotoResource implements IsElement<HTMLElement> {
 
     private final HTMLElement button;
     private final HTMLElement menu;
-    private final TextInput input;
+    private final ResourceAddressTypeahead input;
     private final Overlay overlay;
     private final HTMLElement root;
     private HTMLElement multiple;
 
     GotoResource() {
         this.button = button().plain().icon(compass()).element();
-        this.input = textInput("goto").placeholder("Goto resource")
-                .onKeyup((event, component, value) -> gotoResource(event));
+        this.input = resourceAddressTypeahead("goto");
+        input.searchInput().input().placeholder("Goto resource");
+        input.searchInput().onKeyup((event, component, value) -> gotoResource(event));
         this.menu = div().css(halComponent(modelBrowser, goto_))
                 .add(input)
                 .element();
@@ -82,7 +83,7 @@ class GotoResource implements IsElement<HTMLElement> {
                 .onToggle((event, open) -> {
                     if (open) {
                         input.value("");
-                        input.input().element().focus();
+                        input.searchInput().input().element().focus();
                     }
                 });
         overlay.attach();

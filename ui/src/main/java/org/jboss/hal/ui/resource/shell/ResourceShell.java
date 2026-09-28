@@ -19,7 +19,7 @@ import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.ui.resource.event.ResourceEvents;
+import org.jboss.hal.ui.resource.ResourceEvents;
 import org.jboss.hal.ui.resource.spi.ResourceRegistries;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.page.PageSection;
