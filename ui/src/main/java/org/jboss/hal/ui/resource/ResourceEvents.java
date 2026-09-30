@@ -60,12 +60,7 @@ public interface ResourceEvents {
         }
 
         private static void dispatch(HTMLElement source, Details details, boolean bubbles) {
-            CustomEventInit<Details> init = CustomEventInit.create();
-            init.setBubbles(bubbles);
-            init.setCancelable(true);
-            init.setDetail(details);
-            CustomEvent<Details> event = new CustomEvent<>(TYPE, init);
-            source.dispatchEvent(event);
+            source.dispatchEvent(UIEvent.create(TYPE, details, bubbles));
         }
 
         /** Registers a listener for select-in-tree events on the given element. */

@@ -15,19 +15,24 @@
  */
 package org.jboss.hal.op.mgt;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
+import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Availability;
+import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Ping;
 
 import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
 
+import static elemental2.dom.DomGlobal.document;
 import static elemental2.dom.DomGlobal.fetch;
-import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndicator;
-import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_SIDECAR;
+import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_IDENTITY;
+import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_SEARCH;
 import static org.jboss.hal.resources.Urls.replaceVersion;
 
 /**
@@ -37,11 +42,13 @@ import static org.jboss.hal.resources.Urls.replaceVersion;
  * <p>The MGT container port is derived from the WildFly product version: {@code 7000 + major * 10 + minor}. For example,
  * WildFly 41.0 maps to port 7410, and the REST API is reachable at {@code http://localhost:7410/api/}.
  */
+@Startup
 @ApplicationScoped
 public class ModelGraphTools {
 
     private static final Logger logger = Logger.getLogger(ModelGraphTools.class.getName());
     private static final int HTTP_PORT_BASE = 7000;
+    private static final int LIMIT = 100;
 
     private final Environment environment;
 
@@ -50,11 +57,12 @@ public class ModelGraphTools {
         this.environment = environment;
     }
 
-    public void refresh() {
-        ping().then((result) -> {
-            modelGraphToolsIndicator(this).active(result);
+    @PostConstruct
+    void init() {
+        Ping.listen(document.body, () -> ping().then((result) -> {
+            Availability.dispatch(document.body, result);
             return null;
-        });
+        }));
     }
 
     /**
@@ -62,7 +70,7 @@ public class ModelGraphTools {
      * Returns a promise that resolves to {@code true} if the container responds with a 200 status, or {@code false} otherwise.
      */
     public Promise<Boolean> ping() {
-        String url = replaceVersion(MODEL_GRAPH_TOOLS_SIDECAR, String.valueOf(port(environment.productVersion())));
+        String url = replaceVersion(MODEL_GRAPH_TOOLS_IDENTITY, String.valueOf(port(environment.productVersion())));
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -93,6 +101,46 @@ public class ModelGraphTools {
                     logger.info("Model graph tools for WildFly %s not available: %s",
                             environment.productVersion(), error);
                     return Promise.resolve(false);
+                });
+    }
+
+    /**
+     * Queries the MGT search API for resources, attributes, operations, and capabilities matching the given term. Returns a
+     * promise that resolves to the array of search results or an empty array if the request fails.
+     */
+    public Promise<SearchResult[]> search(String term) {
+        String url = replaceVersion(MODEL_GRAPH_TOOLS_SEARCH, String.valueOf(port(environment.productVersion())))
+                + "?q=" + term + "&limit=" + LIMIT;
+
+        RequestInit init = RequestInit.create();
+        init.setMethod("GET");
+        init.setMode("cors");
+
+        logger.debug("Searching model graph tools at %s", url);
+        return fetch(url, init)
+                .then(response -> {
+                    if (response.ok) {
+                        return response.json()
+                                .then(json -> {
+                                    SearchResponse searchResponse = (SearchResponse) json;
+                                    SearchResult[] results = searchResponse.results;
+                                    logger.debug("Model graph tools returned %d results for '%s'",
+                                            results != null ? results.length : 0, term);
+                                    return Promise.resolve(results != null ? results : new SearchResult[0]);
+                                })
+                                .catch_(error -> {
+                                    logger.error("Failed to parse model graph tools search response: %s",
+                                            String.valueOf(error));
+                                    return Promise.resolve(new SearchResult[0]);
+                                });
+                    } else {
+                        logger.info("Model graph tools search failed: %d", response.status);
+                        return Promise.resolve(new SearchResult[0]);
+                    }
+                })
+                .catch_(error -> {
+                    logger.info("Model graph tools search failed: %s", error);
+                    return Promise.resolve(new SearchResult[0]);
                 });
     }
 

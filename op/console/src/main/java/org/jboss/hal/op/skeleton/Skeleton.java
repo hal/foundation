@@ -18,10 +18,9 @@ package org.jboss.hal.op.skeleton;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.endpoint.EndpointStorage;
-import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
-import org.jboss.hal.op.search.UniversalSearchEvent;
+import org.jboss.hal.op.search.UniversalSearchEvents;
 import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.button.Button;
@@ -79,8 +78,8 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     // ------------------------------------------------------ factory
 
     /** Creates a new skeleton with the given endpoint storage and navigation component. */
-    public static Skeleton skeleton(Navigation navigation, EndpointStorage endpointStorage, ModelGraphTools modelGraphTools) {
-        return new Skeleton(navigation, endpointStorage, modelGraphTools);
+    public static Skeleton skeleton(Navigation navigation, EndpointStorage endpointStorage) {
+        return new Skeleton(navigation, endpointStorage);
     }
 
     // ------------------------------------------------------ instance
@@ -89,7 +88,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     private final HTMLElement root;
     private StabilityBanner stabilityBanner;
 
-    Skeleton(Navigation navigation, EndpointStorage endpointStorage, ModelGraphTools modelGraphTools) {
+    Skeleton(Navigation navigation, EndpointStorage endpointStorage) {
         MastheadLogo logo = mastheadLogo("/")
                 .ouiaId(OuiaIds.MASTHEAD_LOGO)
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
@@ -105,10 +104,10 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(Button.button(search()).plain()
-                                        .onClick((e, c) -> UniversalSearchEvent.dispatch(c.element()))))
+                                        .onClick((e, c) -> UniversalSearchEvents.Open.dispatch(c.element()))))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)))
-                                .addItem(toolbarItem().add(modelGraphToolsIndicator(modelGraphTools)))
+                                .addItem(toolbarItem().add(modelGraphToolsIndicator()))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
                                         group.addItem(toolbarItem().add(endpointSelector(endpointStorage)));

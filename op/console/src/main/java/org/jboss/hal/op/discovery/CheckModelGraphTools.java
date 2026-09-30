@@ -18,10 +18,11 @@ package org.jboss.hal.op.discovery;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.hal.op.mgt.ModelGraphTools;
+import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Availability;
 
 import elemental2.promise.Promise;
 
-import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndicator;
+import static elemental2.dom.DomGlobal.document;
 
 /**
  * Discovery task that checks whether a matching model graph tools container is running. The port is derived from the WildFly
@@ -40,7 +41,7 @@ class CheckModelGraphTools implements Task<FlowContext> {
     public Promise<FlowContext> apply(FlowContext context) {
         return mgt.ping()
                 .then((result) -> {
-                    modelGraphToolsIndicator(mgt).active(result);
+                    Availability.dispatch(document.body, result);
                     return context.resolve();
                 })
                 .catch_(error -> context.resolve());

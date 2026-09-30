@@ -41,8 +41,11 @@ public interface Urls {
     /** Relative path to the management interface DMR endpoint. */
     String MANAGEMENT = "/management";
 
-    /** Local model graph tools container. */
-    String MODEL_GRAPH_TOOLS_SIDECAR = "http://localhost:%v/api/identity";
+    /** Local model graph tools container identity endpoint. */
+    String MODEL_GRAPH_TOOLS_IDENTITY = "http://localhost:%v/api/identity";
+
+    /** Local model graph tools container search endpoint. */
+    String MODEL_GRAPH_TOOLS_SEARCH = "http://localhost:%v/api/search";
 
     /** More info about the model graph tools container. */
     String MODEL_GRAPH_TOOLS_PAGE = "https://hal.github.io/foundation/model-graph-tools/";

@@ -21,7 +21,6 @@ import org.jboss.hal.event.UIEvent;
 import org.jboss.hal.meta.AddressTemplate;
 
 import elemental2.dom.CustomEvent;
-import elemental2.dom.CustomEventInit;
 import elemental2.dom.HTMLElement;
 
 /**
@@ -42,9 +41,9 @@ public interface ModelBrowserEvents {
         /** Event payload carrying the parent template, child name, and whether it is a singleton. */
         class Details {
 
-            AddressTemplate parent;
-            String child;
-            boolean singleton;
+            public AddressTemplate parent;
+            public String child;
+            public boolean singleton;
         }
 
         /**
@@ -59,13 +58,7 @@ public interface ModelBrowserEvents {
             details.parent = parent;
             details.child = child;
             details.singleton = singleton;
-            //noinspection DuplicatedCode
-            CustomEventInit<Details> init = CustomEventInit.create();
-            init.setBubbles(true);
-            init.setCancelable(true);
-            init.setDetail(details);
-            CustomEvent<Details> event = new CustomEvent<>(TYPE, init);
-            source.dispatchEvent(event);
+            source.dispatchEvent(UIEvent.create(TYPE, details));
         }
 
         /** Registers a listener for add resource events on the given element. */
@@ -86,7 +79,7 @@ public interface ModelBrowserEvents {
         /** Event payload carrying the address template of the resource to delete. */
         class Details {
 
-            AddressTemplate template;
+            public AddressTemplate template;
         }
 
         /**
@@ -98,13 +91,7 @@ public interface ModelBrowserEvents {
         static void dispatch(HTMLElement source, AddressTemplate template) {
             Details details = new Details();
             details.template = template;
-            //noinspection DuplicatedCode
-            CustomEventInit<Details> init = CustomEventInit.create();
-            init.setBubbles(true);
-            init.setCancelable(true);
-            init.setDetail(details);
-            CustomEvent<Details> event = new CustomEvent<>(TYPE, init);
-            source.dispatchEvent(event);
+            source.dispatchEvent(UIEvent.create(TYPE, details));
         }
 
         /** Registers a listener for delete resource events on the given element. */
@@ -130,9 +117,9 @@ public interface ModelBrowserEvents {
         /** Event payload carrying an optional identifier, parent identifier, and/or address template. */
         class Details {
 
-            String identifier;
-            String parentIdentifier;
-            AddressTemplate template;
+            public String identifier;
+            public String parentIdentifier;
+            public AddressTemplate template;
         }
 
         /** Dispatches a select-in-tree event targeting the given address template. */
@@ -158,13 +145,7 @@ public interface ModelBrowserEvents {
         }
 
         private static void dispatch(HTMLElement source, Details details) {
-            //noinspection DuplicatedCode
-            CustomEventInit<Details> init = CustomEventInit.create();
-            init.setBubbles(true);
-            init.setCancelable(true);
-            init.setDetail(details);
-            CustomEvent<Details> event = new CustomEvent<>(TYPE, init);
-            source.dispatchEvent(event);
+            source.dispatchEvent(UIEvent.create(TYPE, details));
         }
 
         /** Registers a listener for select-in-tree events on the given element. */

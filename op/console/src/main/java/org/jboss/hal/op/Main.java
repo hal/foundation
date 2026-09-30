@@ -26,6 +26,7 @@ import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.discovery.Discovery;
 import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.mgt.ModelGraphTools;
+import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Ping;
 import org.patternfly.component.navigation.Navigation;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 
@@ -34,7 +35,6 @@ import io.crysknife.annotation.Application;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
-import static org.jboss.hal.op.search.UniversalSearch.registerUniversalSearch;
 import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
 
@@ -74,8 +74,7 @@ public class Main {
 
     private void afterBootstrap() {
         logger.debug("Bootstrap completed");
-        insertFirst(document.body, skeleton(navigation, endpointStorage, modelGraphTools));
-        registerUniversalSearch();
+        insertFirst(document.body, skeleton(navigation, endpointStorage));
         placeManager.start();
         discovery.run().subscribe(__ -> afterDiscovery());
     }
@@ -83,7 +82,7 @@ public class Main {
     private void afterDiscovery() {
         logger.debug("Discovery completed");
         ActivityTracker at = new ActivityTracker(
-                () -> modelGraphTools.refresh(),
+                () -> Ping.dispatch(document.body),
                 () -> {
                 });
         at.start();
