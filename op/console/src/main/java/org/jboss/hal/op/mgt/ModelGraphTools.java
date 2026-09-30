@@ -23,8 +23,6 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Availability;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Ping;
 
 import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
@@ -59,8 +57,8 @@ public class ModelGraphTools {
 
     @PostConstruct
     void init() {
-        Ping.listen(document.body, () -> ping().then((result) -> {
-            Availability.dispatch(document.body, result);
+        ModelGraphToolsEvents.Ping.listen(document.body, () -> ping().then((result) -> {
+            ModelGraphToolsEvents.Availability.dispatch(document.body, result);
             return null;
         }));
     }

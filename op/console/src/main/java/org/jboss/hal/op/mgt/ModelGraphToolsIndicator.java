@@ -20,7 +20,6 @@ import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Availability;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Ping;
 import org.jboss.hal.op.resources.Resources;
 import org.jboss.hal.resources.Urls;
 import org.patternfly.component.menu.MenuToggleType;
@@ -101,7 +100,8 @@ public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSup
                                                                         .id(refreshId)
                                                                         .link().inline()
                                                                         .onClick((c, e) ->
-                                                                                Ping.dispatch(e.element()))))
+                                                                                ModelGraphToolsEvents.Ping.dispatch(
+                                                                                        e.element()))))
                                                         .addItem(flexItem()
                                                                 .add(button("More info", Urls.MODEL_GRAPH_TOOLS_PAGE,
                                                                         "_blank").link().inline())))))

@@ -26,7 +26,7 @@ import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.discovery.Discovery;
 import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.mgt.ModelGraphTools;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Ping;
+import org.jboss.hal.op.mgt.ModelGraphToolsEvents;
 import org.patternfly.component.navigation.Navigation;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 
@@ -82,8 +82,9 @@ public class Main {
     private void afterDiscovery() {
         logger.debug("Discovery completed");
         ActivityTracker at = new ActivityTracker(
-                () -> Ping.dispatch(document.body),
+                () -> ModelGraphToolsEvents.Ping.dispatch(document.body),
                 () -> {
+                    // pause any polling intervals
                 });
         at.start();
     }

@@ -19,7 +19,8 @@
  * <ul>
  *     <li>{@link org.jboss.hal.op.search.UniversalSearch} — CDI controller that registers the keyboard shortcut and wires the
  *         {@link org.jboss.hal.op.mgt.ModelGraphTools} service into the search box.</li>
- *     <li>{@link org.jboss.hal.op.search.UniversalSearchBox} — singleton view that manages the modal and search input UI.</li>
+ *     <li>{@link org.jboss.hal.op.search.UniversalSearchBox} — view created fresh on each open, manages the modal and search
+ *         input UI.</li>
  *     <li>{@link org.jboss.hal.op.search.UniversalSearchAsyncItems} — compound delegator that routes search requests to the
  *         appropriate strategy based on input value and model graph tools availability.</li>
  *     <li>{@link org.jboss.hal.op.search.MgtSearchAsyncItems} — queries the model graph tools REST API for matching resources,

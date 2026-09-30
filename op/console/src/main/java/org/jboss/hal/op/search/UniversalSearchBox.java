@@ -18,14 +18,11 @@ package org.jboss.hal.op.search;
 import org.jboss.elemento.Callback;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.op.mgt.ModelGraphTools;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Availability;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents.Ping;
 import org.jboss.hal.op.mgt.SearchResult;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.textinputgroup.SearchInput;
 
-import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Scheduler.debounce;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
@@ -40,49 +37,37 @@ import static org.patternfly.component.modal.ModalBody.modalBody;
 import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
 
 /**
- * Modal search box for the universal search feature. Displays a top-positioned modal with a search input backed by a
- * {@link org.patternfly.component.menu.Menu} for typeahead results.
+ * Modal search box for the universal search feature. A new instance is created each time the search is opened, avoiding
+ * stale-state issues from the {@link org.patternfly.component.textinputgroup.SearchInput} typeahead lifecycle inside a modal.
  *
  * <p>The search data flow is handled by the {@link UniversalSearchAsyncItems} compound delegator, which routes search requests
  * to either {@link org.jboss.hal.ui.component.ResourceAddressAsyncItems} (for resource address typeahead when the input starts
  * with {@code /}) or {@link MgtSearchAsyncItems} (for model graph tools queries when MGT is available). This class contains no
  * search logic — it is purely a view component.
  *
- * <p>This class is a singleton; use {@link #universalSearchBox(ModelGraphTools)} to obtain the instance.
+ * @see UniversalSearch
  */
 public class UniversalSearchBox {
 
-    // ------------------------------------------------------ factory
+    // ------------------------------------------------------ instance
 
     private static final String PLACEHOLDER_ADDRESS_ONLY = "Go to a resource…";
     private static final String PLACEHOLDER_MGT = "Search resources, attributes, operations or go to a resource…";
 
-    private static UniversalSearchBox instance;
-
-    /** Returns the singleton instance, creating it on first access with the given {@link ModelGraphTools} service. */
-    public static UniversalSearchBox universalSearchBox(ModelGraphTools modelGraphTools) {
-        if (instance == null) {
-            instance = new UniversalSearchBox(modelGraphTools);
-        }
-        return instance;
-    }
-
-    // ------------------------------------------------------ instance
-
     private final Modal modal;
     private final SearchInput searchInput;
-    private final UniversalSearchAsyncItems asyncItems;
     private final MenuList menuList;
     private int lastSlashCount;
     private int lastEqualsCount;
 
-    UniversalSearchBox(ModelGraphTools modelGraphTools) {
+    UniversalSearchBox(ModelGraphTools modelGraphTools, boolean mgtAvailable) {
         lastSlashCount = 0;
         lastEqualsCount = 0;
 
         searchInput = searchInput("universal-search")
-                .placeholder(PLACEHOLDER_ADDRESS_ONLY);
-        asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
+                .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY);
+        UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
+        asyncItems.mgtAvailable(mgtAvailable);
 
         searchInput.addMenu(menu(menu, click)
                 .scrollable()
@@ -113,13 +98,7 @@ public class UniversalSearchBox {
                 .width("80%")
                 .hideClose()
                 .closeOnEsc(true)
-                .addBody(modalBody().add(searchInput))
-                .onClose((event, component) -> {
-                    searchInput.value("");
-                    searchInput.collapse(false);
-                    lastSlashCount = 0;
-                    lastEqualsCount = 0;
-                });
+                .addBody(modalBody().add(searchInput));
 
         searchInput.menu().onSingleSelect((event, item, selected) -> {
             modal.close();
@@ -129,19 +108,12 @@ public class UniversalSearchBox {
                     : item.text();
             AddressTemplate.ofUntrusted(address).ifPresent(t -> uic().routeRegistry().goTo(t));
         });
-
-        Availability.listen(document.body, details -> {
-            asyncItems.mgtAvailable(details.available);
-            searchInput.input().element().placeholder =
-                    details.available ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY;
-        });
-        Ping.dispatch(document.body);
     }
 
     // ------------------------------------------------------ api
 
     /** Opens the search modal and focuses the search input. */
-    public void show() {
+    void show() {
         modal.open();
         searchInput.input().element().focus();
     }
