@@ -14,6 +14,22 @@
  *  limitations under the License.
  */
 
-.hal-c-universal-search .pf-v6-c-text-input-group__text-input {
-    font-size: var(--pf-t--global--font--size--lg);
+.hal-c-universal-search {
+    &.pf-v6-c-modal-box {
+        border-radius: var(--pf-t--global--border--radius--small);
+    }
+
+    .pf-v6-c-modal-box__body:last-child {
+        padding-block-end: var(--pf-t--global--spacer--sm);
+    }
+
+    .pf-v6-c-modal-box__body {
+        padding-block-start: var(--pf-t--global--spacer--sm);
+        padding-inline-start: var(--pf-t--global--spacer--sm);
+        padding-inline-end: var(--pf-t--global--spacer--sm);
+    }
+
+    .pf-v6-c-text-input-group__text-input {
+        font-size: var(--pf-t--global--font--size--lg);
+    }
 }
