@@ -93,6 +93,7 @@ class StatusCard implements Attachable, AutoRefresh, DashboardCard {
         this.dispatcher = dispatcher;
         this.metadataRepository = metadataRepository;
         this.card = card().ouiaId(OuiaIds.DASHBOARD_STATUS_CARD).addBody(cardBody = cardBody());
+        Attachable.register(this, this);
     }
 
     @Override
