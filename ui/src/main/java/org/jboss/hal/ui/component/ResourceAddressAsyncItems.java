@@ -4,7 +4,7 @@ import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
-import org.patternfly.component.AsyncItems;
+import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.textinputgroup.SearchInput;

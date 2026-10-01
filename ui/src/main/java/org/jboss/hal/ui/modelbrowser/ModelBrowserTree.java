@@ -53,7 +53,7 @@ import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.component.tooltip.Tooltip.tooltip;
 import static org.patternfly.component.tree.TreeView.treeView;
 import static org.patternfly.component.tree.TreeViewType.selectableItems;
-import static org.patternfly.core.AsyncStatus.pending;
+import static org.patternfly.async.AsyncStatus.pending;
 import static org.patternfly.icon.IconSets.far.squareMinus;
 import static org.patternfly.icon.IconSets.fas.arrowLeft;
 import static org.patternfly.icon.IconSets.fas.arrowRight;

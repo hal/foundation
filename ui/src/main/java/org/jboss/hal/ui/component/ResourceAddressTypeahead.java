@@ -4,9 +4,9 @@ import org.jboss.elemento.ElementClassListMethods;
 import org.jboss.elemento.ElementEventMethods;
 import org.jboss.elemento.HTMLElementStyleMethods;
 import org.jboss.hal.meta.AddressTemplate;
+import org.patternfly.async.ReloadStrategy;
 import org.patternfly.component.ComponentIcon;
 import org.patternfly.component.HasValue;
-import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.textinputgroup.SearchInput;
 import org.patternfly.style.Modifiers.Disabled;
 
@@ -43,37 +43,18 @@ public class ResourceAddressTypeahead implements
 
     // ------------------------------------------------------ instance
 
-    private final MenuList menuList;
     private final SearchInput searchInput;
-    private final ResourceAddressAsyncItems asyncItems;
-    private int lastSlashCount;
-    private int lastEqualsCount;
 
     ResourceAddressTypeahead(String id) {
-        this.lastSlashCount = 0;
-        this.lastEqualsCount = 0;
-        this.searchInput = SearchInput.searchInput(id);
-        this.asyncItems = new ResourceAddressAsyncItems(searchInput);
+        this.searchInput = SearchInput.searchInput(id)
+                .reloadOn(ReloadStrategy.structuralChange(ResourceAddressTypeahead::addressStructureChanged));
 
+        ResourceAddressAsyncItems asyncItems = new ResourceAddressAsyncItems(searchInput);
         searchInput.addMenu(menu(menu, single)
                 .scrollable()
                 .addContent(menuContent()
-                        .addList(menuList = menuList()
+                        .addList(menuList()
                                 .addItems(asyncItems))));
-        searchInput.onInput((e, si, value) -> {
-            if (value == null || !value.startsWith("/")) {
-                searchInput.collapse(false);
-                return;
-            }
-            int slashes = countChar(value, '/');
-            int equals = countChar(value, '=');
-            if (slashes != lastSlashCount || equals != lastEqualsCount) {
-                lastSlashCount = slashes;
-                lastEqualsCount = equals;
-                searchInput.collapse(false);
-                menuList.reset();
-            }
-        });
     }
 
     @Override
@@ -131,7 +112,15 @@ public class ResourceAddressTypeahead implements
 
     // ------------------------------------------------------ internal
 
-    private int countChar(String str, char c) {
+    private static boolean addressStructureChanged(String previous, String current) {
+        return countChar(previous, '/') != countChar(current, '/')
+                || countChar(previous, '=') != countChar(current, '=');
+    }
+
+    private static int countChar(String str, char c) {
+        if (str == null) {
+            return 0;
+        }
         int count = 0;
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) == c) {

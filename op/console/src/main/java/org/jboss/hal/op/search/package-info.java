@@ -28,7 +28,7 @@
  * </ul>
  *
  * <p>The {@link org.jboss.hal.op.search.UniversalSearchEvents.Open} event is the only event used for cross-component
- * communication. The search data flow uses the {@link org.patternfly.component.AsyncItems} pattern for direct integration with
+ * communication. The search data flow uses the {@link org.patternfly.async.AsyncItems} pattern for direct integration with
  * the search input's built-in menu.
  */
 package org.jboss.hal.op.search;

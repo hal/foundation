@@ -17,7 +17,7 @@ package org.jboss.hal.op.search;
 
 import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.jboss.hal.ui.component.ResourceAddressAsyncItems;
-import org.patternfly.component.AsyncItems;
+import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.textinputgroup.SearchInput;

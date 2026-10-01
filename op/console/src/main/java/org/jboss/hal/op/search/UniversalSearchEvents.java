@@ -26,7 +26,7 @@ import elemental2.dom.HTMLElement;
  * shortcut).
  *
  * <p>The actual search data flow is handled by the {@link UniversalSearchAsyncItems} compound delegator using the
- * {@link org.patternfly.component.AsyncItems} pattern, not through events. This keeps the search input's built-in menu and
+ * {@link org.patternfly.async.AsyncItems} pattern, not through events. This keeps the search input's built-in menu and
  * typeahead behavior intact while preserving separation of concerns through the {@code AsyncItems} interface.
  *
  * @see UniversalSearchAsyncItems

@@ -26,7 +26,7 @@ import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.WildcardResolver;
 import org.jboss.hal.resources.Keys;
-import org.patternfly.component.AsyncItems;
+import org.patternfly.async.AsyncItems;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
 import org.patternfly.extension.finder.FinderPreview;

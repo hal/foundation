@@ -15,15 +15,13 @@
  */
 package org.jboss.hal.op.search;
 
-import org.jboss.elemento.Callback;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.jboss.hal.op.mgt.SearchResult;
-import org.patternfly.component.menu.MenuList;
+import org.patternfly.async.ReloadStrategy;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.textinputgroup.SearchInput;
 
-import static org.jboss.elemento.Scheduler.debounce;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
 import static org.jboss.hal.ui.UIContext.uic;
@@ -51,47 +49,25 @@ public class UniversalSearchBox {
 
     // ------------------------------------------------------ instance
 
+    private static final int DEBOUNCE_MS = 300;
     private static final String PLACEHOLDER_ADDRESS_ONLY = "Go to a resource…";
     private static final String PLACEHOLDER_MGT = "Search resources, attributes, operations or go to a resource…";
 
     private final Modal modal;
     private final SearchInput searchInput;
-    private final MenuList menuList;
-    private int lastSlashCount;
-    private int lastEqualsCount;
 
     UniversalSearchBox(ModelGraphTools modelGraphTools, boolean mgtAvailable) {
-        lastSlashCount = 0;
-        lastEqualsCount = 0;
-
         searchInput = searchInput("universal-search")
-                .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY);
+                .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
+                .reloadOn(ReloadStrategy.everyInput(DEBOUNCE_MS));
         UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
         asyncItems.mgtAvailable(mgtAvailable);
 
         searchInput.addMenu(menu(menu, click)
                 .scrollable()
                 .addContent(menuContent()
-                        .addList(menuList = menuList()
+                        .addList(menuList()
                                 .addItems(asyncItems))));
-
-        Callback debouncedMgtSearch = debounce(300, menuList::reset);
-        searchInput.onInput((event, si, value) -> {
-            if (value == null || value.trim().isEmpty()) {
-                return;
-            }
-            if (value.startsWith("/")) {
-                int slashes = countChar(value, '/');
-                int equals = countChar(value, '=');
-                if (slashes != lastSlashCount || equals != lastEqualsCount) {
-                    lastSlashCount = slashes;
-                    lastEqualsCount = equals;
-                    menuList.reset();
-                }
-            } else if (asyncItems.isMgtAvailable()) {
-                debouncedMgtSearch.call();
-            }
-        });
 
         modal = modal().css(halComponent(universalSearch))
                 .top()
@@ -116,17 +92,5 @@ public class UniversalSearchBox {
     void show() {
         modal.open();
         searchInput.input().element().focus();
-    }
-
-    // ------------------------------------------------------ internal
-
-    private int countChar(String str, char c) {
-        int count = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == c) {
-                count++;
-            }
-        }
-        return count;
     }
 }

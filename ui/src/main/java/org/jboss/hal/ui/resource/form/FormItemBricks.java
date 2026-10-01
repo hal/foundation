@@ -24,7 +24,7 @@ import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.PipelineFlags;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
-import org.patternfly.component.AsyncItems;
+import org.patternfly.async.AsyncItems;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.form.FormGroupLabel;
 import org.patternfly.component.form.FormSelect;
