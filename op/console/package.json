@@ -2,7 +2,7 @@
   "name": "hal-op",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.8.1",
+  "packageManager": "pnpm@12.9.1",
   "scripts": {
     "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
     "build:standalone": "vite build --config vite.config.js --mode standalone",
