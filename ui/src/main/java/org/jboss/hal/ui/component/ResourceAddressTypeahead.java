@@ -7,6 +7,7 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.patternfly.async.ReloadStrategy;
 import org.patternfly.component.ComponentIcon;
 import org.patternfly.component.HasValue;
+import org.patternfly.component.menu.SearchFilter;
 import org.patternfly.component.textinputgroup.SearchInput;
 import org.patternfly.style.Modifiers.Disabled;
 
@@ -47,7 +48,9 @@ public class ResourceAddressTypeahead implements
 
     ResourceAddressTypeahead(String id) {
         this.searchInput = SearchInput.searchInput(id)
-                .reloadOn(ReloadStrategy.structuralChange(ResourceAddressTypeahead::addressStructureChanged));
+                .reloadOn(
+                        ReloadStrategy.structuralChange(ResourceAddressTypeahead::addressStructureChanged),
+                        SearchFilter.lastSegment('/'));
 
         ResourceAddressAsyncItems asyncItems = new ResourceAddressAsyncItems(searchInput);
         searchInput.addMenu(menu(menu, single)
