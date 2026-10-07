@@ -22,7 +22,7 @@ import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.menu.MenuItem;
-import org.patternfly.component.menu.MultiTypeahead;
+import org.patternfly.component.menu.MultiSelectTypeahead;
 import org.patternfly.style.Modifiers.FullWidth;
 
 import elemental2.dom.HTMLElement;
@@ -43,29 +43,29 @@ import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MultiSelectMenu.multiSelectMenu;
-import static org.patternfly.component.menu.MultiTypeahead.multiTypeahead;
+import static org.patternfly.component.menu.MultiSelectTypeahead.multiSelectTypeahead;
 
 /**
  * {@link NativeControl} for LIST-of-STRING attributes with a capability reference, rendered as a multi-select typeahead.
  */
-public final class CapabilitiesReferenceControl implements NativeControl<MultiTypeahead> {
+public final class CapabilitiesReferenceControl implements NativeControl<MultiSelectTypeahead> {
 
     private String capability;
 
     @Override
-    public MultiTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+    public MultiSelectTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
         FilterReloadInput fri = filterReloadInput(identifier)
                 .plain()
                 .placeholder("");
-        MultiTypeahead typeahead = multiTypeahead(fri)
+        MultiSelectTypeahead typeahead = multiSelectTypeahead(fri)
                 .applyToMenuToggle(FullWidth::fullWidth)
                 .allowNewItems(value -> "Add \"" + value + "\"...", value -> newItem(value, capability))
                 .addMenu(multiSelectMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
                                         .addItems(capabilityItems(context.template(), capability)))));
-        fri.onReload((e, c) -> typeahead.menu().reload());
+        fri.onReload((e, c) -> typeahead.menu().refresh());
 
         if (attribute.value().isDefined()) {
             setValues(typeahead, modelValues(attribute));
@@ -78,27 +78,27 @@ public final class CapabilitiesReferenceControl implements NativeControl<MultiTy
     }
 
     @Override
-    public HTMLElement element(MultiTypeahead control) {
+    public HTMLElement element(MultiSelectTypeahead control) {
         return control.element();
     }
 
     @Override
-    public ModelNode modelNode(MultiTypeahead control, ResolvedAttribute attribute) {
+    public ModelNode modelNode(MultiSelectTypeahead control, ResolvedAttribute attribute) {
         return valuesModelNode(getValues(control));
     }
 
     @Override
-    public boolean isModifiedForNew(MultiTypeahead control, ResolvedAttribute attribute) {
+    public boolean isModifiedForNew(MultiSelectTypeahead control, ResolvedAttribute attribute) {
         return isNewModified(attribute, getValues(control));
     }
 
     @Override
-    public boolean isModifiedForExisting(MultiTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
+    public boolean isModifiedForExisting(MultiSelectTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
         return isExistingModified(attribute, getValues(control), wasDefined);
     }
 
     @Override
-    public boolean validate(MultiTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+    public boolean validate(MultiSelectTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && getValues(control).isEmpty()) {
             markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
@@ -108,36 +108,36 @@ public final class CapabilitiesReferenceControl implements NativeControl<MultiTy
     }
 
     @Override
-    public void markInvalid(MultiTypeahead control) {
+    public void markInvalid(MultiSelectTypeahead control) {
         control.menuToggle().validated(error);
     }
 
     @Override
-    public void resetValidation(MultiTypeahead control) {
+    public void resetValidation(MultiSelectTypeahead control) {
         control.menuToggle().resetValidation();
     }
 
     @Override
-    public void disable(MultiTypeahead control) {
+    public void disable(MultiSelectTypeahead control) {
         control.disabled();
     }
 
     @Override
-    public void afterSwitchedToNativeMode(MultiTypeahead control, ResolvedAttribute attribute) {
+    public void afterSwitchedToNativeMode(MultiSelectTypeahead control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
             setValues(control, modelValues(attribute));
         } else {
             if (attribute.description().hasDefault()) {
                 List<String> dv = defaultValues(attribute);
-                control.menuToggle().searchInput().placeholder(String.join(" ", dv));
+                control.menuToggle().filterInput().placeholder(String.join(" ", dv));
                 setValues(control, dv);
             } else if (attribute.description().nillable()) {
-                control.menuToggle().searchInput().placeholder(UNDEFINED);
+                control.menuToggle().filterInput().placeholder(UNDEFINED);
             }
         }
     }
 
-    private void setValues(MultiTypeahead typeahead, List<String> values) {
+    private void setValues(MultiSelectTypeahead typeahead, List<String> values) {
         if (typeahead.menu().hasAsyncItems()) {
             typeahead.menu().load().then(__ -> {
                 typeahead.selectIdentifiers(values);
@@ -149,7 +149,7 @@ public final class CapabilitiesReferenceControl implements NativeControl<MultiTy
         }
     }
 
-    private List<String> getValues(MultiTypeahead control) {
+    private List<String> getValues(MultiSelectTypeahead control) {
         return control.menu().selectedItems().stream().map(MenuItem::text).collect(toList());
     }
 }

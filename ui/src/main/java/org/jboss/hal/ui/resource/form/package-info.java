@@ -65,7 +65,7 @@
  *   <dt>{@link org.jboss.hal.ui.resource.form.FormItemBricks FormItemBricks}</dt>
  *   <dd>Static utility class providing reusable UI fragments (brick pattern): labels with description popovers and stability
  *       badges, read-only controls, expression text inputs, placeholder application, validation helper text, and fail-safe
- *       value selection for {@code FormSelect} and {@code SingleTypeahead} controls.</dd>
+ *       value selection for {@code FormSelect} and {@code SingleSelectTypeahead} controls.</dd>
  *   <dt>{@link org.jboss.hal.ui.resource.form.ResourceForm ResourceForm}</dt>
  *   <dd>The form container. Aggregates a list of {@link org.jboss.hal.ui.resource.form.FormItem FormItem}s, orchestrates
  *       per-item and form-level validation, collects their DMR operations into a single composite, and manages grouped/flat

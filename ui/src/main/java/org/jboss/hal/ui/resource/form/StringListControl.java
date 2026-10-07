@@ -22,7 +22,7 @@ import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.label.Label;
-import org.patternfly.component.textinputgroup.FilterInput;
+import org.patternfly.component.textinputgroup.FilterInputGroup;
 
 import elemental2.dom.HTMLElement;
 
@@ -35,16 +35,16 @@ import static org.jboss.hal.ui.resource.form.StringListSupport.isNewModified;
 import static org.jboss.hal.ui.resource.form.StringListSupport.modelValues;
 import static org.jboss.hal.ui.resource.form.StringListSupport.valuesModelNode;
 import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.textinputgroup.FilterInput.filterInput;
+import static org.patternfly.component.textinputgroup.FilterInputGroup.filterInputGroup;
 
 /**
  * {@link NativeControl} for LIST-of-STRING attributes, rendered as a label-based multi-value input.
  */
-public final class StringListControl implements NativeControl<FilterInput> {
+public final class StringListControl implements NativeControl<FilterInputGroup> {
 
     @Override
-    public FilterInput create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        FilterInput fi = filterInput(identifier)
+    public FilterInputGroup create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+        FilterInputGroup fi = filterInputGroup(identifier)
                 .applyTo(inputElement -> inputElement.autocomplete("off"))
                 .allowDuplicates(false);
         if (attribute.value().isDefined()) {
@@ -58,27 +58,27 @@ public final class StringListControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public HTMLElement element(FilterInput control) {
+    public HTMLElement element(FilterInputGroup control) {
         return control.element();
     }
 
     @Override
-    public ModelNode modelNode(FilterInput control, ResolvedAttribute attribute) {
+    public ModelNode modelNode(FilterInputGroup control, ResolvedAttribute attribute) {
         return valuesModelNode(getValues(control));
     }
 
     @Override
-    public boolean isModifiedForNew(FilterInput control, ResolvedAttribute attribute) {
+    public boolean isModifiedForNew(FilterInputGroup control, ResolvedAttribute attribute) {
         return isNewModified(attribute, getValues(control));
     }
 
     @Override
-    public boolean isModifiedForExisting(FilterInput control, ResolvedAttribute attribute, boolean wasDefined) {
+    public boolean isModifiedForExisting(FilterInputGroup control, ResolvedAttribute attribute, boolean wasDefined) {
         return isExistingModified(attribute, getValues(control), wasDefined);
     }
 
     @Override
-    public boolean validate(FilterInput control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+    public boolean validate(FilterInputGroup control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && getValues(control).isEmpty()) {
             markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
@@ -88,17 +88,17 @@ public final class StringListControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public void markInvalid(FilterInput control) {
+    public void markInvalid(FilterInputGroup control) {
         control.validated(error);
     }
 
     @Override
-    public void resetValidation(FilterInput control) {
+    public void resetValidation(FilterInputGroup control) {
         control.resetValidation();
     }
 
     @Override
-    public void afterSwitchedToNativeMode(FilterInput control, ResolvedAttribute attribute) {
+    public void afterSwitchedToNativeMode(FilterInputGroup control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
             setValues(control, modelValues(attribute));
         } else {
@@ -113,16 +113,16 @@ public final class StringListControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public void disable(FilterInput control) {
+    public void disable(FilterInputGroup control) {
         control.disabled();
     }
 
-    private void setValues(FilterInput fi, List<String> values) {
+    private void setValues(FilterInputGroup fi, List<String> values) {
         fi.labelGroup().clear();
         fi.labelGroup().addItems(values, value -> fi.textToLabel().apply(value));
     }
 
-    private List<String> getValues(FilterInput fi) {
+    private List<String> getValues(FilterInputGroup fi) {
         return fi.labelGroup().items().stream().map(Label::text).collect(toList());
     }
 }

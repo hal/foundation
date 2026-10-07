@@ -18,12 +18,12 @@ package org.jboss.hal.ui.filter;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.model.filter.NameAttribute;
-import org.patternfly.component.textinputgroup.SearchInput;
+import org.patternfly.component.textinputgroup.SearchInputGroup;
 import org.patternfly.filter.Filter;
 
 import elemental2.dom.HTMLElement;
 
-import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
+import static org.patternfly.component.textinputgroup.SearchInputGroup.searchInputGroup;
 import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 
 /**
@@ -47,10 +47,10 @@ public class NameSearchInput<T> implements IsElement<HTMLElement> {
 
     // ------------------------------------------------------ instance
 
-    private final SearchInput searchInput;
+    private final SearchInputGroup searchInput;
 
     NameSearchInput(Filter<T> filter, String placeholder) {
-        searchInput = searchInput(Id.unique()).placeholder(placeholder).icon(magnifyingGlass())
+        searchInput = searchInputGroup(Id.unique()).placeholder(placeholder).icon(magnifyingGlass())
                 .onKeyup((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value))
                 .onClear((event, textInputGroup) -> filter.reset(NameAttribute.NAME));
         searchInput.input().apply(input -> input.autocomplete = "off");

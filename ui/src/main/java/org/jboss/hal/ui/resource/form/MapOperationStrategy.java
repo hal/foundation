@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
-import org.patternfly.component.textinputgroup.FilterInput;
+import org.patternfly.component.textinputgroup.FilterInputGroup;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.KEY;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.MAP_PUT_OPERATION;
@@ -51,7 +51,7 @@ public final class MapOperationStrategy implements OperationStrategy {
         if (ec == null || !(ec.nativeControl() instanceof MapControl mapControl)) {
             return Collections.emptyList();
         }
-        FilterInput control = ((EditableControl<FilterInput>) ec).control();
+        FilterInputGroup control = ((EditableControl<FilterInputGroup>) ec).control();
         Map<String, String> original = mapControl.originalEntries();
         Map<String, String> current = mapControl.currentEntries(control);
         String attributeName = item.attribute().name();

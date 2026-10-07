@@ -4,11 +4,11 @@ import org.jboss.elemento.ElementClassListMethods;
 import org.jboss.elemento.ElementEventMethods;
 import org.jboss.elemento.HTMLElementStyleMethods;
 import org.jboss.hal.meta.AddressTemplate;
-import org.patternfly.async.ReloadStrategy;
 import org.patternfly.component.ComponentIcon;
-import org.patternfly.component.HasValue;
 import org.patternfly.component.menu.SearchFilter;
-import org.patternfly.component.textinputgroup.SearchInput;
+import org.patternfly.component.textinputgroup.SearchInputGroupTypeahead;
+import org.patternfly.component.typeahead.RefreshStrategy;
+import org.patternfly.core.HasValue;
 import org.patternfly.style.Modifiers.Disabled;
 
 import elemental2.dom.Element;
@@ -19,6 +19,7 @@ import static org.patternfly.component.menu.Menu.menu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuType.menu;
+import static org.patternfly.component.textinputgroup.SearchInputGroupTypeahead.searchInputGroupTypeahead;
 
 /**
  * A typeahead component for navigating and selecting WildFly management resource addresses. As the user types an address (e.g.,
@@ -44,13 +45,12 @@ public class ResourceAddressTypeahead implements
 
     // ------------------------------------------------------ instance
 
-    private final SearchInput searchInput;
+    private final SearchInputGroupTypeahead searchInput;
 
     ResourceAddressTypeahead(String id) {
-        this.searchInput = SearchInput.searchInput(id)
-                .reloadOn(
-                        ReloadStrategy.structuralChange(ResourceAddressTypeahead::addressStructureChanged),
-                        SearchFilter.lastSegment('/'));
+        this.searchInput = searchInputGroupTypeahead(id)
+                .refreshOn(RefreshStrategy.structuralChange(ResourceAddressTypeahead::addressStructureChanged))
+                .filter(SearchFilter.lastSegment('/'));
 
         ResourceAddressAsyncItems asyncItems = new ResourceAddressAsyncItems(searchInput);
         searchInput.addMenu(menu(menu, single)
@@ -94,7 +94,7 @@ public class ResourceAddressTypeahead implements
         return searchInput.expanded();
     }
 
-    public SearchInput searchInput() {
+    public SearchInputGroupTypeahead searchInput() {
         return searchInput;
     }
 
@@ -115,7 +115,7 @@ public class ResourceAddressTypeahead implements
 
     // ------------------------------------------------------ internal
 
-    private static boolean addressStructureChanged(String previous, String current) {
+    public static boolean addressStructureChanged(String previous, String current) {
         return countChar(previous, '/') != countChar(current, '/')
                 || countChar(previous, '=') != countChar(current, '=');
     }

@@ -23,7 +23,7 @@ import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler.Mode;
 import org.jboss.hal.ui.resource.pipeline.Pipeline;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.menu.SingleTypeahead;
+import org.patternfly.component.menu.SingleSelectTypeahead;
 import org.patternfly.component.togglegroup.ToggleGroup;
 
 import elemental2.dom.HTMLDivElement;
@@ -99,7 +99,7 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
                         .store(MODE_KEY, Mode.STORE_REFERENCE)
                         .iconAndText(Mode.STORE_REFERENCE.icon, "Credential store"));
 
-        SingleTypeahead storeTypeahead = (SingleTypeahead) storeFormItem.editableControl().control();
+        SingleSelectTypeahead storeTypeahead = (SingleSelectTypeahead) storeFormItem.editableControl().control();
         storeTypeahead.menuToggle().searchInput().onClear((e, c) -> aliasControl.update(null));
         storeTypeahead.menuToggle().searchInput().onInput((e, c, value) -> aliasControl.update(value));
         storeTypeahead.menu().onSingleSelect((e, item, selected) -> {

@@ -41,7 +41,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.STATISTICS_ENABLED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION;
 import static org.jboss.hal.ui.resource.dialog.AddResourceDialogs.addResourceModal;
-import static org.patternfly.component.Ordered.DATA_ORDER;
+import static org.patternfly.core.Ordered.DATA_ORDER;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.p;

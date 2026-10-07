@@ -23,7 +23,7 @@ import org.patternfly.async.AsyncItems;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
-import org.patternfly.component.menu.SingleTypeahead;
+import org.patternfly.component.menu.SingleSelectTypeahead;
 
 import elemental2.dom.HTMLElement;
 
@@ -40,26 +40,26 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
  * {@link NativeControl} used only as part of the {@link CredentialReferenceControl} to lookup the aliases of a credential
  * store.
  */
-final class CredentialStoreAliasControl implements NativeControl<SingleTypeahead> {
+final class CredentialStoreAliasControl implements NativeControl<SingleSelectTypeahead> {
 
     private static final String CAPABILITY = "org.wildfly.security.credential-store";
 
     private String credentialStore;
-    private SingleTypeahead aliasTypeahead;
+    private SingleSelectTypeahead aliasTypeahead;
 
     @Override
-    public SingleTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+    public SingleSelectTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         aliasTypeahead = FormItemBricks.singleTypeahead(identifier, attribute, null, aliases());
         return aliasTypeahead;
     }
 
     @Override
-    public HTMLElement element(SingleTypeahead control) {
+    public HTMLElement element(SingleSelectTypeahead control) {
         return control.element();
     }
 
     @Override
-    public ModelNode modelNode(SingleTypeahead control, ResolvedAttribute attribute) {
+    public ModelNode modelNode(SingleSelectTypeahead control, ResolvedAttribute attribute) {
         String v = value(control);
         if (v == null || v.isEmpty()) {
             return new ModelNode();
@@ -68,7 +68,7 @@ final class CredentialStoreAliasControl implements NativeControl<SingleTypeahead
     }
 
     @Override
-    public boolean isModifiedForNew(SingleTypeahead control, ResolvedAttribute attribute) {
+    public boolean isModifiedForNew(SingleSelectTypeahead control, ResolvedAttribute attribute) {
         String v = value(control);
         if (attribute.description().hasDefault()) {
             return !attribute.description().get(DEFAULT).asString().equals(v);
@@ -77,7 +77,7 @@ final class CredentialStoreAliasControl implements NativeControl<SingleTypeahead
     }
 
     @Override
-    public boolean isModifiedForExisting(SingleTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
+    public boolean isModifiedForExisting(SingleSelectTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
         String v = value(control);
         if (wasDefined) {
             return attribute.expression() || !attribute.value().asString().equals(v);
@@ -86,7 +86,7 @@ final class CredentialStoreAliasControl implements NativeControl<SingleTypeahead
     }
 
     @Override
-    public boolean validate(SingleTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+    public boolean validate(SingleSelectTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && value(control).isEmpty()) {
             markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
@@ -96,32 +96,32 @@ final class CredentialStoreAliasControl implements NativeControl<SingleTypeahead
     }
 
     @Override
-    public void markInvalid(SingleTypeahead control) {
+    public void markInvalid(SingleSelectTypeahead control) {
         control.menuToggle().validated(error);
     }
 
     @Override
-    public void resetValidation(SingleTypeahead control) {
+    public void resetValidation(SingleSelectTypeahead control) {
         control.menuToggle().resetValidation();
     }
 
     @Override
-    public void disable(SingleTypeahead control) {
+    public void disable(SingleSelectTypeahead control) {
         control.disabled();
     }
 
     @Override
-    public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
-        FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
+    public void afterSwitchedToNativeMode(SingleSelectTypeahead control, ResolvedAttribute attribute) {
+        FormItemBricks.afterSwitchedToSingleSelectTypeahead(control, attribute);
     }
 
-    private String value(SingleTypeahead control) {
+    private String value(SingleSelectTypeahead control) {
         return control != null ? control.menuToggle().searchInput().value() : "";
     }
 
     void update(String credentialStore) {
         this.credentialStore = credentialStore;
-        aliasTypeahead.menu().reload();
+        aliasTypeahead.menu().refresh();
     }
 
     private AsyncItems<MenuList, MenuItem> aliases() {

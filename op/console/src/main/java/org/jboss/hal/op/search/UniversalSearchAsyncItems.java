@@ -20,7 +20,7 @@ import org.jboss.hal.ui.component.ResourceAddressAsyncItems;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
-import org.patternfly.component.textinputgroup.SearchInput;
+import org.patternfly.core.HasValue;
 
 import elemental2.promise.Promise;
 
@@ -46,21 +46,21 @@ import static java.util.Collections.emptyList;
  */
 class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
-    private final SearchInput searchInput;
+    private final HasValue<String> valueProvider;
     private final ResourceAddressAsyncItems addressItems;
     private final MgtSearchAsyncItems mgtItems;
     private boolean mgtAvailable;
 
-    UniversalSearchAsyncItems(SearchInput searchInput, ModelGraphTools modelGraphTools) {
-        this.searchInput = searchInput;
-        this.addressItems = new ResourceAddressAsyncItems(searchInput);
-        this.mgtItems = new MgtSearchAsyncItems(searchInput, modelGraphTools);
+    UniversalSearchAsyncItems(HasValue<String> valueProvider, ModelGraphTools modelGraphTools) {
+        this.valueProvider = valueProvider;
+        this.addressItems = new ResourceAddressAsyncItems(valueProvider);
+        this.mgtItems = new MgtSearchAsyncItems(valueProvider, modelGraphTools);
         this.mgtAvailable = false;
     }
 
     @Override
     public Promise<Iterable<MenuItem>> apply(MenuList menuList) {
-        String value = searchInput.value();
+        String value = valueProvider.value();
         if (value == null || value.trim().isEmpty()) {
             return Promise.resolve(emptyList());
         }

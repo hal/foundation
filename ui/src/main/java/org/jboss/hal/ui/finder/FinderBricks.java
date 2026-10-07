@@ -94,10 +94,10 @@ public final class FinderBricks {
                                 .ouiaId(OuiaIds.ouia(id, "add", "btn"))
                                 .onClick((e, b) ->
                                         addResourceModal(templateFn.apply(column.finder().path()), null, false)
-                                                .then(__ -> column.reload())))
+                                                .then(__ -> column.refresh())))
                         .addButton(button(rotateRight()).plain().small()
                                 .ouiaId(OuiaIds.ouia(id, "refresh", "btn"))
-                                .onClick((e, b) -> column.reload()))))
+                                .onClick((e, b) -> column.refresh()))))
                 .defaultSearch()
                 .showSearchThreshold(5)
                 .addItems(childResources(templateFn, node -> {
@@ -118,7 +118,7 @@ public final class FinderBricks {
                                         AddressTemplate template = item.get(Keys.FINDER_TEMPLATE);
                                         deleteResourceModal(template).then(n -> {
                                             if (n.isDefined()) {
-                                                item.column().reload();
+                                                item.column().refresh();
                                             }
                                             return null;
                                         });

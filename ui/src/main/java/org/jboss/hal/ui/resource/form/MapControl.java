@@ -26,20 +26,20 @@ import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
 import org.patternfly.component.help.HelperText;
 import org.patternfly.component.label.Label;
-import org.patternfly.component.textinputgroup.FilterInput;
+import org.patternfly.component.textinputgroup.FilterInputGroup;
 
 import elemental2.dom.HTMLElement;
 
 import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNDEFINED;
 import static org.patternfly.component.ValidationStatus.error;
-import static org.patternfly.component.textinputgroup.FilterInput.filterInput;
+import static org.patternfly.component.textinputgroup.FilterInputGroup.filterInputGroup;
 
 /**
- * {@link NativeControl} for free-form key-value map attributes. Uses a {@link FilterInput} with {@code key=value} parsing.
+ * {@link NativeControl} for free-form key-value map attributes. Uses a {@link FilterInputGroup} with {@code key=value} parsing.
  * Each entry appears as a removable label.
  */
-public final class MapControl implements NativeControl<FilterInput> {
+public final class MapControl implements NativeControl<FilterInputGroup> {
 
     private Map<String, String> originalEntries;
 
@@ -49,14 +49,14 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public FilterInput create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+    public FilterInputGroup create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         originalEntries = new LinkedHashMap<>();
         if (attribute.value().isDefined()) {
             for (Property property : attribute.value().asPropertyList()) {
                 originalEntries.put(property.getName(), property.getValue().asString());
             }
         }
-        FilterInput fi = filterInput(identifier)
+        FilterInputGroup fi = filterInputGroup(identifier)
                 .applyTo(inputElement -> {
                     inputElement.autocomplete("off");
                     inputElement.placeholder("key=value");
@@ -72,12 +72,12 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public HTMLElement element(FilterInput control) {
+    public HTMLElement element(FilterInputGroup control) {
         return control.element();
     }
 
     @Override
-    public ModelNode modelNode(FilterInput control, ResolvedAttribute attribute) {
+    public ModelNode modelNode(FilterInputGroup control, ResolvedAttribute attribute) {
         Map<String, String> entries = currentEntries(control);
         if (entries.isEmpty()) {
             return new ModelNode();
@@ -90,12 +90,12 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public boolean isModifiedForNew(FilterInput control, ResolvedAttribute attribute) {
+    public boolean isModifiedForNew(FilterInputGroup control, ResolvedAttribute attribute) {
         return !currentEntries(control).isEmpty();
     }
 
     @Override
-    public boolean isModifiedForExisting(FilterInput control, ResolvedAttribute attribute, boolean wasDefined) {
+    public boolean isModifiedForExisting(FilterInputGroup control, ResolvedAttribute attribute, boolean wasDefined) {
         Map<String, String> current = currentEntries(control);
         if (wasDefined) {
             return !originalEntries.equals(current);
@@ -104,7 +104,7 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public boolean validate(FilterInput control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+    public boolean validate(FilterInputGroup control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && currentEntries(control).isEmpty()) {
             markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
@@ -114,22 +114,22 @@ public final class MapControl implements NativeControl<FilterInput> {
     }
 
     @Override
-    public void markInvalid(FilterInput control) {
+    public void markInvalid(FilterInputGroup control) {
         control.validated(error);
     }
 
     @Override
-    public void resetValidation(FilterInput control) {
+    public void resetValidation(FilterInputGroup control) {
         control.resetValidation();
     }
 
     @Override
-    public void disable(FilterInput control) {
+    public void disable(FilterInputGroup control) {
         control.disabled();
     }
 
     @Override
-    public void afterSwitchedToNativeMode(FilterInput control, ResolvedAttribute attribute) {
+    public void afterSwitchedToNativeMode(FilterInputGroup control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
             setLabels(control, originalEntries);
         } else if (attribute.description().nillable()) {
@@ -144,7 +144,7 @@ public final class MapControl implements NativeControl<FilterInput> {
 
     // ------------------------------------------------------ internal
 
-    Map<String, String> currentEntries(FilterInput control) {
+    Map<String, String> currentEntries(FilterInputGroup control) {
         Map<String, String> entries = new LinkedHashMap<>();
         for (Label label : control.labelGroup().items()) {
             String text = label.text();
@@ -169,7 +169,7 @@ public final class MapControl implements NativeControl<FilterInput> {
         return Label.label(key + "=" + value).compact().closable();
     }
 
-    private void setLabels(FilterInput fi, Map<String, String> entries) {
+    private void setLabels(FilterInputGroup fi, Map<String, String> entries) {
         fi.labelGroup().clear();
         List<String> labelTexts = entries.entrySet().stream()
                 .map(e -> e.getKey() + "=" + e.getValue())

@@ -33,7 +33,7 @@ import org.patternfly.component.help.HelperText;
 import org.patternfly.component.inputgroup.InputGroupText;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
-import org.patternfly.component.menu.SingleTypeahead;
+import org.patternfly.component.menu.SingleSelectTypeahead;
 import org.patternfly.core.Aria;
 import org.patternfly.core.Roles;
 import org.patternfly.style.Classes;
@@ -256,12 +256,12 @@ final class FormItemBricks {
 
     // ------------------------------------------------------ typeahead
 
-    static SingleTypeahead singleTypeahead(String identifier, ResolvedAttribute attribute,
+    static SingleSelectTypeahead singleTypeahead(String identifier, ResolvedAttribute attribute,
             Function<String, Promise<MenuItem>> createItem, AsyncItems<MenuList, MenuItem> asyncItems) {
         SearchReloadInput searchReloadInput = searchReloadInput(identifier)
                 .plain()
                 .placeholder("");
-        SingleTypeahead typeahead = SingleTypeahead.singleTypeahead(searchReloadInput)
+        SingleSelectTypeahead typeahead = SingleSelectTypeahead.singleSelectTypeahead(searchReloadInput)
                 .applyToMenuToggle(Modifiers.FullWidth::fullWidth)
                 .addMenu(singleSelectMenu()
                         .addContent(menuContent()
@@ -270,7 +270,7 @@ final class FormItemBricks {
         if (createItem != null) {
             typeahead.allowNewItems(value -> "Add \"" + value + "\"...", createItem);
         }
-        searchReloadInput.onReload((e, c) -> typeahead.menu().reload());
+        searchReloadInput.onReload((e, c) -> typeahead.menu().refresh());
 
         if (attribute.value().isDefined()) {
             FormItemBricks.failSafeSelectValue(typeahead, attribute.value().asString());
@@ -282,7 +282,7 @@ final class FormItemBricks {
         return typeahead;
     }
 
-    static void afterSwitchedToSingleTypeahead(SingleTypeahead control, ResolvedAttribute attribute) {
+    static void afterSwitchedToSingleSelectTypeahead(SingleSelectTypeahead control, ResolvedAttribute attribute) {
         if (attribute.value().isDefined() && !attribute.expression()) {
             FormItemBricks.failSafeSelectValue(control, attribute.value().asString());
         } else {
@@ -305,8 +305,8 @@ final class FormItemBricks {
         }
     }
 
-    /** Selects a value in a {@link SingleTypeahead}, handling async items that may not be loaded yet. */
-    static void failSafeSelectValue(SingleTypeahead typeahead, String value) {
+    /** Selects a value in a {@link SingleSelectTypeahead}, handling async items that may not be loaded yet. */
+    static void failSafeSelectValue(SingleSelectTypeahead typeahead, String value) {
         if (typeahead.menu().hasAsyncItems()) {
             typeahead.menuToggle().text(value);
             typeahead.onLoaded((__, st) -> st.select(value));

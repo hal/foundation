@@ -16,9 +16,9 @@
 
 catalogs:
   pfj:
-    '@patternfly-java/charts': ^0.12.2
-    '@patternfly-java/core': ^0.12.2
-    '@patternfly-java/finder': ^0.12.2
+    '@patternfly-java/charts': ^0.13.0
+    '@patternfly-java/core': ^0.13.0
+    '@patternfly-java/finder': ^0.13.0
 
 allowBuilds:
   esbuild: true
@@ -27,6 +27,6 @@ overrides:
   undici@>=7.0.0 <7.29.1: '>=7.29.1'
 
 minimumReleaseAgeExclude:
-  - '@patternfly-java/charts@0.10.2 || 0.10.3 || 0.12.0 || 0.12.1 || 0.12.2'
-  - '@patternfly-java/core@0.10.2 || 0.10.3 || 0.12.0 || 0.12.1 || 0.12.2'
-  - '@patternfly-java/finder@0.10.2 || 0.10.3 || 0.12.0 || 0.12.1 || 0.12.2'
+  - '@patternfly-java/charts@0.10.2 || 0.10.3 || 0.12.0 || 0.12.1 || 0.12.2 || 0.13.0'
+  - '@patternfly-java/core@0.10.2 || 0.10.3 || 0.12.0 || 0.12.1 || 0.12.2 || 0.13.0'
+  - '@patternfly-java/finder@0.10.2 || 0.10.3 || 0.12.0 || 0.12.1 || 0.12.2 || 0.13.0'

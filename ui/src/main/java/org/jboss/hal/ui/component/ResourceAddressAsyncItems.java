@@ -7,7 +7,7 @@ import org.jboss.hal.dmr.ResourceAddress;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
-import org.patternfly.component.textinputgroup.SearchInput;
+import org.patternfly.core.HasValue;
 
 import elemental2.promise.Promise;
 
@@ -21,15 +21,15 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
 
 public class ResourceAddressAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
-    private final SearchInput searchInput;
+    private final HasValue<String> valueProvider;
 
-    public ResourceAddressAsyncItems(SearchInput searchInput) {
-        this.searchInput = searchInput;
+    public ResourceAddressAsyncItems(HasValue<String> valueProvider) {
+        this.valueProvider = valueProvider;
     }
 
     @Override
     public Promise<Iterable<MenuItem>> apply(MenuList menuItems) {
-        String value = searchInput.value();
+        String value = valueProvider.value();
         if (value == null || !value.startsWith("/")) {
             return Promise.resolve(emptyList());
         }

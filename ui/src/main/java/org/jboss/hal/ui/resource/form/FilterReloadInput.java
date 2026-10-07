@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.patternfly.component.ComponentType;
 import org.patternfly.component.button.Button;
-import org.patternfly.component.textinputgroup.BaseFilterInput;
+import org.patternfly.component.textinputgroup.BaseFilterInputGroup;
 import org.patternfly.handler.ComponentHandler;
 
 import static org.jboss.elemento.Elements.setVisible;
@@ -34,11 +34,11 @@ import static org.patternfly.icon.IconSets.rhUi.refresh;
  * <p>
  * This class mirrors the structure of {@link SearchReloadInput}. The duplication exists because the PatternFly type hierarchy
  * requires separate subclasses: {@link SearchReloadInput} extends
- * {@link org.patternfly.component.textinputgroup.BaseSearchInput} (for single-select typeaheads), while this class extends
- * {@link org.patternfly.component.textinputgroup.BaseFilterInput} (for multi-select typeaheads). A shared abstract class is not
+ * {@link org.patternfly.component.textinputgroup.BaseSearchInputGroup} (for single-select typeaheads), while this class extends
+ * {@link org.patternfly.component.textinputgroup.BaseFilterInputGroup} (for multi-select typeaheads). A shared abstract class is not
  * possible since Java does not support multiple inheritance.
  */
-class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
+class FilterReloadInput extends BaseFilterInputGroup<FilterReloadInput> {
 
     // ------------------------------------------------------ factory
 
@@ -53,7 +53,7 @@ class FilterReloadInput extends BaseFilterInput<FilterReloadInput> {
     private final List<ComponentHandler<FilterReloadInput>> onReload;
 
     FilterReloadInput(String id) {
-        super(ComponentType.FilterInput, id);
+        super(ComponentType.FilterInputGroup, id);
         this.onReload = new ArrayList<>();
 
         inputElement.autocomplete = "off";

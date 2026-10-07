@@ -19,7 +19,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroupControl;
-import org.patternfly.component.menu.SingleTypeahead;
+import org.patternfly.component.menu.SingleSelectTypeahead;
 
 import elemental2.dom.HTMLElement;
 
@@ -33,24 +33,24 @@ import static org.patternfly.component.ValidationStatus.error;
 /**
  * {@link NativeControl} for single STRING attributes with a capability reference, rendered as a typeahead select.
  */
-public final class CapabilityReferenceControl implements NativeControl<SingleTypeahead> {
+public final class CapabilityReferenceControl implements NativeControl<SingleSelectTypeahead> {
 
     private String capability;
 
     @Override
-    public SingleTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
+    public SingleSelectTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
         capability = attribute.description().get(CAPABILITY_REFERENCE).asString();
         return singleTypeahead(identifier, attribute,
                 value -> newItem(value, capability), capabilityItems(context.template(), capability));
     }
 
     @Override
-    public HTMLElement element(SingleTypeahead control) {
+    public HTMLElement element(SingleSelectTypeahead control) {
         return control.element();
     }
 
     @Override
-    public ModelNode modelNode(SingleTypeahead control, ResolvedAttribute attribute) {
+    public ModelNode modelNode(SingleSelectTypeahead control, ResolvedAttribute attribute) {
         String v = value(control);
         if (v == null || v.isEmpty()) {
             return new ModelNode();
@@ -59,7 +59,7 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     }
 
     @Override
-    public boolean isModifiedForNew(SingleTypeahead control, ResolvedAttribute attribute) {
+    public boolean isModifiedForNew(SingleSelectTypeahead control, ResolvedAttribute attribute) {
         String v = value(control);
         if (attribute.description().hasDefault()) {
             return !attribute.description().get(DEFAULT).asString().equals(v);
@@ -68,7 +68,7 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     }
 
     @Override
-    public boolean isModifiedForExisting(SingleTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
+    public boolean isModifiedForExisting(SingleSelectTypeahead control, ResolvedAttribute attribute, boolean wasDefined) {
         String v = value(control);
         if (wasDefined) {
             return attribute.expression() || !attribute.value().asString().equals(v);
@@ -77,7 +77,7 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     }
 
     @Override
-    public boolean validate(SingleTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
+    public boolean validate(SingleSelectTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
         if (FormItemBricks.requiredOnItsOwn(attribute) && value(control).isEmpty()) {
             markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
@@ -87,26 +87,26 @@ public final class CapabilityReferenceControl implements NativeControl<SingleTyp
     }
 
     @Override
-    public void markInvalid(SingleTypeahead control) {
+    public void markInvalid(SingleSelectTypeahead control) {
         control.menuToggle().validated(error);
     }
 
     @Override
-    public void resetValidation(SingleTypeahead control) {
+    public void resetValidation(SingleSelectTypeahead control) {
         control.menuToggle().resetValidation();
     }
 
     @Override
-    public void disable(SingleTypeahead control) {
+    public void disable(SingleSelectTypeahead control) {
         control.disabled();
     }
 
     @Override
-    public void afterSwitchedToNativeMode(SingleTypeahead control, ResolvedAttribute attribute) {
-        FormItemBricks.afterSwitchedToSingleTypeahead(control, attribute);
+    public void afterSwitchedToNativeMode(SingleSelectTypeahead control, ResolvedAttribute attribute) {
+        FormItemBricks.afterSwitchedToSingleSelectTypeahead(control, attribute);
     }
 
-    private String value(SingleTypeahead control) {
+    private String value(SingleSelectTypeahead control) {
         return control != null ? control.menuToggle().searchInput().value() : "";
     }
 }

@@ -170,7 +170,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
 
     void reload() {
         if (!treeView.selectedItems().isEmpty()) {
-            treeView.selectedItems().get(0).reload();
+            treeView.selectedItems().get(0).refresh();
         } else {
             // no selection → load root
             modelBrowser.load();
@@ -193,7 +193,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
                 });
             } else if (!parentItem.contains(childIdentifier)) {
                 // child might have been added externally in CLI or other management tools
-                parentItem.reload().then(__ -> {
+                parentItem.refresh().then(__ -> {
                     treeView.select(childIdentifier);
                     return null;
                 });

@@ -24,7 +24,7 @@ import org.jboss.hal.op.mgt.SearchResult;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
-import org.patternfly.component.textinputgroup.SearchInput;
+import org.patternfly.core.HasValue;
 
 import elemental2.promise.Promise;
 
@@ -42,17 +42,17 @@ import static org.patternfly.component.menu.MenuItem.menuItem;
  */
 class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
-    private final SearchInput searchInput;
+    private final HasValue<String> valueProvider;
     private final ModelGraphTools modelGraphTools;
 
-    MgtSearchAsyncItems(SearchInput searchInput, ModelGraphTools modelGraphTools) {
-        this.searchInput = searchInput;
+    MgtSearchAsyncItems(HasValue<String> valueProvider, ModelGraphTools modelGraphTools) {
+        this.valueProvider = valueProvider;
         this.modelGraphTools = modelGraphTools;
     }
 
     @Override
     public Promise<Iterable<MenuItem>> apply(MenuList menuList) {
-        String value = searchInput.value();
+        String value = valueProvider.value();
         if (value == null || value.trim().isEmpty()) {
             return Promise.resolve(emptyList());
         }

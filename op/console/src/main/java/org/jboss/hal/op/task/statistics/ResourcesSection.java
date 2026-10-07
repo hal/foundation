@@ -69,7 +69,7 @@ import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.brick.ExpressionBricks.renderExpression;
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
 import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
-import static org.patternfly.component.Ordered.DATA_ORDER;
+import static org.patternfly.core.Ordered.DATA_ORDER;
 import static org.patternfly.component.SelectionMode.multi;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.content.Content.content;

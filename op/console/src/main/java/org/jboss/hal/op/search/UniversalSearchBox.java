@@ -18,9 +18,12 @@ package org.jboss.hal.op.search;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.op.mgt.ModelGraphTools;
 import org.jboss.hal.op.mgt.SearchResult;
-import org.patternfly.async.ReloadStrategy;
+import org.jboss.hal.ui.component.ResourceAddressTypeahead;
+import org.patternfly.component.menu.SearchFilter;
 import org.patternfly.component.modal.Modal;
-import org.patternfly.component.textinputgroup.SearchInput;
+import org.patternfly.component.textinputgroup.SearchInputGroupTypeahead;
+import org.patternfly.component.typeahead.Decision;
+import org.patternfly.component.typeahead.RefreshStrategy;
 
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
@@ -32,11 +35,11 @@ import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuType.menu;
 import static org.patternfly.component.modal.Modal.modal;
 import static org.patternfly.component.modal.ModalBody.modalBody;
-import static org.patternfly.component.textinputgroup.SearchInput.searchInput;
+import static org.patternfly.component.textinputgroup.SearchInputGroupTypeahead.searchInputGroupTypeahead;
 
 /**
  * Modal search box for the universal search feature. A new instance is created each time the search is opened, avoiding
- * stale-state issues from the {@link org.patternfly.component.textinputgroup.SearchInput} typeahead lifecycle inside a modal.
+ * stale-state issues from the {@link SearchInputGroupTypeahead} typeahead lifecycle inside a modal.
  *
  * <p>The search data flow is handled by the {@link UniversalSearchAsyncItems} compound delegator, which routes search requests
  * to either {@link org.jboss.hal.ui.component.ResourceAddressAsyncItems} (for resource address typeahead when the input starts
@@ -54,12 +57,14 @@ public class UniversalSearchBox {
     private static final String PLACEHOLDER_MGT = "Search resources, attributes, operations or go to a resource…";
 
     private final Modal modal;
-    private final SearchInput searchInput;
+    private final SearchInputGroupTypeahead searchInput;
 
     UniversalSearchBox(ModelGraphTools modelGraphTools, boolean mgtAvailable) {
-        searchInput = searchInput("universal-search")
+        searchInput = searchInputGroupTypeahead("universal-search")
                 .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
-                .reloadOn(ReloadStrategy.everyInput(DEBOUNCE_MS));
+                .refreshOn(universalSearchStrategy())
+                .filter(SearchFilter.lastSegment('/'));
+
         UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
         asyncItems.mgtAvailable(mgtAvailable);
 
@@ -92,5 +97,19 @@ public class UniversalSearchBox {
     void show() {
         modal.open();
         searchInput.input().element().focus();
+    }
+
+    // ------------------------------------------------------ internal
+
+    private static RefreshStrategy universalSearchStrategy() {
+        return (previous, current) -> {
+            if (current != null && current.startsWith("/")) {
+                if (ResourceAddressTypeahead.addressStructureChanged(previous, current)) {
+                    return Decision.refresh();
+                }
+                return Decision.filter();
+            }
+            return Decision.debounce(DEBOUNCE_MS);
+        };
     }
 }
