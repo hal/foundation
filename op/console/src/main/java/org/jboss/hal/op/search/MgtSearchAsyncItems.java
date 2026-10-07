@@ -87,9 +87,9 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
     private static HTMLElement nameWithTypeLabel(SearchResult result) {
         return span()
-                .add(result.name)
                 .add(label(result.type, typeColor(result.type)).compact()
-                        .css(util("ml-sm")))
+                        .css(util("mr-sm")))
+                .add(result.name)
                 .element();
     }
 
@@ -105,7 +105,7 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
                         d.add(span().text(result.description));
                     }
                     if (hasAddress) {
-                        d.add(small().css(util("mt-xs"), util("display-block"), util("color-200"))
+                        d.add(span().css(util("mt-xs"), util("display-block"), util("font-size-sm"), util("color-200"))
                                 .text(result.address));
                     }
                 })
