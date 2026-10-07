@@ -65,13 +65,6 @@ public class UniversalSearchBox {
                 .refreshOn(universalSearchStrategy())
                 .filter(SearchFilter.lastSegment('/'));
 
-        searchInput.onClear((e, si) -> searchInput.menu().reset());
-        searchInput.onInput((e, si, value) -> {
-            if (value == null || value.isEmpty()) {
-                searchInput.menu().reset();
-            }
-        });
-
         UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
         asyncItems.mgtAvailable(mgtAvailable);
 

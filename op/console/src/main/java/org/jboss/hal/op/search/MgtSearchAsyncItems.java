@@ -65,7 +65,10 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
                         if (result.address != null) {
                             text = result.name + "  " + result.address;
                         }
-                        MenuItem item = menuItem(Id.build(result.type, result.name), text)
+                        String identifier = result.address != null
+                                ? Id.build(result.type, result.name, result.address)
+                                : Id.build(result.type, result.name);
+                        MenuItem item = menuItem(identifier, text)
                                 .store("searchResult", result);
                         items.add(item);
                     }
