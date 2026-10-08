@@ -11,9 +11,9 @@
     "watch": "vite --config vite.config.js"
   },
   "dependencies": {
-    "@patternfly-java/charts": "catalog:pfj",
-    "@patternfly-java/core": "catalog:pfj",
-    "@patternfly-java/finder": "catalog:pfj",
+    "@patternfly-java/charts": "0.13.0",
+    "@patternfly-java/core": "0.13.0",
+    "@patternfly-java/finder": "0.13.0",
     "@patternfly/patternfly": "^6.6.1",
     "dompurify": "^3.4.16"
   },
