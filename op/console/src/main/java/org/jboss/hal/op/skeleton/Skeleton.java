@@ -20,7 +20,6 @@ import org.jboss.elemento.IsElement;
 import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
-import org.jboss.hal.op.search.UniversalSearchEvents;
 import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.button.Button;
@@ -36,10 +35,11 @@ import elemental2.dom.HTMLElement;
 import static elemental2.dom.DomGlobal.document;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.op.endpoint.EndpointSelector.endpointSelector;
-import static org.jboss.hal.op.mgt.ModelGraphToolsIndicator.modelGraphToolsIndicator;
 import static org.jboss.hal.op.notification.NotificationElements.notificationElements;
+import static org.jboss.hal.op.search.UniversalSearchBox.universalSearchBox;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.component.ModelGraphToolsIndicator.modelGraphToolsIndicator;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -104,7 +104,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(Button.button(search()).plain()
-                                        .onClick((e, c) -> UniversalSearchEvents.Open.dispatch(c.element()))))
+                                        .onClick((e, c) -> universalSearchBox().show())))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)))
                                 .addItem(toolbarItem().add(modelGraphToolsIndicator()))

@@ -16,6 +16,7 @@
 package org.jboss.hal.ui.navigation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +25,8 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.TemplateMatcher;
+
+import static java.util.Arrays.asList;
 
 /**
  * Central registry that holds all {@link RouteBinding}s and provides lookup in both directions:
@@ -77,7 +80,41 @@ public class RouteRegistry {
 
     /** Navigates to the best matching route for the given template, falling back to the fallback route. */
     public void goTo(AddressTemplate template) {
-        byTemplate(template).ifPresentOrElse(binding -> placeManager.goTo(binding.route(), binding.routeParams(template)),
-                () -> placeManager.goTo(fallbackRoute, template.template));
+        goTo(template, null);
+    }
+
+    /**
+     * Navigates to the best matching route for the given template, with an optional highlight specification. The highlight is
+     * appended to the last route parameter using the {@link Selection#SEPARATOR} format (e.g., {@code @a:max-pool-size}). All
+     * resource routes have a trailing {@code :selection?} parameter that carries this highlight.
+     */
+    public void goTo(AddressTemplate template, String highlight) {
+        byTemplate(template).ifPresentOrElse(binding -> {
+            List<String> params = asList(binding.routeParams(template));
+            if (binding.supportsSelection() && highlight != null) {
+                if (params.size() > requiredParamCount(binding.route())) {
+                    // There's already a selection => add the highlight to it
+                    params.set(params.size() - 1, params.get(params.size() - 1) + Selection.SEPARATOR + highlight);
+                } else {
+                    // There's no selection yet => add the highlight as a new parameter
+                    params.add(Selection.SEPARATOR + highlight);
+                }
+            }
+            placeManager.goTo(binding.route(), params.toArray(new String[0]));
+        }, () -> placeManager.goTo(fallbackRoute, template.template));
+    }
+
+    private int requiredParamCount(String route) {
+        int total = 0;
+        int optional = 0;
+        for (String segment : route.split("/")) {
+            if (segment.startsWith(":")) {
+                total++;
+                if (segment.endsWith("?")) {
+                    optional++;
+                }
+            }
+        }
+        return total - optional;
     }
 }

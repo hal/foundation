@@ -26,7 +26,7 @@ import static org.jboss.hal.op.navigation.KnownRoutes.SYSTEM_PROPERTY_ROUTE;
 
 /** Detail page for viewing and editing a single system property resource. */
 @Dependent
-@Route("/configuration/system-property/:name")
+@Route("/configuration/system-property/:name/:selection?")
 public class SystemPropertyPage extends RouteBindingPage {
 
     @Inject

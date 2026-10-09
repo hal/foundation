@@ -15,7 +15,7 @@
  */
 package org.jboss.hal.op.search;
 
-import org.jboss.hal.op.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.ModelGraphTools;
 import org.jboss.hal.ui.component.ResourceAddressAsyncItems;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
@@ -64,6 +64,12 @@ class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         if (value == null || value.trim().isEmpty()) {
             return Promise.resolve(emptyList());
         }
+        if (MgtSearchAsyncItems.hasTypeFilter(value)) {
+            if (mgtAvailable) {
+                return mgtItems.apply(menuList);
+            }
+            return Promise.resolve(emptyList());
+        }
         if (value.startsWith("/")) {
             return addressItems.apply(menuList);
         }
@@ -73,10 +79,7 @@ class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         return Promise.resolve(emptyList());
     }
 
-    /**
-     * Updates the MGT availability status. Called from the {@link org.jboss.hal.op.mgt.ModelGraphToolsEvents.Availability}
-     * listener.
-     */
+    /** Updates the MGT availability status. */
     void mgtAvailable(boolean available) {
         this.mgtAvailable = available;
     }

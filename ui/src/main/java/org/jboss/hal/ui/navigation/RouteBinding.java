@@ -32,7 +32,13 @@ import org.jboss.hal.meta.AddressTemplate;
  *     {@link org.jboss.elemento.router.PlaceManager#goTo(String, String...)}.</dd>
  * </dl>
  *
- * @param route      the route string (e.g., {@code /configuration/interface/:name})
+ * <h2>Selection convention</h2>
+ * Routes that support deep-linking into a resource tree or highlighting a specific attribute/operation must end with
+ * {@code :selection?} as their <strong>last</strong> optional parameter. The selection value uses the {@link Selection} format
+ * and may include a {@link Highlight} suffix (e.g., {@code subsystem=datasources@a:max-pool-size}). This convention is
+ * relied upon by {@link RouteRegistry#goTo(AddressTemplate, String)} and {@link RouteBindingPage}.
+ *
+ * @param route      the route string (e.g., {@code /configuration/interface/:name/:selection?})
  * @param template   the wildcard address template (e.g., {@code interface=*})
  * @param toTemplate resolves route parameters into a concrete template (route → template direction)
  * @param toRoute    extracts route parameters from a resolved template (template → route direction)
@@ -49,5 +55,9 @@ public record RouteBinding(
 
     String[] routeParams(AddressTemplate template) {
         return toRoute.parameter(template, route);
+    }
+
+    public boolean supportsSelection() {
+        return route.endsWith(":selection?");
     }
 }

@@ -24,6 +24,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.core.Notifications;
+import org.jboss.hal.core.mgt.ModelGraphTools;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Endpoints;
 import org.jboss.hal.env.Environment;
@@ -69,6 +70,7 @@ public class UIContext {
     private final Endpoints endpoints;
     private final Environment environment;
     private final MetadataRepository metadataRepository;
+    private final ModelGraphTools modelGraphTools;
     private final ModelTree modelTree;
     private final Notifications notifications;
     private final PlaceManager placeManager;
@@ -86,6 +88,7 @@ public class UIContext {
             Endpoints endpoints,
             Environment environment,
             MetadataRepository metadataRepository,
+            ModelGraphTools modelGraphTools,
             ModelTree modelTree,
             Notifications notifications,
             PlaceManager placeManager,
@@ -101,6 +104,7 @@ public class UIContext {
         this.endpoints = endpoints;
         this.environment = environment;
         this.metadataRepository = metadataRepository;
+        this.modelGraphTools = modelGraphTools;
         this.modelTree = modelTree;
         this.notifications = notifications;
         this.placeManager = placeManager;
@@ -143,6 +147,11 @@ public class UIContext {
     /** Returns the metadata repository for accessing WildFly management model metadata. */
     public MetadataRepository metadataRepository() {
         return metadataRepository;
+    }
+
+    /** Returns the model graph tools service for querying the MGT sidecar container. */
+    public ModelGraphTools modelGraphTools() {
+        return modelGraphTools;
     }
 
     /** Returns the model tree representing the WildFly management resource hierarchy. */

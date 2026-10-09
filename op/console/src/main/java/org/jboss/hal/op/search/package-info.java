@@ -17,18 +17,16 @@
 /**
  * Universal search feature accessible via {@code Cmd+K} / {@code Ctrl+K}. The package separates concerns as follows:
  * <ul>
- *     <li>{@link org.jboss.hal.op.search.UniversalSearch} — CDI controller that registers the keyboard shortcut and wires the
- *         {@link org.jboss.hal.op.mgt.ModelGraphTools} service into the search box.</li>
- *     <li>{@link org.jboss.hal.op.search.UniversalSearchBox} — view created fresh on each open, manages the modal and search
- *         input UI.</li>
+ *     <li>{@link org.jboss.hal.op.search.UniversalSearchBox} — view created fresh on each open, manages the modal, search
+ *         input UI, wildcard resolution, and navigation.</li>
  *     <li>{@link org.jboss.hal.op.search.UniversalSearchAsyncItems} — compound delegator that routes search requests to the
  *         appropriate strategy based on input value and model graph tools availability.</li>
  *     <li>{@link org.jboss.hal.op.search.MgtSearchAsyncItems} — queries the model graph tools REST API for matching resources,
  *         attributes, operations, and capabilities.</li>
  * </ul>
  *
- * <p>The {@link org.jboss.hal.op.search.UniversalSearchEvents.Open} event is the only event used for cross-component
- * communication. The search data flow uses the {@link org.patternfly.async.AsyncItems} pattern for direct integration with
- * the search input's built-in menu.
+ * <p>The search data flow uses the {@link org.patternfly.async.AsyncItems} pattern for direct integration with the search
+ * input's built-in menu. Model graph tools availability is checked via
+ * {@link org.jboss.hal.core.mgt.ModelGraphTools#available()}.
  */
 package org.jboss.hal.op.search;

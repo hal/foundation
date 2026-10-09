@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.Id;
-import org.jboss.hal.op.mgt.ModelGraphTools;
-import org.jboss.hal.op.mgt.SearchResult;
+import org.jboss.hal.core.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.SearchResult;
+import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.resources.Keys;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
@@ -32,8 +34,10 @@ import elemental2.promise.Promise;
 
 import static java.util.Collections.emptyList;
 import static org.jboss.elemento.Elements.div;
-import static org.jboss.elemento.Elements.small;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.mgt;
+import static org.jboss.hal.resources.HalClasses.universalSearch;
 import static org.patternfly.component.label.Label.label;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.style.Classes.util;
@@ -43,7 +47,7 @@ import static org.patternfly.style.Classes.util;
  * capabilities matching the current search input value.
  *
  * <p>Each {@link SearchResult} is mapped to a {@link MenuItem} with a colored type label, description, and address. The full
- * {@link SearchResult} is stored on the menu item for later retrieval on selection.
+ * {@link SearchResult} is stored on the menu item for later retrieval using the {@link Keys#MGT_SEARCH_RESULT} key.
  *
  * @see UniversalSearchAsyncItems
  */
@@ -64,16 +68,27 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
             return Promise.resolve(emptyList());
         }
 
-        return modelGraphTools.search(value.trim())
+        String trimmed = value.trim();
+        String typeFilter = typeFilter(trimmed);
+        String searchTerm = typeFilter != null ? trimmed.substring(2).trim() : trimmed;
+        if (searchTerm.isEmpty()) {
+            return Promise.resolve(emptyList());
+        }
+
+        return modelGraphTools.search(searchTerm)
                 .then(results -> {
                     List<MenuItem> items = new ArrayList<>();
                     for (SearchResult result : results) {
+                        if (typeFilter != null && !typeFilter.equals(result.type)) {
+                            continue;
+                        }
                         String identifier = result.address != null
                                 ? Id.build(result.type, result.name, result.address)
                                 : Id.build(result.type, result.name);
                         MenuItem item = menuItem(identifier, result.name)
+                                .css(halComponent(universalSearch, mgt, HalClasses.result))
                                 .text(nameWithTypeLabel(result))
-                                .store("searchResult", result);
+                                .store(Keys.MGT_SEARCH_RESULT, result);
                         HTMLElement descriptionElement = descriptionWithAddress(result);
                         if (descriptionElement != null) {
                             item.description(descriptionElement);
@@ -123,5 +138,26 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
             case "Capability" -> Color.teal;
             default -> Color.grey;
         };
+    }
+
+    static boolean hasTypeFilter(String value) {
+        if (value != null && value.length() >= 2 && value.charAt(1) == ':') {
+            char prefix = value.charAt(0);
+            return prefix == 'a' || prefix == 'r' || prefix == 'o' || prefix == 'c';
+        }
+        return false;
+    }
+
+    private static String typeFilter(String value) {
+        if (hasTypeFilter(value)) {
+            return switch (value.charAt(0)) {
+                case 'a' -> "Attribute";
+                case 'r' -> "Resource";
+                case 'o' -> "Operation";
+                case 'c' -> "Capability";
+                default -> null;
+            };
+        }
+        return null;
     }
 }

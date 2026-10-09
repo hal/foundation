@@ -28,6 +28,9 @@ import org.jboss.hal.meta.WildcardResolver;
 import org.jboss.hal.ui.navigation.RouteBinding;
 import org.jboss.hal.ui.navigation.RouteRegistry;
 
+import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.SUBSYSTEM;
 import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
 import static org.jboss.hal.op.navigation.KnownRoutes.DEFAULT_ROUTE;
 import static org.jboss.hal.op.navigation.KnownRoutes.INTERFACE_ROUTE;
@@ -106,17 +109,46 @@ public class RouteRegistryProducer {
 
     // ------------------------------------------------------ parameter extractors
 
+    /**
+     * Extracts route parameters for the subsystem route {@code /configuration/subsystem/:name/:selection?} from the given
+     * address template. The {@code :name} parameter is the subsystem name, and the optional {@code :selection?} parameter is
+     * the full template when the address points to a nested resource below the subsystem.
+     *
+     * <h2>Examples</h2>
+     * <table>
+     *     <tr><th>Address template</th><th>Route</th><th>Parameters</th></tr>
+     *     <tr>
+     *         <td>{@code /subsystem=datasources}</td>
+     *         <td>{@code /configuration/subsystem/datasources}</td>
+     *         <td>{@code ["datasources"]}</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code /subsystem=datasources/data-source=ExampleDS}</td>
+     *         <td>{@code /configuration/subsystem/datasources/<encoded-selection>}</td>
+     *         <td>{@code ["datasources", "/subsystem=datasources/data-source=ExampleDS"]}</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code /subsystem=logging/logger=com.example}</td>
+     *         <td>{@code /configuration/subsystem/logging/<encoded-selection>}</td>
+     *         <td>{@code ["logging", "/subsystem=logging/logger=com.example"]}</td>
+     *     </tr>
+     * </table>
+     *
+     * <p>When the address template points directly at a subsystem (last segment key is {@code "subsystem"}), no selection is
+     * returned. When it points deeper, the full template string is used as the selection so that the page can navigate to
+     * the nested resource in the model browser tree.
+     */
     private String[] subsystemParams(AddressTemplate template) {
         AddressTemplate resolved = new StatementContextResolver(statementContext).resolve(template);
         String name = null;
         String selection = null;
         for (Segment segment : resolved) {
-            if ("subsystem".equals(segment.key)) {
+            if (SUBSYSTEM.equals(segment.key)) {
                 name = segment.value;
                 break;
             }
         }
-        if (!"subsystem".equals(resolved.last().key)) {
+        if (!SUBSYSTEM.equals(resolved.last().key)) {
             selection = resolved.template;
         }
         if (name != null && selection != null) {
@@ -131,9 +163,9 @@ public class RouteRegistryProducer {
         String group = null;
         String name = null;
         for (Segment segment : template) {
-            if ("socket-binding-group".equals(segment.key)) {
+            if (SOCKET_BINDING_GROUP.equals(segment.key)) {
                 group = segment.value;
-            } else if ("socket-binding".equals(segment.key)) {
+            } else if (SOCKET_BINDING.equals(segment.key)) {
                 name = segment.value;
             }
         }

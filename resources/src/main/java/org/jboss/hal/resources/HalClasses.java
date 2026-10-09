@@ -41,12 +41,14 @@ public interface HalClasses {
     String groupBody = "group-body";
     String groups = "groups";
     String jndi = "jndi";
+    String mgt = "mgt";
     String modelBrowser = "model-browser";
     String name = "name";
     String rbacHidden = "rbac-hidden";
     String recordTable = "record-table";
     String resource = "resource";
     String restricted = "restricted";
+    String result = "result";
     String results = "results";
     String scheme = "scheme";
     String segment = "segment";

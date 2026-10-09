@@ -13,12 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.jboss.hal.core.mgt;
+
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 
 /**
- * Integration with the Model Graph Tool (MGT) sidecar container. MGT provides a Neo4j-backed graph database of a specific
- * WildFly release's management model, exposed through a Quarkus REST API. This package contains services for probing MGT
- * availability, querying the REST API, and managing the connection lifecycle.
+ * JsInterop type for the MGT search API response. Mirrors {@code org.wildfly.modelgraph.api.SearchResponse}.
  *
  * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
  */
-package org.jboss.hal.op.mgt;
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+class SearchResponse {
+
+    /** The search results returned by the MGT search API. */
+    public SearchResult[] results;
+}

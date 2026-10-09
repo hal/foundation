@@ -26,7 +26,7 @@ import static org.jboss.hal.op.navigation.KnownRoutes.INTERFACE_ROUTE;
 
 /** Detail page for viewing and editing a single network interface resource. */
 @Dependent
-@Route("/configuration/interface/:name")
+@Route("/configuration/interface/:name/:selection?")
 public class InterfacePage extends RouteBindingPage {
 
     @Inject

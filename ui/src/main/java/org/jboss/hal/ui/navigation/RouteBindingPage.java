@@ -71,10 +71,11 @@ public abstract class RouteBindingPage implements Page {
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         HTMLElement element = registry.byRoute(route)
                 .map(binding -> {
-                    Optional<AddressTemplate> selection = parameter.has("selection")
-                            ? AddressTemplate.ofUntrusted(parameter.get("selection"))
-                            : Optional.empty();
-                    return modelBrowser(binding.resolve(parameter), selection.orElse(null))
+                    Selection selection = parameter.has("selection")
+                            ? Selection.parse(parameter.get("selection"))
+                            : new Selection(Optional.empty(), Optional.empty());
+                    // TODO pass selection.highlight() to modelBrowser for visual highlighting
+                    return modelBrowser(binding.resolve(parameter), selection.address().orElse(null))
                             .element();
                 })
                 .orElse(emptyState()

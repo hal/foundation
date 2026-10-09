@@ -13,19 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.mgt;
+package org.jboss.hal.core.mgt;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * JsInterop type for the MGT search API response. Mirrors {@code org.wildfly.modelgraph.api.SearchResponse}.
+ * JsInterop type for a resource reference in an MGT search result. Mirrors {@code org.wildfly.modelgraph.api.ResourceRef}.
  *
  * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class SearchResponse {
+public class ResourceRef {
 
-    /** The search results returned by the MGT search API. */
-    public SearchResult[] results;
+    /** The resource name. */
+    public String name;
+
+    /** The management model address of the resource. */
+    public String address;
 }

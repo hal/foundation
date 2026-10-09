@@ -29,7 +29,4 @@ public interface Resources extends ClientBundle {
     /** Returns the HAL logo as an SVG text resource. */
     @Source("hal-logo.svg")
     TextResource logo();
-
-    @Source("mgt.svg")
-    TextResource mgt();
 }

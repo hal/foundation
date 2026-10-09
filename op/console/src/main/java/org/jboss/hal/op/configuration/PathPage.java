@@ -26,7 +26,7 @@ import static org.jboss.hal.op.navigation.KnownRoutes.PATH_ROUTE;
 
 /** Detail page for viewing and editing a single filesystem path resource. */
 @Dependent
-@Route("/configuration/path/:name")
+@Route("/configuration/path/:name/:selection?")
 public class PathPage extends RouteBindingPage {
 
     @Inject

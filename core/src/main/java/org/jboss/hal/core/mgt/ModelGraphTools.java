@@ -13,10 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.mgt;
+package org.jboss.hal.core.mgt;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -27,20 +25,18 @@ import org.jboss.hal.env.Version;
 import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
 
-import static elemental2.dom.DomGlobal.document;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_IDENTITY;
 import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_SEARCH;
 import static org.jboss.hal.resources.Urls.replaceVersion;
 
 /**
- * CDI service for interacting with the model graph tools (MGT) sidecar container. The MGT container provides a REST API backed
- * by a Neo4j graph database containing the static metadata of a specific WildFly release.
+ * Service for interacting with the model graph tools (MGT) sidecar container. The MGT container provides a REST API backed by a
+ * Neo4j graph database containing the static metadata of a specific WildFly release.
  *
  * <p>The MGT container port is derived from the WildFly product version: {@code 7000 + major * 10 + minor}. For example,
  * WildFly 41.0 maps to port 7410, and the REST API is reachable at {@code http://localhost:7410/api/}.
  */
-@Startup
 @ApplicationScoped
 public class ModelGraphTools {
 
@@ -49,23 +45,23 @@ public class ModelGraphTools {
     private static final int LIMIT = 100;
 
     private final Environment environment;
+    private boolean available;
 
     @Inject
     public ModelGraphTools(Environment environment) {
         this.environment = environment;
+        this.available = false;
     }
 
-    @PostConstruct
-    void init() {
-        ModelGraphToolsEvents.Ping.listen(document.body, () -> ping().then((result) -> {
-            ModelGraphToolsEvents.Availability.dispatch(document.body, result);
-            return null;
-        }));
+    /** Returns whether a matching MGT container was found during the last {@link #ping()} check. */
+    public boolean available() {
+        return available;
     }
 
     /**
      * Checks whether a matching MGT container is running by sending a GET request to the {@code /api/identity} endpoint.
-     * Returns a promise that resolves to {@code true} if the container responds with a 200 status, or {@code false} otherwise.
+     * Updates the {@link #available()} flag and returns a promise that resolves to {@code true} if the container responds with
+     * a 200 status, or {@code false} otherwise.
      */
     public Promise<Boolean> ping() {
         String url = replaceVersion(MODEL_GRAPH_TOOLS_IDENTITY, String.valueOf(port(environment.productVersion())));
@@ -82,22 +78,26 @@ public class ModelGraphTools {
                                 .then(identity -> {
                                     logger.info("Model graph tools for WildFly %s available: %o",
                                             environment.productVersion(), identity);
+                                    available = true;
                                     return Promise.resolve(true);
                                 })
                                 .catch_(error -> {
                                     logger.error("Failed to parse model graph tools identity for WildFly %s: %s",
                                             environment.productVersion(), String.valueOf(error));
+                                    available = false;
                                     return Promise.resolve(false);
                                 });
                     } else {
                         logger.info("Model graph tools for WildFly %s not available: %d",
                                 environment.productVersion(), response.status);
+                        available = false;
                         return Promise.resolve(false);
                     }
                 })
                 .catch_(error -> {
                     logger.info("Model graph tools for WildFly %s not available: %s",
                             environment.productVersion(), error);
+                    available = false;
                     return Promise.resolve(false);
                 });
     }
@@ -107,8 +107,16 @@ public class ModelGraphTools {
      * promise that resolves to the array of search results or an empty array if the request fails.
      */
     public Promise<SearchResult[]> search(String term) {
+        return search(term, LIMIT);
+    }
+
+    /**
+     * Queries the MGT search API for resources, attributes, operations, and capabilities matching the given term. Returns a
+     * promise that resolves to the array of search results or an empty array if the request fails.
+     */
+    public Promise<SearchResult[]> search(String term, int limit) {
         String url = replaceVersion(MODEL_GRAPH_TOOLS_SEARCH, String.valueOf(port(environment.productVersion())))
-                + "?q=" + term + "&limit=" + LIMIT;
+                + "?q=" + term + "&limit=" + limit;
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -132,12 +140,12 @@ public class ModelGraphTools {
                                     return Promise.resolve(new SearchResult[0]);
                                 });
                     } else {
-                        logger.info("Model graph tools search failed: %d", response.status);
+                        logger.error("Model graph tools search failed: %d", response.status);
                         return Promise.resolve(new SearchResult[0]);
                     }
                 })
                 .catch_(error -> {
-                    logger.info("Model graph tools search failed: %s", error);
+                    logger.error("Model graph tools search failed: %s", error);
                     return Promise.resolve(new SearchResult[0]);
                 });
     }

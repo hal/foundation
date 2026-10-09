@@ -15,24 +15,36 @@
  */
 package org.jboss.hal.op.search;
 
+import java.util.List;
+
+import org.jboss.elemento.Id;
+import org.jboss.elemento.Key;
+import org.jboss.hal.core.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.SearchResult;
+import org.jboss.hal.dmr.Operation;
+import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.op.mgt.ModelGraphTools;
-import org.jboss.hal.op.mgt.SearchResult;
+import org.jboss.hal.resources.Keys;
 import org.jboss.hal.ui.component.ResourceAddressTypeahead;
-import org.patternfly.component.menu.SearchFilter;
+import org.patternfly.component.menu.MenuItem;
+import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.textinputgroup.SearchInputGroupTypeahead;
 import org.patternfly.component.typeahead.Decision;
 import org.patternfly.component.typeahead.RefreshStrategy;
 
+import static org.jboss.elemento.EventType.keydown;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.SelectionMode.click;
 import static org.patternfly.component.menu.Menu.menu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
+import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuType.menu;
+import static org.patternfly.component.menu.SearchFilter.lastSegment;
 import static org.patternfly.component.modal.Modal.modal;
 import static org.patternfly.component.modal.ModalBody.modalBody;
 import static org.patternfly.component.textinputgroup.SearchInputGroupTypeahead.searchInputGroupTypeahead;
@@ -45,25 +57,33 @@ import static org.patternfly.component.textinputgroup.SearchInputGroupTypeahead.
  * to either {@link org.jboss.hal.ui.component.ResourceAddressAsyncItems} (for resource address typeahead when the input starts
  * with {@code /}) or {@link MgtSearchAsyncItems} (for model graph tools queries when MGT is available). This class contains no
  * search logic — it is purely a view component.
- *
- * @see UniversalSearch
  */
 public class UniversalSearchBox {
+
+    // ------------------------------------------------------ factory
+
+    public static UniversalSearchBox universalSearchBox() {
+        return new UniversalSearchBox();
+    }
 
     // ------------------------------------------------------ instance
 
     private static final int DEBOUNCE_MS = 300;
     private static final String PLACEHOLDER_ADDRESS_ONLY = "Go to a resource…";
-    private static final String PLACEHOLDER_MGT = "Search resources, attributes, operations or go to a resource…";
+    private static final String PLACEHOLDER_MGT = "Search or filter by a: r: o: c: — start with / for addresses…";
 
     private final Modal modal;
+    private final MenuList menuList;
     private final SearchInputGroupTypeahead searchInput;
 
-    UniversalSearchBox(ModelGraphTools modelGraphTools, boolean mgtAvailable) {
+    UniversalSearchBox() {
+        ModelGraphTools modelGraphTools = uic().modelGraphTools();
+        boolean mgtAvailable = modelGraphTools.available();
+
         searchInput = searchInputGroupTypeahead("universal-search")
                 .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
-                .refreshOn(universalSearchStrategy())
-                .filter(SearchFilter.lastSegment('/'));
+                .filter(lastSegment('/'))
+                .refreshOn(universalSearchStrategy());
 
         UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
         asyncItems.mgtAvailable(mgtAvailable);
@@ -71,7 +91,7 @@ public class UniversalSearchBox {
         searchInput.addMenu(menu(menu, click)
                 .scrollable()
                 .addContent(menuContent()
-                        .addList(menuList()
+                        .addList(menuList = menuList()
                                 .addItems(asyncItems))));
 
         modal = modal().css(halComponent(universalSearch))
@@ -81,32 +101,136 @@ public class UniversalSearchBox {
                 .closeOnEsc(true)
                 .addBody(modalBody().add(searchInput));
 
+        searchInput.on(keydown, e -> {
+            if (Key.Escape.match(e)) {
+                if (searchInput.expanded()) {
+                    e.stopPropagation();
+                }
+            }
+            if (Key.Enter.match(e)) {
+                String value = searchInput.value();
+                if (!searchInput.expanded() && value != null && value.startsWith("/")) {
+                    gotoAddress(value);
+                }
+            }
+        });
+
         searchInput.menu().onSingleSelect((event, item, selected) -> {
-            modal.close();
-            SearchResult searchResult = item.get("searchResult");
-            String address = searchResult != null && searchResult.address != null
-                    ? searchResult.address
-                    : item.text();
-            AddressTemplate.ofUntrusted(address).ifPresent(t -> uic().routeRegistry().goTo(t));
+            SearchResult searchResult = item.get(Keys.MGT_SEARCH_RESULT);
+            if (searchResult != null) {
+                evaluateSearchResult(searchResult);
+            } else if (Boolean.TRUE.equals(item.get(Keys.RESOLVED_ADDRESS))) {
+                modal.close();
+                AddressTemplate.ofUntrusted(item.text()).ifPresent(t -> uic().routeRegistry().goTo(t));
+            }
         });
     }
 
     // ------------------------------------------------------ api
 
     /** Opens the search modal and focuses the search input. */
-    void show() {
+    public void show() {
         modal.open();
         searchInput.input().element().focus();
     }
 
     // ------------------------------------------------------ internal
 
-    private static RefreshStrategy universalSearchStrategy() {
+    private void evaluateSearchResult(SearchResult searchResult) {
+        String address = searchResult.address != null ? searchResult.address : searchResult.name;
+        AddressTemplate.ofUntrusted(address).ifPresent(t -> resolveAndNavigate(t, searchResult));
+    }
+
+    private void gotoAddress(String value) {
+        if (value != null && !value.trim().isEmpty()) {
+            AddressTemplate.ofUntrusted(value).ifPresent(t -> resolveAndNavigate(t, null));
+        }
+    }
+
+    private void resolveAndNavigate(AddressTemplate template, SearchResult searchResult) {
+        if (template.fullyQualified()) {
+            verifyAndNavigate(template, searchResult);
+        } else {
+            uic().modelTree().resolveWildcards(template).then(resolved -> {
+                if (resolved.size() == 1) {
+                    verifyAndNavigate(resolved.get(0), searchResult);
+                } else if (resolved.isEmpty()) {
+                    showResolvedAddresses(List.of(), searchResult);
+                } else {
+                    showResolvedAddresses(resolved, searchResult);
+                }
+                return null;
+            });
+        }
+    }
+
+    private void verifyAndNavigate(AddressTemplate template, SearchResult searchResult) {
+        ResourceAddress address = template.resolve(uic().statementContext());
+        Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION).build();
+        uic().dispatcher().execute(operation)
+                .then(__ -> {
+                    modal.close();
+                    uic().routeRegistry().goTo(template, highlight(searchResult));
+                    return null;
+                })
+                .catch_(__ -> {
+                    showResourceNotFound(template);
+                    return null;
+                });
+    }
+
+    private void showResourceNotFound(AddressTemplate template) {
+        menuList.clear();
+        menuList.addItem(menuItem(Id.unique("not-found"),
+                "Resource not found: " + template).disabled());
+        searchInput.expand();
+        searchInput.menu().clearSearch();
+    }
+
+    private void showResolvedAddresses(List<AddressTemplate> templates, SearchResult searchResult) {
+        menuList.clear();
+        if (templates.isEmpty()) {
+            menuList.addItem(menuItem(Id.unique("no-results"), "No matching resources found").disabled());
+        } else {
+            menuList.addItem(menuItem(Id.unique("pick-address"),
+                    "Address resolves to multiple resources. Pick one:").disabled());
+            for (AddressTemplate template : templates) {
+                MenuItem item = menuItem(Id.build(template.template), template.template)
+                        .store(Keys.RESOLVED_ADDRESS, Boolean.TRUE);
+                if (searchResult != null) {
+                    item.store(Keys.MGT_SEARCH_RESULT, searchResult);
+                }
+                menuList.addItem(item);
+            }
+        }
+        searchInput.expand();
+        searchInput.menu().clearSearch();
+    }
+
+    private String highlight(SearchResult searchResult) {
+        if (searchResult == null || searchResult.type == null || searchResult.name == null) {
+            return null;
+        }
+        String prefix = switch (searchResult.type) {
+            case "Attribute" -> "a:";
+            case "Operation" -> "o:";
+            default -> null;
+        };
+        return prefix != null ? prefix + searchResult.name : null;
+    }
+
+    private RefreshStrategy universalSearchStrategy() {
         return (previous, current) -> {
+            if (MgtSearchAsyncItems.hasTypeFilter(current)) {
+                return Decision.debounce(DEBOUNCE_MS);
+            }
             if (current != null && current.startsWith("/")) {
                 if (ResourceAddressTypeahead.addressStructureChanged(previous, current)) {
                     return Decision.refresh();
                 }
+                return Decision.filter();
+            }
+            if (previous != null && current != null && current.startsWith(previous)) {
                 return Decision.filter();
             }
             return Decision.debounce(DEBOUNCE_MS);

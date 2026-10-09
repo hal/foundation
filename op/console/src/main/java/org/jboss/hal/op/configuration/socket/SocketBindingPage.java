@@ -26,7 +26,7 @@ import static org.jboss.hal.op.navigation.KnownRoutes.SOCKET_BINDING_ROUTE;
 
 /** Detail page for a socket binding within a socket binding group. Displays the binding's attributes such as port, interface and multicast settings. */
 @Dependent
-@Route("/configuration/socket-binding-group/:group/socket-binding/:name")
+@Route("/configuration/socket-binding-group/:group/socket-binding/:name/:selection?")
 public class SocketBindingPage extends RouteBindingPage {
 
     @Inject

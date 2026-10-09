@@ -23,10 +23,8 @@ import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.core.ActivityTracker;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
-import org.jboss.hal.op.discovery.Discovery;
 import org.jboss.hal.op.endpoint.EndpointStorage;
-import org.jboss.hal.op.mgt.ModelGraphTools;
-import org.jboss.hal.op.mgt.ModelGraphToolsEvents;
+import org.jboss.hal.op.search.UniversalSearch;
 import org.patternfly.component.navigation.Navigation;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 
@@ -37,6 +35,7 @@ import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
 import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
+import static org.jboss.hal.ui.component.ModelGraphToolsIndicator.modelGraphToolsIndicator;
 
 /**
  * Entry point of the halOP console application. Initializes CDI, runs the bootstrap sequence, and either sets up the main
@@ -48,9 +47,7 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     @Inject Bootstrap bootstrap;
-    @Inject Discovery discovery;
     @Inject EndpointStorage endpointStorage;
-    @Inject ModelGraphTools modelGraphTools;
     @Inject Navigation navigation;
     @Inject PlaceManager placeManager;
 
@@ -76,16 +73,11 @@ public class Main {
         logger.debug("Bootstrap completed");
         insertFirst(document.body, skeleton(navigation, endpointStorage));
         placeManager.start();
-        discovery.run().subscribe(__ -> afterDiscovery());
-    }
-
-    private void afterDiscovery() {
-        logger.debug("Discovery completed");
-        ActivityTracker at = new ActivityTracker(
-                () -> ModelGraphToolsEvents.Ping.dispatch(document.body),
+        UniversalSearch.registerShortcut();
+        new ActivityTracker(
+                () -> modelGraphToolsIndicator().refresh(),
                 () -> {
                     // pause any polling intervals
-                });
-        at.start();
+                }).start();
     }
 }

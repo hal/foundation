@@ -59,10 +59,21 @@ public interface Keys {
     String HOSTS = "hosts";
 
     /**
-     * {@code org.jboss.hal.meta.Metadata} stored in wizard context during the add-resource dialog to pass fetched metadata
+     * {@code org.jboss.hal.meta.Metadata} stored in the wizard context during the add-resource dialog to pass fetched metadata
      * between wizard steps.
      */
     String METADATA = "metadata";
+
+    /**
+     * {@code org.jboss.hal.core.mgt.SearchResult} stored by the universal search when MGT is available.
+     */
+    String MGT_SEARCH_RESULT = "mgt-search-result";
+
+    /**
+     * {@code Boolean} marker stored on menu items created by wildcard resolution in the universal search. Distinguishes
+     * resolved addresses (which should navigate) from intermediate address typeahead segments (which should keep building).
+     */
+    String RESOLVED_ADDRESS = "resolved-address";
 
     /**
      * {@code org.jboss.hal.ui.modelbrowser.ModelBrowserNode} stored in tree-view and list items to associate each UI node with
@@ -71,8 +82,8 @@ public interface Keys {
     String MODEL_BROWSER_NODE = "model-browser-node";
 
     /**
-     * {@code org.jboss.hal.dmr.ModelNode} stored in wizard context during the add-resource dialog to hold the DMR payload built
-     * from form input.
+     * {@code org.jboss.hal.dmr.ModelNode} stored in the wizard context during the add-resource dialog to hold the DMR payload
+     * built from form input.
      */
     String MODEL_NODE = "modelNode";
 
@@ -97,12 +108,6 @@ public interface Keys {
      * {@code List<String>} of provider-point strings carried through a flow context when resolving WildFly capabilities.
      */
     String PROVIDER_POINTS = "provider-points";
-
-    /**
-     * {@code org.jboss.hal.ui.resource.ResourceAttribute} stored in form items and view items to associate each UI element with
-     * its resource attribute.
-     */
-    String RESOURCE_ATTRIBUTE = "resource-attribute";
 
     /**
      * {@code org.jboss.hal.ui.resource.form.ResourceForm} stored in wizard context during the add-resource dialog to pass the

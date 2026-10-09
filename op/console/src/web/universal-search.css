@@ -32,4 +32,12 @@
     .pf-v6-c-text-input-group__text-input {
         font-size: var(--pf-t--global--font--size--lg);
     }
+
+    .pf-v6-c-menu.pf-m-scrollable {
+        --pf-v6-c-menu__content--MaxHeight: 30rem;
+    }
+
+    .hal-c-universal-search__mgt-result {
+
+    }
 }

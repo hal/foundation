@@ -33,10 +33,10 @@ public interface KnownRoutes {
 
     // ------------------------------------------------------ all known routes (a-z)
 
-    String INTERFACE_ROUTE = "/configuration/interface/:name";
-    String PATH_ROUTE = "/configuration/path/:name";
-    String SOCKET_BINDING_GROUP_ROUTE = "/configuration/socket-binding-group/:name";
-    String SOCKET_BINDING_ROUTE = "/configuration/socket-binding-group/:group/socket-binding/:name";
+    String INTERFACE_ROUTE = "/configuration/interface/:name/:selection?";
+    String PATH_ROUTE = "/configuration/path/:name/:selection?";
+    String SOCKET_BINDING_GROUP_ROUTE = "/configuration/socket-binding-group/:name/:selection?";
+    String SOCKET_BINDING_ROUTE = "/configuration/socket-binding-group/:group/socket-binding/:name/:selection?";
     String SUBSYSTEM_ROUTE = "/configuration/subsystem/:name/:selection?";
-    String SYSTEM_PROPERTY_ROUTE = "/configuration/system-property/:name";
+    String SYSTEM_PROPERTY_ROUTE = "/configuration/system-property/:name/:selection?";
 }
