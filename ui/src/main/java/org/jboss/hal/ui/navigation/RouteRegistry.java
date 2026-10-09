@@ -26,6 +26,8 @@ import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.TemplateMatcher;
 
+import java.util.ArrayList;
+
 import static java.util.Arrays.asList;
 
 /**
@@ -90,7 +92,7 @@ public class RouteRegistry {
      */
     public void goTo(AddressTemplate template, String highlight) {
         byTemplate(template).ifPresentOrElse(binding -> {
-            List<String> params = asList(binding.routeParams(template));
+            List<String> params = new ArrayList<>(asList(binding.routeParams(template)));
             if (binding.supportsSelection() && highlight != null) {
                 if (params.size() > requiredParamCount(binding.route())) {
                     // There's already a selection => add the highlight to it
