@@ -125,12 +125,12 @@ public class RouteRegistryProducer {
      *     <tr>
      *         <td>{@code /subsystem=datasources/data-source=ExampleDS}</td>
      *         <td>{@code /configuration/subsystem/datasources/<encoded-selection>}</td>
-     *         <td>{@code ["datasources", "/subsystem=datasources/data-source=ExampleDS"]}</td>
+     *         <td>{@code ["datasources", "subsystem=datasources/data-source=ExampleDS"]}</td>
      *     </tr>
      *     <tr>
      *         <td>{@code /subsystem=logging/logger=com.example}</td>
      *         <td>{@code /configuration/subsystem/logging/<encoded-selection>}</td>
-     *         <td>{@code ["logging", "/subsystem=logging/logger=com.example"]}</td>
+     *         <td>{@code ["logging", "subsystem=logging/logger=com.example"]}</td>
      *     </tr>
      * </table>
      *
@@ -149,7 +149,7 @@ public class RouteRegistryProducer {
             }
         }
         if (!SUBSYSTEM.equals(resolved.last().key)) {
-            selection = resolved.template;
+            selection = resolved.template.substring(1);
         }
         if (name != null && selection != null) {
             return new String[]{name, selection};
