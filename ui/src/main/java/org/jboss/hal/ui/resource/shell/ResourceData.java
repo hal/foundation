@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.Attachable;
+import org.jboss.elemento.By;
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.TypedBuilder;
@@ -27,6 +28,8 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.Dataset;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.PipelineFlags;
 import org.jboss.hal.ui.resource.PipelineFlags.Placeholder;
@@ -48,6 +51,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 
+import static org.jboss.elemento.Elements.closest;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
@@ -212,6 +216,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
             toolbar.adjust(state, metadata.securityContext());
             setVisible(toolbar, true);
             rootContainer.add(rootElement);
+            highlight();
         }
     }
 
@@ -234,6 +239,23 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
             return resourceForm.element();
         }
         return null;
+    }
+
+    private void highlight() {
+        HTMLElement ancestor = closest(root, By.data(Dataset.highlight));
+        if (ancestor != null) {
+            String value = ancestor.dataset.get(Dataset.highlight);
+            Highlight.parse(value).ifPresent(h -> {
+                if (h.type() == Highlight.Type.ATTRIBUTE) {
+                    for (ViewItem item : viewItems) {
+                        if (h.name().equals(item.attribute().name())) {
+                            h.flash(ancestor, item.element());
+                            return;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     // ------------------------------------------------------ filtering

@@ -74,8 +74,9 @@ public abstract class RouteBindingPage implements Page {
                     Selection selection = parameter.has("selection")
                             ? Selection.parse(parameter.get("selection"))
                             : new Selection(Optional.empty(), Optional.empty());
-                    // TODO pass selection.highlight() to modelBrowser for visual highlighting
-                    return modelBrowser(binding.resolve(parameter), selection.address().orElse(null))
+                    return modelBrowser(binding.resolve(parameter),
+                            selection.address().orElse(null),
+                            selection.highlight().orElse(null))
                             .element();
                 })
                 .orElse(emptyState()

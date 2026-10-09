@@ -25,4 +25,7 @@ public interface Dataset {
 
     /** Data attribute storing the resource name associated with the CRUD operation. */
     String crudMessageName = "halCmn";
+
+    /** Data attribute storing a highlight specification (e.g. {@code a:max-pool-size} or {@code o:suspend}). */
+    String highlight = "halHighlight";
 }

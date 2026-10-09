@@ -40,6 +40,7 @@ public interface HalClasses {
     String goto_ = "goto";
     String groupBody = "group-body";
     String groups = "groups";
+    String highlight = "highlight";
     String jndi = "jndi";
     String mgt = "mgt";
     String modelBrowser = "model-browser";

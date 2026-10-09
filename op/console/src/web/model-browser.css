@@ -134,3 +134,16 @@
 .hal-c-model-browser__tree .pf-v6-c-tree-view__content {
     scroll-margin-top: var(--hal-c-model-browser-toolbar--Height);
 }
+
+@keyframes hal-highlight-fade {
+    0% {
+        background-color: var(--pf-t--global--background--color--highlight--default);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.hal-m-highlight {
+    animation: hal-highlight-fade 10s ease-out;
+}

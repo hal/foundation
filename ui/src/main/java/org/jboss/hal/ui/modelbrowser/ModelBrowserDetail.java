@@ -20,7 +20,10 @@ import java.util.List;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Dataset;
 import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.ui.navigation.Highlight;
+import org.jboss.hal.ui.resource.shell.ResourceTabs;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -126,13 +129,27 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
                     break;
                 case SINGLETON_RESOURCE:
                 case RESOURCE:
+                    String tabSelection = highlightTab();
                     shell.addTabs(resourceTabs(mbn.template, metadata)
-                            .initialSelection(lastTab)
+                            .initialSelection(tabSelection != null ? tabSelection : lastTab)
                             .onSelect((tabId, selected) -> lastTab = tabId));
                     break;
             }
             root.appendChild(shell.element());
         });
+    }
+
+    private String highlightTab() {
+        String value = modelBrowser.element().dataset.get(Dataset.highlight);
+        if (value != null) {
+            return Highlight.parse(value)
+                    .map(h -> switch (h.type()) {
+                        case ATTRIBUTE -> ResourceTabs.DATA_TAB;
+                        case OPERATION -> ResourceTabs.OPERATIONS_TAB;
+                    })
+                    .orElse(null);
+        }
+        return null;
     }
 
     private List<ChildResource> missingChildrenFor(ModelBrowserNode parent) {

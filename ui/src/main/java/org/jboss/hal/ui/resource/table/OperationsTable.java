@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.ui.resource.table;
 
+import org.jboss.elemento.Attachable;
+import org.jboss.elemento.By;
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.logger.Logger;
@@ -25,8 +27,10 @@ import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.description.ResourceDescription;
 import org.jboss.hal.model.filter.GlobalOperationsAttribute;
+import org.jboss.hal.resources.Dataset;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.patternfly.component.emptystate.EmptyState;
 import org.patternfly.component.list.List;
 import org.patternfly.component.table.Tbody;
@@ -37,7 +41,9 @@ import org.patternfly.layout.flex.Flex;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.MutationRecord;
 
+import static org.jboss.elemento.Elements.closest;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.isAttached;
 import static org.jboss.elemento.Elements.span;
@@ -50,8 +56,8 @@ import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescription;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeName;
-import static org.jboss.hal.ui.brick.DescriptionBricks.operationDescription;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
+import static org.jboss.hal.ui.brick.DescriptionBricks.operationDescription;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noMatch;
 import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.jboss.hal.ui.resource.dialog.ExecuteOperationDialogs.executeOperationModal;
@@ -92,7 +98,7 @@ import static org.patternfly.style.Width.width45;
  * The {@code :add} and {@code :remove} operations are excluded from direct execution. Global operations can be shown or hidden
  * via a toggle. A toolbar with filter controls is displayed above the table.
  */
-public class OperationsTable implements IsElement<HTMLElement> {
+public class OperationsTable implements IsElement<HTMLElement>, Attachable {
 
     private static final Logger logger = Logger.getLogger(OperationsTable.class.getName());
     private final AddressTemplate template;
@@ -155,6 +161,26 @@ public class OperationsTable implements IsElement<HTMLElement> {
                                 })))
                 .element();
         filter.set(GlobalOperationsAttribute.NAME, showGlobalOperations);
+        Attachable.register(this, this);
+    }
+
+    @Override
+    public void attach(MutationRecord mutationRecord) {
+        HTMLElement ancestor = closest(root, By.data(Dataset.highlight));
+        if (ancestor != null) {
+            String value = ancestor.dataset.get(Dataset.highlight);
+            Highlight.parse(value).ifPresent(h -> {
+                if (h.type() == Highlight.Type.OPERATION) {
+                    for (Tr tr : tbody.items()) {
+                        OperationDescription od = tr.get(Keys.OPERATION_DESCRIPTION);
+                        if (od != null && h.name().equals(od.name())) {
+                            h.flash(ancestor, tr.element());
+                            return;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private void execute(OperationDescription operation) {

@@ -25,6 +25,8 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Dataset;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -42,6 +44,7 @@ import elemental2.webstorage.WebStorageWindow;
 import static elemental2.dom.DomGlobal.window;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.EventType.bind;
+import static org.jboss.elemento.EventType.mousedown;
 import static org.jboss.elemento.EventType.mousemove;
 import static org.jboss.elemento.EventType.mouseup;
 import static org.jboss.elemento.EventType.touchcancel;
@@ -83,12 +86,17 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
 
     /** Creates a new model browser rooted at the given template. */
     public static ModelBrowser modelBrowser(AddressTemplate template) {
-        return new ModelBrowser(template, null);
+        return new ModelBrowser(template, null, null);
     }
 
     /** Creates a new model browser rooted at the given template with an initial selection. */
     public static ModelBrowser modelBrowser(AddressTemplate template, AddressTemplate initialSelection) {
-        return new ModelBrowser(template, initialSelection);
+        return new ModelBrowser(template, initialSelection, null);
+    }
+
+    /** Creates a new model browser rooted at the given template with an initial selection and highlight. */
+    public static ModelBrowser modelBrowser(AddressTemplate template, AddressTemplate initialSelection, Highlight highlight) {
+        return new ModelBrowser(template, initialSelection, highlight);
     }
 
     // ------------------------------------------------------ instance
@@ -113,8 +121,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     private HandlerRegistration mouseMoveHandler;
     private HandlerRegistration touchStartHandler;
     private HandlerRegistration touchMoveHandler;
-
-    ModelBrowser(AddressTemplate root, AddressTemplate initialSelection) {
+    ModelBrowser(AddressTemplate root, AddressTemplate initialSelection, Highlight highlight) {
         this.root = root;
         this.initialSelection = initialSelection;
         this.dragging = false;
@@ -133,6 +140,9 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 .add(detail)
                 .element();
 
+        if (highlight != null) {
+            rootElement.dataset.set(Dataset.highlight, highlight.toString());
+        }
         AddResource.listen(rootElement, this::add);
         DeleteResource.listen(rootElement, this::delete);
         SelectInTree.listen(rootElement, this::select);
@@ -157,7 +167,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
         once.setOnce(true);
         AddEventListenerOptions passive = AddEventListenerOptions.create();
         passive.setPassive(true);
-        mouseDownHandler = bind(splitter, EventType.mousedown, event -> {
+        mouseDownHandler = bind(splitter, mousedown, event -> {
             event.preventDefault();
             startDrag();
             mouseMoveHandler = bind(window, mousemove, this::mouseMove);

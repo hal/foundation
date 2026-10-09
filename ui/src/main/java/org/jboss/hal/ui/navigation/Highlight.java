@@ -17,6 +17,19 @@ package org.jboss.hal.ui.navigation;
 
 import java.util.Optional;
 
+import org.jboss.hal.resources.Dataset;
+
+import elemental2.dom.AddEventListenerOptions;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.ScrollIntoViewOptions;
+
+import static elemental2.dom.DomGlobal.clearTimeout;
+import static elemental2.dom.DomGlobal.document;
+import static elemental2.dom.DomGlobal.requestAnimationFrame;
+import static elemental2.dom.DomGlobal.setTimeout;
+import static org.jboss.hal.resources.HalClasses.halModifier;
+import static org.jboss.hal.resources.HalClasses.highlight;
+
 /**
  * A highlight specification for a management model element. Used to visually emphasize a specific attribute or operation after
  * navigating from the universal search.
@@ -57,10 +70,10 @@ public record Highlight(Type type, String name) {
     /**
      * Parses a highlight string like "a:max-pool-size" or "o:suspend".
      *
-     * @param value the highlight string, may be {@code null} or empty
+     * @param value the highlight string - may be {@code null} or empty
      * @return the parsed highlight, or empty if the string is invalid
      */
-    static Optional<Highlight> parse(String value) {
+    public static Optional<Highlight> parse(String value) {
         if (value == null || value.length() < 3 || value.charAt(1) != ':') {
             return Optional.empty();
         }
@@ -71,5 +84,35 @@ public record Highlight(Type type, String name) {
     @Override
     public String toString() {
         return type.prefix() + ":" + name;
+    }
+
+    public void flash(HTMLElement ancestor, HTMLElement element) {
+        ancestor.dataset.delete(Dataset.highlight);
+        requestAnimationFrame(__ -> requestAnimationFrame(___ -> {
+            double[] fallback = {0};
+            // scrollend doesn't bubble, but capture phase sees it from any scrollable ancestor
+            AddEventListenerOptions onceCapture = AddEventListenerOptions.create();
+            onceCapture.setOnce(true);
+            onceCapture.setCapture(true);
+            elemental2.dom.EventListener listener = ____ -> {
+                clearTimeout(fallback[0]);
+                applyFlash(element);
+            };
+            document.addEventListener("scrollend", listener, onceCapture);
+            // Fallback if the element is already in view (no scroll → no scrollend)
+            fallback[0] = setTimeout(_____ -> {
+                document.removeEventListener("scrollend", listener, onceCapture);
+                applyFlash(element);
+            }, 150);
+            ScrollIntoViewOptions options = ScrollIntoViewOptions.create();
+            options.setBehavior("smooth");
+            options.setBlock("center");
+            element.scrollIntoView(options);
+        }));
+    }
+
+    private void applyFlash(HTMLElement element) {
+        element.classList.add(halModifier(highlight));
+        setTimeout(__ -> element.classList.remove(halModifier(highlight)), 3000);
     }
 }
