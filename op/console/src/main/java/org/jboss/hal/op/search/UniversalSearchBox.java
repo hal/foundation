@@ -230,9 +230,6 @@ public class UniversalSearchBox {
                 }
                 return Decision.filter();
             }
-            if (previous != null && current != null && current.startsWith(previous)) {
-                return Decision.filter();
-            }
             return Decision.debounce(DEBOUNCE_MS);
         };
     }

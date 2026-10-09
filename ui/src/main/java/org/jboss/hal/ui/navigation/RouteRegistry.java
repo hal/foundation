@@ -96,14 +96,18 @@ public class RouteRegistry {
             if (binding.supportsSelection() && highlight != null) {
                 if (params.size() > requiredParamCount(binding.route())) {
                     // There's already a selection => add the highlight to it
-                    params.set(params.size() - 1, params.get(params.size() - 1) + Selection.SEPARATOR + highlight);
+                    params.set(params.size() - 1,
+                            params.get(params.size() - 1) + String.valueOf(Selection.SEPARATOR) + highlight);
                 } else {
                     // There's no selection yet => add the highlight as a new parameter
-                    params.add(Selection.SEPARATOR + highlight);
+                    params.add(String.valueOf(Selection.SEPARATOR) + highlight);
                 }
             }
             placeManager.goTo(binding.route(), params.toArray(new String[0]));
-        }, () -> placeManager.goTo(fallbackRoute, template.template));
+        }, () -> {
+            String selection = Selection.encode(template, highlight);
+            placeManager.goTo(fallbackRoute, selection != null ? selection : template.template);
+        });
     }
 
     private int requiredParamCount(String route) {

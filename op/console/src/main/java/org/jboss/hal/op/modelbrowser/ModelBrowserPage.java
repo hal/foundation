@@ -25,6 +25,7 @@ import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.ui.navigation.Selection;
 
 import elemental2.dom.HTMLElement;
 
@@ -43,11 +44,13 @@ public class ModelBrowserPage implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
-        Optional<AddressTemplate> selection = parameter.has("selection")
-                ? AddressTemplate.ofUntrusted(parameter.get("selection"))
-                : Optional.empty();
+        Selection selection = parameter.has("selection")
+                ? Selection.parse(parameter.get("selection"))
+                : new Selection(Optional.empty(), Optional.empty());
         return singletonList(pageSection().ouiaId(PAGE_MODEL_BROWSER)
-                .add(modelBrowser(AddressTemplate.root(), selection.orElse(null)))
+                .add(modelBrowser(AddressTemplate.root(),
+                        selection.address().orElse(null),
+                        selection.highlight().orElse(null)))
                 .element());
     }
 }
