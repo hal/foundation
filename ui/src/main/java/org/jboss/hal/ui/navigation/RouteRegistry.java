@@ -97,10 +97,10 @@ public class RouteRegistry {
                 if (params.size() > requiredParamCount(binding.route())) {
                     // There's already a selection => add the highlight to it
                     params.set(params.size() - 1,
-                            params.get(params.size() - 1) + String.valueOf(Selection.SEPARATOR) + highlight);
+                            params.get(params.size() - 1) + Selection.SEPARATOR + highlight);
                 } else {
                     // There's no selection yet => add the highlight as a new parameter
-                    params.add(String.valueOf(Selection.SEPARATOR) + highlight);
+                    params.add(Selection.SEPARATOR + highlight);
                 }
             }
             placeManager.goTo(binding.route(), params.toArray(new String[0]));

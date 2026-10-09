@@ -77,7 +77,7 @@ public record Selection(Optional<AddressTemplate> address, Optional<Highlight> h
     /**
      * Encodes an address template and highlight into a selection string suitable for a route parameter.
      *
-     * @param template  the address template, may be {@code null}
+     * @param template  the address template - may be {@code null}
      * @param highlight the highlight string (e.g., "a:max-pool-size"), may be {@code null}
      * @return the encoded selection string, or {@code null} if both arguments are {@code null}
      */

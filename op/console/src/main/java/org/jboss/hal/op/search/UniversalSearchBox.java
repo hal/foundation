@@ -25,19 +25,18 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.Keys;
-import org.jboss.hal.ui.component.ResourceAddressTypeahead;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.textinputgroup.SearchInputGroupTypeahead;
-import org.patternfly.component.typeahead.Decision;
-import org.patternfly.component.typeahead.RefreshStrategy;
 
 import static org.jboss.elemento.EventType.keydown;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.hal.op.search.MgtSearchAsyncItems.hasTypeFilter;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.component.ResourceAddressTypeahead.addressStructureChanged;
 import static org.patternfly.component.SelectionMode.click;
 import static org.patternfly.component.menu.Menu.menu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
@@ -48,6 +47,9 @@ import static org.patternfly.component.menu.SearchFilter.lastSegment;
 import static org.patternfly.component.modal.Modal.modal;
 import static org.patternfly.component.modal.ModalBody.modalBody;
 import static org.patternfly.component.textinputgroup.SearchInputGroupTypeahead.searchInputGroupTypeahead;
+import static org.patternfly.component.typeahead.Decision.debounce;
+import static org.patternfly.component.typeahead.Decision.filter;
+import static org.patternfly.component.typeahead.Decision.refresh;
 
 /**
  * Modal search box for the universal search feature. A new instance is created each time the search is opened, avoiding
@@ -83,7 +85,18 @@ public class UniversalSearchBox {
         searchInput = searchInputGroupTypeahead("universal-search")
                 .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
                 .filter(lastSegment('/'))
-                .refreshOn(universalSearchStrategy());
+                .refreshOn((previous, current) -> {
+                    if (hasTypeFilter(current)) {
+                        return debounce(DEBOUNCE_MS);
+                    }
+                    if (current != null && current.startsWith("/")) {
+                        if (addressStructureChanged(previous, current)) {
+                            return refresh();
+                        }
+                        return filter();
+                    }
+                    return debounce(DEBOUNCE_MS);
+                });
 
         UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
         asyncItems.mgtAvailable(mgtAvailable);
@@ -134,7 +147,7 @@ public class UniversalSearchBox {
         searchInput.input().element().focus();
     }
 
-    // ------------------------------------------------------ internal
+    // ------------------------------------------------------ navigation
 
     private void evaluateSearchResult(SearchResult searchResult) {
         String address = searchResult.address != null ? searchResult.address : searchResult.name;
@@ -154,8 +167,6 @@ public class UniversalSearchBox {
             uic().modelTree().resolveWildcards(template).then(resolved -> {
                 if (resolved.size() == 1) {
                     verifyAndNavigate(resolved.get(0), searchResult);
-                } else if (resolved.isEmpty()) {
-                    showResolvedAddresses(List.of(), searchResult);
                 } else {
                     showResolvedAddresses(resolved, searchResult);
                 }
@@ -174,17 +185,13 @@ public class UniversalSearchBox {
                     return null;
                 })
                 .catch_(__ -> {
-                    showResourceNotFound(template);
+                    menuList.clear();
+                    menuList.addItem(menuItem(Id.unique("not-found"),
+                            "Resource not found: " + template).disabled());
+                    searchInput.expand();
+                    searchInput.menu().clearSearch();
                     return null;
                 });
-    }
-
-    private void showResourceNotFound(AddressTemplate template) {
-        menuList.clear();
-        menuList.addItem(menuItem(Id.unique("not-found"),
-                "Resource not found: " + template).disabled());
-        searchInput.expand();
-        searchInput.menu().clearSearch();
     }
 
     private void showResolvedAddresses(List<AddressTemplate> templates, SearchResult searchResult) {
@@ -217,20 +224,5 @@ public class UniversalSearchBox {
             default -> null;
         };
         return prefix != null ? prefix + searchResult.name : null;
-    }
-
-    private RefreshStrategy universalSearchStrategy() {
-        return (previous, current) -> {
-            if (MgtSearchAsyncItems.hasTypeFilter(current)) {
-                return Decision.debounce(DEBOUNCE_MS);
-            }
-            if (current != null && current.startsWith("/")) {
-                if (ResourceAddressTypeahead.addressStructureChanged(previous, current)) {
-                    return Decision.refresh();
-                }
-                return Decision.filter();
-            }
-            return Decision.debounce(DEBOUNCE_MS);
-        };
     }
 }
