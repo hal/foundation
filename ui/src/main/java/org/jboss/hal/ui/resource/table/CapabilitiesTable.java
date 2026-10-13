@@ -30,7 +30,6 @@ import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
 import org.jboss.hal.core.mgt.CapabilityReference;
-import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.CapabilityDescription;
@@ -184,56 +183,25 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                     return Flow.parallel(initialContext, tasks)
                             .then(context -> {
                                 Map<String, List<AddressTemplate>> groups = context.get(key);
-                                return checkExistence(groups);
+                                // deduplicate templates within each group
+                                for (List<AddressTemplate> templates : groups.values()) {
+                                    Set<String> seen = new HashSet<>();
+                                    templates.removeIf(t -> !seen.add(t.template));
+                                }
+                                List<Tr> children = new ArrayList<>();
+                                children.add(tr(Id.unique("ref", "desc"))
+                                        .addItem(td().colSpan(3)
+                                                .text("This capability is referenced by the following attributes and resources.")));
+                                groups.entrySet().stream()
+                                        .filter(entry -> !entry.getValue().isEmpty())
+                                        .map(entry -> referenceRow(entry.getKey(), entry.getValue()))
+                                        .forEach(children::add);
+                                return Promise.resolve(children);
                             });
                 });
     }
 
-    private Promise<Iterable<Tr>> checkExistence(Map<String, List<AddressTemplate>> groups) {
-        // deduplicate templates within each group
-        for (List<AddressTemplate> templates : groups.values()) {
-            Set<String> seen = new HashSet<>();
-            templates.removeIf(t -> !seen.add(t.template));
-        }
-
-        // check existence of all templates in parallel
-        String key = "existing";
-        FlowContext initialContext = new FlowContext();
-        initialContext.set(key, new HashSet<String>());
-        return Flow.parallel(initialContext, existsTasks(groups, key))
-                .then(context -> {
-                    Set<String> existing = context.get(key);
-                    List<Tr> children = new ArrayList<>();
-                    children.add(tr(Id.unique("ref", "desc"))
-                            .addItem(td().colSpan(3)
-                                    .text("This capability is referenced by the following attributes and resources. Existing resources are linked; non-existent resources are listed here for reference.")));
-                    groups.entrySet().stream()
-                            .filter(entry -> !entry.getValue().isEmpty())
-                            .map(entry -> referenceRow(entry.getKey(), entry.getValue(), existing))
-                            .forEach(children::add);
-                    return Promise.resolve(children);
-                });
-    }
-
-    private static List<Task<FlowContext>> existsTasks(Map<String, List<AddressTemplate>> groups, String key) {
-        List<Task<FlowContext>> tasks = new ArrayList<>();
-        for (List<AddressTemplate> templates : groups.values()) {
-            for (AddressTemplate template : templates) {
-                tasks.add(context -> new ResourceCheck(uic().dispatcher(), template.resolve()).apply(context)
-                        .then(c -> {
-                            int status = c.pop(404);
-                            if (status == 200) {
-                                Set<String> existing = c.get(key);
-                                existing.add(template.template);
-                            }
-                            return c.resolve();
-                        }));
-            }
-        }
-        return tasks;
-    }
-
-    private Tr referenceRow(String attributeName, List<AddressTemplate> templates, Set<String> existing) {
+    private Tr referenceRow(String attributeName, List<AddressTemplate> templates) {
         return tr(Id.unique("ref", attributeName))
                 .addItem(td().colSpan(3)
                         .add(flex().spaceItems(sm)
@@ -241,17 +209,11 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                                 .addItem(flexItem()
                                         .add(list().plain()
                                                 .addItems(templates, template -> listItem()
-                                                        .run(li -> {
-                                                            if (existing.contains(template.template)) {
-                                                                li.add(button().link().inline()
-                                                                        .text(template.toString())
-                                                                        .onClick((e, b) -> SelectInTree.dispatch(
-                                                                                b.element(), template, new Highlight(ATTRIBUTE,
-                                                                                        attributeName).toString())));
-                                                            } else {
-                                                                li.text(template.toString());
-                                                            }
-                                                        }))))));
+                                                        .add(button().link().inline()
+                                                                .text(template.toString())
+                                                                .onClick((e, b) -> SelectInTree.dispatch(
+                                                                        b.element(), template, new Highlight(ATTRIBUTE,
+                                                                                attributeName).toString()))))))));
     }
 
     private Flex capabilityName(ResourceDescription resource, CapabilityDescription capability) {

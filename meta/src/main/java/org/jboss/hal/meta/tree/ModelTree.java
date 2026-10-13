@@ -30,6 +30,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
+import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Segment;
@@ -277,7 +278,7 @@ public class ModelTree {
                     ResourceAddress address = current.parent().resolve();
                     Operation operation = new Operation.Builder(address, READ_CHILDREN_NAMES_OPERATION)
                             .param(CHILD_TYPE, current.last().key)
-                            .param(INCLUDE_SINGLETONS, true)
+                            .param(INCLUDE_SINGLETONS, false)
                             .build();
                     if (logger.isEnabled(Level.DEBUG)) {
                         logger.debug("Execute operation %s", operation.asCli());
@@ -305,8 +306,38 @@ public class ModelTree {
                 .while_(context -> !context.isStackEmpty())
                 .then(context -> {
                     List<AddressTemplate> templates = context.get("templates");
-                    return Promise.resolve(templates);
+                    if ("*".equals(resolved.last().value)) {
+                        return Promise.resolve(templates);
+                    }
+                    return verifyExistence(templates);
                 });
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private Promise<List<AddressTemplate>> verifyExistence(List<AddressTemplate> templates) {
+        if (templates.isEmpty()) {
+            return Promise.resolve(templates);
+        }
+        Promise[] checks = templates.stream()
+                .map(template -> {
+                    ResourceAddress address = template.resolve(statementContext);
+                    return new ResourceCheck(dispatcher, address).apply(new FlowContext())
+                            .then(context -> {
+                                int status = context.pop(404);
+                                return Promise.resolve(status == 200 ? template : null);
+                            });
+                })
+                .toArray(Promise[]::new);
+        return Promise.all(checks).then(results -> {
+            Object[] array = (Object[]) results;
+            List<AddressTemplate> existing = new ArrayList<>();
+            for (Object result : array) {
+                if (result != null) {
+                    existing.add((AddressTemplate) result);
+                }
+            }
+            return Promise.resolve(existing);
+        });
     }
 
     // static and package local to make this testable
