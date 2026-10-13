@@ -117,6 +117,9 @@ public record Highlight(Type type, String name) {
 
     private void applyFlash(HTMLElement element) {
         element.classList.add(halModifier(highlight));
-        setTimeout(__ -> element.classList.remove(halModifier(highlight)), 3000);
+        AddEventListenerOptions once = AddEventListenerOptions.create();
+        once.setOnce(true);
+        element.addEventListener("animationend",
+                __ -> element.classList.remove(halModifier(highlight)), once);
     }
 }
