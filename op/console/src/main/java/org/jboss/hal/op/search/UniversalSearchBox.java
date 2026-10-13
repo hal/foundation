@@ -15,14 +15,18 @@
  */
 package org.jboss.hal.op.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.Id;
 import org.jboss.elemento.Key;
+import org.jboss.elemento.flow.FlowContext;
 import org.jboss.hal.core.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.ResourceRef;
 import org.jboss.hal.core.mgt.SearchResult;
-import org.jboss.hal.dmr.Operation;
+import org.jboss.hal.core.mgt.SearchResultType;
 import org.jboss.hal.dmr.ResourceAddress;
+import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.menu.MenuItem;
@@ -30,8 +34,11 @@ import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.modal.Modal;
 import org.patternfly.component.textinputgroup.SearchInputGroupTypeahead;
 
-import static org.jboss.elemento.EventType.keydown;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static java.util.stream.Collectors.toList;
+
+import static org.jboss.elemento.EventType.keyup;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.PROFILE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.SUBSYSTEM;
 import static org.jboss.hal.op.search.MgtSearchAsyncItems.hasTypeFilter;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
@@ -77,6 +84,7 @@ public class UniversalSearchBox {
     private final Modal modal;
     private final MenuList menuList;
     private final SearchInputGroupTypeahead searchInput;
+    private boolean selectionJustMade;
 
     UniversalSearchBox() {
         ModelGraphTools modelGraphTools = uic().modelGraphTools();
@@ -84,6 +92,8 @@ public class UniversalSearchBox {
 
         searchInput = searchInputGroupTypeahead("universal-search")
                 .placeholder(mgtAvailable ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
+                // the search workflow is complex: we need to decide when to close the dropdown menu
+                .stayOpen((e, c, m) -> true)
                 .filter(lastSegment('/'))
                 .refreshOn((previous, current) -> {
                     if (hasTypeFilter(current)) {
@@ -114,104 +124,143 @@ public class UniversalSearchBox {
                 .closeOnEsc(true)
                 .addBody(modalBody().add(searchInput));
 
-        searchInput.on(keydown, e -> {
-            if (Key.Escape.match(e)) {
-                if (searchInput.expanded()) {
-                    e.stopPropagation();
-                }
-            }
-            if (Key.Enter.match(e)) {
-                String value = searchInput.value();
-                if (!searchInput.expanded() && value != null && value.startsWith("/")) {
-                    gotoAddress(value);
+        searchInput.on(keyup, e -> {
+            if (Key.Enter.match(e) && e.target == searchInput.input().element()) {
+                if (selectionJustMade) {
+                    selectionJustMade = false;
+                } else {
+                    String value = searchInput.value();
+                    if (value != null && value.startsWith("/")) {
+                        resolveUntrustedTemplate(value);
+                    }
                 }
             }
         });
 
         searchInput.menu().onSingleSelect((event, item, selected) -> {
+            selectionJustMade = true;
             SearchResult searchResult = item.get(Keys.MGT_SEARCH_RESULT);
             if (searchResult != null) {
                 evaluateSearchResult(searchResult);
             } else if (Boolean.TRUE.equals(item.get(Keys.RESOLVED_ADDRESS))) {
-                modal.close();
-                AddressTemplate.ofUntrusted(item.text()).ifPresent(t -> uic().routeRegistry().goTo(t));
+                resolveUntrustedTemplate(item.text());
+            } else {
+                searchInput.collapse(false);
             }
+            searchInput.input().element().focus();
         });
     }
 
-    // ------------------------------------------------------ api
-
-    /** Opens the search modal and focuses the search input. */
     public void show() {
         modal.open();
         searchInput.input().element().focus();
     }
 
-    // ------------------------------------------------------ navigation
+    // ------------------------------------------------------ evaluate
 
     private void evaluateSearchResult(SearchResult searchResult) {
-        String address = searchResult.address != null ? searchResult.address : searchResult.name;
-        AddressTemplate.ofUntrusted(address).ifPresent(t -> resolveAndNavigate(t, searchResult));
+        List<AddressTemplate> templates = new ArrayList<>();
+        if (searchResult.type() == SearchResultType.CAPABILITY) {
+            if (searchResult.providedBy != null) {
+                for (ResourceRef ref : searchResult.providedBy) {
+                    if (ref.address != null) {
+                        AddressTemplate.ofUntrusted(ref.address).ifPresent(templates::add);
+                    }
+                }
+            }
+        } else {
+            String address = searchResult.address != null ? searchResult.address : searchResult.name;
+            AddressTemplate.ofUntrusted(address).ifPresent(templates::add);
+        }
+        resolveTemplates(adjustTemplatesForDomainMode(templates), searchResult);
     }
 
-    private void gotoAddress(String value) {
-        if (value != null && !value.trim().isEmpty()) {
-            AddressTemplate.ofUntrusted(value).ifPresent(t -> resolveAndNavigate(t, null));
+    private List<AddressTemplate> adjustTemplatesForDomainMode(List<AddressTemplate> templates) {
+        if (uic().environment().domain()) {
+            // Domain mode: map standalone addresses for domain:
+            // /subsystem=*            → /profile=*/subsystem=*  (resolve profiles via ModelTree.resolveWildcards())
+            // /core-service=*         → not at domain root (lives under /host=*/server=*), skip or ignore
+            // /deployment=*           → same address, but different semantics (assignment to server groups)
+            // /deployment-overlay=*   → same address, but different semantics (assignment to server groups)
+            // /extension=*            → same address, no mapping needed
+            // /interface=*            → same address, no mapping needed
+            // /path=*                 → same address, no mapping needed
+            // /socket-binding-group=* → same address, no mapping needed
+            // /system-property=*      → same address, no mapping needed
+            return templates.stream()
+                    .map(t -> {
+                        if (SUBSYSTEM.equals(t.first().key)) {
+                            return AddressTemplate.of(PROFILE, "*").append(t);
+                        } else {
+                            return t;
+                        }
+                    })
+                    .collect(toList());
+        } else {
+            return templates;
         }
     }
 
-    private void resolveAndNavigate(AddressTemplate template, SearchResult searchResult) {
-        if (template.fullyQualified()) {
-            verifyAndNavigate(template, searchResult);
+    // ------------------------------------------------------ resolve
+
+    private void resolveUntrustedTemplate(String value) {
+        if (value != null) {
+            AddressTemplate.ofUntrusted(value)
+                    .map(List::of)
+                    .ifPresent(templates -> resolveTemplates(templates, null));
+        }
+    }
+
+    private void resolveTemplates(List<AddressTemplate> templates, SearchResult searchResult) {
+        if (templates.isEmpty()) {
+            headerMenuItem("no-results", "No matching resources found");
         } else {
-            uic().modelTree().resolveWildcards(template).then(resolved -> {
-                if (resolved.size() == 1) {
-                    verifyAndNavigate(resolved.get(0), searchResult);
+            uic().modelTree().resolveWildcards(templates).then(resolved -> {
+                if (resolved.isEmpty()) {
+                    headerMenuItem("no-results", "No matching resources found");
+                } else if (resolved.size() == 1) {
+                    verifyAndGo(resolved.get(0), searchResult);
                 } else {
-                    showResolvedAddresses(resolved, searchResult);
+                    showPickList(resolved);
                 }
                 return null;
             });
         }
     }
 
-    private void verifyAndNavigate(AddressTemplate template, SearchResult searchResult) {
-        ResourceAddress address = template.resolve(uic().statementContext());
-        Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION).build();
-        uic().dispatcher().execute(operation)
-                .then(__ -> {
-                    modal.close();
-                    uic().routeRegistry().goTo(template, highlight(searchResult));
-                    return null;
-                })
-                .catch_(__ -> {
-                    menuList.clear();
-                    menuList.addItem(menuItem(Id.unique("not-found"),
-                            "Resource not found: " + template).disabled());
-                    searchInput.expand();
-                    searchInput.menu().clearSearch();
-                    return null;
-                });
-    }
+    // ------------------------------------------------------ pick
 
-    private void showResolvedAddresses(List<AddressTemplate> templates, SearchResult searchResult) {
+    private void showPickList(List<AddressTemplate> templates) {
         menuList.clear();
         if (templates.isEmpty()) {
             menuList.addItem(menuItem(Id.unique("no-results"), "No matching resources found").disabled());
         } else {
             menuList.addItem(menuItem(Id.unique("pick-address"),
-                    "Address resolves to multiple resources. Pick one:").disabled());
+                    "Multiple resources found. Pick one:").disabled());
             for (AddressTemplate template : templates) {
                 MenuItem item = menuItem(Id.build(template.template), template.template)
                         .store(Keys.RESOLVED_ADDRESS, Boolean.TRUE);
-                if (searchResult != null) {
-                    item.store(Keys.MGT_SEARCH_RESULT, searchResult);
-                }
                 menuList.addItem(item);
             }
         }
         searchInput.expand();
         searchInput.menu().clearSearch();
+    }
+
+    // ------------------------------------------------------ go
+
+    private void verifyAndGo(AddressTemplate template, SearchResult searchResult) {
+        ResourceAddress address = template.resolve(uic().statementContext());
+        new ResourceCheck(uic().dispatcher(), address).apply(new FlowContext()).then(context -> {
+            int status = context.pop(404);
+            if (status == 200) {
+                closeAll();
+                uic().routeRegistry().goTo(template, highlight(searchResult));
+            } else {
+                headerMenuItem("not-found", "Resource not found: " + template);
+            }
+            return null;
+        });
     }
 
     private String highlight(SearchResult searchResult) {
@@ -221,8 +270,23 @@ public class UniversalSearchBox {
         String prefix = switch (searchResult.type) {
             case "Attribute" -> "a:";
             case "Operation" -> "o:";
+            case "Capability" -> "c:";
             default -> null;
         };
         return prefix != null ? prefix + searchResult.name : null;
+    }
+
+    // ------------------------------------------------------ helper methods
+
+    private void headerMenuItem(String id, String text) {
+        menuList.clear();
+        menuList.addItem(menuItem(id, text).disabled());
+        searchInput.expand();
+        searchInput.menu().clearSearch();
+    }
+
+    private void closeAll() {
+        searchInput.collapse(false);
+        modal.close();
     }
 }

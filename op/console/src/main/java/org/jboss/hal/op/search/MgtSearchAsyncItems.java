@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.core.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.ResourceRef;
 import org.jboss.hal.core.mgt.SearchResult;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Keys;
@@ -111,7 +112,8 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
     private static HTMLElement descriptionWithAddress(SearchResult result) {
         boolean hasDescription = result.description != null && !result.description.isEmpty();
         boolean hasAddress = result.address != null && !result.address.isEmpty();
-        if (!hasDescription && !hasAddress) {
+        boolean hasProviders = result.providedBy != null && result.providedBy.length > 0;
+        if (!hasDescription && !hasAddress && !hasProviders) {
             return null;
         }
         return div()
@@ -122,6 +124,14 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
                     if (hasAddress) {
                         d.add(span().css(util("mt-xs"), util("display-block"), util("font-size-sm"), util("color-200"))
                                 .text(result.address));
+                    }
+                    if (hasProviders) {
+                        for (ResourceRef ref : result.providedBy) {
+                            if (ref.address != null) {
+                                d.add(span().css(util("mt-xs"), util("display-block"), util("font-size-sm"), util("color-200"))
+                                        .text(ref.address));
+                            }
+                        }
                     }
                 })
                 .element();

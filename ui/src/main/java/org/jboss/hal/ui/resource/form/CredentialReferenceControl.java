@@ -32,6 +32,7 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALIAS;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
@@ -99,14 +100,17 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
                         .store(MODE_KEY, Mode.STORE_REFERENCE)
                         .iconAndText(Mode.STORE_REFERENCE.icon, "Credential store"));
 
-        SingleSelectTypeahead storeTypeahead = (SingleSelectTypeahead) storeFormItem.editableControl().control();
-        storeTypeahead.menuToggle().searchInput().onClear((e, c) -> aliasControl.update(null));
-        storeTypeahead.menuToggle().searchInput().onInput((e, c, value) -> aliasControl.update(value));
-        storeTypeahead.menu().onSingleSelect((e, item, selected) -> {
-            if (selected) {
-                aliasControl.update(item.identifier());
-            }
-        });
+        // Wire up alias lookup only when the store attribute declares a capability-reference
+        if (attribute.child(STORE).description().hasDefined(CAPABILITY_REFERENCE) &&
+                storeFormItem.editableControl().control() instanceof SingleSelectTypeahead storeTypeahead) {
+            storeTypeahead.menuToggle().searchInput().onClear((e, c) -> aliasControl.update(null));
+            storeTypeahead.menuToggle().searchInput().onInput((e, c, value) -> aliasControl.update(value));
+            storeTypeahead.menu().onSingleSelect((e, item, selected) -> {
+                if (selected) {
+                    aliasControl.update(item.identifier());
+                }
+            });
+        }
         selectMode(originalMode);
         toggleGroup.select(originalMode.name(), true, false);
 

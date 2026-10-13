@@ -19,7 +19,9 @@ import static org.patternfly.component.menu.Menu.menu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuList.menuList;
 import static org.patternfly.component.menu.MenuType.menu;
+import static org.patternfly.component.menu.SearchFilter.lastSegment;
 import static org.patternfly.component.textinputgroup.SearchInputGroupTypeahead.searchInputGroupTypeahead;
+import static org.patternfly.component.typeahead.RefreshStrategy.structuralChange;
 
 /**
  * A typeahead component for navigating and selecting WildFly management resource addresses. As the user types an address (e.g.,
@@ -49,8 +51,8 @@ public class ResourceAddressTypeahead implements
 
     ResourceAddressTypeahead(String id) {
         this.searchInput = searchInputGroupTypeahead(id)
-                .refreshOn(RefreshStrategy.structuralChange(ResourceAddressTypeahead::addressStructureChanged))
-                .filter(SearchFilter.lastSegment('/'));
+                .filter(lastSegment('/'))
+                .refreshOn(structuralChange(ResourceAddressTypeahead::addressStructureChanged));
 
         ResourceAddressAsyncItems asyncItems = new ResourceAddressAsyncItems(searchInput);
         searchInput.addMenu(menu(menu, single)

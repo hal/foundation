@@ -19,21 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.elemento.flow.Flow;
+import org.jboss.elemento.flow.FlowContext;
+import org.jboss.elemento.flow.Task;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.resources.Dataset;
 import org.jboss.hal.resources.HalClasses;
-import org.jboss.hal.ui.navigation.Highlight;
-import org.jboss.hal.ui.resource.shell.ResourceTabs;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.shell.ResourceHeader;
 import org.jboss.hal.ui.resource.shell.ResourceList.ChildResource;
 import org.jboss.hal.ui.resource.shell.ResourceShell;
+import org.jboss.hal.ui.resource.shell.ResourceTabs;
 import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
 
+import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.code;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
@@ -53,8 +58,8 @@ import static org.jboss.hal.ui.resource.shell.ResourceTabs.resourceTabs;
  * <p>
  * For folder nodes, displays a {@link org.jboss.hal.ui.resource.shell.ResourceList} of child resources. For resource nodes,
  * displays a tabbed view with data, attributes, operations, and capabilities tabs via
- * {@link org.jboss.hal.ui.resource.shell.ResourceTabs}. The panel includes a breadcrumb trail for navigation and a copy-to-clipboard
- * button for the resource address.
+ * {@link org.jboss.hal.ui.resource.shell.ResourceTabs}. The panel includes a breadcrumb trail for navigation and a
+ * copy-to-clipboard button for the resource address.
  * <p>
  * Delegates to the reusable resource components ({@link ResourceShell},
  * {@link org.jboss.hal.ui.resource.shell.ResourceBreadcrumb}, {@link ResourceHeader},
@@ -146,6 +151,7 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
                     .map(h -> switch (h.type()) {
                         case ATTRIBUTE -> ResourceTabs.DATA_TAB;
                         case OPERATION -> ResourceTabs.OPERATIONS_TAB;
+                        case CAPABILITY -> ResourceTabs.CAPABILITIES_TAB;
                     })
                     .orElse(null);
         }

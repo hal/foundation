@@ -18,7 +18,6 @@ package org.jboss.hal.ui.resource.shell;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
@@ -31,7 +30,9 @@ import org.patternfly.component.tabs.Tabs;
 import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
+import elemental2.promise.Promise;
 
+import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.resource.shell.ResourceData.resourceData;
 import static org.patternfly.component.tabs.Tab.tab;
 import static org.patternfly.component.tabs.TabContent.tabContent;
@@ -71,7 +72,7 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     public static final String OPERATIONS_TAB = "resource-tabs-operations";
     public static final String CAPABILITIES_TAB = "resource-tabs-capabilities";
 
-    record TabDescriptor(String id, String title, Supplier<HTMLElement> content, String css) {}
+    record TabDescriptor(String id, String title, Promise<HTMLElement> content, String css) {}
 
     private final List<TabDescriptor> descriptors;
     private String initialSelection;
@@ -81,15 +82,17 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     ResourceTabs(AddressTemplate template, Metadata metadata) {
         this.descriptors = new ArrayList<>();
         this.descriptors.add(new TabDescriptor(DATA_TAB, "Data",
-                () -> resourceData(template, metadata).element(), util("pt-md")));
+                Promise.resolve(resourceData(template, metadata).element()), util("pt-md")));
         if (!metadata.resourceDescription().attributes().isEmpty()) {
             this.descriptors.add(new TabDescriptor(ATTRIBUTES_TAB, "Attributes",
-                    () -> new AttributesTable(metadata).element(), util("pt-md")));
+                    Promise.resolve(new AttributesTable(metadata).element()), util("pt-md")));
         }
         this.descriptors.add(new TabDescriptor(OPERATIONS_TAB, "Operations",
-                () -> new OperationsTable(template, metadata).element(), util("pt-md")));
+                Promise.resolve(new OperationsTable(template, metadata).element()), util("pt-md")));
         this.descriptors.add(new TabDescriptor(CAPABILITIES_TAB, "Capabilities",
-                () -> new CapabilitiesTable(metadata).element(), null));
+                uic().modelGraphTools().ping()
+                        .then(available -> Promise.resolve(new CapabilitiesTable(metadata, available).element())),
+                null));
     }
 
     @Override
@@ -127,14 +130,14 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
 
     /** Adds a tab at the end. Must be called before {@link #element()}. */
     public ResourceTabs addTab(String id, String title, HTMLElement element) {
-        descriptors.add(new TabDescriptor(id, title, () -> element, util("pt-md")));
+        descriptors.add(new TabDescriptor(id, title, Promise.resolve(element), util("pt-md")));
         return this;
     }
 
     /** Adds a tab at the given position. The index is clamped to the valid range. Must be called before {@link #element()}. */
     public ResourceTabs addTab(int index, String id, String title, HTMLElement element) {
         int clamped = Math.max(0, Math.min(index, descriptors.size()));
-        descriptors.add(clamped, new TabDescriptor(id, title, () -> element, util("pt-md")));
+        descriptors.add(clamped, new TabDescriptor(id, title, Promise.resolve(element), util("pt-md")));
         return this;
     }
 
@@ -149,7 +152,7 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
         for (int i = 0; i < descriptors.size(); i++) {
             TabDescriptor d = descriptors.get(i);
             if (d.id.equals(id)) {
-                descriptors.set(i, new TabDescriptor(d.id, d.title, () -> element, d.css));
+                descriptors.set(i, new TabDescriptor(d.id, d.title, Promise.resolve(element), d.css));
                 break;
             }
         }
@@ -165,8 +168,11 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
             if (descriptor.css != null) {
                 tc.css(descriptor.css);
             }
-            tbs.addItem(tab(descriptor.id, descriptor.title)
-                    .addContent(tc.add(descriptor.content.get())));
+            tbs.addItem(tab(descriptor.id, descriptor.title).addContent(tc));
+            descriptor.content.then(element -> {
+                tc.add(element);
+                return null;
+            });
         }
 
         if (initialSelection != null) {

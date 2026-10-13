@@ -91,6 +91,10 @@
         align-items: center;
         min-height: var(--hal-resource-view-item-min-height);
     }
+
+    .pf-v6-c-switch__toggle {
+        --pf-v6-c-switch__input--checked__toggle--BackgroundColor: var(--pf-t--global--icon--color--on-disabled);
+    }
 }
 
 .hal-c-resource__view-unit {

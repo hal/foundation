@@ -49,11 +49,13 @@ public record RouteBinding(
         RouteParameterToTemplate toTemplate,
         TemplateToRouteParameter toRoute) {
 
-    AddressTemplate resolve(Parameter parameter) {
+    /** Converts route parameters from a URL into a resolved {@link AddressTemplate} (route → template direction). */
+    AddressTemplate templateFromRoute(Parameter parameter) {
         return toTemplate.resolve(template, parameter);
     }
 
-    String[] routeParams(AddressTemplate template) {
+    /** Extracts route parameters from a resolved {@link AddressTemplate} for navigation (template → route direction). */
+    String[] paramsFromTemplate(AddressTemplate template) {
         return toRoute.parameter(template, route);
     }
 

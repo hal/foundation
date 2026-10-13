@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.navigation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,6 @@ import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.StatementContextResolver;
 import org.jboss.hal.meta.TemplateMatcher;
-
-import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 
@@ -92,12 +91,11 @@ public class RouteRegistry {
      */
     public void goTo(AddressTemplate template, String highlight) {
         byTemplate(template).ifPresentOrElse(binding -> {
-            List<String> params = new ArrayList<>(asList(binding.routeParams(template)));
+            List<String> params = new ArrayList<>(asList(binding.paramsFromTemplate(template)));
             if (binding.supportsSelection() && highlight != null) {
                 if (params.size() > requiredParamCount(binding.route())) {
                     // There's already a selection => add the highlight to it
-                    params.set(params.size() - 1,
-                            params.get(params.size() - 1) + Selection.SEPARATOR + highlight);
+                    params.set(params.size() - 1, params.get(params.size() - 1) + Selection.SEPARATOR + highlight);
                 } else {
                     // There's no selection yet => add the highlight as a new parameter
                     params.add(Selection.SEPARATOR + highlight);

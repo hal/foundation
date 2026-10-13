@@ -24,7 +24,7 @@ import elemental2.promise.Promise;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 
 /**
- * Function which checks whether a given resource exists. Pushes {@code 200} onto the context stack if it exists, {@code 404}
+ * Function that checks whether a given resource exists. Pushes {@code 200} onto the context stack if it exists, {@code 404}
  * otherwise.
  */
 public final class ResourceCheck implements Task<FlowContext> {
@@ -46,7 +46,7 @@ public final class ResourceCheck implements Task<FlowContext> {
     @Override
     public Promise<FlowContext> apply(final FlowContext context) {
         Operation operation = new Operation.Builder(address, READ_RESOURCE_OPERATION).build();
-        return dispatcher.execute(operation)
+        return dispatcher.execute(operation, false)
                 .then(result -> context.resolve(200))
                 .catch_(error -> context.resolve(404));
     }

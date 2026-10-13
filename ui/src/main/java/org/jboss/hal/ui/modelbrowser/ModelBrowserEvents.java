@@ -19,6 +19,8 @@ import java.util.function.Consumer;
 
 import org.jboss.hal.event.UIEvent;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.ui.navigation.Highlight;
+import org.jboss.hal.ui.navigation.Selection;
 
 import elemental2.dom.CustomEvent;
 import elemental2.dom.HTMLElement;
@@ -120,12 +122,21 @@ public interface ModelBrowserEvents {
             public String identifier;
             public String parentIdentifier;
             public AddressTemplate template;
+            public String highlight;
         }
 
         /** Dispatches a select-in-tree event targeting the given address template. */
         static void dispatch(HTMLElement source, AddressTemplate template) {
             Details details = new Details();
             details.template = template;
+            dispatch(source, details);
+        }
+
+        /** Dispatches a select-in-tree event targeting the given address template. */
+        static void dispatch(HTMLElement source, AddressTemplate template, String highlight) {
+            Details details = new Details();
+            details.template = template;
+            details.highlight = highlight;
             dispatch(source, details);
         }
 

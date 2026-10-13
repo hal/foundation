@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.core.mgt;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -44,4 +45,9 @@ public class SearchResult {
 
     /** Resources that declare this capability (only present for capabilities, may be {@code null}). */
     public ResourceRef[] providedBy;
+
+    @JsOverlay
+    public final SearchResultType type() {
+        return SearchResultType.of(type);
+    }
 }

@@ -24,6 +24,7 @@ import jakarta.inject.Inject;
 
 import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
+import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.logger.Level;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
@@ -39,6 +40,7 @@ import org.jboss.hal.meta.WildcardResolver;
 import elemental2.promise.Promise;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.logger.Level.DEBUG;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
@@ -197,6 +199,47 @@ public class ModelTree {
     }
 
     // ------------------------------------------------------ resolve wildcards
+
+    /**
+     * Resolves wildcards in all provided templates in parallel. Fully qualified templates are kept as-is. Returns a flat list
+     * of all resolved templates.
+     *
+     * @param templates the list of address templates to resolve
+     * @return a promise resolving to a flat list of all resolved templates
+     */
+    public Promise<List<AddressTemplate>> resolveWildcards(List<AddressTemplate> templates) {
+        if (templates.isEmpty()) {
+            return Promise.resolve(emptyList());
+        }
+        if (templates.size() == 1) {
+            AddressTemplate template = templates.get(0);
+            if (template.fullyQualified()) {
+                return Promise.resolve(singletonList(template));
+            }
+            return resolveWildcards(template);
+        }
+
+        String key = "resolved";
+        List<Task<FlowContext>> tasks = templates.stream()
+                .map(template -> (Task<FlowContext>) context -> {
+                    if (template.fullyQualified()) {
+                        List<AddressTemplate> resolved = context.get(key);
+                        resolved.add(template);
+                        return context.resolve();
+                    }
+                    return resolveWildcards(template).then(r -> {
+                        List<AddressTemplate> resolved = context.get(key);
+                        resolved.addAll(r);
+                        return context.resolve();
+                    });
+                })
+                .collect(toList());
+
+        FlowContext initialContext = new FlowContext();
+        initialContext.set(key, new ArrayList<AddressTemplate>());
+        return Flow.parallel(initialContext, tasks)
+                .then(context -> Promise.resolve(context.<List<AddressTemplate>>get(key)));
+    }
 
     /**
      * Resolves all wildcards in the provided {@code AddressTemplate} to concrete resource addresses. The wildcards are resolved

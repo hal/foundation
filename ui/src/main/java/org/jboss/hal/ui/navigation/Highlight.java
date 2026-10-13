@@ -39,6 +39,7 @@ import static org.jboss.hal.resources.HalClasses.highlight;
  * highlight = type ":" name
  * type      = "a"           // attribute
  *           | "o"           // operation
+ *           | "c"           // capability
  * name      = identifier    // e.g., "max-pool-size", "suspend"
  * </pre>
  *
@@ -49,12 +50,14 @@ public record Highlight(Type type, String name) {
 
     public enum Type {
         ATTRIBUTE,
-        OPERATION;
+        OPERATION,
+        CAPABILITY;
 
         static Optional<Type> fromPrefix(char prefix) {
             return switch (prefix) {
                 case 'a' -> Optional.of(ATTRIBUTE);
                 case 'o' -> Optional.of(OPERATION);
+                case 'c' -> Optional.of(CAPABILITY);
                 default -> Optional.empty();
             };
         }
@@ -63,6 +66,7 @@ public record Highlight(Type type, String name) {
             return switch (this) {
                 case ATTRIBUTE -> 'a';
                 case OPERATION -> 'o';
+                case CAPABILITY -> 'c';
             };
         }
     }

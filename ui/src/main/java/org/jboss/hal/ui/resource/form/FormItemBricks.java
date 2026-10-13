@@ -77,8 +77,8 @@ import static org.patternfly.component.menu.SingleSelectMenu.singleSelectMenu;
 import static org.patternfly.core.Attributes.role;
 import static org.patternfly.core.Attributes.tabindex;
 import static org.patternfly.core.Attributes.type;
-import static org.patternfly.icon.IconSets.fas.circleQuestion;
 import static org.patternfly.icon.IconSets.fas.lock;
+import static org.patternfly.icon.IconSets.rhUi.questionMarkCircle;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.form;
 import static org.patternfly.style.Classes.group;
@@ -191,7 +191,7 @@ final class FormItemBricks {
                         .attr(tabindex, 0)
                         .aria(Aria.label, label + " description")
                         .add(span().css(component(Classes.button, icon))
-                                .add(circleQuestion())))
+                                .add(questionMarkCircle())))
                 .element();
     }
 

@@ -28,13 +28,17 @@ import org.jboss.hal.meta.WildcardResolver;
 import org.jboss.hal.ui.navigation.RouteBinding;
 import org.jboss.hal.ui.navigation.RouteRegistry;
 
+import static org.jboss.hal.dmr.ModelDescriptionConstants.LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SOCKET_BINDING_GROUP;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SUBSYSTEM;
 import static org.jboss.hal.meta.WildcardResolver.Direction.LTR;
 import static org.jboss.hal.op.navigation.KnownRoutes.DEFAULT_ROUTE;
 import static org.jboss.hal.op.navigation.KnownRoutes.INTERFACE_ROUTE;
+import static org.jboss.hal.op.navigation.KnownRoutes.LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING_ROUTE;
 import static org.jboss.hal.op.navigation.KnownRoutes.PATH_ROUTE;
+import static org.jboss.hal.op.navigation.KnownRoutes.REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING_ROUTE;
 import static org.jboss.hal.op.navigation.KnownRoutes.SOCKET_BINDING_GROUP_ROUTE;
 import static org.jboss.hal.op.navigation.KnownRoutes.SOCKET_BINDING_ROUTE;
 import static org.jboss.hal.op.navigation.KnownRoutes.SUBSYSTEM_ROUTE;
@@ -77,12 +81,21 @@ public class RouteRegistryProducer {
                 (template, parameter) -> template.apply(new WildcardResolver(LTR, parameter.get("name"))),
                 (template, route) -> new String[]{template.last().value}));
 
-        // socket-binding-group=*  <->  /configuration/socket-binding-group/:name
+        // socket-binding-group=*/local-destination-outbound-socket-binding=*  <->  /configuration/socket-binding-group/:group/local-destination-outbound-socket-binding/:name
         registry.register(new RouteBinding(
-                SOCKET_BINDING_GROUP_ROUTE,
-                AddressTemplate.ofTrusted("socket-binding-group=*"),
-                (template, parameter) -> template.apply(new WildcardResolver(LTR, parameter.get("name"))),
-                (template, route) -> new String[]{template.last().value}));
+                LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING_ROUTE,
+                AddressTemplate.ofTrusted("socket-binding-group=*/local-destination-outbound-socket-binding=*"),
+                (template, parameter) -> template.apply(
+                        new WildcardResolver(LTR, parameter.get("group"), parameter.get("name"))),
+                (template, route) -> socketBindingParams(template, LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING)));
+
+        // socket-binding-group=*/remote-destination-outbound-socket-binding=*  <->  /configuration/socket-binding-group/:group/remote-destination-outbound-socket-binding/:name
+        registry.register(new RouteBinding(
+                REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING_ROUTE,
+                AddressTemplate.ofTrusted("socket-binding-group=*/remote-destination-outbound-socket-binding=*"),
+                (template, parameter) -> template.apply(
+                        new WildcardResolver(LTR, parameter.get("group"), parameter.get("name"))),
+                (template, route) -> socketBindingParams(template, REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING)));
 
         // socket-binding-group=*/socket-binding=*  <->  /configuration/socket-binding-group/:group/socket-binding/:name
         registry.register(new RouteBinding(
@@ -90,7 +103,14 @@ public class RouteRegistryProducer {
                 AddressTemplate.ofTrusted("socket-binding-group=*/socket-binding=*"),
                 (template, parameter) -> template.apply(
                         new WildcardResolver(LTR, parameter.get("group"), parameter.get("name"))),
-                (template, route) -> socketBindingParams(template)));
+                (template, route) -> socketBindingParams(template, SOCKET_BINDING)));
+
+        // socket-binding-group=*  <->  /configuration/socket-binding-group/:name
+        registry.register(new RouteBinding(
+                SOCKET_BINDING_GROUP_ROUTE,
+                AddressTemplate.ofTrusted("socket-binding-group=*"),
+                (template, parameter) -> template.apply(new WildcardResolver(LTR, parameter.get("name"))),
+                (template, route) -> new String[]{template.last().value}));
 
         // subsystem=*  <->  /configuration/subsystem/:name/:selection?
         registry.register(new RouteBinding(
@@ -159,13 +179,13 @@ public class RouteRegistryProducer {
         return null;
     }
 
-    private String[] socketBindingParams(AddressTemplate template) {
+    private String[] socketBindingParams(AddressTemplate template, String socketBindingType) {
         String group = null;
         String name = null;
         for (Segment segment : template) {
             if (SOCKET_BINDING_GROUP.equals(segment.key)) {
                 group = segment.value;
-            } else if (SOCKET_BINDING.equals(segment.key)) {
+            } else if (socketBindingType.equals(segment.key)) {
                 name = segment.value;
             }
         }

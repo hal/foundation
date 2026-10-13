@@ -16,6 +16,7 @@
 package org.jboss.hal.ui.modelbrowser;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.elemento.Key;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.ui.component.ResourceAddressTypeahead;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
@@ -25,11 +26,10 @@ import org.patternfly.style.Classes;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLInputElement;
 
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.elemento.Key.Enter;
+import static org.jboss.elemento.EventType.keydown;
 import static org.jboss.hal.resources.HalClasses.goto_;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
@@ -71,8 +71,6 @@ class GotoResource implements IsElement<HTMLElement> {
     GotoResource() {
         this.button = button().plain().icon(compass()).element();
         this.input = resourceAddressTypeahead("goto");
-        input.searchInput().input().placeholder("Goto resource");
-        input.searchInput().onKeyup((event, component, value) -> gotoResource(event));
         this.menu = div().css(halComponent(modelBrowser, goto_))
                 .add(input)
                 .element();
@@ -86,11 +84,26 @@ class GotoResource implements IsElement<HTMLElement> {
                         input.searchInput().input().element().focus();
                     }
                 });
-        overlay.attach();
         this.root = div()
                 .add(button)
                 .add(overlayElement)
                 .element();
+
+        input.searchInput().input().placeholder("Goto resource");
+        input.on(keydown, e -> {
+            if (Key.Escape.match(e)) {
+                if (input.expanded()) {
+                    e.stopPropagation();
+                    input.searchInput().collapse(false);
+                }
+            }
+            if (Key.Enter.match(e)) {
+                if (!input.expanded()) {
+                    gotoResource(e);
+                }
+            }
+        });
+        overlay.attach();
     }
 
     @Override
@@ -99,34 +112,31 @@ class GotoResource implements IsElement<HTMLElement> {
     }
 
     private void gotoResource(Event event) {
-        if (Enter.match(event)) {
-            HTMLInputElement inputElement = (HTMLInputElement) event.target;
-            AddressTemplate template = AddressTemplate.ofTrusted(inputElement.value);
-            if (!template.fullyQualified()) {
-                failSafeRemoveFromParent(multiple);
-                uic().modelTree().resolveWildcards(template).then(templates -> {
-                    multiple = flex().css(util("mt-md")).direction(column)
-                            .addItem(flexItem()
-                                    .add(content(p)
-                                            .add("The address you entered contains wildcards. Please select a resource from the list below.")))
-                            .addItem(flexItem()
-                                    .flex(_1)
-                                    .add(list().css(halComponent(modelBrowser, search, results))
-                                            .plain()
-                                            .addItems(templates, fullyQualified -> listItem()
-                                                    .add(button().link().inline().text(fullyQualified.toString())
-                                                            .onClick((e, b) -> {
-                                                                SelectInTree.dispatch(button, fullyQualified);
-                                                                close(event);
-                                                            })))))
-                            .element();
-                    menu.appendChild(multiple);
-                    return null;
-                });
-            } else {
-                SelectInTree.dispatch(button, template);
-                close(event);
-            }
+        AddressTemplate template = AddressTemplate.ofTrusted(input.value());
+        if (!template.fullyQualified()) {
+            failSafeRemoveFromParent(multiple);
+            uic().modelTree().resolveWildcards(template).then(templates -> {
+                multiple = flex().css(util("mt-md")).direction(column)
+                        .addItem(flexItem()
+                                .add(content(p)
+                                        .add("The address you entered contains wildcards. Please select a resource from the list below.")))
+                        .addItem(flexItem()
+                                .flex(_1)
+                                .add(list().css(halComponent(modelBrowser, search, results))
+                                        .plain()
+                                        .addItems(templates, fullyQualified -> listItem()
+                                                .add(button().link().inline().text(fullyQualified.toString())
+                                                        .onClick((e, b) -> {
+                                                            SelectInTree.dispatch(button, fullyQualified);
+                                                            close(event);
+                                                        })))))
+                        .element();
+                menu.appendChild(multiple);
+                return null;
+            });
+        } else {
+            SelectInTree.dispatch(button, template);
+            close(event);
         }
     }
 

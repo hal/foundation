@@ -26,8 +26,7 @@ import elemental2.dom.RequestInit;
 import elemental2.promise.Promise;
 
 import static elemental2.dom.DomGlobal.fetch;
-import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_IDENTITY;
-import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_SEARCH;
+import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_API;
 import static org.jboss.hal.resources.Urls.replaceVersion;
 
 /**
@@ -64,7 +63,7 @@ public class ModelGraphTools {
      * a 200 status, or {@code false} otherwise.
      */
     public Promise<Boolean> ping() {
-        String url = replaceVersion(MODEL_GRAPH_TOOLS_IDENTITY, String.valueOf(port(environment.productVersion())));
+        String url = apiEndpoint().append("identity").toString();
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -115,8 +114,7 @@ public class ModelGraphTools {
      * promise that resolves to the array of search results or an empty array if the request fails.
      */
     public Promise<SearchResult[]> search(String term, int limit) {
-        String url = replaceVersion(MODEL_GRAPH_TOOLS_SEARCH, String.valueOf(port(environment.productVersion())))
-                + "?q=" + term + "&limit=" + limit;
+        String url = apiEndpoint().append("search?q=").append(term).append("&limit=").append(limit).toString();
 
         RequestInit init = RequestInit.create();
         init.setMethod("GET");
@@ -148,6 +146,49 @@ public class ModelGraphTools {
                     logger.error("Model graph tools search failed: %s", error);
                     return Promise.resolve(new SearchResult[0]);
                 });
+    }
+
+    /**
+     * Fetches the resources that reference a given capability from the MGT capability-references API. Returns a promise that
+     * resolves to the array of capability references or an empty array if the request fails.
+     */
+    public Promise<CapabilityReference[]> capabilityReferences(String capability) {
+        String url = apiEndpoint().append("capability/").append(capability).append("/references").toString();
+
+        RequestInit init = RequestInit.create();
+        init.setMethod("GET");
+        init.setMode("cors");
+
+        logger.debug("Fetching capability references for '%s' at %s", capability, url);
+        return fetch(url, init)
+                .then(response -> {
+                    if (response.ok) {
+                        return response.json()
+                                .then(json -> {
+                                    CapabilityReferencesResponse crr = (CapabilityReferencesResponse) json;
+                                    CapabilityReference[] references = crr.references;
+                                    logger.debug("Model graph tools returned %d references for capability '%s'",
+                                            references != null ? references.length : 0, capability);
+                                    return Promise.resolve(references != null ? references : new CapabilityReference[0]);
+                                })
+                                .catch_(error -> {
+                                    logger.error("Failed to parse capability references response for '%s': %s",
+                                            capability, String.valueOf(error));
+                                    return Promise.resolve(new CapabilityReference[0]);
+                                });
+                    } else {
+                        logger.error("Capability references request for '%s' failed: %d", capability, response.status);
+                        return Promise.resolve(new CapabilityReference[0]);
+                    }
+                })
+                .catch_(error -> {
+                    logger.error("Capability references request for '%s' failed: %s", capability, error);
+                    return Promise.resolve(new CapabilityReference[0]);
+                });
+    }
+
+    private StringBuilder apiEndpoint() {
+        return new StringBuilder(replaceVersion(MODEL_GRAPH_TOOLS_API, String.valueOf(port(environment.productVersion()))));
     }
 
     private int port(Version version) {

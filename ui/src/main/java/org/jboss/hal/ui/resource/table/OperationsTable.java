@@ -98,7 +98,7 @@ import static org.patternfly.style.Width.width45;
  * The {@code :add} and {@code :remove} operations are excluded from direct execution. Global operations can be shown or hidden
  * via a toggle. A toolbar with filter controls is displayed above the table.
  */
-public class OperationsTable implements IsElement<HTMLElement>, Attachable {
+public class OperationsTable implements Attachable, IsElement<HTMLElement> {
 
     private static final Logger logger = Logger.getLogger(OperationsTable.class.getName());
     private final AddressTemplate template;

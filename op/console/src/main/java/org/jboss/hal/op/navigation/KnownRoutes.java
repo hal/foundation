@@ -34,7 +34,9 @@ public interface KnownRoutes {
     // ------------------------------------------------------ all known routes (a-z)
 
     String INTERFACE_ROUTE = "/configuration/interface/:name/:selection?";
+    String LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING_ROUTE = "/configuration/socket-binding-group/:group/local-destination-outbound-socket-binding/:name/:selection?";
     String PATH_ROUTE = "/configuration/path/:name/:selection?";
+    String REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING_ROUTE = "/configuration/socket-binding-group/:group/remote-destination-outbound-socket-binding/:name/:selection?";
     String SOCKET_BINDING_GROUP_ROUTE = "/configuration/socket-binding-group/:name/:selection?";
     String SOCKET_BINDING_ROUTE = "/configuration/socket-binding-group/:group/socket-binding/:name/:selection?";
     String SUBSYSTEM_ROUTE = "/configuration/subsystem/:name/:selection?";

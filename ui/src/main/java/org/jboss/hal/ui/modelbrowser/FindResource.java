@@ -236,6 +236,7 @@ class FindResource {
             if (Key.Escape.match(e)) {
                 if (rootInput.expanded()) {
                     e.stopPropagation();
+                    rootInput.searchInput().collapse(false);
                 }
             }
             if (Key.Enter.match(e)) {

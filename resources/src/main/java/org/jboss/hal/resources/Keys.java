@@ -42,6 +42,12 @@ public interface Keys {
     String ATTRIBUTE_DESCRIPTION = "attribute-description";
 
     /**
+     * {@code org.jboss.hal.meta.description.CapabilityDescription} stored in model browser table rows to associate each row
+     * with its capability metadata.
+     */
+    String CAPABILITY_DESCRIPTION = "capability-description";
+
+    /**
      * {@code org.jboss.hal.op.endpoint.Endpoint} stored in endpoint selector cards during bootstrap endpoint selection.
      */
     String ENDPOINT = "endpoint";

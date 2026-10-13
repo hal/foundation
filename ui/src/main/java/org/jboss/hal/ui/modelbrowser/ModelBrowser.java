@@ -19,17 +19,16 @@ import java.util.List;
 
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.Attachable;
-import org.jboss.elemento.EventType;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.Dataset;
-import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.patternfly.style.Classes;
 
 import elemental2.dom.AddEventListenerOptions;
@@ -121,6 +120,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
     private HandlerRegistration mouseMoveHandler;
     private HandlerRegistration touchStartHandler;
     private HandlerRegistration touchMoveHandler;
+
     ModelBrowser(AddressTemplate root, AddressTemplate initialSelection, Highlight highlight) {
         this.root = root;
         this.initialSelection = initialSelection;
@@ -140,9 +140,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                 .add(detail)
                 .element();
 
-        if (highlight != null) {
-            rootElement.dataset.set(Dataset.highlight, highlight.toString());
-        }
+        markHighlight(highlight);
         AddResource.listen(rootElement, this::add);
         DeleteResource.listen(rootElement, this::delete);
         SelectInTree.listen(rootElement, this::select);
@@ -276,10 +274,11 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
             if (details.template != null) {
                 // select by address template
                 if (inScope(details.template)) {
+                    markHighlight(details.highlight);
                     tree.select(details.template);
                 } else {
                     logger.debug("Out of scope navigation for %s (not a sub-template of %s)", details.template, root);
-                    uic().routeRegistry().goTo(details.template);
+                    uic().routeRegistry().goTo(details.template, details.highlight);
                 }
             } else if (details.identifier != null) {
                 if (details.parentIdentifier != null) {
@@ -292,6 +291,18 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
             }
         } else {
             logger.error("Unable to select %s: Root template is null!", root);
+        }
+    }
+
+    private void markHighlight(Highlight highlight) {
+        if (highlight != null) {
+            markHighlight(highlight.toString());
+        }
+    }
+
+    private void markHighlight(String highlight) {
+        if (highlight != null) {
+            rootElement.dataset.set(Dataset.highlight, highlight);
         }
     }
 
