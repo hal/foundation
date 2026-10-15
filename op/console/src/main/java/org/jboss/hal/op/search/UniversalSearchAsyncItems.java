@@ -49,13 +49,13 @@ class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
     private final HasValue<String> valueProvider;
     private final ResourceAddressAsyncItems addressItems;
     private final MgtSearchAsyncItems mgtItems;
-    private boolean mgtAvailable;
+    private final boolean mgtAvailable;
 
     UniversalSearchAsyncItems(HasValue<String> valueProvider, ModelGraphTools modelGraphTools) {
         this.valueProvider = valueProvider;
         this.addressItems = new ResourceAddressAsyncItems(valueProvider);
         this.mgtItems = new MgtSearchAsyncItems(valueProvider, modelGraphTools);
-        this.mgtAvailable = false;
+        this.mgtAvailable = modelGraphTools.available();
     }
 
     @Override
@@ -77,15 +77,5 @@ class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
             return mgtItems.apply(menuList);
         }
         return Promise.resolve(emptyList());
-    }
-
-    /** Updates the MGT availability status. */
-    void mgtAvailable(boolean available) {
-        this.mgtAvailable = available;
-    }
-
-    /** Returns whether MGT is currently available. */
-    boolean isMgtAvailable() {
-        return mgtAvailable;
     }
 }

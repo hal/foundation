@@ -16,7 +16,9 @@
 package org.jboss.hal.op.search;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.elemento.Id;
 import org.jboss.hal.core.mgt.ModelGraphTools;
@@ -48,7 +50,7 @@ import static org.patternfly.style.Classes.util;
  * capabilities matching the current search input value.
  *
  * <p>Each {@link SearchResult} is mapped to a {@link MenuItem} with a colored type label, description, and address. The full
- * {@link SearchResult} is stored on the menu item for later retrieval using the {@link Keys#MGT_SEARCH_RESULT} key.
+ * {@link SearchResult} is stored on the menu item for later retrieval using the {@link Keys#SEARCH_RESULT} key.
  *
  * @see UniversalSearchAsyncItems
  */
@@ -78,18 +80,35 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
         return modelGraphTools.search(searchTerm)
                 .then(results -> {
-                    List<MenuItem> items = new ArrayList<>();
+                    List<SearchResult> sorted = new ArrayList<>();
                     for (SearchResult result : results) {
-                        if (typeFilter != null && !typeFilter.equals(result.type)) {
-                            continue;
+                        if (typeFilter == null || typeFilter.equals(result.type)) {
+                            sorted.add(result);
                         }
+                    }
+                    sorted.sort((a, b) -> {
+                        int cmp = Integer.compare(categoryOrder(a.type), categoryOrder(b.type));
+                        if (cmp != 0) {
+                            return cmp;
+                        }
+                        String nameA = a.name != null ? a.name : "";
+                        String nameB = b.name != null ? b.name : "";
+                        return nameA.compareTo(nameB);
+                    });
+
+                    Set<String> seen = new LinkedHashSet<>();
+                    List<MenuItem> items = new ArrayList<>();
+                    for (SearchResult result : sorted) {
                         String identifier = result.address != null
                                 ? Id.build(result.type, result.name, result.address)
                                 : Id.build(result.type, result.name);
+                        if (!seen.add(identifier)) {
+                            continue;
+                        }
                         MenuItem item = menuItem(identifier, result.name)
                                 .css(halComponent(universalSearch, mgt, HalClasses.result))
-                                .text(nameWithTypeLabel(result))
-                                .store(Keys.MGT_SEARCH_RESULT, result);
+                                .icon(label(result.type, typeColor(result.type)).compact().element())
+                                .store(Keys.SEARCH_RESULT, result);
                         HTMLElement descriptionElement = descriptionWithAddress(result);
                         if (descriptionElement != null) {
                             item.description(descriptionElement);
@@ -99,14 +118,6 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
                     return Promise.resolve((Iterable<MenuItem>) items);
                 })
                 .catch_(__ -> Promise.resolve(emptyList()));
-    }
-
-    private static HTMLElement nameWithTypeLabel(SearchResult result) {
-        return span()
-                .add(label(result.type, typeColor(result.type)).compact()
-                        .css(util("mr-sm")))
-                .add(result.name)
-                .element();
     }
 
     private static HTMLElement descriptionWithAddress(SearchResult result) {
@@ -135,6 +146,19 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
                     }
                 })
                 .element();
+    }
+
+    private static int categoryOrder(String type) {
+        if (type == null) {
+            return 99;
+        }
+        return switch (type) {
+            case "Resource" -> 0;
+            case "Attribute" -> 1;
+            case "Operation" -> 2;
+            case "Capability" -> 3;
+            default -> 99;
+        };
     }
 
     private static Color typeColor(String type) {

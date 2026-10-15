@@ -19,6 +19,11 @@
         border-radius: var(--pf-t--global--border--radius--small);
     }
 
+    &:has(.pf-v6-c-text-input-group.pf-m-expanded) {
+        border-end-start-radius: 0;
+        border-end-end-radius: 0;
+    }
+
     .pf-v6-c-modal-box__body:last-child {
         padding-block-end: var(--pf-t--global--spacer--sm);
     }
@@ -31,6 +36,11 @@
 
     .pf-v6-c-text-input-group__text-input {
         font-size: var(--pf-t--global--font--size--lg);
+    }
+
+    .pf-v6-c-menu {
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
     }
 
     .pf-v6-c-menu.pf-m-scrollable {

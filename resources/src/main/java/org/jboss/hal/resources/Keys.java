@@ -30,6 +30,11 @@ public interface Keys {
     String ACCESS_TYPE_VALUE = "access-type-value";
 
     /**
+     * {@code org.jboss.hal.meta.AddressTemplate} resolved address template.
+     */
+    String ADDRESS_TEMPLATE = "address-template";
+
+    /**
      * {@code List<org.jboss.hal.meta.AddressTemplate>} carrying resolved address templates through a flow context during
      * capability lookup.
      */
@@ -69,17 +74,6 @@ public interface Keys {
      * between wizard steps.
      */
     String METADATA = "metadata";
-
-    /**
-     * {@code org.jboss.hal.core.mgt.SearchResult} stored by the universal search when MGT is available.
-     */
-    String MGT_SEARCH_RESULT = "mgt-search-result";
-
-    /**
-     * {@code Boolean} marker stored on menu items created by wildcard resolution in the universal search. Distinguishes
-     * resolved addresses (which should navigate) from intermediate address typeahead segments (which should keep building).
-     */
-    String RESOLVED_ADDRESS = "resolved-address";
 
     /**
      * {@code org.jboss.hal.ui.modelbrowser.ModelBrowserNode} stored in tree-view and list items to associate each UI node with
@@ -125,6 +119,11 @@ public interface Keys {
      * {@code String} resource name stored in each finder item to hold the resource's display name.
      */
     String RESOURCE_NAME = "resource-name";
+
+    /**
+     * {@code org.jboss.hal.core.mgt.SearchResult} stored by the universal search when MGT is available.
+     */
+    String SEARCH_RESULT = "search-result";
 
     /**
      * {@code org.jboss.hal.ui.filter.StorageValue} enum stored in filter menu items to tag each option with a storage filter
