@@ -9,20 +9,37 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add form-level validation for cross-field constraints — `FormValidation` interface with `RequiredByValidation`, `NotMoreThanOneAlternativeValidation`, and `ExactlyOneAlternativeValidation` implementations, auto-detected from `requires` and `alternatives` management model metadata
-- Add `AttributeDescription.requires()` and `AttributeDescription.alternatives()` typed accessor methods
-- Add `FormItem.showError()` and `NativeControl.markInvalid()` for external error marking from form-level validation
-- Add `ListSimpleRecordHandler` for LIST attributes with simple-record value-type — covers 26 attribute instances (19 definitions) including `realms`, `global-modules`, `permissions`, `match-rules`, and `filters`
-- Add `ListSimpleRecordViewItem` — compact PatternFly table with pipeline-delegated cells and capability reference navigation
-- Add `ListSimpleRecordFormItem` — editable table with Add/Edit/Delete actions and modal-based record editing using pipeline-produced typed form controls
-- Add `AttributeDescription.listOfSimpleRecords()` detection method
-- Add `ResolvedAttribute.listEntry()` for per-entry resolution in LIST attributes
-- Add pure unit tests for all pipeline handler match logic (36 tests) and attribute type detection (11 tests)
+- Add universal search with Cmd+K / Ctrl+K shortcut — typeahead with management model graph (MGT) and resource address modes
+- Add Model Graph Tools (MGT) service with post-bootstrap container detection, toolbar indicator with status and auto-refresh
+- Add resource address typeahead component for navigating management model addresses
+- Add highlight routing — attributes and operations are highlighted after universal search navigation
+- Add form-level validation for cross-field constraints — auto-detected from `requires` and `alternatives` management model metadata
+- Add `ListSimpleRecordHandler` for LIST attributes with simple-record value-type — compact table view with modal-based record editing
+- Add unit tests for pipeline handler match logic and attribute type detection
 
 ### Changed
 
-- Refactor validation API into layered architecture — `ResourceForm` orchestrates per-item and form-level validation, `EditableControl` dispatches mode-aware validation, `NativeControl` handles widget-level marking
-- Extract `markInvalid()` from `validate()` in all `NativeControl` implementations for reuse by form-level validation
+- Rewrite universal search with proper event handling, menu state, and overlay anchoring
+- Refactor validation API into layered architecture — `ResourceForm` orchestrates per-item and form-level validation
+- Adapt to PatternFly Java typeahead API changes (0.12.0 and 0.13.0)
+
+### Fixed
+
+- Fix address mode segment selection no longer triggering navigation or errors
+- Fix smooth highlight fade animation
+- Fix wildcard resolution to existing resources only
+- Fix universal search debounce, highlight, menu reset, and unique menu item identifiers
+- Fix `StatusCard` registration as attachable
+
+### Upgrades
+
+- Bump PatternFly Java to 0.13.3
+- Bump Elemento to 2.5.7
+- Bump Quarkus platform to 3.39.2
+- Bump jboss-parent to 54
+- Bump GitHub Actions (setup-java v6.0.1)
+- Bump Maven managed dependencies and plugins
+- Bump npm dependencies and packageManager versions
 
 ## [0.5.0] - 2026-08-20
 
