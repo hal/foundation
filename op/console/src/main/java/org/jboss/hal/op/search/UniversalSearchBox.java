@@ -18,7 +18,9 @@ package org.jboss.hal.op.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtproject.event.shared.HandlerRegistration;
 import org.jboss.elemento.By;
+import org.jboss.elemento.EventType;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.hal.core.mgt.ModelGraphTools;
@@ -40,11 +42,13 @@ import org.patternfly.style.Classes;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
+import static elemental2.dom.DomGlobal.document;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.elemento.Elements.querySelector;
+import static org.jboss.elemento.EventType.bind;
 import static org.jboss.elemento.Key.Enter;
 import static org.jboss.elemento.Key.Escape;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PROFILE;
@@ -136,6 +140,9 @@ public class UniversalSearchBox {
     private MenuItem errorItem;
     /** Tracked so we can remove it from the DOM when transitioning back to normal search. */
     private MenuItem headerItem;
+    private HandlerRegistration outsideClickHandler;
+    /** Set when an address segment is selected via the menu, to prevent the Enter keyup from triggering resolution. */
+    private boolean addressSegmentSelected;
 
     UniversalSearchBox() {
         searchInput = searchInputGroupTypeahead("universal-search");
@@ -169,6 +176,14 @@ public class UniversalSearchBox {
     public void show() {
         modal.open();
         searchInput.input().element().focus();
+        outsideClickHandler = bind(document, EventType.click.name, this::onOutsideClick);
+    }
+
+    private void onOutsideClick(Event event) {
+        HTMLElement target = (HTMLElement) event.target;
+        if (target != null && !modal.element().contains(target)) {
+            closeAll();
+        }
     }
 
     // ------------------------------------------------------ event handlers
@@ -198,6 +213,10 @@ public class UniversalSearchBox {
      */
     private void onKeyup(Event e) {
         if (Enter.match(e) && e.target == searchInput.input().element()) {
+            if (addressSegmentSelected) {
+                addressSegmentSelected = false;
+                return;
+            }
             if (!searchInput.expanded()) {
                 String value = searchInput.value();
                 if (value != null && value.startsWith("/")) {
@@ -212,6 +231,7 @@ public class UniversalSearchBox {
      * input after an error or pick list was shown. If the input becomes empty (backspace to empty), performs a full reset.
      */
     private void onInput(String value) {
+        addressSegmentSelected = false;
         clearSpecialItems();
         if (value == null || value.isEmpty()) {
             reset();
@@ -260,6 +280,8 @@ public class UniversalSearchBox {
             evaluateSearchResult(searchResult);
         } else if (template != null) {
             pickAddress(template);
+        } else {
+            addressSegmentSelected = true;
         }
         searchInput.input().element().focus();
     }
@@ -277,7 +299,7 @@ public class UniversalSearchBox {
                     .map(List::of)
                     .ifPresentOrElse(
                             templates -> resolveTemplates(templates, null),
-                            () -> showError("Invalid address: " + value));
+                            () -> showError("\"" + value + "\" is not a valid resource address"));
         }
     }
 
@@ -369,7 +391,7 @@ public class UniversalSearchBox {
             if (status == 200) {
                 goTo(template, highlight(searchResult));
             } else {
-                showError(resourceNotFound(template, searchResult));
+                showError(resourceNotFound(template));
             }
             return null;
         });
@@ -441,24 +463,34 @@ public class UniversalSearchBox {
 
     private String pickListHeader(int count, SearchResult searchResult) {
         if (searchResult != null && searchResult.type != null && searchResult.name != null) {
-            return count + " resources for " + searchResult.type.toLowerCase() + " " + searchResult.name + ":";
+            String label = friendlyTypeLabel(searchResult.type);
+            return "Found " + count + " resources with " + label + " \"" + searchResult.name + "\" — pick one:";
         }
-        return count + " resources found:";
+        return "Found " + count + " matching resources — pick one:";
     }
 
     private String noMatchingResources(SearchResult searchResult) {
-        if (searchResult != null && searchResult.type != null && searchResult.name != null) {
-            return "No resources for " + searchResult.type.toLowerCase() + " " + searchResult.name;
+        if (searchResult != null && searchResult.address != null) {
+            return "No resources found for " + searchResult.address;
+        }
+        if (searchResult != null && searchResult.name != null) {
+            return "No resources found for " + searchResult.name;
         }
         return "No matching resources found";
     }
 
-    private String resourceNotFound(AddressTemplate template, SearchResult searchResult) {
-        if (searchResult != null && searchResult.type != null && searchResult.name != null) {
-            return "Resource not found for " + searchResult.type.toLowerCase() + " " + searchResult.name
-                    + ": " + template.template;
-        }
-        return "Resource not found: " + template.template;
+    private String resourceNotFound(AddressTemplate template) {
+        return "Resource does not exist: " + template.template;
+    }
+
+    private String friendlyTypeLabel(String type) {
+        return switch (type) {
+            case "Attribute" -> "attribute";
+            case "Operation" -> "operation";
+            case "Capability" -> "capability";
+            case "Resource" -> "resource";
+            default -> type.toLowerCase();
+        };
     }
 
     /**
@@ -526,6 +558,10 @@ public class UniversalSearchBox {
     }
 
     private void closeAll() {
+        if (outsideClickHandler != null) {
+            outsideClickHandler.removeHandler();
+            outsideClickHandler = null;
+        }
         searchInput.collapse(false);
         menuList.reset();
         modal.close();
