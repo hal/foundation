@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.view;
 
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 
@@ -49,5 +50,10 @@ public class FileViewItem extends AbstractViewItem {
     @Override
     public HTMLElement element() {
         return root;
+    }
+
+    @Override
+    public boolean canHighlight(Highlight highlight) {
+        return PATH.equals(highlight.name()) || RELATIVE_TO.equals(highlight.name());
     }
 }

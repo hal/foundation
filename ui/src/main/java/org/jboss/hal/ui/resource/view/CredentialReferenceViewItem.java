@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.view;
 
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.jboss.hal.ui.resource.pipeline.CredentialReferenceHandler;
@@ -123,5 +124,10 @@ public class CredentialReferenceViewItem extends AbstractViewItem {
     @Override
     public HTMLElement element() {
         return root;
+    }
+
+    @Override
+    public boolean canHighlight(Highlight highlight) {
+        return STORE.equals(highlight.name());
     }
 }

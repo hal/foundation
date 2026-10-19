@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.ui.resource.view;
 
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.ResourceItem;
 
 import elemental2.dom.HTMLElement;
@@ -31,4 +32,6 @@ public interface ViewItem extends ResourceItem {
 
     /** Returns the rendered value element (handles restricted, expression, defined, and undefined states). */
     HTMLElement valueElement();
+
+    boolean canHighlight(Highlight highlight);
 }

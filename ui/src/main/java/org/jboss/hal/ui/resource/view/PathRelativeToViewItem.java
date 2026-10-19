@@ -15,11 +15,14 @@
  */
 package org.jboss.hal.ui.resource.view;
 
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.RELATIVE_TO;
 import static org.patternfly.component.list.DescriptionListDescription.descriptionListDescription;
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 
@@ -49,5 +52,10 @@ public class PathRelativeToViewItem extends AbstractViewItem {
     @Override
     public HTMLElement element() {
         return root;
+    }
+
+    @Override
+    public boolean canHighlight(Highlight highlight) {
+        return PATH.equals(highlight.name()) || RELATIVE_TO.equals(highlight.name());
     }
 }

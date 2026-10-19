@@ -22,6 +22,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.label.Label;
@@ -156,6 +157,11 @@ public class DefaultViewItem extends AbstractViewItem {
     @Override
     public HTMLElement valueElement() {
         return valueElement;
+    }
+
+    @Override
+    public boolean canHighlight(Highlight highlight) {
+        return highlight.name().equals(attribute().name());
     }
 
     @Override

@@ -248,7 +248,7 @@ public class ResourceData implements TypedBuilder<HTMLElement, ResourceData>, Is
             Highlight.parse(value).ifPresent(h -> {
                 if (h.type() == Highlight.Type.ATTRIBUTE) {
                     for (ViewItem item : viewItems) {
-                        if (h.name().equals(item.attribute().name())) {
+                        if (item.canHighlight(h)) {
                             h.flash(ancestor, item.element());
                             return;
                         }

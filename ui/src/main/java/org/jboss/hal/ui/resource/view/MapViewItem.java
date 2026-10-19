@@ -16,6 +16,8 @@
 package org.jboss.hal.ui.resource.view;
 
 import org.jboss.elemento.Id;
+import org.jboss.hal.dmr.Property;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 
@@ -63,5 +65,15 @@ public class MapViewItem extends AbstractViewItem {
     @Override
     public HTMLElement element() {
         return root;
+    }
+
+    @Override
+    public boolean canHighlight(Highlight highlight) {
+        for (Property property : attribute().value().asPropertyList()) {
+            if (highlight.name().equals(property.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.AttributeDescriptions;
+import org.jboss.hal.ui.navigation.Highlight;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 
@@ -35,7 +36,6 @@ import static org.patternfly.component.list.DescriptionListDescription.descripti
 import static org.patternfly.component.list.DescriptionListGroup.descriptionListGroup;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.Tbody.tbody;
-import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
@@ -97,5 +97,15 @@ public class ListSimpleRecordViewItem extends AbstractViewItem {
     @Override
     public HTMLElement element() {
         return root;
+    }
+
+    @Override
+    public boolean canHighlight(Highlight highlight) {
+        for (AttributeDescription ad : attribute().description().valueTypeAttributeDescriptions()) {
+            if (highlight.name().equals(ad.name())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -53,6 +53,7 @@ import static org.jboss.elemento.EventType.touchstart;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OPERATION;
+import static org.jboss.hal.resources.Dataset.highlight;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
 import static org.jboss.hal.resources.LocalStorage.MODEL_BROWSER_TREE_WIDTH;
