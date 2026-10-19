@@ -9,26 +9,25 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add universal search with Cmd+K / Ctrl+K shortcut — typeahead with management model graph (MGT) and resource address modes
+- Add universal search with Cmd+K / Ctrl+K shortcut — typeahead with management model graph (MGT) and resource address modes, highlight routing for attributes and operations after navigation
 - Add Model Graph Tools (MGT) service with post-bootstrap container detection, toolbar indicator with status and auto-refresh
-- Add resource address typeahead component for navigating management model addresses
-- Add highlight routing — attributes and operations are highlighted after universal search navigation
 - Add form-level validation for cross-field constraints — auto-detected from `requires` and `alternatives` management model metadata
 - Add `ListSimpleRecordHandler` for LIST attributes with simple-record value-type — compact table view with modal-based record editing
-- Add unit tests for pipeline handler match logic and attribute type detection
+- Add expandable capability reference browsing in model browser — attribute-grouped references with wildcard resolution
+- Add highlight support to all composite view items (credential reference, file, path, time-unit, map, list-simple-record)
 
 ### Changed
 
-- Rewrite universal search with proper event handling, menu state, and overlay anchoring
+- Rewrite universal search with proper event handling, menu state, overlay anchoring, and outside-click detection
 - Refactor validation API into layered architecture — `ResourceForm` orchestrates per-item and form-level validation
 - Adapt to PatternFly Java typeahead API changes (0.12.0 and 0.13.0)
 
 ### Fixed
 
 - Fix address mode segment selection no longer triggering navigation or errors
-- Fix smooth highlight fade animation
-- Fix wildcard resolution to existing resources only
 - Fix universal search debounce, highlight, menu reset, and unique menu item identifiers
+- Fix wildcard resolution to existing resources only
+- Fix credential store alias not loading when switching to store reference mode
 - Fix `StatusCard` registration as attachable
 
 ### Upgrades
