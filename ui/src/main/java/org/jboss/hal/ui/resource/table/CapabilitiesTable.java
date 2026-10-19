@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.jboss.elemento.Attachable;
 import org.jboss.elemento.By;
@@ -33,24 +35,32 @@ import org.jboss.hal.core.mgt.CapabilityReference;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.description.CapabilityDescription;
+import org.jboss.hal.meta.description.CapabilityDescriptions;
 import org.jboss.hal.meta.description.ResourceDescription;
 import org.jboss.hal.resources.Dataset;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.jboss.hal.ui.navigation.Highlight;
+import org.patternfly.component.skeleton.Shape;
+import org.patternfly.component.table.ExpandableRowContent;
 import org.patternfly.component.table.Table;
 import org.patternfly.component.table.TableType;
 import org.patternfly.component.table.Tbody;
 import org.patternfly.component.table.Tr;
+import org.patternfly.core.Timeouts;
 import org.patternfly.layout.flex.Flex;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MutationRecord;
 import elemental2.promise.Promise;
 
-import static java.util.Collections.emptyList;
+import static elemental2.dom.DomGlobal.clearTimeout;
+import static java.util.Collections.emptyMap;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.closest;
+import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.brick.EmptyStateBricks.noItems;
 import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
@@ -58,18 +68,23 @@ import static org.jboss.hal.ui.navigation.Highlight.Type.ATTRIBUTE;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.list.List.list;
 import static org.patternfly.component.list.ListItem.listItem;
+import static org.patternfly.component.skeleton.Skeleton.skeleton;
+import static org.patternfly.component.table.ExpandableRowContent.expandableRowContent;
 import static org.patternfly.component.table.Table.table;
+import static org.patternfly.component.table.TableCaption.tableCaption;
 import static org.patternfly.component.table.Tbody.tbody;
+import static org.patternfly.component.table.Td.expandableTd;
 import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
-import static org.patternfly.component.table.TitleCell.titleCell;
+import static org.patternfly.component.table.Tr.expandableTr;
 import static org.patternfly.component.table.Tr.tr;
 import static org.patternfly.layout.bullseye.Bullseye.bullseye;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.sm;
 import static org.patternfly.style.Classes.util;
+import static org.patternfly.style.Size.xs;
 import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width30;
 import static org.patternfly.style.Width.width60;
@@ -84,29 +99,36 @@ import static org.patternfly.style.Width.width60;
 public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
 
     private final Table table;
-    private final Tbody tbody;
+    private final Set<String> expandedCapabilities;
 
     public CapabilitiesTable(Metadata metadata, boolean mgtAvailable) {
-        this.table = table(mgtAvailable ? TableType.treeTable : TableType.table)
+        this.expandedCapabilities = new HashSet<>();
+        this.table = table(mgtAvailable ? TableType.expandable : TableType.table)
                 .addHead(thead().css(util("mt-sm"))
                         .addRow(tr("capabilities-head")
+                                .run(tr -> {
+                                    if (mgtAvailable) {
+                                        tr.addItem(th().screenReader("Row expansion"));
+                                    }
+                                })
                                 .addItem(th("name").width(width60).text("Name"))
                                 .addItem(th("dynamic").width(width10).text("Dynamic"))
                                 .addItem(th("dynamic-elements").width(width30).text("Dynamic elements"))))
-                .addBody(tbody = tbody()
-                        .run(tbody -> {
-                            if (metadata.resourceDescription().capabilities().isEmpty()) {
-                                tbody.addRow(tr(Id.unique("empty"))
-                                        .addItem(td().colSpan(3)
-                                                .add(bullseye()
-                                                        .add(noItems("No capabilities",
-                                                                "This resource provides no capabilities.")))));
-                            } else {
-                                tbody.addRows(metadata.resourceDescription().capabilities(),
-                                        capability -> capabilityRow(metadata.resourceDescription(), capability,
-                                                mgtAvailable));
-                            }
-                        }));
+                .run(table -> {
+                    if (metadata.resourceDescription().capabilities().isEmpty()) {
+                        table.addBody(tbody().addRow(tr(Id.unique("empty"))
+                                .addItem(td().colSpan(3)
+                                        .add(bullseye()
+                                                .add(noItems("No capabilities",
+                                                        "This resource provides no capabilities."))))));
+                    } else {
+                        if (mgtAvailable) {
+                            addBodies(metadata.resourceDescription(), metadata.resourceDescription().capabilities(), table);
+                        } else {
+                            addRows(metadata.resourceDescription(), metadata.resourceDescription().capabilities(), table);
+                        }
+                    }
+                });
         Attachable.register(this, this);
     }
 
@@ -117,11 +139,13 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
             String value = ancestor.dataset.get(Dataset.highlight);
             Highlight.parse(value).ifPresent(h -> {
                 if (h.type() == Highlight.Type.CAPABILITY) {
-                    for (Tr tr : tbody.items()) {
-                        CapabilityDescription cd = tr.get(Keys.CAPABILITY_DESCRIPTION);
-                        if (cd != null && h.name().equals(cd.name())) {
-                            h.flash(ancestor, tr.element());
-                            return;
+                    for (Tbody tbody : table.items()) {
+                        for (Tr tr : tbody.items()) {
+                            CapabilityDescription cd = tr.get(Keys.CAPABILITY_DESCRIPTION);
+                            if (cd != null && h.name().equals(cd.name())) {
+                                h.flash(ancestor, tr.element());
+                                return;
+                            }
                         }
                     }
                 }
@@ -134,86 +158,117 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
         return table.element();
     }
 
-    private Tr capabilityRow(ResourceDescription resource, CapabilityDescription capability, boolean mgtAvailable) {
-        Tr tr = tr(capability.name())
-                .store(Keys.CAPABILITY_DESCRIPTION, capability);
-        if (mgtAvailable) {
-            tr.add(titleCell().add(capabilityName(resource, capability)));
-            tr.addChildren(parent -> loadReferences(capability));
-        } else {
-            tr.addItem(td("Name").add(capabilityName(resource, capability)));
+    // ------------------------------------------------------ capabilities
+
+    private void addBodies(ResourceDescription resource, CapabilityDescriptions capabilities, Table table) {
+        table.addItems(capabilities, capability -> {
+            ExpandableRowContent expandableRowContent = expandableRowContent();
+            return tbody()
+                    .addRow(tr(capability.name())
+                            .store(Keys.CAPABILITY_DESCRIPTION, capability)
+                            .onToggle((e, tr, expanded) -> toggleReferences(capability, expanded, expandableRowContent))
+                            .addItem(expandableTd())
+                            .addItem(td("Name").add(capabilityName(resource, capability)))
+                            .addItem(td("Dynamic").text(String.valueOf(capability.dynamic())))
+                            .addItem(td("Dynamic elements").add(dynamicElements(capability))))
+                    .addRow(expandableTr(Id.build(capability.name(), "references"))
+                            .addItem(td().text(""))
+                            .addItem(td().colSpan(3)
+                                    .addExpandableRowContent(expandableRowContent.noPadding())));
+        });
+    }
+
+    private void addRows(ResourceDescription resource, CapabilityDescriptions capabilities, Table table) {
+        table.addBody(tbody().addRows(capabilities, capability -> tr(capability.name())
+                .store(Keys.CAPABILITY_DESCRIPTION, capability)
+                .addItem(td("Name").add(capabilityName(resource, capability)))
+                .addItem(td("Dynamic").text(String.valueOf(capability.dynamic())))
+                .addItem(td("Dynamic elements").add(dynamicElements(capability)))
+        ));
+    }
+
+    // ------------------------------------------------------ references
+
+    private void toggleReferences(CapabilityDescription capability, boolean expanded, ExpandableRowContent content) {
+        if (expanded && !expandedCapabilities.contains(capability.name())) {
+            double handle = DomGlobal.setTimeout(__ -> content.add(skeleton()
+                    .shape(Shape.square)
+                    .screenReaderText("Loading references")), Timeouts.LOADING_TIMEOUT);
+
+            loadReferences(capability).then(groups -> {
+                clearTimeout(handle);
+                removeChildrenFrom(content);
+                expandedCapabilities.add(capability.name());
+
+                if (groups.isEmpty()) {
+                    content.add(noItems("No references", "No references found for this capability").size(xs));
+                } else {
+                    content.add(table().compact().noBorders()
+                            .addCaption(tableCaption().text(
+                                    "This capability can be referenced by the following attributes and resources."))
+                            .addHead(thead().addRow(tr(Id.build(capability.name(), "references", "head"))
+                                    .addItem(th("attribute").text("Attribute"))
+                                    .addItem(th("resources").text("Resources"))))
+                            .addBody(tbody().addRows(groups.entrySet(), entry -> {
+                                String attribute = entry.getKey();
+                                List<AddressTemplate> templates = entry.getValue();
+                                return tr(Id.build(capability.name(), "references", attribute))
+                                        .addItem(td("attribute").text(attribute))
+                                        .addItem(td("resources")
+                                                .add(list().plain().addItems(templates, template ->
+                                                        listItem().add(button().link().inline().text(template.toString())
+                                                                .onClick((e, b) ->
+                                                                        SelectInTree.dispatch(b.element(), template,
+                                                                                new Highlight(ATTRIBUTE,
+                                                                                        attribute).toString()))))));
+                            })));
+                }
+                return null;
+            });
         }
-        tr.addItem(td("Dynamic").text(String.valueOf(capability.dynamic())))
-                .addItem(td("Dynamic elements").add(dynamicElements(capability)));
-        return tr;
     }
 
-    private Promise<Iterable<Tr>> loadReferences(CapabilityDescription capability) {
-        return uic().modelGraphTools().capabilityReferences(capability.name())
-                .then(references -> {
-                    if (references.length == 0) {
-                        return Promise.resolve(emptyList());
-                    }
+    private Promise<Map<String, List<AddressTemplate>>> loadReferences(CapabilityDescription capability) {
+        return uic().modelGraphTools().capabilityReferences(capability.name()).then(references -> {
+            if (references.length == 0) {
+                return Promise.resolve(emptyMap());
+            }
 
-                    // group references by attribute name, preserving insertion order
-                    Map<String, List<AddressTemplate>> byAttribute = new LinkedHashMap<>();
-                    for (CapabilityReference ref : references) {
-                        byAttribute.computeIfAbsent(ref.attributeName, k -> new ArrayList<>())
-                                .add(AddressTemplate.ofTrusted(ref.resourceAddress));
-                    }
+            // group references by attribute name, preserving insertion order
+            SortedMap<String, List<AddressTemplate>> byAttribute = new TreeMap<>();
+            for (CapabilityReference ref : references) {
+                byAttribute.computeIfAbsent(ref.attributeName, k -> new ArrayList<>())
+                        .add(AddressTemplate.ofTrusted(ref.resourceAddress));
+            }
 
-                    // resolve wildcards per attribute group in parallel
-                    String key = "groups";
-                    List<String> attributeNames = new ArrayList<>(byAttribute.keySet());
-                    List<Task<FlowContext>> tasks = attributeNames.stream()
-                            .map(attrName -> (Task<FlowContext>) context -> {
-                                List<AddressTemplate> templates = byAttribute.get(attrName);
-                                return uic().modelTree().resolveWildcards(templates).then(resolved -> {
-                                    Map<String, List<AddressTemplate>> groups = context.get(key);
-                                    if (!resolved.isEmpty()) {
-                                        groups.put(attrName, resolved);
-                                    }
-                                    return context.resolve();
-                                });
-                            })
-                            .collect(toList());
+            // resolve wildcards per attribute group in parallel
+            String key = "groups";
+            List<Task<FlowContext>> tasks = byAttribute.keySet().stream()
+                    .map(attrName -> (Task<FlowContext>) context -> {
+                        List<AddressTemplate> templates = byAttribute.get(attrName);
+                        return uic().modelTree().resolveWildcards(templates).then(resolved -> {
+                            Map<String, List<AddressTemplate>> groups = context.get(key);
+                            if (!resolved.isEmpty()) {
+                                groups.put(attrName, resolved);
+                            }
+                            return context.resolve();
+                        });
+                    })
+                    .collect(toList());
 
-                    FlowContext initialContext = new FlowContext();
-                    initialContext.set(key, new LinkedHashMap<String, List<AddressTemplate>>());
-                    return Flow.parallel(initialContext, tasks)
-                            .then(context -> {
-                                Map<String, List<AddressTemplate>> groups = context.get(key);
-                                // deduplicate templates within each group
-                                for (List<AddressTemplate> templates : groups.values()) {
-                                    Set<String> seen = new HashSet<>();
-                                    templates.removeIf(t -> !seen.add(t.template));
-                                }
-                                List<Tr> children = new ArrayList<>();
-                                children.add(tr(Id.unique("ref", "desc"))
-                                        .addItem(td().colSpan(3)
-                                                .text("This capability is referenced by the following attributes and resources.")));
-                                groups.entrySet().stream()
-                                        .filter(entry -> !entry.getValue().isEmpty())
-                                        .map(entry -> referenceRow(entry.getKey(), entry.getValue()))
-                                        .forEach(children::add);
-                                return Promise.resolve(children);
-                            });
-                });
-    }
-
-    private Tr referenceRow(String attributeName, List<AddressTemplate> templates) {
-        return tr(Id.unique("ref", attributeName))
-                .addItem(td().colSpan(3)
-                        .add(flex().spaceItems(sm)
-                                .addItem(flexItem().text(attributeName + ":"))
-                                .addItem(flexItem()
-                                        .add(list().plain()
-                                                .addItems(templates, template -> listItem()
-                                                        .add(button().link().inline()
-                                                                .text(template.toString())
-                                                                .onClick((e, b) -> SelectInTree.dispatch(
-                                                                        b.element(), template, new Highlight(ATTRIBUTE,
-                                                                                attributeName).toString()))))))));
+            FlowContext initialContext = new FlowContext();
+            initialContext.set(key, new LinkedHashMap<String, List<AddressTemplate>>());
+            return Flow.parallel(initialContext, tasks).then(context -> {
+                Map<String, List<AddressTemplate>> groups = context.get(key);
+                // deduplicate templates within each group
+                for (List<AddressTemplate> templates : groups.values()) {
+                    Set<String> seen = new HashSet<>();
+                    templates.removeIf(t -> !seen.add(t.template));
+                    templates.sort(comparing(AddressTemplate::toString));
+                }
+                return Promise.resolve(groups);
+            });
+        });
     }
 
     private Flex capabilityName(ResourceDescription resource, CapabilityDescription capability) {
@@ -230,4 +285,5 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
         return list().plain()
                 .addItems(capability.dynamicElements(), dynamicElement -> listItem().text(dynamicElement));
     }
+
 }
