@@ -14,7 +14,7 @@
     "@patternfly-java/charts": "catalog:pfj",
     "@patternfly-java/core": "catalog:pfj",
     "@patternfly-java/finder": "catalog:pfj",
-    "@patternfly/patternfly": "^6.6.1",
+    "@patternfly/patternfly": "^6.7.0",
     "dompurify": "3.4.17"
   },
   "devDependencies": {
