@@ -2,9 +2,13 @@
 
 The HAL management console for WildFly provides a modern, feature-rich interface for managing your WildFly servers and domains. This section highlights the key capabilities that make working with WildFly's management model more efficient and intuitive.
 
+## Universal Search
+
+Press **Cmd+K** (macOS) or **Ctrl+K** (Windows/Linux) to open the [universal search](./universal-search.md). When a local [Model Graph Tools](../model-graph-tools/index.md) container is running, it searches across the entire management model — resources, attributes, operations, and capabilities. Start typing with `/` to switch to address navigation with live typeahead completion. Results link directly to the matching configuration page with the target attribute highlighted.
+
 ## Header Enhancements
 
-The console header provides quick access to essential controls. The **notification badge and drawer** keeps you informed of important events and alerts. The **theme and contrast selector** lets you customize the visual appearance to match your preferences or accessibility needs. The **endpoint selector** makes it easy to switch between different WildFly instances when managing multiple servers.
+The console header provides quick access to essential controls. The **notification badge and drawer** keeps you informed of important events and alerts. The **theme and contrast selector** lets you customize the visual appearance to match your preferences or accessibility needs. The **endpoint selector** makes it easy to switch between different WildFly instances when managing multiple servers. The **MGT indicator** shows whether a [Model Graph Tools](../model-graph-tools/index.md) container is available for the connected WildFly version.
 
 ## Stability Level Awareness
 

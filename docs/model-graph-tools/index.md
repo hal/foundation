@@ -111,6 +111,8 @@ The MGT indicator in the console toolbar shows the current status at a glance:
 
 Clicking the indicator opens a panel where you can check availability again or learn more about setting up MGT.
 
+![MGT Indicator](./mgt-indicator.png)
+
 ## Available Versions
 
 MGT container images are published for recent WildFly releases. Visit the [container registry on Quay.io](https://quay.io/repository/modelgraphtools/model?tab=tags) to see all available tags.

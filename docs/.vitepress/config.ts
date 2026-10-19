@@ -43,6 +43,7 @@ export default withMermaid(defineConfig({
         text: "Features",
         items: [
           { text: "Overview", link: "/features/overview" },
+          { text: "Universal Search", link: "/features/universal-search" },
           { text: "Dashboard", link: "/features/dashboard" },
           { text: "Model Browser", link: "/features/model-browser" },
           {

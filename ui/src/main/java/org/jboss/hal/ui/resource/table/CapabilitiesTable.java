@@ -115,12 +115,13 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                                 .addItem(th("dynamic").width(width10).text("Dynamic"))
                                 .addItem(th("dynamic-elements").width(width30).text("Dynamic elements"))))
                 .run(table -> {
+                    int colspan = mgtAvailable ? 4 : 3;
                     if (metadata.resourceDescription().capabilities().isEmpty()) {
                         table.addBody(tbody().addRow(tr(Id.unique("empty"))
-                                .addItem(td().colSpan(3)
+                                .addItem(td().colSpan(colspan)
                                         .add(bullseye()
                                                 .add(noItems("No capabilities",
-                                                        "This resource provides no capabilities."))))));
+                                                        "This resource provides no capabilities.").size((xs)))))));
                     } else {
                         if (mgtAvailable) {
                             addBodies(metadata.resourceDescription(), metadata.resourceDescription().capabilities(), table);

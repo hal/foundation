@@ -8,7 +8,7 @@ Attributes are organized using **attribute groups** defined in the resource desc
 
 ## Auto-Grouping for Large Resources
 
-When working with resources that define 20 or more attributes and no metadata-defined groups exist, the console applies **automatic alphabetical grouping**. Attributes are organized into letter-range sections (such as "A – D", "E – H"), reducing visual clutter and making it faster to locate specific attributes by name.
+When working with resources that define 20 or more attributes and no metadata-defined groups exist, the console applies **automatic alphabetical grouping**. Attributes are split into chunks of roughly equal size along first-letter boundaries — attributes starting with the same letter are never split across groups. Group names use abbreviated attribute labels (e.g., "Allow EJB … – Disable default …"), so you can see at a glance which attributes each section contains.
 
 ## Attribute Descriptions
 
@@ -29,3 +29,22 @@ For attributes with constrained value sets (enumerations or predefined options),
 ## Expression Syntax Highlighting
 
 WildFly expressions (such as `${jboss.bind.address:127.0.0.1}`) are highlighted with **syntax highlighting** to distinguish literal values from expressions. This visual distinction makes it clear when configuration uses environment variables, system properties, or vault expressions.
+
+## Form-Level Validation
+
+The console auto-detects **cross-field constraints** from the management model metadata — specifically the `requires` and `alternatives` relationships between attributes. When you edit a resource, the form validates these constraints before submission:
+
+- **Requires**: if attribute A requires attribute B, the console ensures B is defined whenever A is set.
+- **Alternatives**: if attributes A and B are alternatives, the console prevents setting both at the same time.
+
+These validations run alongside per-attribute type checks, catching configuration errors before they reach the server.
+
+## List of Simple Records
+
+For LIST attributes with a simple-record value type (a list where each entry is a flat object with named fields), the console renders a **compact table view**. Each record appears as a row with columns derived from the value-type metadata.
+
+![List of Simple Records](./list-simple-record.png)
+
+In edit mode, each row gets add, edit, and remove actions. Clicking edit opens a **modal editor** that presents the record's fields as a form, making it straightforward to work with structured list data without resorting to raw JSON or CLI commands.
+
+![List of Simple Records — Edit Mode](./list-simple-record-edit.png)

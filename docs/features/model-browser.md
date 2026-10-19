@@ -10,6 +10,8 @@ The model browser features a **resizable tree view** for browsing the resource h
 
 **Search capabilities** let you find resources by address, type, or name. The **go-to address** feature allows jumping directly to any resource by entering its management model address. **Clickable breadcrumbs** show your current location in the hierarchy and provide quick navigation to parent resources. You can **copy the current address to the clipboard** for use in CLI commands or scripts.
 
+For cross-cutting search across the entire management model, use the [Universal Search](./universal-search.md) (Cmd+K / Ctrl+K).
+
 ![Find Resource](./find-resource.png)
 
 ## Resource Lists and References
@@ -37,7 +39,7 @@ The Data tab displays the current values of a resource's attributes with powerfu
 
 ![Attribute Groups](./attribute-groups.png)
 
-For resources with many attributes, **auto-grouping** kicks in when 20 or more attributes are present and no metadata-defined groups exist. Attributes are automatically organized into alphabetical letter-range sections (such as "A – D", "E – H") for easier navigation:
+For resources with many attributes, **auto-grouping** kicks in when 20 or more attributes are present and no metadata-defined groups exist. Attributes are split into chunks of roughly equal size along first-letter boundaries, with group names derived from abbreviated attribute labels (e.g., "Allow EJB … – Disable default …"):
 
 ![Auto Grouping](./auto-grouping.png)
 
@@ -59,4 +61,10 @@ The Operations tab lists all management operations available for the selected re
 
 ## Capabilities Tab
 
-The Capabilities tab displays all capabilities provided or required by the selected resource, giving insight into the resource's role in the management model and its relationships with other resources.
+The Capabilities tab displays all capabilities provided or required by the selected resource. Each capability row is expandable: click the expand button to load the capability's **cross-references** from the [Model Graph Tools](../model-graph-tools/index.md) service.
+
+![Capability References](./capability-references.png)
+
+The expanded view shows which attributes reference this capability, grouped by attribute name. Each resource address is a clickable link that navigates directly to the referencing resource and [highlights](./universal-search.md#highlight-routing) the relevant attribute. Wildcard addresses are resolved against the live server, so only existing resources appear.
+
+This answers the question _"where is this capability used?"_ with one click — useful when investigating dependencies before changing or removing a configuration.
