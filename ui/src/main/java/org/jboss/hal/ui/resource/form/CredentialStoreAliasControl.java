@@ -33,6 +33,9 @@ import static java.util.stream.Collectors.toList;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ALIASES_OPERATION;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.resource.form.FormItemBricks.afterSwitchedToSingleSelectTypeahead;
+import static org.jboss.hal.ui.resource.form.FormItemBricks.requiredOnItsOwn;
+import static org.jboss.hal.ui.resource.form.FormItemBricks.singleTypeahead;
 import static org.patternfly.component.ValidationStatus.error;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 
@@ -49,7 +52,7 @@ final class CredentialStoreAliasControl implements NativeControl<SingleSelectTyp
 
     @Override
     public SingleSelectTypeahead create(PipelineContext context, String identifier, ResolvedAttribute attribute) {
-        aliasTypeahead = FormItemBricks.singleTypeahead(identifier, attribute, null, aliases());
+        aliasTypeahead = singleTypeahead(identifier, attribute, null, aliases());
         return aliasTypeahead;
     }
 
@@ -87,7 +90,7 @@ final class CredentialStoreAliasControl implements NativeControl<SingleSelectTyp
 
     @Override
     public boolean validate(SingleSelectTypeahead control, ResolvedAttribute attribute, FormGroupControl formGroupControl) {
-        if (FormItemBricks.requiredOnItsOwn(attribute) && value(control).isEmpty()) {
+        if (requiredOnItsOwn(attribute) && value(control).isEmpty()) {
             markInvalid(control);
             formGroupControl.addHelperText(FormItemBricks.requiredHelperText(attribute));
             return false;
@@ -112,7 +115,7 @@ final class CredentialStoreAliasControl implements NativeControl<SingleSelectTyp
 
     @Override
     public void afterSwitchedToNativeMode(SingleSelectTypeahead control, ResolvedAttribute attribute) {
-        FormItemBricks.afterSwitchedToSingleSelectTypeahead(control, attribute);
+        afterSwitchedToSingleSelectTypeahead(control, attribute);
     }
 
     private String value(SingleSelectTypeahead control) {

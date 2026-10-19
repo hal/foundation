@@ -113,6 +113,9 @@ public final class CredentialReferenceControl implements NativeControl<HTMLEleme
         }
         selectMode(originalMode);
         toggleGroup.select(originalMode.name(), true, false);
+        if (originalMode == Mode.STORE_REFERENCE && attribute.value().hasDefined(STORE)) {
+            aliasControl.update(attribute.value().get(STORE).asString());
+        }
 
         return div().css(halComponent(credentialReference))
                 .add(toggleGroup)
