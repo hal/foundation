@@ -104,7 +104,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(Button.button(search()).plain()
-                                        .onClick((e, c) -> universalSearchBox().show())))
+                                        .onClick((e, c) -> universalSearchBox(c.element()).show())))
                                 .addItem(toolbarItem().add(notificationElements.badge()))
                                 .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)))
                                 .addItem(toolbarItem().add(modelGraphToolsIndicator()))

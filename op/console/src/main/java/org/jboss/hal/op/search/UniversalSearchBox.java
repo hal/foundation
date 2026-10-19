@@ -32,6 +32,7 @@ import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.Keys;
+import org.patternfly.component.SelectionMode;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.modal.Modal;
@@ -41,11 +42,13 @@ import org.patternfly.style.Classes;
 
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
 
 import static elemental2.dom.DomGlobal.document;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static jsinterop.base.Js.isTripleEqual;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.elemento.Elements.querySelector;
 import static org.jboss.elemento.EventType.bind;
@@ -58,7 +61,6 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.component.ResourceAddressTypeahead.addressStructureChanged;
-import static org.patternfly.component.SelectionMode.click;
 import static org.patternfly.component.menu.Menu.menu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuItem.menuItem;
@@ -123,7 +125,11 @@ public class UniversalSearchBox {
     // ------------------------------------------------------ factory
 
     public static UniversalSearchBox universalSearchBox() {
-        return new UniversalSearchBox();
+        return new UniversalSearchBox(null);
+    }
+
+    public static UniversalSearchBox universalSearchBox(HTMLElement trigger) {
+        return new UniversalSearchBox(trigger);
     }
 
     // ------------------------------------------------------ instance
@@ -135,6 +141,7 @@ public class UniversalSearchBox {
 
     private final Modal modal;
     private final MenuList menuList;
+    private final HTMLElement trigger;
     private final SearchInputGroupTypeahead searchInput;
     /** Tracked so we can remove it from the DOM when transitioning back to normal search. */
     private MenuItem errorItem;
@@ -144,13 +151,14 @@ public class UniversalSearchBox {
     /** Set when an address segment is selected via the menu, to prevent the Enter keyup from triggering resolution. */
     private boolean addressSegmentSelected;
 
-    UniversalSearchBox() {
-        searchInput = searchInputGroupTypeahead("universal-search");
+    UniversalSearchBox(HTMLElement trigger) {
+        this.trigger = trigger;
+        this.searchInput = searchInputGroupTypeahead("universal-search");
+
         ModelGraphTools modelGraphTools = uic().modelGraphTools();
         UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
-
         searchInput.placeholder(modelGraphTools.available() ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
-                .addMenu(menu(menu, click).scrollable()
+                .addMenu(menu(menu, SelectionMode.click).scrollable()
                         .addContent(menuContent()
                                 .addList(menuList = menuList()
                                         .addItems(asyncItems)))
@@ -180,8 +188,10 @@ public class UniversalSearchBox {
     }
 
     private void onOutsideClick(Event event) {
-        HTMLElement target = (HTMLElement) event.target;
-        if (target != null && !modal.element().contains(target)) {
+        Node target = (Node) event.target;
+        boolean triggerClick = trigger != null && (isTripleEqual(target, trigger) || trigger.contains(target));
+        boolean modalClick = modal.element().contains(target);
+        if (!triggerClick && !modalClick) {
             closeAll();
         }
     }
