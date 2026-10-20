@@ -35,11 +35,7 @@ The Data tab displays the current values of a resource's attributes with powerfu
 
 **Filtering** options let you narrow down attributes by name, status (defined/undefined, required/not required, deprecated/not deprecated), and mode (storage vs. access type).
 
-**Attribute groups** organize attributes based on metadata defined in the resource description, making it easier to find related configuration options:
-
-![Attribute Groups](../media/screenshots/attribute-groups.png)
-
-For resources with many attributes, **auto-grouping** kicks in when 20 or more attributes are present and no metadata-defined groups exist. Attributes are split into chunks of roughly equal size along first-letter boundaries, with group names derived from abbreviated attribute labels (e.g., "Allow EJB … – Disable default …"):
+**Attribute groups** organize attributes into logical sections. When a resource defines attribute groups in its metadata, those groups are used directly. For resources with 20 or more attributes and no metadata-defined groups, **auto-grouping** splits attributes into chunks of roughly equal size along first-letter boundaries, with group names derived from abbreviated attribute labels (e.g., "Allow EJB … – Disable default …"):
 
 ![Auto Grouping](../media/screenshots/auto-grouping.png)
 

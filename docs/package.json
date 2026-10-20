@@ -8,10 +8,13 @@
     "docs:build": "vitepress build",
     "docs:dev": "vitepress dev --open",
     "docs:preview": "vitepress preview",
+    "media:prepare": "node media/prepare.mjs",
     "media:capture": "node media/capture.mjs",
     "media:validate": "node media/validate.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "image-size": "^2.0.4",
     "mermaid": "12.2.0",
     "vitepress": "^1.6.4",
     "vitepress-plugin-mermaid": "^2.0.17"

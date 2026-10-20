@@ -109,9 +109,7 @@ The MGT indicator in the console toolbar shows the current status at a glance:
 | **Available** | An MGT container matching the connected WildFly version is running and reachable |
 | **Not available** | No matching MGT container was detected |
 
-Clicking the indicator opens a panel where you can check availability again or learn more about setting up MGT.
-
-![MGT Indicator](../media/screenshots/mgt-indicator.png)
+Clicking the indicator opens a panel where you can check availability again or learn more about setting up MGT. When available, the indicator shows a green status icon; when no matching container is detected, it shows a neutral icon with a prompt to start one.
 
 ## Available Versions
 

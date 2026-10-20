@@ -1,112 +1,215 @@
 {
+  "$description": "Manifest for all screenshots and screencasts used in the HAL Foundation documentation. Every media file must be listed here, regardless of whether it is captured automatically or manually. The capture script (capture.mjs) uses entries with capture recipes (path, waitFor, actions) to automate screenshot taking. Entries with 'automated: false' must be captured manually at the configured dimensions. The validation script (validate.mjs) checks dimensions, manifest completeness, and staleness.",
   "defaults": {
     "width": 1440,
     "height": 900,
-    "baseUrl": "http://localhost:1234"
+    "baseUrl": "http://localhost:9090"
   },
   "screenshots": {
     "dashboard.png": {
       "path": "/",
       "waitFor": ".pf-v6-c-card",
-      "description": "Dashboard light theme"
+      "description": "Dashboard overview with all cards in light theme, showing server info, status, host, JVM, memory, log, health, and deployments",
+      "capturedIn": "0.6.0"
     },
     "dashboard-dark.png": {
       "path": "/",
       "waitFor": ".pf-v6-c-card",
       "theme": "dark",
-      "description": "Dashboard dark theme"
+      "description": "Dashboard overview in dark theme, demonstrating theme adaptation across all cards",
+      "capturedIn": "0.6.0"
     },
     "model-browser.png": {
       "path": "/management-model",
       "waitFor": ".pf-v6-c-tree-view",
-      "description": "Model browser tree view"
+      "description": "Model browser with resizable tree view showing the WildFly management resource hierarchy",
+      "capturedIn": "0.6.0"
     },
     "find-resource.png": {
       "path": "/management-model",
       "waitFor": ".pf-v6-c-tree-view",
       "actions": [
-        { "type": "keyboard", "key": "Control+f" }
+        {
+          "type": "click",
+          "selector": "[data-ouia-component-id='hal-op-model-browser-find-btn']"
+        },
+        {
+          "type": "wait",
+          "selector": "[data-ouia-component-id='hal-op-find-resource-modal']"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        }
       ],
-      "description": "Model browser find resource dialog"
-    },
-    "attribute-groups.png": {
-      "path": "/management-model",
-      "waitFor": ".pf-v6-c-tree-view",
-      "description": "Attribute groups in data tab",
-      "automated": false
+      "description": "Find resource dialog in the model browser for searching by address, type, or name",
+      "capturedIn": "0.6.0"
     },
     "auto-grouping.png": {
-      "path": "/management-model",
+      "path": "/configuration/subsystem/datasources/subsystem%3Ddatasources%2Fdata-source%3DExampleDS",
       "waitFor": ".pf-v6-c-tree-view",
-      "description": "Auto-grouping for large resources",
-      "automated": false
+      "actions": [
+        {
+          "type": "click",
+          "selector": "[id^=group-toggle-id]"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        }
+      ],
+      "description": "Auto-grouping for resources with 20+ attributes, splitting into alphabetical chunks with abbreviated group names",
+      "capturedIn": "0.6.0"
     },
     "capability-references.png": {
-      "path": "/management-model",
+      "path": "/configuration/subsystem/elytron/subsystem%3Delytron%2Fserver-ssl-context%3DapplicationSSC",
       "waitFor": ".pf-v6-c-tree-view",
-      "description": "Capability cross-references",
-      "automated": false
+      "actions": [
+        {
+          "type": "click",
+          "selector": "[data-identifier=resource-tabs-capabilities]"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click",
+          "selector": "[id^=tbl-td-checkbox-id]"
+        },
+        {
+          "type": "wait",
+          "ms": 1000
+        }
+      ],
+      "description": "Expanded capability row showing cross-references — which attributes reference this capability, grouped by attribute name with clickable resource links",
+      "capturedIn": "0.6.0"
     },
-    "universal-search.png": {
+    "universal-search-mgt.png": {
       "path": "/",
       "waitFor": ".pf-v6-c-card",
       "actions": [
-        { "type": "keyboard", "key": "Meta+k" },
-        { "type": "wait", "selector": "[role=dialog]" },
-        { "type": "type", "text": "datasource" },
-        { "type": "wait", "ms": 1000 }
+        {
+          "type": "keyboard",
+          "key": "Meta+k"
+        },
+        {
+          "type": "wait",
+          "selector": ".hal-c-universal-search"
+        },
+        {
+          "type": "type",
+          "text": "secure"
+        },
+        {
+          "type": "wait",
+          "ms": 1000
+        }
       ],
-      "description": "Universal search with model graph results"
+      "description": "Universal search in model graph mode, showing grouped results for resources, attributes, operations, and capabilities matching a keyword",
+      "capturedIn": "0.6.0"
     },
     "universal-search-address.png": {
       "path": "/",
       "waitFor": ".pf-v6-c-card",
       "actions": [
-        { "type": "keyboard", "key": "Meta+k" },
-        { "type": "wait", "selector": "[role=dialog]" },
-        { "type": "type", "text": "/subsystem=datasources/data-source=" },
-        { "type": "wait", "ms": 1000 }
+        {
+          "type": "keyboard",
+          "key": "Meta+k"
+        },
+        {
+          "type": "wait",
+          "selector": ".hal-c-universal-search"
+        },
+        {
+          "type": "type",
+          "text": "/subsystem=d"
+        },
+        {
+          "type": "wait",
+          "ms": 1000
+        }
       ],
-      "description": "Universal search address navigation mode"
+      "description": "Universal search in address navigation mode, showing typeahead completion resolving wildcards against the live server",
+      "capturedIn": "0.6.0"
     },
     "highlight-routing.png": {
-      "path": "/",
-      "waitFor": ".pf-v6-c-card",
-      "description": "Highlight routing after search navigation",
-      "automated": false
+      "path": "/configuration/subsystem/undertow/subsystem%3Dundertow%2Fserver%3Ddefault-server%2Fhttps-listener%3Dhttps",
+      "waitFor": ".pf-v6-c-tree-view",
+      "actions": [
+        {
+          "type": "scroll",
+          "selector": "[data-identifier=ssl-context]"
+        },
+        {
+          "type": "style",
+          "selector": "[data-identifier=ssl-context]",
+          "property": "background-color",
+          "value": "var(--pf-t--global--background--color--highlight--default)"
+        },
+        {
+          "type": "wait",
+          "ms": 300
+        }
+      ],
+      "description": "Highlight on a target attribute after navigating via universal search, showing the exact configuration item found",
+      "capturedIn": "0.6.0"
     },
     "tasks.png": {
       "path": "/tasks",
       "waitFor": ".pf-v6-c-card",
-      "description": "Tasks overview page"
+      "description": "Tasks overview page listing available use-case-centric administrative workflows with icons and summaries",
+      "capturedIn": "0.6.0"
     },
-    "list-simple-record.png": {
-      "path": "/management-model",
+    "list-simple-record-view.png": {
+      "path": "/configuration/subsystem/ee",
       "waitFor": ".pf-v6-c-tree-view",
-      "description": "List of simple records view",
-      "automated": false
+      "actions": [
+        {
+          "type": "scroll",
+          "selector": "[data-identifier=global-modules]"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        }
+      ],
+      "description": "Compact table view for LIST attributes with simple-record value type, showing each record as a row with columns from the value-type metadata",
+      "capturedIn": "0.6.0"
     },
     "list-simple-record-edit.png": {
-      "path": "/management-model",
+      "path": "/configuration/subsystem/ee",
       "waitFor": ".pf-v6-c-tree-view",
-      "description": "List of simple records edit mode",
-      "automated": false
-    },
-    "mgt-indicator.png": {
-      "path": "/",
-      "waitFor": ".pf-v6-c-card",
-      "description": "MGT availability indicator in toolbar",
-      "automated": false
+      "actions": [
+        {
+          "type": "scroll",
+          "selector": "[data-identifier=global-modules]"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click",
+          "selector": "[id^=edit-id]"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        }
+      ],
+      "description": "Modal editor for a simple record entry, presenting the record's fields as a form with add, edit, and remove actions",
+      "capturedIn": "0.6.0"
     }
   },
   "screencasts": {
     "add-resources-on-the-fly.mp4": {
-      "description": "Creating dependent resources during configuration",
-      "automated": false
+      "automated": false,
+      "description": "Demonstrates creating dependent resources on the fly during configuration — when a resource references another that doesn't exist yet, the console offers to create it inline"
     },
     "statistics-task.mp4": {
-      "description": "Statistics-enabled task bulk modification",
-      "automated": false
+      "automated": false,
+      "description": "Statistics-enabled task showing bulk modification of the statistics-enabled attribute across multiple subsystems with filter, select, and expression support"
     }
   }
 }

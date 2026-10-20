@@ -56,6 +56,23 @@ Screenshot entries additionally define a capture recipe:
 - **theme** — `light` (default) or `dark`
 - **actions** — optional steps (keyboard shortcuts, typing, waiting) to set up the page state
 
+### Environment Setup
+
+The prepare script starts all required services for screenshot capture:
+
+```bash
+pnpm run media:prepare <version>        # start WildFly, MGT, and halOP
+pnpm run media:prepare <version> stop   # stop all three
+```
+
+**Prerequisites:**
+
+1. [wado](https://github.com/hpehl/wado) installed (manages WildFly containers)
+2. [mgt](https://github.com/model-graph-tools/mgt) installed (model graph tools)
+3. halOP standalone built: `mvn install -P op,standalone -Dquickly`
+
+The version determines the WildFly instance and management port (e.g., `41` → WildFly 41.0, port 9410).
+
 ### Automated Capture
 
 The capture script uses Playwright to take screenshots at a consistent 1440x900 viewport.
@@ -63,19 +80,17 @@ The capture script uses Playwright to take screenshots at a consistent 1440x900 
 **Prerequisites:**
 
 1. Install Playwright: `pnpm add -D @playwright/test && pnpm exec playwright install chromium`
-2. Start a WildFly instance
-3. Start the HAL dev server (`mvn j2cl:watch -P op` + `cd op/console && pnpm run watch`)
-4. HAL must be connected to the running WildFly instance at `http://localhost:1234`
+2. Start the environment: `pnpm run media:prepare <version>`
 
 **Usage:**
 
 ```bash
-pnpm run media:capture                  # capture all automated screenshots
-pnpm run media:capture dashboard.png    # capture a single screenshot
-pnpm run media:capture --list           # list all screenshots and automation status
+pnpm run media:capture <version>                    # capture all automated screenshots
+pnpm run media:capture <version> dashboard.png      # capture a single screenshot
+pnpm run media:capture --list                        # list all screenshots and automation status
 ```
 
-The script launches its own Chromium browser — it does not connect to an existing browser window. After capturing, it updates `capturedIn` in `media.json` to the current project version.
+The version must match the WildFly instance started with `media:prepare`. The script launches its own Chromium browser — it does not connect to an existing browser window. After capturing, it updates `capturedIn` in `media.json` to the current project version.
 
 Screenshots marked `"automated": false` require manual capture. These typically need navigating to a specific resource with specific server state (e.g., a subsystem with many attributes for the auto-grouping screenshot).
 

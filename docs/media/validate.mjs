@@ -7,7 +7,9 @@
  *   1. All files listed in media.json exist on disk
  *   2. All files on disk are listed in media.json
  *   3. Screenshot dimensions match the configured defaults
- *   4. Stale media: capturedIn version is older than the current project version
+ *   4. Screencast dimensions match the configured defaults
+ *   5. Every entry has a description
+ *   6. Stale media: capturedIn version is older than the current project version
  *
  * Usage:
  *   node validate.mjs           # run all checks
@@ -18,6 +20,7 @@ import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
+import { imageSize } from 'image-size';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const manifestPath = join(__dirname, 'media.json');
@@ -43,15 +46,36 @@ function ok(msg) {
 
 function getImageDimensions(filePath) {
     try {
-        const output = execSync(`sips -g pixelWidth -g pixelHeight "${filePath}" 2>/dev/null`, {
-            encoding: 'utf-8',
-        });
-        const width = parseInt(output.match(/pixelWidth:\s*(\d+)/)?.[1]);
-        const height = parseInt(output.match(/pixelHeight:\s*(\d+)/)?.[1]);
+        const { width, height } = imageSize(readFileSync(filePath));
         return { width, height };
     } catch {
         return null;
     }
+}
+
+function getVideoDimensions(filePath) {
+    // Try ffprobe first (most reliable)
+    try {
+        const output = execSync(
+            `ffprobe -v quiet -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "${filePath}" 2>/dev/null`,
+            { encoding: 'utf-8' }
+        );
+        const [width, height] = output.trim().split(',').map(Number);
+        if (!isNaN(width) && !isNaN(height)) return { width, height };
+    } catch { /* ffprobe not available */ }
+
+    // Fall back to mdls (macOS Spotlight)
+    try {
+        const output = execSync(
+            `mdls -name kMDItemPixelWidth -name kMDItemPixelHeight "${filePath}" 2>/dev/null`,
+            { encoding: 'utf-8' }
+        );
+        const width = parseInt(output.match(/kMDItemPixelWidth\s*=\s*(\d+)/)?.[1]);
+        const height = parseInt(output.match(/kMDItemPixelHeight\s*=\s*(\d+)/)?.[1]);
+        if (!isNaN(width) && !isNaN(height)) return { width, height };
+    } catch { /* mdls not available or file not indexed */ }
+
+    return null;
 }
 
 function getProjectVersion() {
@@ -127,8 +151,18 @@ for (const name of expectedScreencasts) {
     const filePath = join(screencastDir, name);
     if (!existsSync(filePath)) {
         error(`${name} listed in manifest but missing on disk`);
+        continue;
+    }
+
+    const dims = getVideoDimensions(filePath);
+    if (dims) {
+        if (dims.width !== manifest.defaults.width || dims.height !== manifest.defaults.height) {
+            error(`${name} is ${dims.width}x${dims.height}, expected ${manifest.defaults.width}x${manifest.defaults.height}`);
+        } else {
+            ok(`${name} ${dims.width}x${dims.height}`);
+        }
     } else {
-        ok(`${name} exists`);
+        warn(`${name} could not read dimensions (install ffmpeg for video dimension checks)`);
     }
 }
 
@@ -136,6 +170,23 @@ for (const name of actualScreencasts) {
     if (!expectedScreencasts.has(name)) {
         warn(`${name} exists on disk but is not listed in media.json`);
     }
+}
+
+// --- Description check ---
+
+console.log('\nDescriptions:');
+console.log('-'.repeat(60));
+
+const allEntries = { ...manifest.screenshots, ...manifest.screencasts };
+let missingDescriptions = 0;
+for (const [name, entry] of Object.entries(allEntries)) {
+    if (!entry.description || entry.description.trim() === '') {
+        error(`${name} has no description`);
+        missingDescriptions++;
+    }
+}
+if (missingDescriptions === 0) {
+    ok('all entries have descriptions');
 }
 
 // --- Staleness check ---

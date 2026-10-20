@@ -10,7 +10,7 @@ Universal search operates in two modes, selected automatically based on what you
 
 When you type a plain keyword (not starting with `/`), the search queries the [Model Graph Tools](../model-graph-tools/index.md) service for matching resources, attributes, operations, and capabilities. Results are grouped by type and show descriptions and resource addresses, so you can identify the right match quickly.
 
-![Universal Search](../media/screenshots/universal-search.png)
+![Universal Search](../media/screenshots/universal-search-mgt.png)
 
 Each result is labeled with its type — **Resource**, **Attribute**, **Operation**, or **Capability** — and includes the management model description and the full resource address. Clicking a result navigates directly to the matching resource in the model browser and highlights the target attribute or operation.
 
