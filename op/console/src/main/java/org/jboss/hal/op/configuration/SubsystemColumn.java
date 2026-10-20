@@ -21,6 +21,7 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
@@ -62,7 +63,7 @@ public class SubsystemColumn implements ColumnProvider {
 
     @Override
     public FinderColumn get() {
-        FinderColumn column = finderColumn(ID).pinnable();
+        FinderColumn column = finderColumn(ID).ouiaId(OuiaIds.ouia(ID)).pinnable();
         return column.addHeader(finderColumnHeader("Subsystem").addActions(finderColumnActions()
                         .addButton(button(rotateRight()).plain().small().onClick((e, b) -> column.refresh()))))
                 .addItems(childResources(__ -> TEMPLATE, node -> finderItem(Id.build(node.asString()))
