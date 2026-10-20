@@ -25,6 +25,7 @@ import org.jboss.hal.dmr.ModelNodeHelper;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
@@ -209,18 +210,18 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                 .addTitle(cardTitle()
                         .run(ct -> ct.textDelegate().appendChild(title(2, xl, "Host").element())))
                 .addBody(cardBody().add(descriptionList()
-                        .addItem(descriptionListGroup("host-name")
+                        .addItem(descriptionListGroup(Identifiers.HOST_NAME)
                                 .addTerm(descriptionListTerm("Name")
                                         .help(attributeDescriptionPopover("Name", ad.get("host-operating-system"),
                                                 descriptionOnly)))
                                 .addDescription(descriptionListDescription(modelNode.get("host-operating-system").asString())))
-                        .addItem(descriptionListGroup("host-arch")
+                        .addItem(descriptionListGroup(Identifiers.HOST_ARCH)
                                 .addTerm(descriptionListTerm("Architecture")
                                         .help(attributeDescriptionPopover("Architecture", cpuAd.get("host-cpu-arch"),
                                                 descriptionOnly)))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "host-cpu.host-cpu-arch").asString())))
-                        .addItem(descriptionListGroup("host-cores")
+                        .addItem(descriptionListGroup(Identifiers.HOST_CORES)
                                 .addTerm(descriptionListTerm("Cores")
                                         .help(attributeDescriptionPopover("Cores", cpuAd.get("host-core-count"),
                                                 descriptionOnly)))
@@ -234,17 +235,17 @@ class RuntimeCard implements Attachable, AutoRefresh, DashboardCard {
                 .addTitle(cardTitle()
                         .run(ct -> ct.textDelegate().appendChild(title(2, xl, "JVM").element())))
                 .addBody(cardBody().add(descriptionList()
-                        .addItem(descriptionListGroup("jvm-name")
+                        .addItem(descriptionListGroup(Identifiers.JVM_NAME)
                                 .addTerm(descriptionListTerm("Name"))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "jvm.name").asString())))
-                        .addItem(descriptionListGroup("jvm-version")
+                        .addItem(descriptionListGroup(Identifiers.JVM_VERSION)
                                 .addTerm(descriptionListTerm("Version")
                                         .help(attributeDescriptionPopover("Version", jvmAd.get("jvm-version"),
                                                 descriptionOnly)))
                                 .addDescription(descriptionListDescription(
                                         ModelNodeHelper.nested(modelNode, "jvm.jvm-version").asString())))
-                        .addItem(descriptionListGroup("jvm-vendor")
+                        .addItem(descriptionListGroup(Identifiers.JVM_VENDOR)
                                 .addTerm(descriptionListTerm("Vendor")
                                         .help(attributeDescriptionPopover("Vendor", jvmAd.get("jvm-vendor"),
                                                 descriptionOnly)))

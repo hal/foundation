@@ -24,6 +24,7 @@ import org.jboss.hal.core.NotificationAddEvent;
 import org.jboss.hal.core.NotificationModification;
 import org.jboss.hal.core.NotificationModificationEvent;
 import org.jboss.hal.core.Notifications;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.ComponentType;
 import org.patternfly.component.Severity;
@@ -195,9 +196,9 @@ public class NotificationListener {
                 .addMenu(dropdownMenu()
                         .addContent(menuContent()
                                 .addList(menuList()
-                                        .addItem(menuItem("mark-all-read", "Mark as read")
+                                        .addItem(menuItem(Identifiers.MARK_ALL_READ, "Mark as read")
                                                 .onClick((e, c) -> notifications.markAsRead(notification.id)))
-                                        .addItem(menuItem("clear-all", "Clear")
+                                        .addItem(menuItem(Identifiers.CLEAR_ALL, "Clear")
                                                 .onClick((e, c) -> notifications.clear(notification.id))))));
         return notificationDrawerItem(notification.severity(), notification.id, notification.title)
                 .hoverable()

@@ -18,6 +18,7 @@ package org.jboss.hal.ui.resource.table;
 import org.jboss.elemento.IsElement;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.emptystate.EmptyState;
@@ -74,7 +75,7 @@ public class AttributesTable implements IsElement<HTMLElement> {
                 .add(attributesToolbar(filter, visible, total))
                 .add(table(anyComplexAttributes ? TableType.treeTable : TableType.table)
                         .addHead(thead().css(util("mt-sm"))
-                                .addRow(tr("attributes-head")
+                                .addRow(tr(Identifiers.ATTRIBUTES_HEAD)
                                         .addItem(th("name").width(width60).text("Name"))
                                         .addItem(th("type").width(width20).text("Type"))
                                         .addItem(th("storage").width(width10).text("Storage"))

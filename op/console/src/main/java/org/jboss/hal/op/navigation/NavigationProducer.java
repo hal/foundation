@@ -20,6 +20,7 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.router.PlaceManager;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.component.navigation.NavigationType.Horizontal;
@@ -37,17 +38,17 @@ public class NavigationProducer {
     public Navigation navigation() {
         return Navigation.navigation(Horizontal.primary).ouiaId(OuiaIds.NAV)
                 // IDs must match the routes!
-                .addItem(navigationItem("/", "Dashboard", placeManager.href("/"))
+                .addItem(navigationItem(Identifiers.NAV_DASHBOARD, "Dashboard", placeManager.href(Identifiers.NAV_DASHBOARD))
                         .ouiaId(OuiaIds.NAV_DASHBOARD))
-                .addItem(navigationItem("/deployments", "Deployments", placeManager.href("/deployments"))
+                .addItem(navigationItem(Identifiers.NAV_DEPLOYMENTS, "Deployments", placeManager.href(Identifiers.NAV_DEPLOYMENTS))
                         .ouiaId(OuiaIds.NAV_DEPLOYMENTS))
-                .addItem(navigationItem("/configuration", "Configuration", placeManager.href("/configuration"))
+                .addItem(navigationItem(Identifiers.NAV_CONFIGURATION, "Configuration", placeManager.href(Identifiers.NAV_CONFIGURATION))
                         .ouiaId(OuiaIds.NAV_CONFIGURATION))
-                .addItem(navigationItem("/runtime", "Runtime", placeManager.href("/runtime"))
+                .addItem(navigationItem(Identifiers.NAV_RUNTIME, "Runtime", placeManager.href(Identifiers.NAV_RUNTIME))
                         .ouiaId(OuiaIds.NAV_RUNTIME))
-                .addItem(navigationItem("/tasks", "Tasks", placeManager.href("/tasks"))
+                .addItem(navigationItem(Identifiers.NAV_TASKS, "Tasks", placeManager.href(Identifiers.NAV_TASKS))
                         .ouiaId(OuiaIds.NAV_TASKS))
-                .addItem(navigationItem("/management-model", "Management model", placeManager.href("/management-model"))
+                .addItem(navigationItem(Identifiers.NAV_MODEL_BROWSER, "Management model", placeManager.href(Identifiers.NAV_MODEL_BROWSER))
                         .ouiaId(OuiaIds.NAV_MODEL_BROWSER));
     }
 }
