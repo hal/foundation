@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.jboss.elemento.Id;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.meta.WildcardResolver.Direction;
+import org.jboss.hal.resources.Identifiers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -448,16 +448,7 @@ public final class AddressTemplate implements Iterable<Segment> {
 
     /** @return a sanitized, DOM-safe identifier derived from this template, suitable for use as an HTML element ID */
     public String identifier() {
-        if (isEmpty()) {
-            return "root";
-        } else {
-            String safeTemplate = template
-                    .replace("/", "-s-")
-                    .replace("=", "-e-")
-                    .replace(":", "-c-")
-                    .replace("*", "-w-");
-            return Id.build(safeTemplate);
-        }
+        return Identifiers.fromTemplate(template);
     }
 
     // ------------------------------------------------------ resolve
