@@ -2,7 +2,7 @@
 
 The model browser is the primary tool for exploring and working with WildFly's management model. It provides a comprehensive view of resources, their attributes, operations, and relationships.
 
-![Model Browser](./model-browser.png)
+![Model Browser](../media/screenshots/model-browser.png)
 
 ## Navigation and Search
 
@@ -12,7 +12,7 @@ The model browser features a **resizable tree view** for browsing the resource h
 
 For cross-cutting search across the entire management model, use the [Universal Search](./universal-search.md) (Cmd+K / Ctrl+K).
 
-![Find Resource](./find-resource.png)
+![Find Resource](../media/screenshots/find-resource.png)
 
 ## Resource Lists and References
 
@@ -25,7 +25,7 @@ The model browser supports **scoped browsing**: when you navigate to a resource 
 When configuring a resource that references another resource, the model browser makes it easy to create those dependencies on the fly, streamlining the configuration workflow:
 
 <video controls width="100%">
-  <source src="./add-resources-on-the-fly.mp4" type="video/mp4">
+  <source src="../media/screencasts/add-resources-on-the-fly.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -37,11 +37,11 @@ The Data tab displays the current values of a resource's attributes with powerfu
 
 **Attribute groups** organize attributes based on metadata defined in the resource description, making it easier to find related configuration options:
 
-![Attribute Groups](./attribute-groups.png)
+![Attribute Groups](../media/screenshots/attribute-groups.png)
 
 For resources with many attributes, **auto-grouping** kicks in when 20 or more attributes are present and no metadata-defined groups exist. Attributes are split into chunks of roughly equal size along first-letter boundaries, with group names derived from abbreviated attribute labels (e.g., "Allow EJB … – Disable default …"):
 
-![Auto Grouping](./auto-grouping.png)
+![Auto Grouping](../media/screenshots/auto-grouping.png)
 
 **Attribute descriptions** appear as popovers when you hover over an attribute name, providing context without cluttering the interface. Attributes that reference capabilities show **links to the referenced resources**, with support for multiple references displayed in a popup.
 
@@ -63,7 +63,7 @@ The Operations tab lists all management operations available for the selected re
 
 The Capabilities tab displays all capabilities provided or required by the selected resource. Each capability row is expandable: click the expand button to load the capability's **cross-references** from the [Model Graph Tools](../model-graph-tools/index.md) service.
 
-![Capability References](./capability-references.png)
+![Capability References](../media/screenshots/capability-references.png)
 
 The expanded view shows which attributes reference this capability, grouped by attribute name. Each resource address is a clickable link that navigates directly to the referencing resource and [highlights](./universal-search.md#highlight-routing) the relevant attribute. Wildcard addresses are resolved against the live server, so only existing resources appear.
 

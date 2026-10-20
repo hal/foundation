@@ -111,7 +111,7 @@ The MGT indicator in the console toolbar shows the current status at a glance:
 
 Clicking the indicator opens a panel where you can check availability again or learn more about setting up MGT.
 
-![MGT Indicator](./mgt-indicator.png)
+![MGT Indicator](../media/screenshots/mgt-indicator.png)
 
 ## Available Versions
 

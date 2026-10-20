@@ -7,7 +7,9 @@
   "scripts": {
     "docs:build": "vitepress build",
     "docs:dev": "vitepress dev --open",
-    "docs:preview": "vitepress preview"
+    "docs:preview": "vitepress preview",
+    "media:capture": "node media/capture.mjs",
+    "media:validate": "node media/validate.mjs"
   },
   "devDependencies": {
     "mermaid": "12.2.0",

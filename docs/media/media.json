@@ -1,0 +1,112 @@
+{
+  "defaults": {
+    "width": 1440,
+    "height": 900,
+    "baseUrl": "http://localhost:1234"
+  },
+  "screenshots": {
+    "dashboard.png": {
+      "path": "/",
+      "waitFor": ".pf-v6-c-card",
+      "description": "Dashboard light theme"
+    },
+    "dashboard-dark.png": {
+      "path": "/",
+      "waitFor": ".pf-v6-c-card",
+      "theme": "dark",
+      "description": "Dashboard dark theme"
+    },
+    "model-browser.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "description": "Model browser tree view"
+    },
+    "find-resource.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "actions": [
+        { "type": "keyboard", "key": "Control+f" }
+      ],
+      "description": "Model browser find resource dialog"
+    },
+    "attribute-groups.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "description": "Attribute groups in data tab",
+      "automated": false
+    },
+    "auto-grouping.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "description": "Auto-grouping for large resources",
+      "automated": false
+    },
+    "capability-references.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "description": "Capability cross-references",
+      "automated": false
+    },
+    "universal-search.png": {
+      "path": "/",
+      "waitFor": ".pf-v6-c-card",
+      "actions": [
+        { "type": "keyboard", "key": "Meta+k" },
+        { "type": "wait", "selector": "[role=dialog]" },
+        { "type": "type", "text": "datasource" },
+        { "type": "wait", "ms": 1000 }
+      ],
+      "description": "Universal search with model graph results"
+    },
+    "universal-search-address.png": {
+      "path": "/",
+      "waitFor": ".pf-v6-c-card",
+      "actions": [
+        { "type": "keyboard", "key": "Meta+k" },
+        { "type": "wait", "selector": "[role=dialog]" },
+        { "type": "type", "text": "/subsystem=datasources/data-source=" },
+        { "type": "wait", "ms": 1000 }
+      ],
+      "description": "Universal search address navigation mode"
+    },
+    "highlight-routing.png": {
+      "path": "/",
+      "waitFor": ".pf-v6-c-card",
+      "description": "Highlight routing after search navigation",
+      "automated": false
+    },
+    "tasks.png": {
+      "path": "/tasks",
+      "waitFor": ".pf-v6-c-card",
+      "description": "Tasks overview page"
+    },
+    "list-simple-record.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "description": "List of simple records view",
+      "automated": false
+    },
+    "list-simple-record-edit.png": {
+      "path": "/management-model",
+      "waitFor": ".pf-v6-c-tree-view",
+      "description": "List of simple records edit mode",
+      "automated": false
+    },
+    "mgt-indicator.png": {
+      "path": "/",
+      "waitFor": ".pf-v6-c-card",
+      "description": "MGT availability indicator in toolbar",
+      "automated": false
+    }
+  },
+  "screencasts": {
+    "add-resources-on-the-fly.mp4": {
+      "description": "Creating dependent resources during configuration",
+      "automated": false
+    },
+    "statistics-task.mp4": {
+      "description": "Statistics-enabled task bulk modification",
+      "automated": false
+    }
+  }
+}

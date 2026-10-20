@@ -43,8 +43,8 @@ These validations run alongside per-attribute type checks, catching configuratio
 
 For LIST attributes with a simple-record value type (a list where each entry is a flat object with named fields), the console renders a **compact table view**. Each record appears as a row with columns derived from the value-type metadata.
 
-![List of Simple Records](./list-simple-record.png)
+![List of Simple Records](../media/screenshots/list-simple-record.png)
 
 In edit mode, each row gets add, edit, and remove actions. Clicking edit opens a **modal editor** that presents the record's fields as a form, making it straightforward to work with structured list data without resorting to raw JSON or CLI commands.
 
-![List of Simple Records — Edit Mode](./list-simple-record-edit.png)
+![List of Simple Records — Edit Mode](../media/screenshots/list-simple-record-edit.png)
