@@ -202,6 +202,7 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                 expandedCapabilities.add(capability.name());
 
                 if (groups.isEmpty()) {
+                    // TODO Remove first empty td and adjust colspan from 3 to 4
                     content.add(noItems("No references", "No references found for this capability").size(xs));
                 } else {
                     content.add(table().compact().noBorders()
