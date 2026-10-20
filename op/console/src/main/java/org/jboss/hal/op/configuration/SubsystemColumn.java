@@ -21,6 +21,7 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
@@ -45,8 +46,8 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 @Dependent
 public class SubsystemColumn implements ColumnProvider {
 
-    /** Column identifier used for registration and OUIA test IDs. */
-    public static final String ID = "subsystem-column";
+    /** Column identifier used for registration and test IDs. */
+    public static final String ID = Identifiers.SUBSYSTEM_COLUMN;
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("subsystem=*");
     private final PlaceManager placeManager;
 
