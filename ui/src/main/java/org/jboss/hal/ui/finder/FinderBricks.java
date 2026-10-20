@@ -88,7 +88,7 @@ public final class FinderBricks {
     public static FinderColumn crudColumn(String id, String header, List<String> previewAttributes,
             Function<ResolvedFinderPath, AddressTemplate> templateFn,
             Supplier<FinderColumn> nextColumn) {
-        FinderColumn column = finderColumn(id);
+        FinderColumn column = finderColumn(id).ouiaId(OuiaIds.ouia(id));
         column.addHeader(finderColumnHeader(header).addActions(finderColumnActions()
                         .addButton(button(plus()).plain().small()
                                 .ouiaId(OuiaIds.ouia(id, "add", "btn"))
