@@ -39,6 +39,7 @@ import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.component.toolbar.ToolbarItem;
 import org.patternfly.component.tooltip.Tooltip;
 import org.patternfly.core.ObservableValue;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.core.OuiaSupport;
 import org.patternfly.filter.Filter;
 import org.patternfly.filter.FilterOperator;
@@ -221,6 +222,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
                 .add(listContainer = div().element())
                 .element();
         Attachable.register(this, this);
+        ouiaId(OuiaIds.ouia("resource-list", template.last().key));
         initOuia();
     }
 

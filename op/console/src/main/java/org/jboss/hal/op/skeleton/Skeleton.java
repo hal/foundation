@@ -104,13 +104,18 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                 .add(navigation))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(Button.button(search()).plain()
+                                        .ouiaId(OuiaIds.SEARCH_BTN)
                                         .onClick((e, c) -> universalSearchBox(c.element()).show())))
-                                .addItem(toolbarItem().add(notificationElements.badge()))
-                                .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)))
-                                .addItem(toolbarItem().add(modelGraphToolsIndicator()))
+                                .addItem(toolbarItem().add(notificationElements.badge()
+                                        .ouiaId(OuiaIds.NOTIFICATION_BADGE)))
+                                .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)
+                                        .ouiaId(OuiaIds.THEME_SELECTOR)))
+                                .addItem(toolbarItem().add(modelGraphToolsIndicator()
+                                        .ouiaId(OuiaIds.MODEL_GRAPH_INDICATOR)))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
-                                        group.addItem(toolbarItem().add(endpointSelector(endpointStorage)));
+                                        group.addItem(toolbarItem().add(endpointSelector(endpointStorage)
+                                                .ouiaId(OuiaIds.ENDPOINT_SELECTOR)));
                                     }
                                 })));
 

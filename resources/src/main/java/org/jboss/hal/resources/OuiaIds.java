@@ -54,6 +54,7 @@ public interface OuiaIds {
     String DELETE_MODAL = "hal-op-delete-modal";
     String EDIT_BTN = "hal-op-edit-btn";
     String ENDPOINT_ADD_BTN = "hal-op-endpoint-add-btn";
+    String ENDPOINT_SELECTOR = "hal-op-endpoint-selector";
     String ENDPOINT_CANCEL_BTN = "hal-op-endpoint-cancel-btn";
     String ENDPOINT_CONNECT_BTN = "hal-op-endpoint-connect-btn";
     String ENDPOINT_MODAL = "hal-op-endpoint-modal";
@@ -72,6 +73,7 @@ public interface OuiaIds {
     String LOG_SHOW_BTN = "hal-op-log-show-btn";
     String MAIN = "hal-op-main";
     String MASTHEAD = "hal-op-masthead";
+    String MODEL_GRAPH_INDICATOR = "hal-op-model-graph-indicator";
     String MASTHEAD_LOGO = "hal-op-masthead-logo";
     String MASTHEAD_TOOLBAR = "hal-op-masthead-toolbar";
     String MODEL_BROWSER_ATTRIBUTES_FILTER = "hal-op-model-browser-attributes-filter";
@@ -85,6 +87,7 @@ public interface OuiaIds {
     String MODEL_BROWSER_REFRESH_BTN = "hal-op-model-browser-refresh-btn";
     String MODEL_BROWSER_TREE = "hal-op-model-browser-tree";
     String NAV = "hal-op-nav";
+    String NOTIFICATION_BADGE = "hal-op-notification-badge";
     String NAV_CONFIGURATION = "hal-op-nav-configuration";
     String NAV_DASHBOARD = "hal-op-nav-dashboard";
     String NAV_DEPLOYMENTS = "hal-op-nav-deployments";
@@ -111,7 +114,9 @@ public interface OuiaIds {
     String RESOURCE_HEADER = "hal-op-resource-header";
     String RESOURCE_TABS = "hal-op-resource-tabs";
     String SAVE_BTN = "hal-op-save-btn";
+    String SEARCH_BTN = "hal-op-search-btn";
     String STABILITY_DISMISS_BTN = "hal-op-stability-dismiss-btn";
+    String THEME_SELECTOR = "hal-op-theme-selector";
 
     /**
      * Composes an OUIA ID with the {@code hal-op} prefix.
