@@ -20,6 +20,7 @@ import java.util.List;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.ResourceAddress;
+import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.PipelineContext;
 import org.jboss.hal.ui.resource.ResolvedAttribute;
 import org.patternfly.component.form.FormGroup;
@@ -97,6 +98,7 @@ public final class DefaultFormItem<C> implements FormItem {
         }
 
         this.formGroup = formGroup(identifier)
+                .ouiaId(OuiaIds.ouia("form-item", identifier))
                 .required(attribute.description().required())
                 .addLabel(FormItemBricks.label(context, identifier, attribute.description()))
                 .addControl(formGroupControl);
