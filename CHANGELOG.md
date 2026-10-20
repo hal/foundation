@@ -15,12 +15,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Add `ListSimpleRecordHandler` for LIST attributes with simple-record value-type — compact table view with modal-based record editing
 - Add expandable capability reference browsing in model browser — attribute-grouped references with wildcard resolution
 - Add highlight support to all composite view items (credential reference, file, path, time-unit, map, list-simple-record)
+- Add closure compiler externs for MGT API types
 
 ### Changed
 
 - Rewrite universal search with proper event handling, menu state, overlay anchoring, and outside-click detection
 - Refactor validation API into layered architecture — `ResourceForm` orchestrates per-item and form-level validation
-- Adapt to PatternFly Java typeahead API changes (0.12.0 and 0.13.0)
+- Adapt to PatternFly Java typeahead API changes
 
 ### Fixed
 
@@ -29,14 +30,16 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix wildcard resolution to existing resources only
 - Fix credential store alias not loading when switching to store reference mode
 - Fix `StatusCard` registration as attachable
+- Add placeholder for empty capability references layout
 
 ### Upgrades
 
-- Bump PatternFly Java to 0.13.3
-- Bump Elemento to 2.5.7
+- Bump PatternFly Java to 0.14.0
+- Bump Elemento to 2.5.10
+- Bump PatternFly to 6.7.0
 - Bump Quarkus platform to 3.39.2
 - Bump jboss-parent to 54
-- Bump GitHub Actions (setup-java v6.0.1)
+- Bump GitHub Actions (setup-java v6.1.0)
 - Bump Maven managed dependencies and plugins
 - Bump npm dependencies and packageManager versions
 
