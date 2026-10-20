@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-20
+
 ### Added
 
 - Add universal search with Cmd+K / Ctrl+K shortcut — typeahead with management model graph (MGT) and resource address modes, highlight routing for attributes and operations after navigation
@@ -494,7 +496,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/hal/foundation/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/hal/foundation/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/hal/foundation/compare/v0.3.8...v0.4.0
 [0.3.8]: https://github.com/hal/foundation/compare/v0.3.7...v0.3.8
