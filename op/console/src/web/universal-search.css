@@ -47,7 +47,11 @@
         --pf-v6-c-menu__content--MaxHeight: 30rem;
     }
 
-    .hal-c-universal-search__mgt-result {
+    .pf-v6-c-menu__list-item.pf-m-disabled.hal-m-info {
+        --pf-v6-c-menu__item--m-disabled--Color: var(--pf-t--global--text--color--on-disabled);
+    }
 
+    .hal-c-universal-search__highlight {
+        font-weight: var(--pf-t--global--font--weight--400);
     }
 }
