@@ -23,6 +23,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.env.Settings;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.meta.description.ResourceDescription;
@@ -119,7 +120,7 @@ public class OperationsTable implements Attachable, IsElement<HTMLElement> {
                 .add(operationsToolbar(filter, visible, total))
                 .add(table()
                         .addHead(thead()
-                                .addRow(tr("operations-head")
+                                .addRow(tr(Identifiers.OPERATIONS_HEAD)
                                         .addItem(th("name").width(width35).text("Name"))
                                         .addItem(th("parameters").width(width45).text("Parameters"))
                                         .addItem(th("return-value").width(width20).text("Return value"))

@@ -25,6 +25,7 @@ import org.jboss.elemento.flow.Task;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.resources.Dataset;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.AddResource;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.DeleteResource;
@@ -149,9 +150,9 @@ class ModelBrowserDetail implements IsElement<HTMLElement>, OuiaSupport<HTMLElem
         if (value != null) {
             return Highlight.parse(value)
                     .map(h -> switch (h.type()) {
-                        case ATTRIBUTE -> ResourceTabs.DATA_TAB;
-                        case OPERATION -> ResourceTabs.OPERATIONS_TAB;
-                        case CAPABILITY -> ResourceTabs.CAPABILITIES_TAB;
+                        case ATTRIBUTE -> Identifiers.DATA_TAB;
+                        case OPERATION -> Identifiers.OPERATIONS_TAB;
+                        case CAPABILITY -> Identifiers.CAPABILITIES_TAB;
                     })
                     .orElse(null);
         }

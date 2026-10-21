@@ -16,6 +16,7 @@
 package org.jboss.hal.op.endpoint;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.form.Form;
 import org.patternfly.component.form.FormGroupControl;
@@ -71,22 +72,22 @@ class EndpointForm implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, E
 
     EndpointForm(EndpointStorage storage) {
         this.form = form().horizontal()
-                .addGroup(formGroup("mi-name").required()
+                .addGroup(formGroup(Identifiers.ENDPOINT_NAME).required()
                         .addLabel(formGroupLabel("Name"))
                         .addControl(nameControl = formGroupControl()
                                 .addControl(nameInput = textInput("mi-name")
                                         .applyTo(input -> input.autocomplete("off")))))
-                .addGroup(formGroup("mi-protocol").required()
+                .addGroup(formGroup(Identifiers.ENDPOINT_PROTOCOL).required()
                         .addLabel(formGroupLabel("Protocol").noPaddingTop())
                         .addControl(formGroupControl()
                                 .add(secureSwitch = switch_("mi-protocol", "mi-protocol", false)
                                         .label("HTTPS"))))
-                .addGroup(formGroup("mi-host").required()
+                .addGroup(formGroup(Identifiers.ENDPOINT_HOST).required()
                         .addLabel(formGroupLabel("Host"))
                         .addControl(formGroupControl()
                                 .addControl(hostInput = textInput("mi-host")
                                         .placeholder(DEFAULT_HOST))))
-                .addGroup(formGroup("mi-port").required()
+                .addGroup(formGroup(Identifiers.ENDPOINT_PORT).required()
                         .addLabel(formGroupLabel("Port"))
                         .addControl(formGroupControl()
                                 .addControl(portInput = textInput(number, "mi-port")
@@ -95,7 +96,7 @@ class EndpointForm implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, E
                                             input.max(65535);
                                         })
                                         .placeholder(DEFAULT_PORT))))
-                .addGroup(formGroup("mi-url")
+                .addGroup(formGroup(Identifiers.ENDPOINT_URL)
                         .addLabel(formGroupLabel("URL"))
                         .addControl(urlControl = formGroupControl()
                                 .add(inputGroup()

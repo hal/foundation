@@ -18,6 +18,7 @@ package org.jboss.hal.op.configuration;
 import jakarta.enterprise.context.Dependent;
 
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
@@ -28,8 +29,8 @@ import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 @Dependent
 public class SystemPropertyColumn implements ColumnProvider {
 
-    /** Column identifier used for registration and OUIA test IDs. */
-    public static final String ID = "system-property-column";
+    /** Column identifier used for registration and test IDs. */
+    public static final String ID = Identifiers.SYSTEM_PROPERTY_COLUMN;
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("system-property=*");
 
     @Override

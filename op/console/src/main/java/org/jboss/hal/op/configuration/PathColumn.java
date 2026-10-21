@@ -18,6 +18,7 @@ package org.jboss.hal.op.configuration;
 import jakarta.enterprise.context.Dependent;
 
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
@@ -28,8 +29,8 @@ import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 @Dependent
 public class PathColumn implements ColumnProvider {
 
-    /** Column identifier used for registration and OUIA test IDs. */
-    public static final String ID = "path-column";
+    /** Column identifier used for registration and test IDs. */
+    public static final String ID = Identifiers.PATH_COLUMN;
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("path=*");
 
     @Override

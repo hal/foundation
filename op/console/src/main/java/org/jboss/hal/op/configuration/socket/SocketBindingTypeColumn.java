@@ -19,6 +19,7 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.jboss.hal.ui.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
@@ -40,7 +41,7 @@ import static org.patternfly.extension.finder.FinderItem.finderItem;
 @Dependent
 public class SocketBindingTypeColumn implements ColumnProvider {
 
-    public static final String ID = "socket-binding-type";
+    public static final String ID = Identifiers.SOCKET_BINDING_TYPE;
     private final Instance<ColumnRegistry> registry;
 
     @Inject
@@ -57,15 +58,15 @@ public class SocketBindingTypeColumn implements ColumnProvider {
     public FinderColumn get() {
         return finderColumn(ID)
                 .addHeader(finderColumnHeader("Type"))
-                .addItem(finderItem("inbound", "Inbound")
+                .addItem(finderItem(Identifiers.INBOUND_ITEM, "Inbound")
                         .icon(far.circleLeft())
                         .store(RESOURCE_NAME, SOCKET_BINDING)
                         .nextColumn(registry.get().column(InboundColumn.ID)))
-                .addItem(finderItem("outbound-local", "Outbound Local")
+                .addItem(finderItem(Identifiers.OUTBOUND_LOCAL_ITEM, "Outbound Local")
                         .store(RESOURCE_NAME, LOCAL_DESTINATION_OUTBOUND_SOCKET_BINDING)
                         .icon(far.circleRight())
                         .nextColumn(registry.get().column(OutboundLocalColumn.ID)))
-                .addItem(finderItem("outbound-remote", "Outbound Remote")
+                .addItem(finderItem(Identifiers.OUTBOUND_REMOTE_ITEM, "Outbound Remote")
                         .store(RESOURCE_NAME, REMOTE_DESTINATION_OUTBOUND_SOCKET_BINDING)
                         .icon(fas.circleArrowRight())
                         .nextColumn(registry.get().column(OutboundRemoteColumn.ID)));

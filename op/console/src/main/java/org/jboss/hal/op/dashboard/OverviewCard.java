@@ -25,6 +25,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
@@ -176,7 +177,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                 // Test of the native popover
                 var consoleTerm = descriptionListTerm(sentenceCase("console-version"));
                 var consoleText = (HTMLElement) consoleTerm.textDelegate();
-                var consoleGroup = descriptionListGroup("console-version")
+                var consoleGroup = descriptionListGroup(Identifiers.CONSOLE_VERSION)
                         .addTerm(consoleTerm)
                         .addDescription(descriptionListDescription(environment.applicationVersion().toString()));
                 consoleText.classList.add(modifier(helpText));
@@ -195,7 +196,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
                         .addItem(consoleGroup)
                         .addItem(dlg(envAttributes, "stability", dld ->
                                 dld.add(stabilityLabel(environment.serverStability()))))
-                        .addItem(descriptionListGroup("operation-mode")
+                        .addItem(descriptionListGroup(Identifiers.OPERATION_MODE)
                                 .addTerm(descriptionListTerm(sentenceCase("operation-mode")))
                                 .addDescription(descriptionListDescription(environment.operationMode().name())))
                         .addItem(configFileDlg(envAttributes, envNode))
@@ -252,7 +253,7 @@ class OverviewCard implements Attachable, AutoRefresh, DashboardCard {
             String domainConfig = filename(envNode.get("domain-config-file").asString());
             String hostConfig = filename(envNode.get("host-config-file").asString());
             String label = sentenceCase("config-file");
-            return descriptionListGroup("config-file")
+            return descriptionListGroup(Identifiers.CONFIG_FILE)
                     .addTerm(descriptionListTerm(label).icon(gear())
                             .help(attributeDescriptionPopover(label, envAttributes.get("domain-config-file"), descriptionOnly)))
                     .addDescription(descriptionListDescription()

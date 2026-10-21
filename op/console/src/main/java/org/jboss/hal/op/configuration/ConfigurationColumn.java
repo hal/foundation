@@ -20,6 +20,7 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import org.jboss.hal.op.configuration.socket.SocketBindingGroupColumn;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.jboss.hal.ui.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
@@ -43,8 +44,8 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 @Dependent
 public class ConfigurationColumn implements ColumnProvider {
 
-    /** Column identifier used for registration and OUIA test IDs. */
-    public static final String ID = "configuration-column";
+    /** Column identifier used for registration and test IDs. */
+    public static final String ID = Identifiers.CONFIGURATION_COLUMN;
 
     private final Instance<ColumnRegistry> registry;
 
@@ -62,31 +63,31 @@ public class ConfigurationColumn implements ColumnProvider {
     public FinderColumn get() {
         return finderColumn(ID)
                 .addHeader(finderColumnHeader("Configuration"))
-                .addItem(finderItem("subsystems-item", "Subsystems")
+                .addItem(finderItem(Identifiers.SUBSYSTEMS_ITEM, "Subsystems")
                         .nextColumn(registry.get().column(SubsystemColumn.ID))
                         .onPreview((item, preview) ->
                                 stackPreview(preview, "Subsystems", stack -> stack
                                         .addItem(stackItem().add(content(p).editorial().html(SUBSYSTEM_DESCRIPTION))))))
-                .addItem(finderItem("interfaces-item", "Interfaces")
+                .addItem(finderItem(Identifiers.INTERFACES_ITEM, "Interfaces")
                         .nextColumn(registry.get().column(InterfaceColumn.ID))
                         .onPreview((item, preview) ->
                                 stackPreview(preview, "Interfaces", stack -> stack
                                         .addItem(stackItem()
                                                 .add(content(p).editorial().html(INTERFACE_DESCRIPTION_1))
                                                 .add(content(p).editorial().html(INTERFACE_DESCRIPTION_2))))))
-                .addItem(finderItem("socket-bindings-item", "Socket Bindings")
+                .addItem(finderItem(Identifiers.SOCKET_BINDINGS_ITEM, "Socket Bindings")
                         .nextColumn(registry.get().column(SocketBindingGroupColumn.ID))
                         .onPreview((item, preview) ->
                                 stackPreview(preview, "Socket Bindings", stack -> stack
                                         .addItem(stackItem().add(content(p).editorial().html(SOCKET_BINDING_DESCRIPTION))))))
-                .addItem(finderItem("paths-item", "Paths")
+                .addItem(finderItem(Identifiers.PATHS_ITEM, "Paths")
                         .nextColumn(registry.get().column(PathColumn.ID))
                         .onPreview((item, preview) ->
                                 stackPreview(preview, "Paths", stack -> stack
                                         .addItem(stackItem()
                                                 .add(content(p).editorial().html(PATH_DESCRIPTION_1))
                                                 .add(content(p).editorial().html(PATH_DESCRIPTION_2))))))
-                .addItem(finderItem("system-properties-item", "System Properties")
+                .addItem(finderItem(Identifiers.SYSTEM_PROPERTIES_ITEM, "System Properties")
                         .nextColumn(registry.get().column(SystemPropertyColumn.ID))
                         .onPreview((item, preview) ->
                                 stackPreview(preview, "System Properties", stack -> stack
