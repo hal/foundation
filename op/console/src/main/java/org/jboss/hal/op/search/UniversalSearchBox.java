@@ -30,9 +30,9 @@ import org.jboss.hal.core.mgt.SearchResultType;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.meta.AddressTemplate;
-import org.jboss.hal.meta.Segment;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.component.SelectionMode;
+import org.patternfly.component.divider.Divider;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.component.modal.Modal;
@@ -58,9 +58,12 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.PROFILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SUBSYSTEM;
 import static org.jboss.hal.op.search.MgtSearchAsyncItems.hasTypeFilter;
 import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.component.ResourceAddressTypeahead.addressStructureChanged;
+import static org.patternfly.component.divider.Divider.divider;
+import static org.patternfly.component.divider.DividerType.li;
 import static org.patternfly.component.menu.Menu.menu;
 import static org.patternfly.component.menu.MenuContent.menuContent;
 import static org.patternfly.component.menu.MenuItem.menuItem;
@@ -75,6 +78,7 @@ import static org.patternfly.component.typeahead.Decision.filter;
 import static org.patternfly.component.typeahead.Decision.refresh;
 import static org.patternfly.icon.IconSets.fas.circleExclamation;
 import static org.patternfly.style.Classes.component;
+import static org.patternfly.style.Classes.info;
 
 /**
  * Modal search box for the universal search feature. A new instance is created each time the search is opened, avoiding
@@ -143,13 +147,13 @@ public class UniversalSearchBox {
     private final MenuList menuList;
     private final HTMLElement trigger;
     private final SearchInputGroupTypeahead searchInput;
-    /** Tracked so we can remove it from the DOM when transitioning back to normal search. */
+    /** These three instances are tracked so we can remove them from the DOM when transitioning back to normal search. */
+    private Divider divider;
     private MenuItem errorItem;
-    /** Tracked so we can remove it from the DOM when transitioning back to normal search. */
     private MenuItem headerItem;
-    private HandlerRegistration outsideClickHandler;
-    /** Set when an address segment is selected via the menu, to prevent the Enter keyup from triggering resolution. */
+    /** Set when an address segment is selected via the menu to prevent the Enter keyup from triggering resolution. */
     private boolean addressSegmentSelected;
+    private HandlerRegistration outsideClickHandler;
 
     UniversalSearchBox(HTMLElement trigger) {
         this.trigger = trigger;
@@ -187,16 +191,21 @@ public class UniversalSearchBox {
         outsideClickHandler = bind(document, EventType.click.name, this::onOutsideClick);
     }
 
+    // ------------------------------------------------------ event handlers
+
+    /**
+     * Closes the universal search when the user clicks outside the modal, the search input, and the trigger element. Clicks on
+     * any of these three areas are ignored so the modal stays open during normal interaction.
+     */
     private void onOutsideClick(Event event) {
         Node target = (Node) event.target;
         boolean triggerClick = trigger != null && (isTripleEqual(target, trigger) || trigger.contains(target));
+        boolean searchInputClick = searchInput.element().contains(target);
         boolean modalClick = modal.element().contains(target);
-        if (!triggerClick && !modalClick) {
+        if (!triggerClick && !modalClick && !searchInputClick) {
             closeAll();
         }
     }
-
-    // ------------------------------------------------------ event handlers
 
     /**
      * Layered ESC: if the menu is open (showing results, pick list, or error), the first ESC closes just the menu — the modal
@@ -278,18 +287,22 @@ public class UniversalSearchBox {
     }
 
     /**
-     * Dispatches a menu item selection based on its metadata. Items carry either a {@link Keys#SEARCH_RESULT} (MGT result) or
-     * an {@link Keys#ADDRESS_TEMPLATE} (pick list entry). Address typeahead segments carry neither — for those, the typeahead
-     * framework handles the value update, and the {@code stayOpen} predicate (returning {@code false} when no special items
-     * exist) lets the menu close naturally so the user can continue building the address.
+     * Dispatches a menu item selection based on its metadata. MGT result items carry a {@link Keys#SEARCH_RESULT}; pick list
+     * items carry both a {@link Keys#SEARCH_RESULT} and an {@link Keys#ADDRESS_TEMPLATE}. When both keys are present the user
+     * picked a concrete address from the pick list, so the selection is routed to {@link #pickAddress}. When only the search
+     * result is present, the selection is routed to {@link #evaluateSearchResult}. Address typeahead segments carry neither key
+     * — for those, the typeahead framework handles the value update, and the {@code stayOpen} predicate (returning
+     * {@code false} when no special items exist) lets the menu close naturally so the user can continue building the address.
      */
     private void onItemSelected(MenuItem item) {
         SearchResult searchResult = item.get(Keys.SEARCH_RESULT);
         AddressTemplate template = item.get(Keys.ADDRESS_TEMPLATE);
         if (searchResult != null) {
-            evaluateSearchResult(searchResult);
-        } else if (template != null) {
-            pickAddress(template);
+            if (template == null) {
+                evaluateSearchResult(searchResult);
+            } else {
+                pickAddress(template, searchResult);
+            }
         } else {
             addressSegmentSelected = true;
         }
@@ -337,8 +350,8 @@ public class UniversalSearchBox {
     }
 
     /** Re-enters the resolution pipeline for an address the user picked from the pick list. */
-    private void pickAddress(AddressTemplate template) {
-        resolveTemplates(singletonList(template), null);
+    private void pickAddress(AddressTemplate template, SearchResult searchResult) {
+        resolveTemplates(singletonList(template), searchResult);
     }
 
     // ------------------------------------------------------ resolution pipeline
@@ -401,7 +414,7 @@ public class UniversalSearchBox {
             if (status == 200) {
                 goTo(template, highlight(searchResult));
             } else {
-                showError(resourceNotFound(template));
+                showError(resourceNotFound(template.template));
             }
             return null;
         });
@@ -446,8 +459,9 @@ public class UniversalSearchBox {
     /**
      * Replaces the menu with a pick list when wildcard resolution yields multiple addresses. The header shows context from the
      * original search result (e.g., "3 resources for attribute connection-url") when available, or a generic message for
-     * address-only searches. Each address is stored as an {@link Keys#ADDRESS_TEMPLATE} on the menu item so
-     * {@link #onItemSelected} can dispatch to {@link #pickAddress} without reparsing.
+     * address-only searches. Each address is stored as an {@link Keys#ADDRESS_TEMPLATE} on the menu item, and the original
+     * {@link Keys#SEARCH_RESULT} is stored alongside it so that {@link #onItemSelected} can thread the search result through to
+     * {@link #pickAddress} for highlight generation after navigation.
      */
     private void showPickList(List<AddressTemplate> templates, SearchResult searchResult) {
         clearSpecialItems();
@@ -455,57 +469,69 @@ public class UniversalSearchBox {
         if (templates.isEmpty()) {
             showError("No matching resources found");
         } else {
-            String header = pickListHeader(templates.size(), searchResult);
-            headerItem = menuItem(Id.unique("pick"), header).disabled();
-            menuList.addItem(headerItem);
+            menuList.addItem(headerItem = menuItem(Id.unique("pick"), pickListHeader(templates.size(), searchResult))
+                    .disabled()
+                    .css(halModifier(info)));
+            menuList.add(divider = divider(li));
             templates.stream()
                     .sorted(comparing(t -> t.template))
-                    .forEach(template -> {
-                        Segment last = template.last();
-                        String text = last != null ? last.value : template.template;
-                        menuList.addItem(menuItem(Id.build(template.template), text)
-                                .description(template.template)
-                                .store(Keys.ADDRESS_TEMPLATE, template));
-                    });
+                    .forEach(template -> menuList.addItem(menuItem(template.identifier(), template.template)
+                            .store(Keys.ADDRESS_TEMPLATE, template)
+                            .store(Keys.SEARCH_RESULT, searchResult)));
             searchInput.expand();
         }
     }
 
     private String pickListHeader(int count, SearchResult searchResult) {
         if (searchResult != null && searchResult.type != null && searchResult.name != null) {
-            String label = friendlyTypeLabel(searchResult.type);
-            return "Found " + count + " resources with " + label + " \"" + searchResult.name + "\" — pick one:";
+            StringBuilder header = new StringBuilder();
+            switch (searchResult.type()) {
+                case RESOURCE -> header.append("The resource \"")
+                        .append(searchResult.name)
+                        .append("\" can be resolved to ")
+                        .append(count)
+                        .append(" resources. ");
+                case ATTRIBUTE -> header.append("The attribute \"")
+                        .append(searchResult.name)
+                        .append("\" is defined in ")
+                        .append(count)
+                        .append(" resources. ");
+                case OPERATION -> header.append("The operation \"")
+                        .append(searchResult.name)
+                        .append("\" is defined in ")
+                        .append(count)
+                        .append(" resources. ");
+                case CAPABILITY -> header.append("The capability \"")
+                        .append(searchResult.name)
+                        .append(" is declared in ")
+                        .append(count)
+                        .append(" resources. ");
+                default -> header.append("Found ")
+                        .append(count)
+                        .append(" matching resources. ");
+            }
+            return header.append("Please select one.").toString();
         }
-        return "Found " + count + " matching resources — pick one:";
+        return "Found " + count + " matching resources. Please select one.";
     }
 
     private String noMatchingResources(SearchResult searchResult) {
         if (searchResult != null && searchResult.address != null) {
-            return "No resources found for " + searchResult.address;
+            return resourceNotFound(searchResult.address);
         }
         if (searchResult != null && searchResult.name != null) {
-            return "No resources found for " + searchResult.name;
+            return "No resources found for " + searchResult.name + ".";
         }
-        return "No matching resources found";
+        return "No matching resources found.";
     }
 
-    private String resourceNotFound(AddressTemplate template) {
-        return "Resource does not exist: " + template.template;
-    }
-
-    private String friendlyTypeLabel(String type) {
-        return switch (type) {
-            case "Attribute" -> "attribute";
-            case "Operation" -> "operation";
-            case "Capability" -> "capability";
-            case "Resource" -> "resource";
-            default -> type.toLowerCase();
-        };
+    private String resourceNotFound(String address) {
+        return "The resources " + address + " does not exist.";
     }
 
     /**
-     * Replaces the menu with a danger-styled error message. The error item is tracked as a special item so it can be cleaned up
-     * when the user edits the input. Used for invalid addresses, non-existent resources, and empty wildcard resolution.
+     * Replaces the menu with a danger-styled error message. The error item is tracked as a special item, so it can be cleaned
+     * up when the user edits the input. Used for invalid addresses, non-existent resources, and empty wildcard resolution.
      */
     private void showError(String message) {
         clearSpecialItems();
@@ -529,14 +555,12 @@ public class UniversalSearchBox {
      * exist — {@code failSafeRemoveFromParent} handles null elements.
      */
     private void clearSpecialItems() {
-        if (errorItem != null) {
-            failSafeRemoveFromParent(errorItem);
-            errorItem = null;
-        }
-        if (headerItem != null) {
-            failSafeRemoveFromParent(headerItem);
-            headerItem = null;
-        }
+        failSafeRemoveFromParent(divider);
+        failSafeRemoveFromParent(errorItem);
+        failSafeRemoveFromParent(headerItem);
+        divider = null;
+        errorItem = null;
+        headerItem = null;
     }
 
     /**
