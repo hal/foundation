@@ -20,6 +20,7 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.jboss.hal.ui.finder.ColumnRegistry;
 import org.patternfly.extension.finder.FinderColumn;
@@ -31,7 +32,7 @@ import static org.jboss.hal.ui.finder.FinderBricks.crudColumn;
 @Dependent
 public class SocketBindingGroupColumn implements ColumnProvider {
 
-    public static final String ID = "socket-binding-group-column";
+    public static final String ID = Identifiers.SOCKET_BINDING_GROUP_COLUMN;
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("socket-binding-group=*");
 
     private final Instance<ColumnRegistry> registry;

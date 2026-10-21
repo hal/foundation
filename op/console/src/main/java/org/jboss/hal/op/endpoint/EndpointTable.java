@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import org.jboss.elemento.Callback;
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.table.Table;
 import org.patternfly.component.table.Tr;
@@ -57,7 +58,7 @@ class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, 
     private final Consumer<Endpoint> delete;
 
     EndpointTable(Callback create, Consumer<Endpoint> update, Consumer<Endpoint> delete) {
-        emptyRow = tr("endpoint-empty")
+        emptyRow = tr(Identifiers.ENDPOINT_EMPTY)
                 .addItem(td().colSpan(4)
                         .add(bullseye()
                                 .add(emptyState()
@@ -73,7 +74,7 @@ class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, 
         table = table()
                 .selectionMode(single)
                 .addHead(thead()
-                        .addRow(tr("endpoint-head")
+                        .addRow(tr(Identifiers.ENDPOINT_HEAD)
                                 .addItem(th().text("Name"))
                                 .addItem(th().text("URL"))
                                 .addItem(th().screenReader("Edit"))

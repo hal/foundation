@@ -22,6 +22,7 @@ import java.util.function.BiConsumer;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.table.AttributesTable;
 import org.jboss.hal.ui.resource.table.CapabilitiesTable;
@@ -67,11 +68,6 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
 
     // ------------------------------------------------------ instance
 
-    public static final String DATA_TAB = "resource-tabs-data";
-    public static final String ATTRIBUTES_TAB = "resource-tabs-attributes";
-    public static final String OPERATIONS_TAB = "resource-tabs-operations";
-    public static final String CAPABILITIES_TAB = "resource-tabs-capabilities";
-
     record TabDescriptor(String id, String title, Promise<HTMLElement> content, String css) {}
 
     private final List<TabDescriptor> descriptors;
@@ -81,15 +77,15 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
 
     ResourceTabs(AddressTemplate template, Metadata metadata) {
         this.descriptors = new ArrayList<>();
-        this.descriptors.add(new TabDescriptor(DATA_TAB, "Data",
+        this.descriptors.add(new TabDescriptor(Identifiers.DATA_TAB, "Data",
                 Promise.resolve(resourceData(template, metadata).element()), util("pt-md")));
         if (!metadata.resourceDescription().attributes().isEmpty()) {
-            this.descriptors.add(new TabDescriptor(ATTRIBUTES_TAB, "Attributes",
+            this.descriptors.add(new TabDescriptor(Identifiers.ATTRIBUTES_TAB, "Attributes",
                     Promise.resolve(new AttributesTable(metadata).element()), util("pt-md")));
         }
-        this.descriptors.add(new TabDescriptor(OPERATIONS_TAB, "Operations",
+        this.descriptors.add(new TabDescriptor(Identifiers.OPERATIONS_TAB, "Operations",
                 Promise.resolve(new OperationsTable(template, metadata).element()), util("pt-md")));
-        this.descriptors.add(new TabDescriptor(CAPABILITIES_TAB, "Capabilities",
+        this.descriptors.add(new TabDescriptor(Identifiers.CAPABILITIES_TAB, "Capabilities",
                 uic().modelGraphTools().ping()
                         .then(available -> Promise.resolve(new CapabilitiesTable(metadata, available).element())),
                 null));

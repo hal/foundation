@@ -18,6 +18,7 @@ package org.jboss.hal.op.task.statistics;
 import java.util.function.Consumer;
 
 import org.jboss.hal.dmr.Expression;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.ValidationStatus;
 import org.patternfly.component.form.TextInput;
@@ -85,7 +86,7 @@ class NewExpressionModal {
                                 .add(renderExpression("${expression:default}"))
                                 .add(".")))
                 .addBody(modalBody()
-                        .add(form().addGroup(formGroup("new-expression").required()
+                        .add(form().addGroup(formGroup(Identifiers.NEW_EXPRESSION).required()
                                 .addLabel(formGroupLabel("Expression"))
                                 .addControl(formGroupControl()
                                         .addControl(textInput)

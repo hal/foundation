@@ -29,6 +29,7 @@ import org.jboss.hal.dmr.ModelType;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.model.filter.NameAttribute;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.emptystate.EmptyState;
@@ -168,9 +169,9 @@ class ResourcesSection implements IsElement<HTMLElement> {
         this.filter.add(new StatisticsEnabledAttribute());
 
         this.expressionMenuLists = new HashMap<>();
-        this.selectFilteredMenuItem = menuItem("select-filtered", "Select filtered").disabled()
+        this.selectFilteredMenuItem = menuItem(Identifiers.SELECT_FILTERED, "Select filtered").disabled()
                 .onClick((e, c) -> selectFiltered());
-        this.selectAllMenuItem = menuItem("select-all", "Select all")
+        this.selectAllMenuItem = menuItem(Identifiers.SELECT_ALL, "Select all")
                 .onClick((e, c) -> selectAll());
         String bulkSelectId = Id.build(StatisticsTask.TASK_ID, "bulk-select");
         this.bulkSelectCheckbox = checkboxWrapped(bulkSelectId, bulkSelectId).standalone()
@@ -218,7 +219,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                                                         .addMenu(dropdownMenu()
                                                                 .addContent(menuContent()
                                                                         .addList(menuList()
-                                                                                .addItem(menuItem("select-none",
+                                                                                .addItem(menuItem(Identifiers.SELECT_NONE,
                                                                                         "Select none")
                                                                                         .onClick(
                                                                                                 (e, c) -> selectNone()))
@@ -238,7 +239,7 @@ class ResourcesSection implements IsElement<HTMLElement> {
                         .add(resourcesTable
                                 .onMultiSelect((e, c, rows) -> onSelection(rows))
                                 .addHead(thead()
-                                        .addRow(tr("resources-head")
+                                        .addRow(tr(Identifiers.RESOURCES_HEAD)
                                                 .addItem(th().screenReader("Row select"))
                                                 .addItem(th("resource").width(width60).text(RESOURCE_COLUMN))
                                                 .addItem(th(STATISTICS_ENABLED).width(width40)

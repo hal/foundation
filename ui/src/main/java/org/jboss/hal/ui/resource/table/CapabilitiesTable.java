@@ -34,6 +34,7 @@ import org.jboss.elemento.flow.Task;
 import org.jboss.hal.core.mgt.CapabilityReference;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.description.CapabilityDescription;
 import org.jboss.hal.meta.description.CapabilityDescriptions;
 import org.jboss.hal.meta.description.ResourceDescription;
@@ -105,7 +106,7 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
         this.expandedCapabilities = new HashSet<>();
         this.table = table(mgtAvailable ? TableType.expandable : TableType.table)
                 .addHead(thead().css(util("mt-sm"))
-                        .addRow(tr("capabilities-head")
+                        .addRow(tr(Identifiers.CAPABILITIES_HEAD)
                                 .run(tr -> {
                                     if (mgtAvailable) {
                                         tr.addItem(th().screenReader("Row expansion"));

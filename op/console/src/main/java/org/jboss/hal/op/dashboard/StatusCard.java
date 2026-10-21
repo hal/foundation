@@ -23,6 +23,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.MetadataRepository;
 import org.jboss.hal.meta.StatementContext;
@@ -153,7 +154,7 @@ class StatusCard implements Attachable, AutoRefresh, DashboardCard {
                 }
                 cardBody.add(descriptionList()
                         .autoFit()
-                        .addItem(descriptionListGroup("runtime-configuration-state")
+                        .addItem(descriptionListGroup(Identifiers.RUNTIME_CONFIGURATION_STATE)
                                 .addTerm(descriptionListTerm("Configuration state")
                                         .help(attributeDescriptionPopover("Configuration state",
                                                 rootAttributes.get("runtime-configuration-state"), descriptionOnly)))

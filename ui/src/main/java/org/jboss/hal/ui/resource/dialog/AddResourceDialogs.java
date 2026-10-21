@@ -26,6 +26,7 @@ import org.jboss.hal.meta.WildcardResolver;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.OperationDescription;
 import org.jboss.hal.resources.HalClasses;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.resource.PipelineContext;
@@ -120,7 +121,7 @@ public class AddResourceDialogs {
     }
 
     private static WizardStep selectLocationStep(Wizard wizard, List<AddressTemplate> templates, String resource) {
-        return wizardStep("select-location", "Select location")
+        return wizardStep(Identifiers.SELECT_LOCATION_STEP, "Select location")
                 .onEnter((wzd, step) -> wzd.footer().nextButton().disabled(!wzd.context().has(Keys.FINDER_TEMPLATE)))
                 .add(stack().gutter()
                         .addItem(stackItem()
@@ -160,7 +161,7 @@ public class AddResourceDialogs {
     }
 
     private static WizardStep addResourceStep(Wizard wizard, String resource) {
-        return wizardStep("add-resource", "Add resource")
+        return wizardStep(Identifiers.ADD_RESOURCE_STEP, "Add resource")
                 .customButtonName(next, "Add")
                 .onEnter((wzd, step) -> {
                     AddressTemplate template = wizard.context().get(Keys.FINDER_TEMPLATE);

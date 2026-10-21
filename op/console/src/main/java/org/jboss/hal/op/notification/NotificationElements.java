@@ -16,6 +16,7 @@
 package org.jboss.hal.op.notification;
 
 import org.jboss.hal.core.Notifications;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.notification.NotificationBadge;
@@ -74,13 +75,13 @@ public class NotificationElements {
                                 .addMenu(dropdownMenu()
                                         .addContent(menuContent()
                                                 .addList(menuList()
-                                                        .addItem(menuItem("mark-all-read", "Mark all read")
+                                                        .addItem(menuItem(Identifiers.MARK_ALL_READ, "Mark all read")
                                                                 .ouiaId(OuiaIds.NOTIFICATION_MARK_ALL_READ)
                                                                 .onClick((e, c) -> notifications.markAllAsRead()))
-                                                        .addItem(menuItem("clear-all", "Clear all")
+                                                        .addItem(menuItem(Identifiers.CLEAR_ALL, "Clear all")
                                                                 .ouiaId(OuiaIds.NOTIFICATION_CLEAR_ALL)
                                                                 .onClick((e, c) -> notifications.clearAll()))
-                                                        .addItem(menuItem("unclear-last", "Unclear last")
+                                                        .addItem(menuItem(Identifiers.UNCLEAR_LAST, "Unclear last")
                                                                 .ouiaId(OuiaIds.NOTIFICATION_UNCLEAR_LAST)
                                                                 .onClick((e, c) -> notifications.unclearLast())))))))
                 .addBody(notificationDrawerBody);

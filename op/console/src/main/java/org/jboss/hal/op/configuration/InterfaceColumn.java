@@ -27,6 +27,7 @@ import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 import org.patternfly.extension.finder.FinderItem;
@@ -59,7 +60,7 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 @Dependent
 public class InterfaceColumn implements ColumnProvider {
 
-    public static final String ID = "interface-column";
+    public static final String ID = Identifiers.INTERFACE_COLUMN;
     private static final AddressTemplate TEMPLATE = AddressTemplate.ofTrusted("interface=*");
 
     private final Dispatcher dispatcher;

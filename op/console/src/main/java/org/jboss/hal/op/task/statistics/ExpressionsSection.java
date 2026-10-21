@@ -23,6 +23,7 @@ import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.resources.Identifiers;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.page.PageGroup;
 import org.patternfly.component.table.Tbody;
@@ -114,7 +115,7 @@ class ExpressionsSection implements IsElement<HTMLElement> {
                                                         .onClick((e, c) -> newExpression())))))
                         .add(table()
                                 .addHead(thead()
-                                        .addRow(tr("expressions-head")
+                                        .addRow(tr(Identifiers.EXPRESSIONS_HEAD)
                                                 .addItem(th("expression").width(width60).text(EXPRESSION_COLUMN))
                                                 .addItem(th("system-property").width(width40).text(SYSTEM_PROPERTY_COLUMN))
                                                 .addItem(th("first-action")

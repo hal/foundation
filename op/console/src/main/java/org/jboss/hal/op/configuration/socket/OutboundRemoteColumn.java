@@ -17,6 +17,7 @@ package org.jboss.hal.op.configuration.socket;
 
 import jakarta.enterprise.context.Dependent;
 
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.ui.finder.ColumnProvider;
 import org.patternfly.extension.finder.FinderColumn;
 
@@ -26,7 +27,7 @@ import static org.jboss.hal.op.configuration.socket.SocketBindingColumns.socketB
 @Dependent
 public class OutboundRemoteColumn implements ColumnProvider {
 
-    public static final String ID = "socket-binding-outbound-remote";
+    public static final String ID = Identifiers.SOCKET_BINDING_OUTBOUND_REMOTE;
 
     @Override
     public String identifier() {
