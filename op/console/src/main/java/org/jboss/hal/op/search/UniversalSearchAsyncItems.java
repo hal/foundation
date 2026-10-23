@@ -15,7 +15,7 @@
  */
 package org.jboss.hal.op.search;
 
-import org.jboss.hal.core.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.ModelGraphConnection;
 import org.jboss.hal.ui.component.ResourceAddressAsyncItems;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
@@ -51,11 +51,11 @@ class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
     private final MgtSearchAsyncItems mgtItems;
     private final boolean mgtAvailable;
 
-    UniversalSearchAsyncItems(HasValue<String> valueProvider, ModelGraphTools modelGraphTools) {
+    UniversalSearchAsyncItems(HasValue<String> valueProvider, ModelGraphConnection modelGraphConnection) {
         this.valueProvider = valueProvider;
         this.addressItems = new ResourceAddressAsyncItems(valueProvider);
-        this.mgtItems = new MgtSearchAsyncItems(valueProvider, modelGraphTools);
-        this.mgtAvailable = modelGraphTools.available();
+        this.mgtItems = new MgtSearchAsyncItems(valueProvider, modelGraphConnection);
+        this.mgtAvailable = modelGraphConnection.available();
     }
 
     @Override

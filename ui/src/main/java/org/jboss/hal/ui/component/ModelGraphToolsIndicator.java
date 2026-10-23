@@ -63,7 +63,7 @@ public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSup
 
     private static ModelGraphToolsIndicator instance;
 
-    public static ModelGraphToolsIndicator modelGraphToolsIndicator() {
+    public static ModelGraphToolsIndicator modelGraphConnectionIndicator() {
         if (instance == null) {
             instance = new ModelGraphToolsIndicator();
         }
@@ -143,7 +143,7 @@ public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSup
     // ------------------------------------------------------ api
 
     public void refresh() {
-        uic().modelGraphTools().ping().then(available -> {
+        uic().modelGraphConnection().ping().then(available -> {
             active(available);
             return null;
         });

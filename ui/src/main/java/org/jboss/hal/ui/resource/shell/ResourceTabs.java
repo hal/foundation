@@ -86,7 +86,7 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
         this.descriptors.add(new TabDescriptor(Identifiers.OPERATIONS_TAB, "Operations",
                 Promise.resolve(new OperationsTable(template, metadata).element()), util("pt-md")));
         this.descriptors.add(new TabDescriptor(Identifiers.CAPABILITIES_TAB, "Capabilities",
-                uic().modelGraphTools().ping()
+                uic().modelGraphConnection().ping()
                         .then(available -> Promise.resolve(new CapabilitiesTable(metadata, available).element())),
                 null));
     }

@@ -27,6 +27,6 @@
  *
  * <p>The search data flow uses the {@link org.patternfly.async.AsyncItems} pattern for direct integration with the search
  * input's built-in menu. Model graph tools availability is checked via
- * {@link org.jboss.hal.core.mgt.ModelGraphTools#available()}.
+ * {@link org.jboss.hal.core.mgt.ModelGraphConnection#available()}.
  */
 package org.jboss.hal.op.search;

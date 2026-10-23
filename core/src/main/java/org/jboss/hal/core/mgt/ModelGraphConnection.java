@@ -37,9 +37,9 @@ import static org.jboss.hal.resources.Urls.replaceVersion;
  * WildFly 41.0 maps to port 7410, and the REST API is reachable at {@code http://localhost:7410/api/}.
  */
 @ApplicationScoped
-public class ModelGraphTools {
+public class ModelGraphConnection {
 
-    private static final Logger logger = Logger.getLogger(ModelGraphTools.class.getName());
+    private static final Logger logger = Logger.getLogger(ModelGraphConnection.class.getName());
     private static final int HTTP_PORT_BASE = 7000;
     private static final int LIMIT = 100;
 
@@ -47,7 +47,7 @@ public class ModelGraphTools {
     private boolean available;
 
     @Inject
-    public ModelGraphTools(Environment environment) {
+    public ModelGraphConnection(Environment environment) {
         this.environment = environment;
         this.available = false;
     }

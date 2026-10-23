@@ -23,7 +23,7 @@ import org.jboss.elemento.By;
 import org.jboss.elemento.EventType;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.flow.FlowContext;
-import org.jboss.hal.core.mgt.ModelGraphTools;
+import org.jboss.hal.core.mgt.ModelGraphConnection;
 import org.jboss.hal.core.mgt.ResourceRef;
 import org.jboss.hal.core.mgt.SearchResult;
 import org.jboss.hal.core.mgt.SearchResultType;
@@ -159,9 +159,9 @@ public class UniversalSearchBox {
         this.trigger = trigger;
         this.searchInput = searchInputGroupTypeahead("universal-search");
 
-        ModelGraphTools modelGraphTools = uic().modelGraphTools();
-        UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphTools);
-        searchInput.placeholder(modelGraphTools.available() ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
+        ModelGraphConnection modelGraphConnection = uic().modelGraphConnection();
+        UniversalSearchAsyncItems asyncItems = new UniversalSearchAsyncItems(searchInput, modelGraphConnection);
+        searchInput.placeholder(modelGraphConnection.available() ? PLACEHOLDER_MGT : PLACEHOLDER_ADDRESS_ONLY)
                 .addMenu(menu(menu, SelectionMode.click).scrollable()
                         .addContent(menuContent()
                                 .addList(menuList = menuList()
