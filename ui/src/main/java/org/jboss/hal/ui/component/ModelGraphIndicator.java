@@ -94,7 +94,7 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
     private final FlexItem statusTextContainer;
 
     ModelGraphIndicator() {
-        String refreshId = Id.unique("model-graph-tools-indicator", "refresh");
+        String refreshId = Id.unique("model-graph-indicator", "refresh");
         this.iconElement = span()
                 .html(SafeHtmlUtils.fromSafeConstant(MGT_SVG))
                 .element();
@@ -104,7 +104,7 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
                 .noDefaultSelectHandler()
                 .addMenu(singleSelectMenu()
                         .addContent(menuContent()
-                                .addGroup(menuGroup("Model graph tools")
+                                .addGroup(menuGroup("Model graph")
                                         .add(div().css(component(menu, search))
                                                 .add(flex().gap(sm)
                                                         .addItem(statusIconContainer = flexItem())
