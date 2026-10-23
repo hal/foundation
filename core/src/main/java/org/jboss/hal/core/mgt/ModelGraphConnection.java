@@ -97,42 +97,4 @@ public class ModelGraphConnection {
                 });
     }
 
-    /**
-     * Fetches the resources that reference a given capability from the MGT capability-references API. Returns a promise that
-     * resolves to the array of capability references or an empty array if the request fails.
-     */
-    public Promise<CapabilityReference[]> capabilityReferences(String capability) {
-        String url = endpoint.api().append("capability/").append(capability).append("/references").toString();
-
-        RequestInit init = RequestInit.create();
-        init.setMethod("GET");
-        init.setMode("cors");
-
-        logger.debug("Fetching capability references for '%s' at %s", capability, url);
-        return fetch(url, init)
-                .then(response -> {
-                    if (response.ok) {
-                        return response.json()
-                                .then(json -> {
-                                    CapabilityReferencesResponse crr = (CapabilityReferencesResponse) json;
-                                    CapabilityReference[] references = crr.references;
-                                    logger.debug("Model graph returned %d references for capability '%s'",
-                                            references != null ? references.length : 0, capability);
-                                    return Promise.resolve(references != null ? references : new CapabilityReference[0]);
-                                })
-                                .catch_(error -> {
-                                    logger.error("Failed to parse capability references response for '%s': %s",
-                                            capability, String.valueOf(error));
-                                    return Promise.resolve(new CapabilityReference[0]);
-                                });
-                    } else {
-                        logger.error("Capability references request for '%s' failed: %d", capability, response.status);
-                        return Promise.resolve(new CapabilityReference[0]);
-                    }
-                })
-                .catch_(error -> {
-                    logger.error("Capability references request for '%s' failed: %s", capability, error);
-                    return Promise.resolve(new CapabilityReference[0]);
-                });
-    }
 }

@@ -232,7 +232,7 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
     }
 
     private Promise<Map<String, List<AddressTemplate>>> loadReferences(CapabilityDescription capability) {
-        return uic().modelGraphConnection().capabilityReferences(capability.name()).then(references -> {
+        return uic().modelGraphCapability().capabilityReferences(capability.name()).then(references -> {
             if (references.length == 0) {
                 return Promise.resolve(emptyMap());
             }

@@ -24,6 +24,7 @@ import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.core.Notifications;
+import org.jboss.hal.core.mgt.ModelGraphCapability;
 import org.jboss.hal.core.mgt.ModelGraphConnection;
 import org.jboss.hal.core.mgt.ModelGraphSearch;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
@@ -71,6 +72,7 @@ public class UIContext {
     private final Endpoints endpoints;
     private final Environment environment;
     private final MetadataRepository metadataRepository;
+    private final ModelGraphCapability modelGraphCapability;
     private final ModelGraphConnection modelGraphConnection;
     private final ModelGraphSearch modelGraphSearch;
     private final ModelTree modelTree;
@@ -90,6 +92,7 @@ public class UIContext {
             Endpoints endpoints,
             Environment environment,
             MetadataRepository metadataRepository,
+            ModelGraphCapability modelGraphCapability,
             ModelGraphConnection modelGraphConnection,
             ModelGraphSearch modelGraphSearch,
             ModelTree modelTree,
@@ -107,6 +110,7 @@ public class UIContext {
         this.endpoints = endpoints;
         this.environment = environment;
         this.metadataRepository = metadataRepository;
+        this.modelGraphCapability = modelGraphCapability;
         this.modelGraphConnection = modelGraphConnection;
         this.modelGraphSearch = modelGraphSearch;
         this.modelTree = modelTree;
@@ -151,6 +155,11 @@ public class UIContext {
     /** Returns the metadata repository for accessing WildFly management model metadata. */
     public MetadataRepository metadataRepository() {
         return metadataRepository;
+    }
+
+    /** Returns the model graph capability service for fetching capability references. */
+    public ModelGraphCapability modelGraphCapability() {
+        return modelGraphCapability;
     }
 
     /** Returns the model graph connection for checking MGT availability. */
