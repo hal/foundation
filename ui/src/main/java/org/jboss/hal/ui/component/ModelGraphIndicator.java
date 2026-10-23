@@ -57,15 +57,15 @@ import static org.patternfly.token.Token.globalIconColorDisabled;
  * Masthead indicator that shows whether a matching model graph tools (MGT) sidecar container is running. Calls
  * {@link org.jboss.hal.core.mgt.ModelGraphTools#ping()} directly to check availability.
  */
-public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelGraphToolsIndicator> {
+public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelGraphIndicator> {
 
     // ------------------------------------------------------ factory
 
-    private static ModelGraphToolsIndicator instance;
+    private static ModelGraphIndicator instance;
 
-    public static ModelGraphToolsIndicator modelGraphConnectionIndicator() {
+    public static ModelGraphIndicator modelGraphConnectionIndicator() {
         if (instance == null) {
-            instance = new ModelGraphToolsIndicator();
+            instance = new ModelGraphIndicator();
         }
         return instance;
     }
@@ -93,7 +93,7 @@ public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSup
     private final FlexItem statusIconContainer;
     private final FlexItem statusTextContainer;
 
-    ModelGraphToolsIndicator() {
+    ModelGraphIndicator() {
         String refreshId = Id.unique("model-graph-tools-indicator", "refresh");
         this.iconElement = span()
                 .html(SafeHtmlUtils.fromSafeConstant(MGT_SVG))
@@ -119,7 +119,7 @@ public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSup
                                                                         .link().inline()
                                                                         .onClick((c, e) -> refresh())))
                                                         .addItem(flexItem()
-                                                                .add(button("More info", Urls.MODEL_GRAPH_TOOLS_PAGE,
+                                                                .add(button("More info", Urls.MODEL_GRAPH_PAGE,
                                                                         "_blank").link().inline())))))));
         active(false);
         refresh();
@@ -127,11 +127,11 @@ public class ModelGraphToolsIndicator implements IsElement<HTMLElement>, OuiaSup
 
     @Override
     public String ouiaComponentType() {
-        return "hal/ModelGraphToolsIndicator";
+        return "hal/ModelGraphIndicator";
     }
 
     @Override
-    public ModelGraphToolsIndicator that() {
+    public ModelGraphIndicator that() {
         return this;
     }
 

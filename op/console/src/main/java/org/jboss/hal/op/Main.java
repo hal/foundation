@@ -35,7 +35,7 @@ import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
 import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
-import static org.jboss.hal.ui.component.ModelGraphToolsIndicator.modelGraphToolsIndicator;
+import static org.jboss.hal.ui.component.ModelGraphIndicator.modelGraphIndicator;
 
 /**
  * Entry point of the halOP console application. Initializes CDI, runs the bootstrap sequence, and either sets up the main
@@ -75,7 +75,7 @@ public class Main {
         placeManager.start();
         UniversalSearch.registerShortcut();
         new ActivityTracker(
-                () -> modelGraphToolsIndicator().refresh(),
+                () -> modelGraphIndicator().refresh(),
                 () -> {
                     // pause any polling intervals
                 }).start();

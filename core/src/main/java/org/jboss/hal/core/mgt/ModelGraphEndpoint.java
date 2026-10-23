@@ -21,7 +21,7 @@ import jakarta.inject.Inject;
 import org.jboss.hal.env.Environment;
 import org.jboss.hal.env.Version;
 
-import static org.jboss.hal.resources.Urls.MODEL_GRAPH_TOOLS_API;
+import static org.jboss.hal.resources.Urls.MODEL_GRAPH_API;
 import static org.jboss.hal.resources.Urls.replaceVersion;
 
 /**
@@ -41,7 +41,7 @@ public class ModelGraphEndpoint {
 
     /** Returns a new {@code StringBuilder} pre-filled with the MGT API base URL for the current WildFly version. */
     public StringBuilder api() {
-        return new StringBuilder(replaceVersion(MODEL_GRAPH_TOOLS_API, String.valueOf(port(environment.productVersion()))));
+        return new StringBuilder(replaceVersion(MODEL_GRAPH_API, String.valueOf(port(environment.productVersion()))));
     }
 
     private int port(Version version) {

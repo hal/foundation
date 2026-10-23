@@ -39,7 +39,7 @@ import static org.jboss.hal.op.notification.NotificationElements.notificationEle
 import static org.jboss.hal.op.search.UniversalSearchBox.universalSearchBox;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.jboss.hal.ui.UIContext.uic;
-import static org.jboss.hal.ui.component.ModelGraphToolsIndicator.modelGraphToolsIndicator;
+import static org.jboss.hal.ui.component.ModelGraphIndicator.modelGraphIndicator;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -110,7 +110,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                         .ouiaId(OuiaIds.NOTIFICATION_BADGE)))
                                 .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)
                                         .ouiaId(OuiaIds.THEME_SELECTOR)))
-                                .addItem(toolbarItem().add(modelGraphToolsIndicator()
+                                .addItem(toolbarItem().add(modelGraphIndicator()
                                         .ouiaId(OuiaIds.MODEL_GRAPH_INDICATOR)))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
