@@ -55,7 +55,7 @@ import static org.patternfly.token.Token.globalIconColorDisabled;
 
 /**
  * Masthead indicator that shows whether a matching model graph tools (MGT) sidecar container is running. Calls
- * {@link org.jboss.hal.core.mgt.ModelGraphTools#ping()} directly to check availability.
+ * {@link org.jboss.hal.core.mgt.ModelGraphConnection#ping()} directly to check availability.
  */
 public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelGraphIndicator> {
 
@@ -63,7 +63,7 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
 
     private static ModelGraphIndicator instance;
 
-    public static ModelGraphIndicator modelGraphConnectionIndicator() {
+    public static ModelGraphIndicator modelGraphIndicator() {
         if (instance == null) {
             instance = new ModelGraphIndicator();
         }
