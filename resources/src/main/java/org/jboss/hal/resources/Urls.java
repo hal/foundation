@@ -41,11 +41,11 @@ public interface Urls {
     /** Relative path to the management interface DMR endpoint. */
     String MANAGEMENT = "/management";
 
-    /** Local model graph tools container API endpoint. */
-    String MODEL_GRAPH_TOOLS_API = "http://localhost:%v/api/";
+    /** Local model graph container API endpoint. */
+    String MODEL_GRAPH_API = "http://localhost:%v/api/";
 
-    /** More info about the model graph tools container. */
-    String MODEL_GRAPH_TOOLS_PAGE = "https://hal.github.io/foundation/model-graph-tools/";
+    /** More info about the model graph container. */
+    String MODEL_GRAPH_PAGE = "https://hal.github.io/foundation/model-graph-tools/";
 
     /** Documentation link for stability levels; contains the {@code %v} version placeholder. */
     String STABILITY_LEVELS = "https://docs.wildfly.org/%v/Admin_Guide.html#Feature_stability_levels";
