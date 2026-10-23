@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.elemento.Id;
-import org.jboss.hal.core.mgt.ModelGraphConnection;
+import org.jboss.hal.core.mgt.ModelGraphSearch;
 import org.jboss.hal.core.mgt.ResourceRef;
 import org.jboss.hal.core.mgt.SearchResult;
 import org.jboss.hal.resources.HalClasses;
@@ -63,11 +63,11 @@ import static org.patternfly.style.Classes.util;
 class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
     private final HasValue<String> valueProvider;
-    private final ModelGraphConnection modelGraphConnection;
+    private final ModelGraphSearch modelGraphSearch;
 
-    MgtSearchAsyncItems(HasValue<String> valueProvider, ModelGraphConnection modelGraphConnection) {
+    MgtSearchAsyncItems(HasValue<String> valueProvider, ModelGraphSearch modelGraphSearch) {
         this.valueProvider = valueProvider;
-        this.modelGraphConnection = modelGraphConnection;
+        this.modelGraphSearch = modelGraphSearch;
     }
 
     // ------------------------------------------------------ async items
@@ -86,7 +86,7 @@ class MgtSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
             return Promise.resolve(emptyList());
         }
 
-        return modelGraphConnection.search(searchTerm)
+        return modelGraphSearch.search(searchTerm)
                 .then(results -> {
                     List<SearchResult> filtered = new ArrayList<>();
                     for (SearchResult result : results) {

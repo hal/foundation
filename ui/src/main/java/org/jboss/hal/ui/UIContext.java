@@ -25,6 +25,7 @@ import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.core.CrudOperations;
 import org.jboss.hal.core.Notifications;
 import org.jboss.hal.core.mgt.ModelGraphConnection;
+import org.jboss.hal.core.mgt.ModelGraphSearch;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.env.Endpoints;
 import org.jboss.hal.env.Environment;
@@ -71,6 +72,7 @@ public class UIContext {
     private final Environment environment;
     private final MetadataRepository metadataRepository;
     private final ModelGraphConnection modelGraphConnection;
+    private final ModelGraphSearch modelGraphSearch;
     private final ModelTree modelTree;
     private final Notifications notifications;
     private final PlaceManager placeManager;
@@ -89,6 +91,7 @@ public class UIContext {
             Environment environment,
             MetadataRepository metadataRepository,
             ModelGraphConnection modelGraphConnection,
+            ModelGraphSearch modelGraphSearch,
             ModelTree modelTree,
             Notifications notifications,
             PlaceManager placeManager,
@@ -105,6 +108,7 @@ public class UIContext {
         this.environment = environment;
         this.metadataRepository = metadataRepository;
         this.modelGraphConnection = modelGraphConnection;
+        this.modelGraphSearch = modelGraphSearch;
         this.modelTree = modelTree;
         this.notifications = notifications;
         this.placeManager = placeManager;
@@ -149,9 +153,14 @@ public class UIContext {
         return metadataRepository;
     }
 
-    /** Returns the model graph tools service for querying the MGT sidecar container. */
+    /** Returns the model graph connection for checking MGT availability. */
     public ModelGraphConnection modelGraphConnection() {
         return modelGraphConnection;
+    }
+
+    /** Returns the model graph search service for querying the MGT search API. */
+    public ModelGraphSearch modelGraphSearch() {
+        return modelGraphSearch;
     }
 
     /** Returns the model tree representing the WildFly management resource hierarchy. */
