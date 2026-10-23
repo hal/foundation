@@ -25,3 +25,5 @@ bin/
 .settings
 node
 node_modules
+.worktrees
+.superpowers
