@@ -141,12 +141,16 @@ Style: 4-space indent, UTF-8, max line length 128, LF line endings.
 
 **Data Layer**: DMR operations for WildFly management API communication. PouchDB-based local database for caching. Async/Promise-based API pattern throughout.
 
+**Model Graph Tools (MGT)**: The `mgt` module integrates with the MGT sidecar container — a Neo4j-backed service that indexes the WildFly management model. Provides REST client, DTOs, availability events, catalog search, and endpoint management. The `mgt` module is a pure data/service layer; it does not dispatch UI events — callers decide how to react to results (e.g., by dispatching `ModelGraphAvailabilityEvent`).
+
 **Key Services**:
 - `Dispatcher` — executes DMR operations against WildFly
 - `MetadataRepository` — stores WildFly management model metadata
 - `StatementContext` — resolves placeholders in resource addresses
 - `CrudOperations` — abstract CRUD layer over DMR
 - `Notifications` — event-driven notification system
+- `ModelGraphConnection` — checks MGT sidecar availability via REST ping
+- `ModelGraphCatalog` — faceted search over the WildFly management model via MGT
 
 ## Issue Tracker
 

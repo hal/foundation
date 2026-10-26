@@ -23,6 +23,7 @@ The codebase is organized into focused Maven modules, each with a single respons
 - **event**: CDI-based application events and browser-level custom events for UI communication
 - **resources**: Internationalization bundles, CSS class constants, OUIA IDs for test automation, and external URLs
 - **db**: PouchDB bindings for local database operations and LRU cache implementation
+- **mgt**: Model Graph Tools (MGT) integration — REST client, DTOs, availability events, catalog search, and endpoint management for the MGT sidecar container
 - **core**: High-level CRUD operations, dispatcher for DMR execution, notification system, and human-readable label generation
 - **task**: Task interface and CDI-based discovery for guided multi-step operations
 - **ui**: PatternFly component utilities, brick pattern factories, model browser, resource views, forms, and attribute pipeline
