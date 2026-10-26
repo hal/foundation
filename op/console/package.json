@@ -18,7 +18,7 @@
     "dompurify": "3.4.17"
   },
   "devDependencies": {
-    "@cyclonedx/cdxgen": "12.8.7",
+    "@cyclonedx/cdxgen": "12.9.0",
     "esbuild": "^0.28.2",
     "vite": "8.3.5"
   }
