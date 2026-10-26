@@ -13,25 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.core.mgt;
+package org.jboss.hal.mgt;
 
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * JsInterop type for a single MGT search result. Mirrors {@code org.wildfly.modelgraph.api.SearchResult}.
+ * JsInterop type for a single MGT catalog result. Mirrors {@code org.wildfly.modelgraph.api.CatalogResult}.
  *
- * <p>The {@link #type} field is one of {@code "Resource"}, {@code "Attribute"}, {@code "Operation"}, or
- * {@code "Capability"}. The {@link #address} field contains the management model address where the item is defined (may be
- * {@code null} for some capabilities). The {@link #providedBy} array lists resources that declare a capability.
+ * <p>The {@link #type} field is one of {@code "resource"}, {@code "attribute"}, {@code "operation"}, or
+ * {@code "capability"}. The {@link #properties} field contains type-specific properties (may be {@code null} for
+ * capabilities).
  *
  * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class SearchResult {
+public class CatalogResult {
 
-    /** The result type: {@code "Resource"}, {@code "Attribute"}, {@code "Operation"}, or {@code "Capability"}. */
+    /** The result type: {@code "resource"}, {@code "attribute"}, {@code "operation"}, or {@code "capability"}. */
     public String type;
 
     /** The name of the resource, attribute, operation, or capability. */
@@ -40,14 +40,23 @@ public class SearchResult {
     /** A human-readable description (may be {@code null}). */
     public String description;
 
-    /** The management model address where this item is defined (may be {@code null} for some capabilities). */
+    /** The full management model address (may be {@code null} for some capabilities). */
     public String address;
 
-    /** Resources that declare this capability (only present for capabilities, may be {@code null}). */
-    public ResourceRef[] providedBy;
+    /** The parent resource address without the attribute/operation name (may be {@code null}). */
+    public String resourceAddress;
+
+    /** The stability level (may be {@code null}). */
+    public String stability;
+
+    /** Whether this element is deprecated. */
+    public boolean deprecated;
+
+    /** Type-specific properties (may be {@code null} for capabilities). */
+    public CatalogProperties properties;
 
     @JsOverlay
-    public final SearchResultType type() {
-        return SearchResultType.of(type);
+    public final ModelGraphType type() {
+        return ModelGraphType.of(type);
     }
 }

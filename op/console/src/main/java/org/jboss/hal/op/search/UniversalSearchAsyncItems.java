@@ -15,8 +15,8 @@
  */
 package org.jboss.hal.op.search;
 
-import org.jboss.hal.core.mgt.ModelGraphConnection;
-import org.jboss.hal.core.mgt.ModelGraphSearch;
+import org.jboss.hal.mgt.ModelGraphConnection;
+import org.jboss.hal.mgt.ModelGraphSearch;
 import org.jboss.hal.ui.component.ResourceAddressAsyncItems;
 import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
@@ -35,7 +35,7 @@ import static java.util.Collections.emptyList;
  * <ul>
  *     <li>{@link ResourceAddressAsyncItems} — when the input starts with {@code /} (resource address typeahead against the live
  *         WildFly server)</li>
- *     <li>{@link MgtSearchAsyncItems} — when MGT is available and the input is a free-text query</li>
+ *     <li>{@link ModelGraphSearchAsyncItems} — when MGT is available and the input is a free-text query</li>
  *     <li>An empty result — when MGT is not available and the input is not a resource address</li>
  * </ul>
  *
@@ -43,19 +43,19 @@ import static java.util.Collections.emptyList;
  * search implementations are independent and interchangeable.
  *
  * @see ResourceAddressAsyncItems
- * @see MgtSearchAsyncItems
+ * @see ModelGraphSearchAsyncItems
  */
 class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
 
     private final HasValue<String> valueProvider;
     private final ResourceAddressAsyncItems addressItems;
-    private final MgtSearchAsyncItems mgtItems;
+    private final ModelGraphSearchAsyncItems mgtItems;
     private final boolean mgtAvailable;
 
     UniversalSearchAsyncItems(HasValue<String> valueProvider, ModelGraphConnection modelGraphConnection, ModelGraphSearch modelGraphSearch) {
         this.valueProvider = valueProvider;
         this.addressItems = new ResourceAddressAsyncItems(valueProvider);
-        this.mgtItems = new MgtSearchAsyncItems(valueProvider, modelGraphSearch);
+        this.mgtItems = new ModelGraphSearchAsyncItems(valueProvider, modelGraphSearch);
         this.mgtAvailable = modelGraphConnection.available();
     }
 
@@ -65,7 +65,7 @@ class UniversalSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         if (value == null || value.trim().isEmpty()) {
             return Promise.resolve(emptyList());
         }
-        if (MgtSearchAsyncItems.hasTypeFilter(value)) {
+        if (ModelGraphSearchAsyncItems.hasTypeFilter(value)) {
             if (mgtAvailable) {
                 return mgtItems.apply(menuList);
             }

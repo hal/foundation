@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.core.mgt;
+package org.jboss.hal.mgt;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -74,18 +74,21 @@ public class ModelGraphConnection {
                                     logger.info("Model graph for WildFly %s available: %o",
                                             environment.productVersion(), identity);
                                     available = true;
+                                    ModelGraphAvailabilityEvent.dispatch(true);
                                     return Promise.resolve(true);
                                 })
                                 .catch_(error -> {
                                     logger.error("Failed to parse model graph identity for WildFly %s: %s",
                                             environment.productVersion(), String.valueOf(error));
                                     available = false;
+                                    ModelGraphAvailabilityEvent.dispatch(false);
                                     return Promise.resolve(false);
                                 });
                     } else {
                         logger.info("Model graph for WildFly %s not available: %d",
                                 environment.productVersion(), response.status);
                         available = false;
+                        ModelGraphAvailabilityEvent.dispatch(false);
                         return Promise.resolve(false);
                     }
                 })
@@ -93,6 +96,7 @@ public class ModelGraphConnection {
                     logger.info("Model graph for WildFly %s not available: %s",
                             environment.productVersion(), error);
                     available = false;
+                    ModelGraphAvailabilityEvent.dispatch(false);
                     return Promise.resolve(false);
                 });
     }

@@ -48,6 +48,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>hal-fnd-mgt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>hal-fnd-meta</artifactId>
         </dependency>
         <dependency>

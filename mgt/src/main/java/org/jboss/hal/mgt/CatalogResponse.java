@@ -13,23 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.core.mgt;
+package org.jboss.hal.mgt;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * JsInterop type for the MGT capability-references API response. Mirrors
- * {@code org.wildfly.modelgraph.api.CapabilityReferencesResponse}.
+ * JsInterop type for the MGT catalog API response ({@code GET /api/catalog}).
+ *
+ * <p>Contains paginated results, facet counts, and pagination metadata. The {@link #facets} field is a dynamic object
+ * whose keys are facet names and values are objects mapping facet values to counts. Use
+ * {@code Js.asPropertyMap(facets)} to iterate.
  *
  * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-class CapabilityReferencesResponse {
+public class CatalogResponse {
 
-    /** The capability name. */
-    public String capability;
+    /** The catalog results for the current page. */
+    public CatalogResult[] results;
 
-    /** The references to the capability. */
-    public CapabilityReference[] references;
+    /** Facet counts as a dynamic object. Keys are facet names, values are objects mapping facet values to counts. */
+    public Object facets;
+
+    /** Total number of results matching the current filters. */
+    public int total;
+
+    /** Page size used for this response. */
+    public int limit;
+
+    /** Pagination offset. */
+    public int offset;
 }

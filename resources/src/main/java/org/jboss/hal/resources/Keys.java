@@ -121,7 +121,7 @@ public interface Keys {
     String RESOURCE_NAME = "resource-name";
 
     /**
-     * {@code org.jboss.hal.core.mgt.SearchResult} stored by the universal search when MGT is available.
+     * {@code org.jboss.hal.mgt.SearchResult} stored by the universal search when MGT is available.
      */
     String SEARCH_RESULT = "search-result";
 

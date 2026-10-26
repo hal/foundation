@@ -21,12 +21,12 @@
  *         input UI, wildcard resolution, and navigation.</li>
  *     <li>{@link org.jboss.hal.op.search.UniversalSearchAsyncItems} — compound delegator that routes search requests to the
  *         appropriate strategy based on input value and model graph availability.</li>
- *     <li>{@link org.jboss.hal.op.search.MgtSearchAsyncItems} — queries the model graph REST API for matching resources,
+ *     <li>{@link ModelGraphSearchAsyncItems} — queries the model graph REST API for matching resources,
  *         attributes, operations, and capabilities.</li>
  * </ul>
  *
  * <p>The search data flow uses the {@link org.patternfly.async.AsyncItems} pattern for direct integration with the search
  * input's built-in menu. Model graph availability is checked via
- * {@link org.jboss.hal.core.mgt.ModelGraphConnection#available()}.
+ * {@link org.jboss.hal.mgt.ModelGraphConnection#available()}.
  */
 package org.jboss.hal.op.search;

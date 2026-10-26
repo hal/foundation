@@ -31,7 +31,7 @@ import org.jboss.elemento.IsElement;
 import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
-import org.jboss.hal.core.mgt.CapabilityReference;
+import org.jboss.hal.mgt.CapabilityReference;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.resources.Identifiers;

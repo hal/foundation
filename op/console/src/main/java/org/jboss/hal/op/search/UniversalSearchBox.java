@@ -23,11 +23,11 @@ import org.jboss.elemento.By;
 import org.jboss.elemento.EventType;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.flow.FlowContext;
-import org.jboss.hal.core.mgt.ModelGraphConnection;
-import org.jboss.hal.core.mgt.ModelGraphSearch;
-import org.jboss.hal.core.mgt.ResourceRef;
-import org.jboss.hal.core.mgt.SearchResult;
-import org.jboss.hal.core.mgt.SearchResultType;
+import org.jboss.hal.mgt.ModelGraphConnection;
+import org.jboss.hal.mgt.ModelGraphSearch;
+import org.jboss.hal.mgt.ResourceRef;
+import org.jboss.hal.mgt.SearchResult;
+import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.dmr.ResourceAddress;
 import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.meta.AddressTemplate;
@@ -57,7 +57,7 @@ import static org.jboss.elemento.Key.Enter;
 import static org.jboss.elemento.Key.Escape;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PROFILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SUBSYSTEM;
-import static org.jboss.hal.op.search.MgtSearchAsyncItems.hasTypeFilter;
+import static org.jboss.hal.op.search.ModelGraphSearchAsyncItems.hasTypeFilter;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
@@ -99,7 +99,7 @@ import static org.patternfly.style.Classes.info;
  *
  * <h2>Data flow</h2>
  * <p>Search item fetching is handled by {@link UniversalSearchAsyncItems}, which routes to
- * {@link org.jboss.hal.ui.component.ResourceAddressAsyncItems} or {@link MgtSearchAsyncItems} based on the input.
+ * {@link org.jboss.hal.ui.component.ResourceAddressAsyncItems} or {@link ModelGraphSearchAsyncItems} based on the input.
  * This class handles everything after: event dispatch → use case selection → resolution pipeline → menu state → navigation.
  *
  * <h2>Menu state</h2>
@@ -336,7 +336,7 @@ public class UniversalSearchBox {
      */
     private void evaluateSearchResult(SearchResult searchResult) {
         List<AddressTemplate> templates = new ArrayList<>();
-        if (searchResult.type() == SearchResultType.CAPABILITY) {
+        if (searchResult.type() == ModelGraphType.CAPABILITY) {
             if (searchResult.providedBy != null) {
                 for (ResourceRef ref : searchResult.providedBy) {
                     if (ref.address != null) {

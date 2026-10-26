@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.core.mgt;
+package org.jboss.hal.mgt;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;

@@ -130,6 +130,11 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>hal-fnd-mgt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>hal-fnd-model</artifactId>
                 <version>${project.version}</version>
             </dependency>

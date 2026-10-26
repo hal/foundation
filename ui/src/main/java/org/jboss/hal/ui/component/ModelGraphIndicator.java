@@ -19,6 +19,7 @@ import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.By;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.mgt.ModelGraphAvailabilityEvent;
 import org.jboss.hal.resources.Urls;
 import org.patternfly.component.menu.MenuToggleType;
 import org.patternfly.component.menu.SingleSelect;
@@ -55,7 +56,7 @@ import static org.patternfly.token.Token.globalIconColorDisabled;
 
 /**
  * Masthead indicator that shows whether a matching model graph tools (MGT) sidecar container is running. Calls
- * {@link org.jboss.hal.core.mgt.ModelGraphConnection#ping()} directly to check availability.
+ * {@link org.jboss.hal.mgt.ModelGraphConnection#ping()} directly to check availability.
  */
 public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelGraphIndicator> {
 
@@ -121,6 +122,7 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
                                                         .addItem(flexItem()
                                                                 .add(button("More info", Urls.MODEL_GRAPH_PAGE,
                                                                         "_blank").link().inline())))))));
+        ModelGraphAvailabilityEvent.listen(details -> active(details.available));
         active(false);
         refresh();
     }

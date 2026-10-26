@@ -13,26 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.core.mgt;
+package org.jboss.hal.mgt;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * JsInterop type for a capability reference in an MGT capability-references response. Mirrors
- * {@code org.wildfly.modelgraph.api.CapabilityReference}.
+ * JsInterop type for the MGT search API response. Mirrors {@code org.wildfly.modelgraph.api.SearchResponse}.
  *
  * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class CapabilityReference {
+class SearchResponse {
 
-    /** The name of the attribute that references the capability. */
-    public String attributeName;
-
-    /** The name of the resource that references the capability. */
-    public String resourceName;
-
-    /** The management model address of the resource that references the capability. */
-    public String resourceAddress;
+    /** The search results returned by the MGT search API. */
+    public SearchResult[] results;
 }

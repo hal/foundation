@@ -13,19 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.core.mgt;
-
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 
 /**
- * JsInterop type for the MGT search API response. Mirrors {@code org.wildfly.modelgraph.api.SearchResponse}.
- *
- * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
+ * Model Graph Tools (MGT) integration. Contains DTOs, REST clients, and events for interacting with the MGT Neo4j-backed
+ * service that indexes the WildFly management model.
  */
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-class SearchResponse {
-
-    /** The search results returned by the MGT search API. */
-    public SearchResult[] results;
-}
+package org.jboss.hal.mgt;

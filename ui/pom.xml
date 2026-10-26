@@ -56,6 +56,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>hal-fnd-mgt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>hal-fnd-model</artifactId>
         </dependency>
         <dependency>
