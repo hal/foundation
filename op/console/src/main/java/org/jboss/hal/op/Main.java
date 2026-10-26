@@ -21,6 +21,8 @@ import jakarta.inject.Inject;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.PlaceManager;
 import org.jboss.hal.core.ActivityTracker;
+import org.jboss.hal.mgt.ModelGraphAvailabilityEvent;
+import org.jboss.hal.mgt.ModelGraphConnection;
 import org.jboss.hal.op.bootstrap.Bootstrap;
 import org.jboss.hal.op.bootstrap.BootstrapError;
 import org.jboss.hal.op.endpoint.EndpointStorage;
@@ -35,7 +37,6 @@ import static org.jboss.elemento.Elements.insertFirst;
 import static org.jboss.hal.op.bootstrap.BootstrapErrorElement.bootstrapError;
 import static org.jboss.hal.op.skeleton.ErrorSkeleton.errorSkeleton;
 import static org.jboss.hal.op.skeleton.Skeleton.skeleton;
-import static org.jboss.hal.ui.component.ModelGraphIndicator.modelGraphIndicator;
 
 /**
  * Entry point of the halOP console application. Initializes CDI, runs the bootstrap sequence, and either sets up the main
@@ -50,6 +51,7 @@ public class Main {
     @Inject EndpointStorage endpointStorage;
     @Inject Navigation navigation;
     @Inject PlaceManager placeManager;
+    @Inject ModelGraphConnection modelGraphConnection;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -74,8 +76,16 @@ public class Main {
         insertFirst(document.body, skeleton(navigation, endpointStorage));
         placeManager.start();
         UniversalSearch.registerShortcut();
+        modelGraphConnection.ping().then(available -> {
+            ModelGraphAvailabilityEvent.dispatch(available);
+            return null;
+        });
+
         new ActivityTracker(
-                () -> modelGraphIndicator().refresh(),
+                () -> modelGraphConnection.ping().then(available -> {
+                    ModelGraphAvailabilityEvent.dispatch(available);
+                    return null;
+                }),
                 () -> {
                     // pause any polling intervals
                 }).start();

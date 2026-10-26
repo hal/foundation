@@ -102,13 +102,13 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
     private final Table table;
     private final Set<String> expandedCapabilities;
 
-    public CapabilitiesTable(Metadata metadata, boolean mgtAvailable) {
+    public CapabilitiesTable(Metadata metadata, boolean modelGraphTools) {
         this.expandedCapabilities = new HashSet<>();
-        this.table = table(mgtAvailable ? TableType.expandable : TableType.table)
+        this.table = table(modelGraphTools ? TableType.expandable : TableType.table)
                 .addHead(thead().css(util("mt-sm"))
                         .addRow(tr(Identifiers.CAPABILITIES_HEAD)
                                 .run(tr -> {
-                                    if (mgtAvailable) {
+                                    if (modelGraphTools) {
                                         tr.addItem(th().screenReader("Row expansion"));
                                     }
                                 })
@@ -116,7 +116,7 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                                 .addItem(th("dynamic").width(width10).text("Dynamic"))
                                 .addItem(th("dynamic-elements").width(width30).text("Dynamic elements"))))
                 .run(table -> {
-                    int colspan = mgtAvailable ? 4 : 3;
+                    int colspan = modelGraphTools ? 4 : 3;
                     if (metadata.resourceDescription().capabilities().isEmpty()) {
                         table.addBody(tbody().addRow(tr(Id.unique("empty"))
                                 .addItem(td().colSpan(colspan)
@@ -124,7 +124,7 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                                                 .add(noItems("No capabilities",
                                                         "This resource provides no capabilities.").size((xs)))))));
                     } else {
-                        if (mgtAvailable) {
+                        if (modelGraphTools) {
                             addBodies(metadata.resourceDescription(), metadata.resourceDescription().capabilities(), table);
                         } else {
                             addRows(metadata.resourceDescription(), metadata.resourceDescription().capabilities(), table);
