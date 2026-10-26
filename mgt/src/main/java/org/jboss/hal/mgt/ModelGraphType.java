@@ -15,7 +15,7 @@ public enum ModelGraphType {
 
     public static ModelGraphType of(String type) {
         for (ModelGraphType resultType : values()) {
-            if (resultType.type.equals(type)) {
+            if (resultType.type.equalsIgnoreCase(type)) {
                 return resultType;
             }
         }

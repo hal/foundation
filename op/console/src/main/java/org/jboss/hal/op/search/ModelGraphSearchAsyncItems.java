@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.elemento.Id;
+import org.jboss.hal.core.Humanize;
 import org.jboss.hal.mgt.ModelGraphSearch;
 import org.jboss.hal.mgt.ResourceRef;
 import org.jboss.hal.mgt.SearchResult;
@@ -90,7 +91,7 @@ class ModelGraphSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
                 .then(results -> {
                     List<SearchResult> filtered = new ArrayList<>();
                     for (SearchResult result : results) {
-                        if (typeFilter == null || typeFilter.equals(result.type)) {
+                        if (typeFilter == null || typeFilter.equalsIgnoreCase(result.type)) {
                             filtered.add(result);
                         }
                     }
@@ -156,7 +157,7 @@ class ModelGraphSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         if (type == null) {
             return 99;
         }
-        return switch (type) {
+        return switch (type.toLowerCase()) {
             case "resource" -> 0;
             case "attribute" -> 1;
             case "operation" -> 2;
@@ -194,7 +195,7 @@ class ModelGraphSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         MenuItem item = menuItem(identifier)
                 .text(nameElement)
                 .css(halComponent(universalSearch, mgt, HalClasses.result))
-                .icon(label(result.type, typeColor(result.type)).compact().element())
+                .icon(label(Humanize.capitalCase(result.type), typeColor(result.type)).compact().element())
                 .store(Keys.SEARCH_RESULT, result);
         HTMLElement descriptionElement = descriptionElement(result, searchTerm);
         if (descriptionElement != null) {
@@ -262,7 +263,7 @@ class ModelGraphSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         if (type == null) {
             return Color.grey;
         }
-        return switch (type) {
+        return switch (type.toLowerCase()) {
             case "attribute" -> Color.blue;
             case "resource" -> Color.green;
             case "operation" -> Color.purple;

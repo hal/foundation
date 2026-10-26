@@ -431,10 +431,10 @@ public class UniversalSearchBox {
         if (searchResult == null || searchResult.type == null || searchResult.name == null) {
             return null;
         }
-        String prefix = switch (searchResult.type) {
-            case "Attribute" -> "a:";
-            case "Operation" -> "o:";
-            case "Capability" -> "c:";
+        String prefix = switch (searchResult.type.toLowerCase()) {
+            case "attribute" -> "a:";
+            case "operation" -> "o:";
+            case "capability" -> "c:";
             default -> null;
         };
         return prefix != null ? prefix + searchResult.name : null;
