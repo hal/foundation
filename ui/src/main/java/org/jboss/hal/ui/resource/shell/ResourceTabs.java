@@ -28,6 +28,7 @@ import org.jboss.hal.ui.resource.table.AttributesTable;
 import org.jboss.hal.ui.resource.table.CapabilitiesTable;
 import org.jboss.hal.ui.resource.table.OperationsTable;
 import org.patternfly.component.tabs.Tabs;
+import org.patternfly.core.Ouia;
 import org.patternfly.core.OuiaSupport;
 
 import elemental2.dom.HTMLElement;
@@ -105,7 +106,9 @@ public class ResourceTabs implements IsElement<HTMLElement>, OuiaSupport<HTMLEle
     public HTMLElement element() {
         if (root == null) {
             root = build();
-            initOuia(OuiaIds.RESOURCE_TABS);
+            // We're inside element(), so use Ouia instead of OuiaSupport methods
+            Ouia.ouiaType(root, ouiaComponentType());
+            Ouia.ouiaId(root, OuiaIds.RESOURCE_TABS);
         }
         return root;
     }

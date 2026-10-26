@@ -29,7 +29,7 @@ public interface KnownRoutes {
 
     // ------------------------------------------------------ fallback route
 
-    String DEFAULT_ROUTE = "/management-model/:selection?";
+    String DEFAULT_ROUTE = "/model-browser/:selection?";
 
     // ------------------------------------------------------ all known routes (a-z)
 

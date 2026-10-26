@@ -20,7 +20,7 @@ package org.jboss.hal.env;
  */
 public enum Stability {
 
-    /** Features that are part of the standard, supported API. */
+    /** Features that are part of the standard supported API. */
     DEFAULT(0, "default"),
 
     /** Community-contributed features that are not yet part of the supported API. */
@@ -33,8 +33,7 @@ public enum Stability {
     EXPERIMENTAL(300, "experimental");
 
     /**
-     * Parses a stability level from its string name, returning the given default if the value is {@code null} or
-     * unrecognized.
+     * Parses a stability level from its string name, returning the given default if the value is {@code null} or unrecognized.
      */
     public static Stability parse(String value, Stability defaultValue) {
         Stability stability = defaultValue;
@@ -46,13 +45,6 @@ public enum Stability {
             }
         }
         return stability;
-    }
-
-    /**
-     * Returns a random stability level (used for testing).
-     */
-    public static Stability random() {
-        return Stability.values()[(int) (Math.random() * Stability.values().length)];
     }
 
     /** Numeric ordering value; higher values indicate less stability. */

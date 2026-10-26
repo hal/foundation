@@ -238,11 +238,11 @@ public class Environment {
     }
 
     /**
-     * Determines if the given stability level is greater than or equal tothe stability level of the server. If one or more
+     * Determines if the given stability level is greater than or equal to the stability level of the server. If one or more
      * dependent stability levels are given, then this method returns true only if the dependent stability is greater than all
      * previous levels.
      * <p>
-     * Use this method to check resources, attributes, operations and operation parameters, e.g.:
+     * Use this method to check resources, attributes, operations, and operation parameters, e.g.:
      * <ul>
      *     <li><code>highlightStability(resourceStability)</code></li>
      *     <li><code>highlightStability(resourceStability, attributeStability)</code></li>

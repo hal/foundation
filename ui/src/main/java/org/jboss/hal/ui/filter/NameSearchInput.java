@@ -23,6 +23,7 @@ import org.patternfly.filter.Filter;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.hal.resources.OuiaIds.SEARCH_FILTER;
 import static org.patternfly.component.textinputgroup.SearchInputGroup.searchInputGroup;
 import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
 
@@ -50,7 +51,10 @@ public class NameSearchInput<T> implements IsElement<HTMLElement> {
     private final SearchInputGroup searchInput;
 
     NameSearchInput(Filter<T> filter, String placeholder) {
-        searchInput = searchInputGroup(Id.unique()).placeholder(placeholder).icon(magnifyingGlass())
+        searchInput = searchInputGroup(Id.unique())
+                .ouiaId(SEARCH_FILTER)
+                .icon(magnifyingGlass())
+                .placeholder(placeholder)
                 .onKeyup((event, textInputGroup, value) -> filter.set(NameAttribute.NAME, value))
                 .onClear((event, textInputGroup) -> filter.reset(NameAttribute.NAME));
         searchInput.input().apply(input -> input.autocomplete = "off");

@@ -24,6 +24,7 @@ import org.jboss.elemento.IsElement;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
 import org.jboss.hal.meta.Segment;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.breadcrumb.BreadcrumbItem;
 import org.patternfly.component.icon.Icon;
@@ -84,14 +85,14 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement>, OuiaSupport<H
 
         org.patternfly.component.breadcrumb.Breadcrumb bc = breadcrumb();
         if (template.isEmpty()) {
-            bc.addItem(breadcrumbItem("root", "/")
+            bc.addItem(breadcrumbItem(Identifiers.BREADCRUMB_ROOT, "/")
                     .onClick((event, item) -> {
                         event.preventDefault();
                         event.stopPropagation();
                         fireSegmentClick(event, item, AddressTemplate.root(), -1);
                     }));
         } else {
-            bc.addItem(breadcrumbItem("root", "/")
+            bc.addItem(breadcrumbItem(Identifiers.BREADCRUMB_ROOT, "/")
                     .onClick((event, item) -> {
                         event.preventDefault();
                         event.stopPropagation();
@@ -121,7 +122,8 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement>, OuiaSupport<H
             }
         }
         this.root = bc.element();
-        initOuia(OuiaIds.RESOURCE_BREADCRUMB);
+        initOuia();
+        ouiaId(OuiaIds.RESOURCE_BREADCRUMB);
     }
 
     @Override

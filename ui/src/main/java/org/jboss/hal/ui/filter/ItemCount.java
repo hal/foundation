@@ -16,11 +16,14 @@
 package org.jboss.hal.ui.filter;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.core.ObservableValue;
+import org.patternfly.core.Ouia;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.span;
+import static org.patternfly.core.Ouia.ouiaId;
 import static org.patternfly.token.Token.globalFontSizeSm;
 import static org.patternfly.token.Token.globalTextColorSubtle;
 
@@ -60,6 +63,7 @@ public class ItemCount implements IsElement<HTMLElement> {
                 .style("color", globalTextColorSubtle.var)
                 .style("font-size", globalFontSizeSm.var)
                 .element();
+        ouiaId(root, OuiaIds.ITEM_COUNT);
         visible.subscribe((v, __) -> root.textContent = text(v, total.get()));
         total.subscribe((t, __) -> root.textContent = text(visible.get(), t));
         visible.publish();

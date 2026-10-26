@@ -27,6 +27,7 @@ import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.task.Task;
 import org.patternfly.layout.gallery.GalleryItem;
@@ -129,7 +130,7 @@ public class TasksPage implements Page {
                 page().main()
                         .add(pageBreadcrumb()
                                 .add(breadcrumb()
-                                        .addItem(breadcrumbItem("all-tasks", "All tasks")
+                                        .addItem(breadcrumbItem(Identifiers.ALL_TASKS, "All tasks")
                                                 .onClick((e, c) -> {
                                                     e.preventDefault();
                                                     e.stopPropagation();

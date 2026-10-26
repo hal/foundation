@@ -39,7 +39,7 @@ import static org.patternfly.component.page.PageSection.pageSection;
  * the root address.
  */
 @Dependent
-@Route("/management-model/:selection?")
+@Route("/model-browser/:selection?")
 public class ModelBrowserPage implements Page {
 
     @Override

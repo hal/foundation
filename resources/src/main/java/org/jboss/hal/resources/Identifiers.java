@@ -37,10 +37,6 @@ import org.jboss.elemento.Id;
  * Components whose identity depends on runtime data use these patterns:
  *
  * <ul>
- * <li><strong>BreadcrumbItem / TreeViewItem</strong>: {@code AddressTemplate.identifier()} via
- * {@link #fromTemplate(String)}</li>
- * <li><strong>FinderItem</strong> (resources): {@code Id.build(node.asString())} — the resource name</li>
- * <li><strong>DataListItem</strong>: derived from child resource name</li>
  * <li><strong>Tr</strong> (data rows): {@code attribute.name()}, {@code operation.name()}, or
  * {@code capability.name()}</li>
  * <li><strong>MenuItem</strong> (filters): {@code FilterAttribute.NAME + "-true"/"-false"} pattern</li>
@@ -54,7 +50,7 @@ import org.jboss.elemento.Id;
  */
 public interface Identifiers {
 
-    String ADD_RESOURCE_STEP = "add-resource";
+    String ADD_RESOURCE_STEP = "add-resource-step";
     String ALL_TASKS = "all-tasks";
     String ATTRIBUTES_HEAD = "attributes-head";
     String ATTRIBUTES_TAB = "resource-tabs-attributes";
@@ -68,7 +64,7 @@ public interface Identifiers {
     String CREDENTIAL_STORE_ALIASES_TAB = "credential-store-aliases";
     String DATA_TAB = "resource-tabs-data";
     String ENDPOINT_EMPTY = "endpoint-empty";
-    String ENDPOINT_HEAD = "endpoint-head";
+    String ENDPOINT_THEAD = "endpoint-head";
     String ENDPOINT_HOST = "mi-host";
     String ENDPOINT_NAME = "mi-name";
     String ENDPOINT_PORT = "mi-port";

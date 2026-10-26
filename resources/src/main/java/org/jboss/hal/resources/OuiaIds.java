@@ -60,6 +60,7 @@ public interface OuiaIds {
     String ENDPOINT_MODAL = "hal-op-endpoint-modal";
     String ENDPOINT_PING_BTN = "hal-op-endpoint-ping-btn";
     String ENDPOINT_SELECT_BTN = "hal-op-endpoint-select-btn";
+    String ENDPOINT_TABLE = "hal-op-endpoint-table";
     String ENDPOINT_TABLE_ADD_BTN = "hal-op-endpoint-table-add-btn";
     String EXECUTE_BTN = "hal-op-execute-btn";
     String EXECUTE_MODAL = "hal-op-execute-modal";
@@ -69,6 +70,7 @@ public interface OuiaIds {
     String FIND_RESOURCE_CANCEL_BTN = "hal-op-find-resource-cancel-btn";
     String FIND_RESOURCE_MODAL = "hal-op-find-resource-modal";
     String FIND_RESOURCE_SEARCH_BTN = "hal-op-find-resource-search-btn";
+    String ITEM_COUNT = "hal-op-item-count";
     String LOG_CHOOSE_BTN = "hal-op-log-choose-btn";
     String LOG_SHOW_BTN = "hal-op-log-show-btn";
     String MAIN = "hal-op-main";
@@ -115,6 +117,7 @@ public interface OuiaIds {
     String RESOURCE_TABS = "hal-op-resource-tabs";
     String SAVE_BTN = "hal-op-save-btn";
     String SEARCH_BTN = "hal-op-search-btn";
+    String SEARCH_FILTER = "hal-op-search-filter";
     String STABILITY_DISMISS_BTN = "hal-op-stability-dismiss-btn";
     String THEME_SELECTOR = "hal-op-theme-selector";
 

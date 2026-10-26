@@ -72,9 +72,10 @@ class EndpointTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, 
         this.update = update;
         this.delete = delete;
         table = table()
+                .ouiaId(OuiaIds.ENDPOINT_TABLE)
                 .selectionMode(single)
                 .addHead(thead()
-                        .addRow(tr(Identifiers.ENDPOINT_HEAD)
+                        .addRow(tr(Identifiers.ENDPOINT_THEAD)
                                 .addItem(th().text("Name"))
                                 .addItem(th().text("URL"))
                                 .addItem(th().screenReader("Edit"))

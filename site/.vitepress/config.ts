@@ -44,6 +44,10 @@ export default withMermaid(defineConfig({
         items: [
           { text: "Overview", link: "/features/overview" },
           { text: "Universal Search", link: "/features/universal-search" },
+          {
+            text: "Stability Level Highlighting",
+            link: "/features/stability",
+          },
           { text: "Dashboard", link: "/features/dashboard" },
           { text: "Model Browser", link: "/features/model-browser" },
           {
@@ -94,7 +98,7 @@ export default withMermaid(defineConfig({
     ],
 
     editLink: {
-      pattern: "https://github.com/hal/foundation/edit/main/docs/:path",
+      pattern: "https://github.com/hal/foundation/edit/main/site/:path",
     },
 
     search: {

@@ -12,7 +12,7 @@ The console header provides quick access to essential controls. The **notificati
 
 ## Stability Level Awareness
 
-WildFly's management model includes stability levels (experimental, preview, community, default) to indicate the maturity of features. The console highlights these stability levels across resources, attributes, operations, and parameters, making it clear when you're working with experimental features that may change in future releases.
+WildFly's management model includes stability levels (experimental, preview, community, default) to indicate the maturity of features. The console [highlights these stability levels](./stability.md) across resources, attributes, operations, operation parameters, and capabilities, making it clear when you're working with experimental or preview features that may change in future releases.
 
 ## Navigation Improvements
 

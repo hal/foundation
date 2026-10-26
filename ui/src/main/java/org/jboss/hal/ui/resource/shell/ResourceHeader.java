@@ -66,7 +66,8 @@ public class ResourceHeader implements
         if (uic().environment().highlightStability(stability)) {
             pageHeader.addLabel(stabilityLabel(stability).element());
         }
-        initOuia(OuiaIds.RESOURCE_HEADER);
+        initOuia();
+        ouiaId(OuiaIds.RESOURCE_HEADER);
     }
 
     @Override
