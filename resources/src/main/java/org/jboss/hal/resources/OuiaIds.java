@@ -94,6 +94,7 @@ public interface OuiaIds {
     String NAV_DASHBOARD = "hal-op-nav-dashboard";
     String NAV_DEPLOYMENTS = "hal-op-nav-deployments";
     String NAV_MODEL_BROWSER = "hal-op-nav-model-browser";
+    String NAV_MODEL_CATALOG = "hal-op-nav-model-catalog";
     String NAV_RUNTIME = "hal-op-nav-runtime";
     String NAV_TASKS = "hal-op-nav-tasks";
     String NOTIFICATION_CLEAR_ALL = "hal-op-notification-clear-all";

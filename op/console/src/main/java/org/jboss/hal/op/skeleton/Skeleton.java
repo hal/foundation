@@ -17,11 +17,15 @@ package org.jboss.hal.op.skeleton;
 
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
+import org.jboss.elemento.router.PlaceManager;
+import org.jboss.hal.mgt.ModelGraphAvailabilityEvent;
 import org.jboss.hal.op.endpoint.EndpointStorage;
 import org.jboss.hal.op.notification.NotificationElements;
 import org.jboss.hal.op.resources.Resources;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.Ids;
 import org.jboss.hal.resources.OuiaIds;
+import org.jboss.hal.ui.component.ModelGraphIndicator;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.navigation.Navigation;
 import org.patternfly.component.page.MastheadLogo;
@@ -40,6 +44,7 @@ import static org.jboss.hal.op.search.UniversalSearchBox.universalSearchBox;
 import static org.jboss.hal.op.skeleton.StabilityBanner.stabilityBanner;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.jboss.hal.ui.component.ModelGraphIndicator.modelGraphIndicator;
+import static org.patternfly.component.navigation.NavigationItem.navigationItem;
 import static org.patternfly.component.page.Masthead.masthead;
 import static org.patternfly.component.page.MastheadBrand.mastheadBrand;
 import static org.patternfly.component.page.MastheadContent.mastheadContent;
@@ -77,18 +82,23 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
 
     // ------------------------------------------------------ factory
 
-    /** Creates a new skeleton with the given endpoint storage and navigation component. */
-    public static Skeleton skeleton(Navigation navigation, EndpointStorage endpointStorage) {
-        return new Skeleton(navigation, endpointStorage);
+    /** Creates a new skeleton with the given navigation, endpoint storage, and place manager. */
+    public static Skeleton skeleton(EndpointStorage endpointStorage, PlaceManager placeManager, Navigation navigation) {
+        return new Skeleton(endpointStorage, placeManager, navigation);
     }
 
     // ------------------------------------------------------ instance
 
     private static final String STABILITY_MARKER = "hal-stability-marker";
+    private final PlaceManager placeManager;
+    private final Navigation navigation;
+    private final ModelGraphIndicator modelGraphIndicator;
     private final HTMLElement root;
     private StabilityBanner stabilityBanner;
 
-    Skeleton(Navigation navigation, EndpointStorage endpointStorage) {
+    Skeleton(EndpointStorage endpointStorage, PlaceManager placeManager, Navigation navigation) {
+        this.placeManager = placeManager;
+        this.navigation = navigation;
         MastheadLogo logo = mastheadLogo("/")
                 .ouiaId(OuiaIds.MASTHEAD_LOGO)
                 .style(componentVar(component(Classes.brand), Height).name, "36px")
@@ -110,7 +120,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
                                         .ouiaId(OuiaIds.NOTIFICATION_BADGE)))
                                 .addItem(toolbarItem().add(themeSelector("hal").placement(bottomEnd)
                                         .ouiaId(OuiaIds.THEME_SELECTOR)))
-                                .addItem(toolbarItem().add(modelGraphIndicator()
+                                .addItem(toolbarItem().add((modelGraphIndicator = modelGraphIndicator())
                                         .ouiaId(OuiaIds.MODEL_GRAPH_INDICATOR)))
                                 .run(group -> {
                                     if (!uic().endpoints().sameOrigin()) {
@@ -145,6 +155,7 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
         } else {
             root = page.element();
         }
+        ModelGraphAvailabilityEvent.listen(details -> onModelGraphAvailability(details.available));
         initOuia();
     }
 
@@ -164,6 +175,20 @@ public class Skeleton implements IsElement<HTMLElement>, OuiaSupport<HTMLElement
     }
 
     // ------------------------------------------------------ internal
+
+    private void onModelGraphAvailability(boolean available) {
+        modelGraphIndicator.active(available);
+        if (available) {
+            if (!navigation.contains(Identifiers.NAV_MODEL_CATALOG)) {
+                navigation.addItem(
+                        navigationItem(Identifiers.NAV_MODEL_CATALOG, "Model catalog",
+                                placeManager.href(Identifiers.NAV_MODEL_CATALOG))
+                                .ouiaId(OuiaIds.NAV_MODEL_CATALOG));
+            }
+        } else {
+            navigation.removeItem(Identifiers.NAV_MODEL_CATALOG);
+        }
+    }
 
     private void dismiss() {
         failSafeRemoveFromParent(stabilityBanner);

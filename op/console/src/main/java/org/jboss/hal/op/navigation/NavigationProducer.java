@@ -37,7 +37,7 @@ public class NavigationProducer {
     @ApplicationScoped
     public Navigation navigation() {
         return Navigation.navigation(Horizontal.primary).ouiaId(OuiaIds.NAV)
-                // IDs must match the routes!
+                // IDs must be route paths — PlaceManagerProducer.afterPlace() matches them against place.path()
                 .addItem(navigationItem(Identifiers.NAV_DASHBOARD, "Dashboard", placeManager.href(Identifiers.NAV_DASHBOARD))
                         .ouiaId(OuiaIds.NAV_DASHBOARD))
                 .addItem(navigationItem(Identifiers.NAV_DEPLOYMENTS, "Deployments", placeManager.href(Identifiers.NAV_DEPLOYMENTS))

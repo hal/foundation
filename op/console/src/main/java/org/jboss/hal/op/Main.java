@@ -73,7 +73,7 @@ public class Main {
 
     private void afterBootstrap() {
         logger.debug("Bootstrap completed");
-        insertFirst(document.body, skeleton(navigation, endpointStorage));
+        insertFirst(document.body, skeleton(endpointStorage, placeManager, navigation));
         placeManager.start();
         UniversalSearch.registerShortcut();
         modelGraphConnection.ping().then(available -> {
