@@ -33,8 +33,8 @@ public class CatalogResponse {
     /** The catalog results for the current page. */
     public CatalogResult[] results;
 
-    /** Facet counts as a dynamic object. Keys are facet names, values are objects mapping facet values to counts. */
-    public Object facets;
+    /** Facet counts. Fields are {@code null} when the API contextually omits them based on the active type filter. */
+    public CatalogFacets facets;
 
     /** Total number of results matching the current filters. */
     public int total;
