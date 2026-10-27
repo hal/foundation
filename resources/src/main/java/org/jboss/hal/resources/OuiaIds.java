@@ -101,6 +101,10 @@ public interface OuiaIds {
     String NOTIFICATION_MARK_ALL_READ = "hal-op-notification-mark-all-read";
     String NOTIFICATION_UNCLEAR_LAST = "hal-op-notification-unclear-last";
     String PAGE_CONFIGURATION = "hal-op-page-configuration";
+    String PAGE_CATALOG = "hal-op-page-catalog";
+    String PAGE_CATALOG_SIDEBAR = "hal-op-page-catalog-sidebar";
+    String PAGE_CATALOG_TABLE = "hal-op-page-catalog-table";
+    String PAGE_CATALOG_TOOLBAR = "hal-op-page-catalog-toolbar";
     String PAGE_DASHBOARD = "hal-op-page-dashboard";
     String PAGE_DASHBOARD_HEADER = "hal-op-page-dashboard-header";
     String PAGE_DEPLOYMENTS = "hal-op-page-deployments";

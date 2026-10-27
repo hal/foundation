@@ -54,6 +54,7 @@ public interface Identifiers {
     String ALL_TASKS = "all-tasks";
     String ATTRIBUTES_HEAD = "attributes-head";
     String ATTRIBUTES_TAB = "resource-tabs-attributes";
+    String CATALOG_THEAD = "catalog-head";
     String BREADCRUMB_ROOT = "root";
     String CAPABILITIES_HEAD = "capabilities-head";
     String CAPABILITIES_TAB = "resource-tabs-capabilities";
