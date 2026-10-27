@@ -55,9 +55,8 @@ import static org.patternfly.style.Status.success;
 import static org.patternfly.token.Token.globalIconColorDisabled;
 
 /**
- * Masthead indicator that shows whether a matching model graph tools (MGT) sidecar container is running. Calls
- * {@link org.jboss.hal.mgt.ModelGraphConnection#ping()} and dispatches a {@link ModelGraphAvailabilityEvent} with the result.
- * Also listens for {@link ModelGraphAvailabilityEvent}s to update its visual state.
+ * Masthead indicator that shows whether a matching model graph tools (MGT) sidecar container is running. Visual state is
+ * controlled externally via {@link #active(boolean)}.
  */
 public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, ModelGraphIndicator> {
 
@@ -118,9 +117,7 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
                                                         .addItem(flexItem()
                                                                 .add(button("More info", Urls.MODEL_GRAPH_PAGE,
                                                                         "_blank").link().inline())))))));
-        ModelGraphAvailabilityEvent.listen(details -> active(details.available));
         active(false);
-        refresh();
     }
 
     @Override
@@ -140,17 +137,7 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
 
     // ------------------------------------------------------ api
 
-    public void refresh() {
-        uic().modelGraphConnection().ping()
-                .then(available -> {
-                    ModelGraphAvailabilityEvent.dispatch(available);
-                    return null;
-                });
-    }
-
-    // ------------------------------------------------------ internal
-
-    private void active(boolean available) {
+    public void active(boolean available) {
         removeChildrenFrom(statusIconContainer);
         removeChildrenFrom(statusTextContainer);
         if (available) {
@@ -162,5 +149,13 @@ public class ModelGraphIndicator implements IsElement<HTMLElement>, OuiaSupport<
             statusIconContainer.add(icon(ban()).status(danger));
             statusTextContainer.add(span().text("Model graph tools are not available."));
         }
+    }
+
+    public void refresh() {
+        uic().modelGraphConnection().ping()
+                .then(available -> {
+                    ModelGraphAvailabilityEvent.dispatch(available);
+                    return null;
+                });
     }
 }
