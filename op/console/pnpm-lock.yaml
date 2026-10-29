@@ -162,18 +162,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-catalogs:
-  pfj:
-    '@patternfly-java/charts':
-      specifier: ^0.14.0
-      version: 0.14.0
-    '@patternfly-java/core':
-      specifier: ^0.14.0
-      version: 0.14.0
-    '@patternfly-java/finder':
-      specifier: ^0.14.0
-      version: 0.14.0
-
 overrides:
   body-parser@>=2.0.0 <2.4.0: '>=2.4.0'
 
@@ -182,14 +170,14 @@ importers:
   .:
     dependencies:
       '@patternfly-java/charts':
-        specifier: catalog:pfj
-        version: 0.14.0
+        specifier: 0.14.1
+        version: 0.14.1
       '@patternfly-java/core':
-        specifier: catalog:pfj
-        version: 0.14.0(@patternfly/patternfly@6.7.0)
+        specifier: 0.14.1
+        version: 0.14.1(@patternfly/patternfly@6.7.0)
       '@patternfly-java/finder':
-        specifier: catalog:pfj
-        version: 0.14.0(@patternfly/patternfly@6.7.0)
+        specifier: 0.14.1
+        version: 0.14.1(@patternfly/patternfly@6.7.0)
       '@patternfly/patternfly':
         specifier: ^6.7.0
         version: 6.7.0
@@ -593,16 +581,16 @@ packages:
   '@oxc-project/types@0.155.0':
     resolution: {integrity: sha512-SeE8JPwW1xs1tHeNycjUtUBdhorRa8o4jlvjwk49R7/Z291i+4DQa7JJIgOm/TaYQZx+QrPQbVJ/9c8dMIZN8Q==}
 
-  '@patternfly-java/charts@0.14.0':
-    resolution: {integrity: sha512-J6IpBlX5MnCgkb9YrELo8IKPZeoA+nQz+IDm+cpdiinxf/JLGx3B6NPXxDckFoskZJBmtIrYkDVfSckHoxm9yg==}
+  '@patternfly-java/charts@0.14.1':
+    resolution: {integrity: sha512-VsS6207vqLqgEYblyKrD7oMVS/Q5yCnBW0bLX+Z8RIinBe3hmH3mXRXxbHBU4+pj9DgRLvzEzGEkmEIrwcVuug==}
 
-  '@patternfly-java/core@0.14.0':
-    resolution: {integrity: sha512-eUPy/QpOZ9jMvtTNTtCkUCeJ3XQkLe99A0fGnBmcmHZl4F5PJxQPbnRJBhyC5yF99bSoewOwZJpkPlEVMqcZHA==}
+  '@patternfly-java/core@0.14.1':
+    resolution: {integrity: sha512-n1oNTfXSXxa6mfrCstX0QI1v9oveWn0c+sE7gUmI1kX57XJdUI9URsZdEncyNnU/yD9sviynKnsbqyZznPac6w==}
     peerDependencies:
       '@patternfly/patternfly': ^6.6.1
 
-  '@patternfly-java/finder@0.14.0':
-    resolution: {integrity: sha512-S4lyPsJoSELCV0TCvCRF8HklHQTCuSf8yYTR+T0aeH5MJHr7VxU3z6A1twCafwLGwMMwffMxo5ILvlwPVHqlQA==}
+  '@patternfly-java/finder@0.14.1':
+    resolution: {integrity: sha512-TCiLw4T0URbWfS/bxCekY36uJU1L3EkfzLfYpnBh3BQb999uH33jg1ek/3T0zJhBM8haDbqiFVR9W1X25r3qEA==}
     peerDependencies:
       '@patternfly/patternfly': ^6.6.1
 
@@ -2119,7 +2107,7 @@ snapshots:
 
   '@oxc-project/types@0.155.0': {}
 
-  '@patternfly-java/charts@0.14.0':
+  '@patternfly-java/charts@0.14.1':
     dependencies:
       '@patternfly/react-charts': 8.7.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(victory-area@37.3.6(react@19.3.1))(victory-axis@37.3.6(react@19.3.1))(victory-bar@37.3.6(react@19.3.1))(victory-box-plot@37.3.6(react@19.3.1))(victory-chart@37.3.6(react@19.3.1))(victory-core@37.3.6(react@19.3.1))(victory-create-container@37.3.6(react@19.3.1))(victory-cursor-container@37.3.6(react@19.3.1))(victory-group@37.3.6(react@19.3.1))(victory-legend@37.3.6(react@19.3.1))(victory-line@37.3.6(react@19.3.1))(victory-pie@37.3.6(react@19.3.1))(victory-scatter@37.3.6(react@19.3.1))(victory-stack@37.3.6(react@19.3.1))(victory-tooltip@37.3.6(react@19.3.1))(victory-voronoi-container@37.3.6(react@19.3.1))(victory-zoom-container@37.3.6(react@19.3.1))
       '@patternfly/react-styles': 6.7.0
@@ -2150,11 +2138,11 @@ snapshots:
     transitivePeerDependencies:
       - echarts
 
-  '@patternfly-java/core@0.14.0(@patternfly/patternfly@6.7.0)':
+  '@patternfly-java/core@0.14.1(@patternfly/patternfly@6.7.0)':
     dependencies:
       '@patternfly/patternfly': 6.7.0
 
-  '@patternfly-java/finder@0.14.0(@patternfly/patternfly@6.7.0)':
+  '@patternfly-java/finder@0.14.1(@patternfly/patternfly@6.7.0)':
     dependencies:
       '@patternfly/patternfly': 6.7.0
 
