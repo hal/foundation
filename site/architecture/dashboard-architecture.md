@@ -1,67 +1,68 @@
 # Dashboard Architecture
 
-## Purpose
+## What It Does
 
-The dashboard provides a brief summary of key WildFly information as the console's landing page. It uses a card-based layout where each card highlights a specific aspect of the running server. Some cards are universal, appearing in both standalone and domain mode, while others are specific to particular deployment modes or configurations.
+The dashboard is the console's landing page — a card-based layout that gives you a quick summary of key WildFly information at a glance. Each card highlights a specific aspect of the running server: memory usage, thread counts, deployments, and more. Some cards appear everywhere, while others show up only in domain mode or when specific capabilities are available.
 
-## Design
+## How It Works
 
 ### Card Architecture
 
-Each dashboard card is an independent component that:
+Each dashboard card is an independent component. It fetches its own data via DMR operations, renders as a PatternFly card, manages its own loading and error states, and emits CDI events to coordinate with others. This independence brings four benefits:
 
-- Fetches its data via DMR operations through the `Dispatcher` service
-- Renders as a PatternFly card with consistent styling and layout
-- Supports both light and dark themes automatically
-- Manages its own loading and error states
-- Emits CDI events to coordinate with other cards or the console
-
-The card-based architecture enables:
-
-- **Asynchronous loading** — each card loads independently without blocking others
-- **Fault isolation** — failures in one card do not prevent other cards from rendering
-- **Extensibility** — new cards can be added as CDI beans without modifying existing code
-- **Responsive layout** — cards wrap intelligently based on viewport size using PatternFly grid
+- **Asynchronous loading** — each card loads without blocking others
+- **Fault isolation** — a failure in one card doesn't prevent the rest from rendering
+- **Extensibility** — new cards are CDI beans, added without modifying existing code
+- **Responsive layout** — cards wrap based on viewport size using PatternFly grid
 
 ### Card Lifecycle
 
-```mermaid
-graph TD
-    I[Instantiation<br/><small>CDI injection</small>]
-    Init[Initialize<br/><small>subscribe to DMR ops</small>]
-    L[Load<br/><small>execute DMR, handle Promise</small>]
-    R[Render<br/><small>PatternFly card</small>]
-    U[Update<br/><small>DMR events / refresh</small>]
-    D[Dispose<br/><small>unsubscribe</small>]
+A card moves through a straightforward lifecycle: it's instantiated by CDI, initializes its subscriptions, loads data via DMR (returning a Promise), renders as a PatternFly card, and then updates whenever a refresh event arrives or the user triggers a reload.
 
-    I --> Init --> L --> R --> U --> D
-    U -->|"refresh"| L
+```
+Instantiation          CDI injection
+      │
+      ▼
+  Initialize           subscribe to DMR ops
+      │
+      ▼
+    Load               execute DMR, handle Promise
+      │
+      ▼
+   Render              PatternFly card
+      │
+      ▼
+   Update              DMR events / refresh
+      │  ▲
+      │  │ refresh
+      ▼  │
+   Dispose             unsubscribe
 ```
 
-## Planned Card Set
+## Card Set
 
-The dashboard supports a rich set of cards that adapt to the server's mode and capabilities.
+The dashboard supports a set of cards that adapt to the server's mode and capabilities.
 
 ### Universal Cards
 
-These cards appear in both standalone server and domain mode:
+These appear in both standalone and domain mode:
 
 - **General Information** — WildFly name, version, configuration URL, operation mode, stability level
 - **Deployments** — count of deployed applications and their statuses (deployed, disabled, failed)
-- **Log File** — recent summary of log file with count of warnings and errors
+- **Log File** — recent log summary with count of warnings and errors
 - **Host** — operating system name and version, number of processor cores
 - **JVM** — Java Virtual Machine name and version
-- **Runtime** — WildFly uptime, running mode, health status (green/yellow/red)
+- **Runtime** — WildFly uptime, running mode, health status
 - **Memory** — heap and non-heap memory usage with visual gauges
 - **Threads** — thread pool statistics (min, max, current count)
-- **Help** — quick links to official documentation, community chat, forums, and support resources
+- **Help** — quick links to documentation, community chat, forums, and support
 
 ### Domain-Specific Cards
 
 When connected to a domain controller, additional cards provide domain-wide visibility:
 
-- **Hosts** — count of managed hosts in the domain, with status summary
-- **Servers** — total server instances across all hosts, with status breakdown
+- **Hosts** — count of managed hosts with status summary
+- **Servers** — total server instances across all hosts with status breakdown
 - **Profiles** — count of available server profiles
 - **Server Groups** — count of server groups and their member assignments
 
@@ -82,7 +83,7 @@ public interface DashboardCard {
 }
 ```
 
-Cards are discovered automatically by Crysknife and loaded on the dashboard page in order specified by `order()`.
+Cards are discovered automatically by Crysknife and loaded on the dashboard page in the order specified by `order()`.
 
 ### Data Fetching
 
@@ -109,7 +110,7 @@ Cards emit CDI events (`@Inject Event<T>`) to notify the console of state change
 
 ### UI Rendering
 
-All cards render using PatternFly Java bindings via Elemento, producing consistent markup and styling. Cards use the `Card` component with optional `CardTitle`, `CardBody`, and `CardFooter` sections:
+All cards render using PatternFly Java bindings via Elemento, producing consistent markup and styling:
 
 ```java
 return card()
@@ -130,11 +131,11 @@ Cards handle errors gracefully by displaying a message within the card boundary:
 - Network failures show a "Failed to load" message with optional retry
 - Permission errors show a "Not authorized" message
 - Missing data shows an empty state with relevant context
-- No errors block other cards from rendering
+- No single card's error blocks the others from rendering
 
 ## Current State & Open Work
 
-The dashboard is implemented with the basic universal and domain-specific card set, with screenshots available in the [features section](../features/dashboard.md).
+The dashboard is implemented with the basic universal and domain-specific card set. Screenshots are available in the [features section](../features/dashboard.md).
 
 Open work is tracked in [#71](https://github.com/hal/foundation/issues/71):
 
@@ -143,5 +144,3 @@ Open work is tracked in [#71](https://github.com/hal/foundation/issues/71):
 - Card customization (pin/unpin, hide/show, reorder)
 - Real-time card refresh based on server events or user polling interval
 - Card drilldown (clicking a card navigates to detailed views)
-
-The card-based architecture provides a solid foundation for expanding dashboard capabilities and enables community contributions for new card types.

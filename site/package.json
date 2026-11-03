@@ -15,8 +15,6 @@
   "devDependencies": {
     "@playwright/test": "^1.64.1",
     "image-size": "^2.0.4",
-    "mermaid": "12.2.0",
-    "vitepress": "^1.6.4",
-    "vitepress-plugin-mermaid": "^2.0.17"
+    "vitepress": "^2.0.0-alpha.21"
   }
 }

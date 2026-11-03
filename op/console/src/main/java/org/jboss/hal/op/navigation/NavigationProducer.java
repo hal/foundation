@@ -48,7 +48,7 @@ public class NavigationProducer {
                         .ouiaId(OuiaIds.NAV_RUNTIME))
                 .addItem(navigationItem(Identifiers.NAV_TASKS, "Tasks", placeManager.href(Identifiers.NAV_TASKS))
                         .ouiaId(OuiaIds.NAV_TASKS))
-                .addItem(navigationItem(Identifiers.NAV_MODEL_BROWSER, "Management model", placeManager.href(Identifiers.NAV_MODEL_BROWSER))
+                .addItem(navigationItem(Identifiers.NAV_MODEL_BROWSER, "Model browser", placeManager.href(Identifiers.NAV_MODEL_BROWSER))
                         .ouiaId(OuiaIds.NAV_MODEL_BROWSER));
     }
 }

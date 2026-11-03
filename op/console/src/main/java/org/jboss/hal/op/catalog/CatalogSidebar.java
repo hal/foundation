@@ -33,7 +33,6 @@ import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.mgt.RestartCounts;
 import org.jboss.hal.mgt.StabilityCounts;
 import org.jboss.hal.mgt.StorageCounts;
-import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.form.Checkbox;
 import org.patternfly.core.OuiaSupport;
 
@@ -47,13 +46,14 @@ import static org.jboss.elemento.Elements.legend;
 import static org.jboss.elemento.Elements.li;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.elemento.Elements.ul;
+import static org.jboss.hal.core.Humanize.capitalCase;
 import static org.patternfly.component.form.Checkbox.checkbox;
 import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 
 /**
- * Sidebar with type tabs and facet filter checkboxes. Type tabs filter by {@link ModelGraphType}. Facet filters are grouped
- * by facet category (general, resource, attribute, operation) with checkboxes showing counts from the API response.
+ * Sidebar with type tabs and facet filter checkboxes. Type tabs filter by {@link ModelGraphType}. Facet filters are grouped by
+ * facet category (general, resource, attribute, operation) with checkboxes showing counts from the API response.
  */
 class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, CatalogSidebar> {
 
@@ -71,13 +71,11 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         this.tabLinks = new LinkedHashMap<>();
         this.facetCheckboxes = new EnumMap<>(CatalogFacet.class);
 
-        tabList = ul().style("list-style", "none")
-                .style("padding", "0")
-                .style("margin", "0 0 var(--pf-t--global--spacer--md) 0")
+        tabList = ul().css("vertical-tabs-pf")
                 .element();
         addTypeTab("All", null);
         for (ModelGraphType type : ModelGraphType.values()) {
-            addTypeTab(capitalize(type.type), type);
+            addTypeTab(capitalCase(type.type), type);
         }
         markActive(null);
 
@@ -91,6 +89,11 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     }
 
     @Override
+    public HTMLElement element() {
+        return container;
+    }
+
+    @Override
     public String ouiaComponentType() {
         return "halOP/CatalogSidebar";
     }
@@ -98,11 +101,6 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     @Override
     public CatalogSidebar that() {
         return this;
-    }
-
-    @Override
-    public HTMLElement element() {
-        return container;
     }
 
     // ------------------------------------------------------ type tabs
@@ -239,7 +237,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "long", counts.long_);
         putIfPositive(values, "boolean", counts.boolean_);
         putIfPositive(values, "double", counts.double_);
-        putIfPositive(values, "big-decimal", counts.bigDecimal);
+        putIfPositive(values, "big-decimal", counts.bigDecimal());
         putIfPositive(values, "object", counts.object);
         putIfPositive(values, "list", counts.list);
         putIfPositive(values, "bytes", counts.bytes);
@@ -252,8 +250,8 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
-        putIfPositive(values, "read-write", counts.readWrite);
-        putIfPositive(values, "read-only", counts.readOnly);
+        putIfPositive(values, "read-write", counts.readWrite());
+        putIfPositive(values, "read-only", counts.readOnly());
         putIfPositive(values, "metric", counts.metric);
         addFacetGroup(stackEl, "Access Type", CatalogFacet.ACCESS_TYPE, values, state);
     }
@@ -273,9 +271,9 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
-        putIfPositive(values, "no-services", counts.noServices);
-        putIfPositive(values, "all-services", counts.allServices);
-        putIfPositive(values, "resource-services", counts.resourceServices);
+        putIfPositive(values, "no-services", counts.noServices());
+        putIfPositive(values, "all-services", counts.allServices());
+        putIfPositive(values, "resource-services", counts.resourceServices());
         putIfPositive(values, "jvm", counts.jvm);
         addFacetGroup(stackEl, "Restart", CatalogFacet.RESTART, values, state);
     }
@@ -286,8 +284,8 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
-        if (counts.yes > 0) values.put("yes", counts.yes);
-        if (counts.no > 0) values.put("no", counts.no);
+        if (counts.yes > 0) {values.put("yes", counts.yes);}
+        if (counts.no > 0) {values.put("no", counts.no);}
         addFacetGroup(stackEl, label, facet, values, state);
     }
 
@@ -330,12 +328,5 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         if (value > 0) {
             map.put(key, value);
         }
-    }
-
-    private static String capitalize(String s) {
-        if (s == null || s.isEmpty()) {
-            return s;
-        }
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 }
