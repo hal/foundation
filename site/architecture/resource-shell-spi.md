@@ -1,47 +1,44 @@
 # Resource Shell & SPI
 
-## Purpose
+## What It Does
 
-The `ResourceShell` provides a composable framework for CRUD operations on WildFly management resources. The model browser is the primary consumer. While the generic UX works for most resources, some benefit from specialized UI. The SPI allows external modules to contribute custom behavior without modifying the shell.
+The resource shell is the composable framework behind CRUD operations on WildFly management resources. The model browser is its primary consumer — when you navigate to a resource and see its attributes, operations, and capabilities, that's the resource shell at work.
 
-## Design
+The generic UX handles most resources well, but some benefit from specialized UI. The SPI lets external modules contribute custom behavior — a custom tab, a custom header, a custom add-resource dialog — without modifying the shell itself.
+
+## How It Works
 
 ### Shell Composition
 
-The `ResourceShell` is a pure layout container—all intelligence lives in composed children. The shell itself has no behavior and no data loading. Its composition follows this structure:
+The shell is a pure layout container. It has no behavior and loads no data — all intelligence lives in its composed children. The structure splits into a sticky header (always visible while scrolling) and a content area that switches between two layouts:
 
-```mermaid
-%%{init: {"themeVariables": {"fontSize": "2rem"}}}%%
-graph TD
-    RS[ResourceShell] --> SH[Sticky header]
-    RS --> CS[Content]
-
-    SH --> RB["ResourceBreadcrumb (optional)"]
-    SH --> RH["ResourceHeader (optional)"]
-
-    CS -->|Option A| RT[ResourceTabs]
-    CS -->|Option B| RL[ResourceList]
-
-    RT --> DT[Data tab]
-    RT --> AT[Attributes tab]
-    RT --> OT[Operations tab]
-    RT --> CT[Capabilities tab]
-
-    RL --> DL[DataList of child resources]
+```
+ResourceShell
+├── Sticky header
+│   ├── ResourceBreadcrumb (optional)
+│   └── ResourceHeader (optional)
+└── Content
+    ├── Option A: ResourceTabs
+    │   ├── Data tab
+    │   ├── Attributes tab
+    │   ├── Operations tab
+    │   └── Capabilities tab
+    └── Option B: ResourceList
+        └── DataList of child resources
 ```
 
-The sticky header group remains visible while scrolling through content, providing consistent context for the current resource. The content section flexibly switches between two layouts:
-
-- **ResourceTabs** — for viewing and editing single resources with rich metadata tabs
+- **ResourceTabs** — for viewing and editing a single resource with rich metadata tabs
 - **ResourceList** — for browsing child resources in a data list
 
 ### Design Decisions
 
-1. **Separate registries per concern** — Each SPI contract has its own registry, allowing independent implementation and discovery of providers.
+Three key decisions shape the SPI:
 
-2. **Registration key** — Providers register against `Environment` + `AddressTemplate` (supports wildcards), enabling resources to be identified across environments and address patterns.
+1. **Separate registries per concern** — each SPI contract has its own registry, so providers for tabs, headers, and dialogs are discovered and managed independently.
 
-3. **CDI-based discovery** — Providers are CDI beans discovered at startup. External modules contribute via classpath, making the SPI discoverable without explicit registration.
+2. **Registration key** — providers register against `Environment` + `AddressTemplate` (with wildcard support), so a provider can target a specific resource address pattern across environments.
+
+3. **CDI-based discovery** — providers are CDI beans discovered at startup. External modules contribute by placing their implementations on the classpath — no explicit registration code needed.
 
 ### SPI Package
 
@@ -59,9 +56,27 @@ All SPI contracts live in `org.jboss.hal.ui.resource.spi`. This package is the p
 | Custom delete behavior | [#334](https://github.com/hal/foundation/issues/334) | Open |
 | Custom breadcrumb | [#335](https://github.com/hal/foundation/issues/335) | Open |
 
-Two SPI contracts are fully implemented and in use:
+Custom tabs and custom resource headers are fully implemented and in use. The remaining five contracts are future extensibility points, to be implemented as the need for additional customization arises.
 
-- **Custom tabs** — External modules can contribute additional tabs to the resource view
-- **Custom resource header** — External modules can customize the header display
+## Examples
 
-Five SPI contracts remain open and represent future extensibility points. These will be implemented as the need for additional customization arises.
+Two SPI implementations in the codebase show the pattern in practice.
+
+### Custom Resource Header: DataSourceHeader
+
+The `DataSourceHeader` targets `subsystem=datasources/data-source=*` and `subsystem=datasources/xa-data-source=*`. It adds a database icon and a live "enabled"/"disabled" status label to the resource header. The label reads the datasource's runtime `enabled` attribute via DMR and updates automatically when the datasource is toggled, by listening for `ResourceEvents.Modified`.
+
+### Custom Tab: CredentialStoreTabs
+
+The `CredentialStoreTabs` targets `subsystem=elytron/credential-store=*` and `subsystem=elytron/secret-key-credential-store=*`. It adds an "Aliases" tab (at position 1, right after the Data tab) that provides a UI for viewing and managing credential store aliases.
+
+### Common Pattern
+
+Both implementations follow the same structure:
+
+1. They are `@ApplicationScoped` CDI beans — discovered automatically at startup
+2. They implement `scopes()` to declare which `AddressTemplate`s they target
+3. They implement `appliesTo()` for additional filtering (both check `template.fullyQualified()`)
+4. They provide a `create*` / `customize*` method that receives the default header or tabs and returns a customized version wrapped in a `Promise`
+
+New SPI implementations follow this same pattern: declare the target resources, implement the customization method, and let CDI discovery handle the registration.

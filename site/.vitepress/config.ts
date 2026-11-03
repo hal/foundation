@@ -15,20 +15,13 @@
 ///
 
 import { defineConfig } from "vitepress";
-import { withMermaid } from "vitepress-plugin-mermaid";
 
-export default withMermaid(defineConfig({
+export default defineConfig({
   title: "HAL Foundation",
   description: "Documentation for the HAL management console (halOP & halOS)",
   base: "/foundation/",
 
   ignoreDeadLinks: [/^http:\/\/localhost/],
-
-  vite: {
-    optimizeDeps: {
-      include: ["mermaid"],
-    },
-  },
 
   themeConfig: {
     nav: [
@@ -55,7 +48,6 @@ export default withMermaid(defineConfig({
             link: "/features/resource-management",
           },
           { text: "Tasks", link: "/features/tasks" },
-          { text: "Test Automation", link: "/features/test-automation" },
         ],
       },
       {
@@ -89,7 +81,10 @@ export default withMermaid(defineConfig({
       },
       {
         text: "Development",
-        items: [{ text: "Building", link: "/development/building" }],
+        items: [
+          { text: "Building", link: "/development/building" },
+          { text: "Test Automation", link: "/development/test-automation" },
+        ],
       },
     ],
 
@@ -109,4 +104,4 @@ export default withMermaid(defineConfig({
       message: "Documentation for the HAL management console (halOP & halOS)",
     },
   },
-}));
+});
