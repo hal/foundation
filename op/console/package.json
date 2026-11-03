@@ -2,7 +2,7 @@
   "name": "hal-op",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.15.0",
+  "packageManager": "pnpm@12.16.1",
   "scripts": {
     "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
     "build:standalone": "vite build --config vite.config.js --mode standalone",
@@ -11,9 +11,9 @@
     "watch": "vite --config vite.config.js"
   },
   "dependencies": {
-    "@patternfly-java/charts": "catalog:pfj",
-    "@patternfly-java/core": "catalog:pfj",
-    "@patternfly-java/finder": "catalog:pfj",
+    "@patternfly-java/charts": "0.14.1",
+    "@patternfly-java/core": "0.14.1",
+    "@patternfly-java/finder": "0.14.1",
     "@patternfly/patternfly": "^6.7.0",
     "@patternfly/react-catalog-view-extension": "^6.5.0",
     "dompurify": "3.4.17"
