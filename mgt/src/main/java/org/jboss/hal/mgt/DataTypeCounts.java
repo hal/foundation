@@ -15,9 +15,11 @@
  */
 package org.jboss.hal.mgt;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /** Facet counts for the {@code dataType} facet. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -28,10 +30,14 @@ public class DataTypeCounts {
     @JsProperty(name = "int") public int int_;
     @JsProperty(name = "long") public int long_;
     @JsProperty(name = "double") public int double_;
-    @JsProperty(name = "big-decimal") public int bigDecimal;
     public int object;
     public int list;
     public int bytes;
     public int property;
     public int complex;
+
+    @JsOverlay
+    public final int bigDecimal() {
+        return Js.asPropertyMap(this).getAsAny("big-decimal").asInt();
+    }
 }

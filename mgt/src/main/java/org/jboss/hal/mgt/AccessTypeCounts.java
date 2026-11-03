@@ -15,15 +15,24 @@
  */
 package org.jboss.hal.mgt;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /** Facet counts for the {@code accessType} facet: read-write, read-only, and metric. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class AccessTypeCounts {
 
-    @JsProperty(name = "read-write") public int readWrite;
-    @JsProperty(name = "read-only") public int readOnly;
     public int metric;
+
+    @JsOverlay
+    public final int readWrite() {
+        return Js.asPropertyMap(this).getAsAny("read-write").asInt();
+    }
+
+    @JsOverlay
+    public final int readOnly() {
+        return Js.asPropertyMap(this).getAsAny("read-only").asInt();
+    }
 }

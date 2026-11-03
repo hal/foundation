@@ -15,16 +15,29 @@
  */
 package org.jboss.hal.mgt;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /** Facet counts for the {@code restart} facet: all-services, no-services, resource-services, and jvm. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class RestartCounts {
 
-    @JsProperty(name = "all-services") public int allServices;
-    @JsProperty(name = "no-services") public int noServices;
-    @JsProperty(name = "resource-services") public int resourceServices;
     public int jvm;
+
+    @JsOverlay
+    public final int allServices() {
+        return Js.asPropertyMap(this).getAsAny("all-services").asInt();
+    }
+
+    @JsOverlay
+    public final int noServices() {
+        return Js.asPropertyMap(this).getAsAny("no-services").asInt();
+    }
+
+    @JsOverlay
+    public final int resourceServices() {
+        return Js.asPropertyMap(this).getAsAny("resource-services").asInt();
+    }
 }
