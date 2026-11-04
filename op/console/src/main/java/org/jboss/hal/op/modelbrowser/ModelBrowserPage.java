@@ -35,8 +35,8 @@ import static org.jboss.hal.ui.modelbrowser.ModelBrowser.modelBrowser;
 import static org.patternfly.component.page.PageSection.pageSection;
 
 /**
- * Page hosting the management model browser, routed to {@code /management-model}. Renders the full resource tree starting from
- * the root address.
+ * Page hosting the management model browser, routed to {@code /model-browser}. Renders the full resource tree starting from the
+ * root address.
  */
 @Dependent
 @Route("/model-browser/:selection?")

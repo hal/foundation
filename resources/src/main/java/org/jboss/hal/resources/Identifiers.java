@@ -85,7 +85,7 @@ public interface Identifiers {
     String NAV_CONFIGURATION = "/configuration";
     String NAV_DASHBOARD = "/";
     String NAV_DEPLOYMENTS = "/deployments";
-    String NAV_MODEL_BROWSER = "/management-model";
+    String NAV_MODEL_BROWSER = "/model-browser";
     String NAV_MODEL_CATALOG = "/model-catalog";
     String NAV_RUNTIME = "/runtime";
     String NAV_TASKS = "/tasks";
