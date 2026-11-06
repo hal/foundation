@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.jboss.hal.op.modelbrowser;
+package org.jboss.hal.op.browser;
 
 import java.util.Optional;
 
@@ -40,7 +40,7 @@ import static org.patternfly.component.page.PageSection.pageSection;
  */
 @Dependent
 @Route("/model-browser/:selection?")
-public class ModelBrowserPage implements Page {
+public class BrowserPage implements Page {
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {

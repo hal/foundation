@@ -15,7 +15,7 @@
  */
 
 /**
- * Management model browser page for the halOP console. The {@link org.jboss.hal.op.modelbrowser.ModelBrowserPage} hosts a tree
+ * Management model browser page for the halOP console. The {@link BrowserPage} hosts a tree
  * view of the WildFly management resource tree starting from the root address.
  */
-package org.jboss.hal.op.modelbrowser;
+package org.jboss.hal.op.browser;
