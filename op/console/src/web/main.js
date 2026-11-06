@@ -22,25 +22,25 @@ import "@patternfly-java/core";
 import "@patternfly-java/finder";
 import "@patternfly-java/charts/dist/charts";
 import "@patternfly/react-catalog-view-extension/dist/css/react-catalog-view-extension.css";
-import "dompurify"
+import "dompurify";
 
 // Variables second
-import "./variables.css"
+import "./variables.css";
 
 // Remaining (a-z)
-import "./capability.css"
-import "./credential-reference.css"
-import "./dashboard.css"
-import "./expression.css"
-import "./finder.css"
-import "./jndi.css"
-import "./model-browser.css"
-import "./record-table.css"
-import "./resource.css"
-import "./stability.css"
-import "./tree-view.css"
-import "./ui.css"
-import "./universal-search.css"
+import "./capability.css";
+import "./credential-reference.css";
+import "./dashboard.css";
+import "./expression.css";
+import "./finder.css";
+import "./jndi.css";
+import "./model-browser.css";
+import "./record-table.css";
+import "./resource.css";
+import "./stability.css";
+import "./tree-view.css";
+import "./ui.css";
+import "./universal-search.css";
 
 // Load J2CL-compiled console app
 const script = document.createElement("script");

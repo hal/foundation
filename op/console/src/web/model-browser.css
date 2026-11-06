@@ -51,9 +51,16 @@
     display: none;
 }
 
-.hal-c-model-browser__detail, .hal-c-model-browser__tree {
-    height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px);
-    max-height: calc(100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) - var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px);
+.hal-c-model-browser__detail,
+.hal-c-model-browser__tree {
+    height: calc(
+        100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) -
+            var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px
+    );
+    max-height: calc(
+        100vh - var(--hal-c-model-browser-offset) - var(--pf-v6-c-page__main-section--PaddingBlockStart) -
+            var(--pf-v6-c-page__main-section--PaddingBlockEnd) - 32px
+    );
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -79,7 +86,6 @@
 .hal-c-model-browser__detail .pf-v6-c-page__main-breadcrumb {
     --pf-v6-c-page__main-breadcrumb--PaddingBlockStart: var(--pf-t--global--spacer--action--horizontal--plain--default);
 }
-
 
 .hal-c-model-browser__detail-item {
     --pf-v6-l-grid__item--GridColumnEnd: 9; /* TODO Still relevant? */

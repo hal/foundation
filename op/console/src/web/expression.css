@@ -23,7 +23,6 @@
 }
 
 .hal-c-expression {
-
     .hal-c-expression__start {
         color: inherit;
     }
@@ -36,19 +35,19 @@
     }
 
     .hal-c-expression__dollar::after {
-        content: '$';
+        content: "$";
     }
 
     .hal-c-expression__curly-braces-start::after {
-        content: '{';
+        content: "{";
     }
 
     .hal-c-expression__curly-braces-end::after {
-        content: '}';
+        content: "}";
     }
 
     .hal-c-expression__colon::after {
-        content: ':';
+        content: ":";
     }
 
     .hal-c-expression__name {

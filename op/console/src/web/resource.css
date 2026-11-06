@@ -14,11 +14,15 @@
  *  limitations under the License.
  */
 
-.hal-m-data, .hal-m-attributes, .hal-m-operations {
+.hal-m-data,
+.hal-m-attributes,
+.hal-m-operations {
     padding-top: var(--pf-t--global--spacer--md);
 }
 
-.hal-c-resource .hal-c-resource__view, .hal-c-resource .hal-c-resource__form, .hal-c-finder__preview .hal-c-resource__view {
+.hal-c-resource .hal-c-resource__view,
+.hal-c-resource .hal-c-resource__form,
+.hal-c-finder__preview .hal-c-resource__view {
     --hal-resource-label-width-on-md: 20ch;
     --hal-resource-label-width-on-lg: 23ch;
     --hal-resource-label-width-on-xl: 25ch;
@@ -77,7 +81,9 @@
 
 .hal-c-resource__form-expression-switch {
     gap: var(--pf-t--global--spacer--gap--control-to-control--default);
-    min-height: calc(var(--pf-t--global--font--size--md) * var(--pf-t--global--font--line-height--body) + 2 * var(--pf-t--global--spacer--xs));
+    min-height: calc(
+        var(--pf-t--global--font--size--md) * var(--pf-t--global--font--line-height--body) + 2 * var(--pf-t--global--spacer--xs)
+    );
 }
 
 .hal-c-resource__view {

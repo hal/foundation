@@ -23,18 +23,17 @@
 }
 
 .hal-c-jndi {
-
     .hal-c-jndi__scheme {
         color: var(--pf-t--global--text--color--disabled);
     }
 
     .hal-c-jndi__colon::after {
-        content: ':';
+        content: ":";
         color: var(--hal-t-jndi--meta-color);
     }
 
     .hal-c-jndi__slash::after {
-        content: '/';
+        content: "/";
         color: var(--hal-t-jndi--meta-color);
     }
 

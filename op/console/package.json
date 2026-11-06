@@ -2,18 +2,17 @@
   "name": "hal-op",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.16.1",
   "scripts": {
-    "build:feature-pack": "vite build --config vite.config.js --mode feature-pack",
-    "build:standalone": "vite build --config vite.config.js --mode standalone",
-    "build:test-suite": "vite build --config vite.config.js --mode test-suite",
+    "build:feature-pack": "vp build --config vite.config.js --mode feature-pack",
+    "build:standalone": "vp build --config vite.config.js --mode standalone",
+    "build:test-suite": "vp build --config vite.config.js --mode test-suite",
     "sbom": "cdxgen -o target/npm-bom.cdx.json -t js --json-pretty --only patternfly --only dompurify",
-    "watch": "vite --config vite.config.js"
+    "watch": "vp dev --config vite.config.js"
   },
   "dependencies": {
-    "@patternfly-java/charts": "0.14.1",
-    "@patternfly-java/core": "0.14.1",
-    "@patternfly-java/finder": "0.14.1",
+    "@patternfly-java/charts": "0.15.0",
+    "@patternfly-java/core": "0.15.0",
+    "@patternfly-java/finder": "0.15.0",
     "@patternfly/patternfly": "^6.7.0",
     "@patternfly/react-catalog-view-extension": "^6.5.0",
     "dompurify": "3.4.17"
@@ -21,6 +20,8 @@
   "devDependencies": {
     "@cyclonedx/cdxgen": "12.9.0",
     "esbuild": "^0.28.2",
-    "vite": "8.3.5"
-  }
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "packageManager": "pnpm@12.18.0"
 }
