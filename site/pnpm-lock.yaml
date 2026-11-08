@@ -170,8 +170,8 @@ importers:
         specifier: 1.65.0
         version: 1.65.0
       image-size:
-        specifier: ^2.0.4
-        version: 2.0.4
+        specifier: 2.1.0
+        version: 2.1.0
       vitepress:
         specifier: ^2.0.0-alpha.21
         version: 2.0.0-alpha.21(postcss@8.5.32)
@@ -546,8 +546,8 @@ packages:
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
 
-  image-size@2.0.4:
-    resolution: {integrity: sha512-QRUkFFsRV/6fuESxb9Vkq+a0LkSrgKXuc2NEqfikiXxxN/G3tjWt5EVUlMaImRBZRZK/jRBEbYvpPYZL8t08Zw==}
+  image-size@2.1.0:
+    resolution: {integrity: sha512-6Dbisa46RsgeAh3TMSFL2i8+uIFG+/LRmz6Q2oscSJJvXo1sOw3EgNO4M8jPl1P+gR1atJLDPrpclX4IHz63sA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1116,7 +1116,7 @@ snapshots:
 
   html-void-elements@3.0.0: {}
 
-  image-size@2.0.4: {}
+  image-size@2.1.0: {}
 
   lightningcss-android-arm64@1.33.0:
     optional: true
