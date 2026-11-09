@@ -6,11 +6,11 @@ WildFly's management model assigns a stability level to every resource, attribut
 
 WildFly defines four stability levels, ordered from most stable to least stable:
 
-| Level | Description |
-|---|---|
-| **default** | Features that are part of the standard supported API |
-| **community** | Community-contributed features not yet part of the supported API |
-| **preview** | Features available for evaluation that may change or be removed |
+| Level            | Description                                                           |
+| ---------------- | --------------------------------------------------------------------- |
+| **default**      | Features that are part of the standard supported API                  |
+| **community**    | Community-contributed features not yet part of the supported API      |
+| **preview**      | Features available for evaluation that may change or be removed       |
 | **experimental** | Features under active development; not recommended for production use |
 
 ## Highlighting Rules
@@ -125,9 +125,9 @@ This illustrates that `community`-level attributes inside a `default` resource a
 
 The following table shows whether highlighting occurs for each combination of server stability and item stability (for a single, non-nested item):
 
-| | Item: default | Item: community | Item: preview | Item: experimental |
-|---|---|---|---|---|
-| **Server: default** | — | — | highlight | highlight |
-| **Server: community** | — | — | highlight | highlight |
-| **Server: preview** | — | — | highlight | highlight |
-| **Server: experimental** | — | — | — | highlight |
+|                          | Item: default | Item: community | Item: preview | Item: experimental |
+| ------------------------ | ------------- | --------------- | ------------- | ------------------ |
+| **Server: default**      | —             | —               | highlight     | highlight          |
+| **Server: community**    | —             | —               | highlight     | highlight          |
+| **Server: preview**      | —             | —               | highlight     | highlight          |
+| **Server: experimental** | —             | —               | —             | highlight          |

@@ -46,15 +46,15 @@ All SPI contracts live in `org.jboss.hal.ui.resource.spi`. This package is the p
 
 ## Current State & Open Work
 
-| SPI Contract | Issue | Status |
-|---|---|---|
-| Custom tabs | [#329](https://github.com/hal/foundation/issues/329) | Done |
-| Custom resource header | [#331](https://github.com/hal/foundation/issues/331) | Done |
-| Custom add-resource dialog | [#330](https://github.com/hal/foundation/issues/330) | Open |
-| Custom data view / form | [#332](https://github.com/hal/foundation/issues/332) | Open |
-| Custom resource list rendering | [#333](https://github.com/hal/foundation/issues/333) | Open |
-| Custom delete behavior | [#334](https://github.com/hal/foundation/issues/334) | Open |
-| Custom breadcrumb | [#335](https://github.com/hal/foundation/issues/335) | Open |
+| SPI Contract                   | Issue                                                | Status |
+| ------------------------------ | ---------------------------------------------------- | ------ |
+| Custom tabs                    | [#329](https://github.com/hal/foundation/issues/329) | Done   |
+| Custom resource header         | [#331](https://github.com/hal/foundation/issues/331) | Done   |
+| Custom add-resource dialog     | [#330](https://github.com/hal/foundation/issues/330) | Open   |
+| Custom data view / form        | [#332](https://github.com/hal/foundation/issues/332) | Open   |
+| Custom resource list rendering | [#333](https://github.com/hal/foundation/issues/333) | Open   |
+| Custom delete behavior         | [#334](https://github.com/hal/foundation/issues/334) | Open   |
+| Custom breadcrumb              | [#335](https://github.com/hal/foundation/issues/335) | Open   |
 
 Custom tabs and custom resource headers are fully implemented and in use. The remaining five contracts are future extensibility points, to be implemented as the need for additional customization arises.
 

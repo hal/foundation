@@ -17,91 +17,87 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  title: "HAL Foundation",
-  description: "Documentation for the HAL management console (halOP & halOS)",
-  base: "/foundation/",
+    title: "HAL Foundation",
+    description: "Documentation for the HAL management console (halOP & halOS)",
+    base: "/foundation/",
 
-  ignoreDeadLinks: [/^http:\/\/localhost/],
+    ignoreDeadLinks: [/^http:\/\/localhost/],
 
-  themeConfig: {
-    nav: [
-      { text: "Features", link: "/features/overview" },
-      { text: "Architecture", link: "/architecture/overview" },
-      { text: "Model Graph Tools", link: "/model-graph-tools/" },
-      { text: "Editions", link: "/editions/halop" },
-    ],
+    themeConfig: {
+        nav: [
+            { text: "Features", link: "/features/overview" },
+            { text: "Architecture", link: "/architecture/overview" },
+            { text: "Model Graph Tools", link: "/model-graph-tools/" },
+            { text: "Editions", link: "/editions/halop" },
+        ],
 
-    sidebar: [
-      {
-        text: "Features",
-        items: [
-          { text: "Overview", link: "/features/overview" },
-          { text: "Universal Search", link: "/features/universal-search" },
-          {
-            text: "Stability Level Highlighting",
-            link: "/features/stability",
-          },
-          { text: "Dashboard", link: "/features/dashboard" },
-          { text: "Model Browser", link: "/features/model-browser" },
-          {
-            text: "Resource Management",
-            link: "/features/resource-management",
-          },
-          { text: "Tasks", link: "/features/tasks" },
+        sidebar: [
+            {
+                text: "Features",
+                items: [
+                    { text: "Overview", link: "/features/overview" },
+                    { text: "Universal Search", link: "/features/universal-search" },
+                    {
+                        text: "Stability Level Highlighting",
+                        link: "/features/stability",
+                    },
+                    { text: "Dashboard", link: "/features/dashboard" },
+                    { text: "Model Browser", link: "/features/model-browser" },
+                    {
+                        text: "Resource Management",
+                        link: "/features/resource-management",
+                    },
+                    { text: "Tasks", link: "/features/tasks" },
+                ],
+            },
+            {
+                text: "Architecture",
+                items: [
+                    { text: "Overview", link: "/architecture/overview" },
+                    { text: "Dashboard", link: "/architecture/dashboard-architecture" },
+                    { text: "Task Framework", link: "/architecture/task-framework" },
+                    {
+                        text: "Resource Shell & SPI",
+                        link: "/architecture/resource-shell-spi",
+                    },
+                    {
+                        text: "Attribute Pipeline",
+                        link: "/architecture/attribute-pipeline",
+                    },
+                ],
+            },
+            {
+                text: "Model Graph Tools",
+                items: [{ text: "Overview", link: "/model-graph-tools/" }],
+            },
+            {
+                text: "Editions",
+                items: [
+                    { text: "halOP", link: "/editions/halop" },
+                    { text: "halOS", link: "/editions/halos" },
+                ],
+            },
+            {
+                text: "Development",
+                items: [
+                    { text: "Building", link: "/development/building" },
+                    { text: "Test Automation", link: "/development/test-automation" },
+                ],
+            },
         ],
-      },
-      {
-        text: "Architecture",
-        items: [
-          { text: "Overview", link: "/architecture/overview" },
-          { text: "Dashboard", link: "/architecture/dashboard-architecture" },
-          { text: "Task Framework", link: "/architecture/task-framework" },
-          {
-            text: "Resource Shell & SPI",
-            link: "/architecture/resource-shell-spi",
-          },
-          {
-            text: "Attribute Pipeline",
-            link: "/architecture/attribute-pipeline",
-          },
-        ],
-      },
-      {
-        text: "Model Graph Tools",
-        items: [
-          { text: "Overview", link: "/model-graph-tools/" },
-        ],
-      },
-      {
-        text: "Editions",
-        items: [
-          { text: "halOP", link: "/editions/halop" },
-          { text: "halOS", link: "/editions/halos" },
-        ],
-      },
-      {
-        text: "Development",
-        items: [
-          { text: "Building", link: "/development/building" },
-          { text: "Test Automation", link: "/development/test-automation" },
-        ],
-      },
-    ],
 
-    socialLinks: [
-      { icon: "github", link: "https://github.com/hal/foundation" },
-    ],
+        socialLinks: [{ icon: "github", link: "https://github.com/hal/foundation" }],
 
-    editLink: {
-      pattern: "https://github.com/hal/foundation/edit/main/site/:path",
+        editLink: {
+            pattern: "https://github.com/hal/foundation/edit/main/site/:path",
+        },
+
+        search: {
+            provider: "local",
+        },
+
+        footer: {
+            message: "Documentation for the HAL management console (halOP & halOS)",
+        },
     },
-
-    search: {
-      provider: "local",
-    },
-
-    footer: {
-      message: "Documentation for the HAL management console (halOP & halOS)",
-    },
-  },
 });

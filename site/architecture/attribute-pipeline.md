@@ -8,7 +8,7 @@ The attribute pipeline turns WildFly management model metadata into interactive 
 
 The pipeline uses a two-tier architecture. First, **handlers** scan the attribute pool and claim groups of related attributes they recognize — credential references, path/relative-to pairs, maps, and so on. Each handler knows how to turn its claimed attributes into UI items. Then, everything left unclaimed — plus any child attributes that handlers delegate back — passes through a chain of **providers**, which are simpler factories that produce items based on attribute type.
 
-Handlers live at the boundary between two worlds: the *description world* (metadata only, no values) and the *value world* (resolved snapshots with current values and RBAC state). They receive metadata, perform resolution, and produce items. Providers live entirely in the value world — they receive already-resolved attributes.
+Handlers live at the boundary between two worlds: the _description world_ (metadata only, no values) and the _value world_ (resolved snapshots with current values and RBAC state). They receive metadata, perform resolution, and produce items. Providers live entirely in the value world — they receive already-resolved attributes.
 
 ## How the Parts Connect
 
@@ -109,24 +109,24 @@ A LIST where each entry is an OBJECT with all-simple sub-attributes. `ListSimple
 
 Handlers are registered in `Pipeline.java` in priority order. Order matters: earlier handlers claim first, and `FlatteningHandler` must be last because it claims any remaining simple-record OBJECT.
 
-| Priority | Handler | Pattern |
-|---|---|---|
-| 1 | `CredentialReferenceHandler` | OBJECT with `{store, alias, clear-text}` |
-| 2 | `TimeUnitHandler` | OBJECT with `{time, unit}` |
-| 3 | `FileHandler` | OBJECT with `{path, relative-to}` |
-| 4 | `PathRelativeToHandler` | Sibling `path` + `relative-to` STRING pairs |
-| 5 | `MapHandler` | OBJECT with simple scalar VALUE_TYPE |
-| 6 | `ListSimpleRecordHandler` | LIST of OBJECT with all-simple sub-attributes |
-| 7 | `FlatteningHandler` | Simple-record OBJECTs (all simple sub-attributes) — catch-all |
+| Priority | Handler                      | Pattern                                                       |
+| -------- | ---------------------------- | ------------------------------------------------------------- |
+| 1        | `CredentialReferenceHandler` | OBJECT with `{store, alias, clear-text}`                      |
+| 2        | `TimeUnitHandler`            | OBJECT with `{time, unit}`                                    |
+| 3        | `FileHandler`                | OBJECT with `{path, relative-to}`                             |
+| 4        | `PathRelativeToHandler`      | Sibling `path` + `relative-to` STRING pairs                   |
+| 5        | `MapHandler`                 | OBJECT with simple scalar VALUE_TYPE                          |
+| 6        | `ListSimpleRecordHandler`    | LIST of OBJECT with all-simple sub-attributes                 |
+| 7        | `FlatteningHandler`          | Simple-record OBJECTs (all simple sub-attributes) — catch-all |
 
 ## Providers
 
 Providers handle unclaimed attributes and children delegated by handlers. First match wins.
 
-| Priority | Provider | Pattern |
-|---|---|---|
-| 1 | `RelativeToProvider` | Standalone `relative-to` attributes (form only) |
-| 2 | `DefaultProvider` | Type-based dispatch catch-all |
+| Priority | Provider             | Pattern                                         |
+| -------- | -------------------- | ----------------------------------------------- |
+| 1        | `RelativeToProvider` | Standalone `relative-to` attributes (form only) |
+| 2        | `DefaultProvider`    | Type-based dispatch catch-all                   |
 
 ## How to Extend
 
@@ -166,14 +166,14 @@ For unclaimed attributes and delegated children, check which provider's `handles
 
 ### Where to look in code
 
-| Symptom | Start here |
-|---|---|
-| Attribute missing entirely | `Pipeline.items()` — is it in the pool? Is it filtered out? |
-| Wrong handler claimed it | The handler's `match()` predicate |
-| Wrong UI control | The handler's `viewItems()` / `formItems()`, or `DefaultProvider.formItem()` |
-| Child attribute wrong | `Pipeline.viewItem()` / `Pipeline.formItem()` — the provider chain |
-| RBAC state wrong | `ResolvedAttribute.resolve()` — check context permissions |
-| Wrong order | `Pipeline.sortByOriginalOrder()` — uses `AttributeMatch.primary()` for position |
+| Symptom                    | Start here                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| Attribute missing entirely | `Pipeline.items()` — is it in the pool? Is it filtered out?                     |
+| Wrong handler claimed it   | The handler's `match()` predicate                                               |
+| Wrong UI control           | The handler's `viewItems()` / `formItems()`, or `DefaultProvider.formItem()`    |
+| Child attribute wrong      | `Pipeline.viewItem()` / `Pipeline.formItem()` — the provider chain              |
+| RBAC state wrong           | `ResolvedAttribute.resolve()` — check context permissions                       |
+| Wrong order                | `Pipeline.sortByOriginalOrder()` — uses `AttributeMatch.primary()` for position |
 
 ## Implementation Details
 

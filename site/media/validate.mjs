@@ -16,16 +16,16 @@
  *   node validate.mjs --strict  # exit with code 1 on any warning
  */
 
-import { readFileSync, existsSync, readdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
-import { imageSize } from 'image-size';
+import { readFileSync, existsSync, readdirSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
+import { imageSize } from "image-size";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const manifestPath = join(__dirname, 'media.json');
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
-const strict = process.argv.includes('--strict');
+const manifestPath = join(__dirname, "media.json");
+const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+const strict = process.argv.includes("--strict");
 
 let errors = 0;
 let warnings = 0;
@@ -58,29 +58,32 @@ function getVideoDimensions(filePath) {
     try {
         const output = execSync(
             `ffprobe -v quiet -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "${filePath}" 2>/dev/null`,
-            { encoding: 'utf-8' }
+            { encoding: "utf-8" },
         );
-        const [width, height] = output.trim().split(',').map(Number);
+        const [width, height] = output.trim().split(",").map(Number);
         if (!isNaN(width) && !isNaN(height)) return { width, height };
-    } catch { /* ffprobe not available */ }
+    } catch {
+        /* ffprobe not available */
+    }
 
     // Fall back to mdls (macOS Spotlight)
     try {
-        const output = execSync(
-            `mdls -name kMDItemPixelWidth -name kMDItemPixelHeight "${filePath}" 2>/dev/null`,
-            { encoding: 'utf-8' }
-        );
+        const output = execSync(`mdls -name kMDItemPixelWidth -name kMDItemPixelHeight "${filePath}" 2>/dev/null`, {
+            encoding: "utf-8",
+        });
         const width = parseInt(output.match(/kMDItemPixelWidth\s*=\s*(\d+)/)?.[1]);
         const height = parseInt(output.match(/kMDItemPixelHeight\s*=\s*(\d+)/)?.[1]);
         if (!isNaN(width) && !isNaN(height)) return { width, height };
-    } catch { /* mdls not available or file not indexed */ }
+    } catch {
+        /* mdls not available or file not indexed */
+    }
 
     return null;
 }
 
 function getProjectVersion() {
     try {
-        const pom = readFileSync(join(__dirname, '../../pom.xml'), 'utf-8');
+        const pom = readFileSync(join(__dirname, "../../pom.xml"), "utf-8");
         const match = pom.match(/<artifactId>hal-fnd-parent<\/artifactId>\s*<version>([^<]+)<\/version>/);
         return match ? match[1] : null;
     } catch {
@@ -90,9 +93,9 @@ function getProjectVersion() {
 
 function compareVersions(a, b) {
     if (!a || !b) return 0;
-    const normalize = v => v.replace(/-SNAPSHOT$/, '');
-    const partsA = normalize(a).split('.').map(Number);
-    const partsB = normalize(b).split('.').map(Number);
+    const normalize = (v) => v.replace(/-SNAPSHOT$/, "");
+    const partsA = normalize(a).split(".").map(Number);
+    const partsB = normalize(b).split(".").map(Number);
     for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
         const diff = (partsA[i] || 0) - (partsB[i] || 0);
         if (diff !== 0) return diff;
@@ -102,13 +105,13 @@ function compareVersions(a, b) {
 
 // --- Check screenshots ---
 
-console.log('\nScreenshots:');
-console.log('-'.repeat(60));
+console.log("\nScreenshots:");
+console.log("-".repeat(60));
 
-const screenshotDir = join(__dirname, 'screenshots');
+const screenshotDir = join(__dirname, "screenshots");
 const expectedScreenshots = new Set(Object.keys(manifest.screenshots));
 const actualScreenshots = new Set(
-    existsSync(screenshotDir) ? readdirSync(screenshotDir).filter(f => f.endsWith('.png')) : []
+    existsSync(screenshotDir) ? readdirSync(screenshotDir).filter((f) => f.endsWith(".png")) : [],
 );
 
 for (const name of expectedScreenshots) {
@@ -138,13 +141,13 @@ for (const name of actualScreenshots) {
 
 // --- Check screencasts ---
 
-console.log('\nScreencasts:');
-console.log('-'.repeat(60));
+console.log("\nScreencasts:");
+console.log("-".repeat(60));
 
-const screencastDir = join(__dirname, 'screencasts');
+const screencastDir = join(__dirname, "screencasts");
 const expectedScreencasts = new Set(Object.keys(manifest.screencasts));
 const actualScreencasts = new Set(
-    existsSync(screencastDir) ? readdirSync(screencastDir).filter(f => f.endsWith('.mp4')) : []
+    existsSync(screencastDir) ? readdirSync(screencastDir).filter((f) => f.endsWith(".mp4")) : [],
 );
 
 for (const name of expectedScreencasts) {
@@ -174,25 +177,25 @@ for (const name of actualScreencasts) {
 
 // --- Description check ---
 
-console.log('\nDescriptions:');
-console.log('-'.repeat(60));
+console.log("\nDescriptions:");
+console.log("-".repeat(60));
 
 const allEntries = { ...manifest.screenshots, ...manifest.screencasts };
 let missingDescriptions = 0;
 for (const [name, entry] of Object.entries(allEntries)) {
-    if (!entry.description || entry.description.trim() === '') {
+    if (!entry.description || entry.description.trim() === "") {
         error(`${name} has no description`);
         missingDescriptions++;
     }
 }
 if (missingDescriptions === 0) {
-    ok('all entries have descriptions');
+    ok("all entries have descriptions");
 }
 
 // --- Staleness check ---
 
-console.log('\nStaleness:');
-console.log('-'.repeat(60));
+console.log("\nStaleness:");
+console.log("-".repeat(60));
 
 const projectVersion = getProjectVersion();
 if (projectVersion) {
@@ -207,12 +210,12 @@ if (projectVersion) {
         }
     }
 } else {
-    warn('Could not determine project version from pom.xml');
+    warn("Could not determine project version from pom.xml");
 }
 
 // --- Summary ---
 
-console.log('\n' + '='.repeat(60));
+console.log("\n" + "=".repeat(60));
 if (errors > 0) {
     console.log(`FAILED: ${errors} error(s), ${warnings} warning(s)`);
     process.exit(1);
@@ -222,5 +225,5 @@ if (errors > 0) {
 } else if (warnings > 0) {
     console.log(`PASSED with ${warnings} warning(s)`);
 } else {
-    console.log('PASSED: all checks OK');
+    console.log("PASSED: all checks OK");
 }

@@ -11,6 +11,7 @@ halOP supports multiple deployment modes to fit different environments and use c
 In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as an experimental [feature pack](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack) that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The feature pack mounts an additional HTTP endpoint on the management interface at http://localhost:9990/halop.
 
 **Maven Coordinates:**
+
 ```
 org.jboss.hal:hal-op-feature-pack
 ```
@@ -18,27 +19,31 @@ org.jboss.hal:hal-op-feature-pack
 **Provisioning Steps:**
 
 1. Build or use the latest feature pack from Maven Central:
-   ```bash
-   mvn install -P op,feature-pack
-   ```
+
+    ```bash
+    mvn install -P op,feature-pack
+    ```
 
 2. Provision a WildFly server using the provided [`provision.xml`](https://github.com/hal/foundation/blob/main/op/feature-pack/provision.xml):
-   ```bash
-   galleon.sh provision op/feature-pack/target/provision.xml \
-       --dir=$TMPDIR/wildfly \
-       --stability-level=experimental
-   ```
+
+    ```bash
+    galleon.sh provision op/feature-pack/target/provision.xml \
+        --dir=$TMPDIR/wildfly \
+        --stability-level=experimental
+    ```
 
 3. Prepare and start the server:
-   ```bash
-   cd $TMPDIR/wildfly
-   bin/add-user.sh -u admin -p admin --silent
-   bin/standalone.sh --stability=experimental
-   ```
+
+    ```bash
+    cd $TMPDIR/wildfly
+    bin/add-user.sh -u admin -p admin --silent
+    bin/standalone.sh --stability=experimental
+    ```
 
 4. Open http://localhost:9990/halop
 
 **Requirements:**
+
 - WildFly must be started with `--stability=experimental` to enable the halOP feature pack
 
 ### Standalone (JVM)
@@ -46,6 +51,7 @@ org.jboss.hal:hal-op-feature-pack
 halOP can run as a standalone single-page application ([SPA](https://en.wikipedia.org/wiki/Single-page_application)) without being part of a WildFly installation. It starts a local web server (powered by Quarkus) and serves the console on its own. The only requirement is access to a running WildFly management interface.
 
 **Maven Coordinates:**
+
 ```
 org.jboss.hal:hal-op-standalone
 ```
@@ -98,6 +104,7 @@ op/standalone/target/hal-op-standalone-0.4.0-runner
 ```
 
 **Requirements:**
+
 - Recent version of GraalVM installed
 - See [Quarkus native image guide](https://quarkus.io/guides/building-native-image#configuring-graalvm) for setup details
 
@@ -106,6 +113,7 @@ op/standalone/target/hal-op-standalone-0.4.0-runner
 Native binaries for Linux, macOS, and Windows are attached to every [release](https://github.com/hal/foundation/releases). Download the binary for your platform, make it executable, and run it.
 
 On macOS you may need to run:
+
 ```bash
 chmod +x hal-op-*
 xattr -d com.apple.quarantine hal-op-*
@@ -116,11 +124,13 @@ xattr -d com.apple.quarantine hal-op-*
 halOP is available as a container image at [quay.io/halconsole/hal-op](https://quay.io/repository/halconsole/hal-op).
 
 **Container Image:**
+
 ```
 quay.io/halconsole/hal-op
 ```
 
 **Run with Podman or Docker:**
+
 ```bash
 podman run -it -p 9090:9090 quay.io/halconsole/hal-op
 ```
@@ -138,6 +148,7 @@ mvn compile j2cl:watch -P op
 ```
 
 Wait for the message:
+
 ```
 [INFO] -----  Build Complete: ready for browser refresh  -----
 ```
@@ -154,6 +165,7 @@ npm run watch
 This opens a browser at http://localhost:1234.
 
 **Development Workflow:**
+
 - **Java changes:** Detected by J2CL, requires manual browser refresh
 - **HTML/CSS changes:** Detected by Vite, auto-reloads via HMR
 

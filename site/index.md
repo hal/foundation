@@ -2,18 +2,18 @@
 layout: home
 
 hero:
-  name: HAL Foundation
-  tagline: Next-generation HAL management console for WildFly and JBoss EAP
-  actions:
-    - theme: brand
-      text: Features
-      link: /features/overview
-    - theme: alt
-      text: Architecture
-      link: /architecture/overview
-    - theme: alt
-      text: GitHub
-      link: https://github.com/hal/foundation
+    name: HAL Foundation
+    tagline: Next-generation HAL management console for WildFly and JBoss EAP
+    actions:
+        - theme: brand
+          text: Features
+          link: /features/overview
+        - theme: alt
+          text: Architecture
+          link: /architecture/overview
+        - theme: alt
+          text: GitHub
+          link: https://github.com/hal/foundation
 ---
 
 <script setup>

@@ -20,16 +20,16 @@
  * The version determines the connect parameter: ?connect=http://localhost:9<major><minor>
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const manifestPath = join(__dirname, 'media.json');
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+const manifestPath = join(__dirname, "media.json");
+const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
 const { defaults, screenshots } = manifest;
 
-const DARK_MODE_CLASS = 'pf-v6-theme-dark';
+const DARK_MODE_CLASS = "pf-v6-theme-dark";
 const SETTLE_DELAY = 800;
 
 function parseVersion(input) {
@@ -39,7 +39,7 @@ function parseVersion(input) {
         process.exit(1);
     }
     const major = match[1];
-    const minor = match[2] || '0';
+    const minor = match[2] || "0";
     return {
         version: `${major}.${minor}`,
         managementPort: parseInt(`9${major}${minor}`),
@@ -51,7 +51,7 @@ function buildUrl(path, managementPort) {
 }
 
 async function applyTheme(page, theme) {
-    if (theme === 'dark') {
+    if (theme === "dark") {
         await page.evaluate((cls) => document.documentElement.classList.add(cls), DARK_MODE_CLASS);
     } else {
         await page.evaluate((cls) => document.documentElement.classList.remove(cls), DARK_MODE_CLASS);
@@ -62,28 +62,31 @@ async function applyTheme(page, theme) {
 async function executeActions(page, actions) {
     for (const action of actions) {
         switch (action.type) {
-            case 'keyboard':
+            case "keyboard":
                 await page.keyboard.press(action.key);
                 break;
-            case 'click':
+            case "click":
                 await page.click(action.selector);
                 break;
-            case 'type':
+            case "type":
                 await page.keyboard.type(action.text, { delay: 50 });
                 break;
-            case 'scroll':
+            case "scroll":
                 await page.evaluate((sel) => {
-                    document.querySelector(sel)?.scrollIntoView({ behavior: 'instant', block: 'center' });
+                    document.querySelector(sel)?.scrollIntoView({ behavior: "instant", block: "center" });
                 }, action.selector);
                 await page.waitForTimeout(300);
                 break;
-            case 'style':
-                await page.evaluate(({ sel, prop, val }) => {
-                    const el = document.querySelector(sel);
-                    if (el) el.style.setProperty(prop, val);
-                }, { sel: action.selector, prop: action.property, val: action.value });
+            case "style":
+                await page.evaluate(
+                    ({ sel, prop, val }) => {
+                        const el = document.querySelector(sel);
+                        if (el) el.style.setProperty(prop, val);
+                    },
+                    { sel: action.selector, prop: action.property, val: action.value },
+                );
                 break;
-            case 'wait':
+            case "wait":
                 if (action.selector) {
                     await page.waitForSelector(action.selector, { timeout: 10000 });
                 }
@@ -97,13 +100,13 @@ async function executeActions(page, actions) {
 
 async function captureScreenshot(page, name, recipe, managementPort) {
     const url = buildUrl(recipe.path, managementPort);
-    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.goto(url, { waitUntil: "networkidle" });
 
     if (recipe.waitFor) {
         await page.waitForSelector(recipe.waitFor, { timeout: 15000 });
     }
 
-    await applyTheme(page, recipe.theme || 'light');
+    await applyTheme(page, recipe.theme || "light");
 
     if (recipe.actions) {
         await executeActions(page, recipe.actions);
@@ -111,21 +114,21 @@ async function captureScreenshot(page, name, recipe, managementPort) {
 
     await page.waitForTimeout(SETTLE_DELAY);
 
-    const outputPath = join(__dirname, 'screenshots', name);
+    const outputPath = join(__dirname, "screenshots", name);
     await page.screenshot({ path: outputPath });
     console.log(`  captured ${name}`);
 }
 
 function listScreenshots() {
-    console.log('\nScreenshots:');
-    console.log('-'.repeat(80));
+    console.log("\nScreenshots:");
+    console.log("-".repeat(80));
     for (const [name, recipe] of Object.entries(screenshots)) {
-        const auto = recipe.automated === false ? 'manual' : 'auto  ';
-        const theme = (recipe.theme || 'light').padEnd(6);
+        const auto = recipe.automated === false ? "manual" : "auto  ";
+        const theme = (recipe.theme || "light").padEnd(6);
         console.log(`  [${auto}] ${name.padEnd(35)} ${theme} ${recipe.description}`);
     }
-    console.log('\nScreencasts:');
-    console.log('-'.repeat(80));
+    console.log("\nScreencasts:");
+    console.log("-".repeat(80));
     for (const [name, recipe] of Object.entries(manifest.screencasts)) {
         console.log(`  [manual] ${name.padEnd(35)}        ${recipe.description}`);
     }
@@ -135,16 +138,16 @@ function listScreenshots() {
 async function main() {
     const args = process.argv.slice(2);
 
-    if (args.includes('--list')) {
+    if (args.includes("--list")) {
         listScreenshots();
         return;
     }
 
     if (args.length === 0) {
-        console.error('Error: version is required.');
-        console.log('Usage: node capture.mjs <version> [screenshot.png ...]');
-        console.log('       node capture.mjs --list');
-        console.log('\n  version: WildFly version identifier (e.g., 41, 39.0)');
+        console.error("Error: version is required.");
+        console.log("Usage: node capture.mjs <version> [screenshot.png ...]");
+        console.log("       node capture.mjs --list");
+        console.log("\n  version: WildFly version identifier (e.g., 41, 39.0)");
         process.exit(1);
     }
 
@@ -152,10 +155,10 @@ async function main() {
 
     let chromium;
     try {
-        ({ chromium } = await import('@playwright/test'));
+        ({ chromium } = await import("@playwright/test"));
     } catch {
-        console.error('Error: playwright is not installed.');
-        console.error('Install it: pnpm add -D @playwright/test && pnpm exec playwright install chromium');
+        console.error("Error: playwright is not installed.");
+        console.error("Install it: pnpm add -D @playwright/test && pnpm exec playwright install chromium");
         process.exit(1);
     }
     const filterNames = args.slice(1);
@@ -166,9 +169,9 @@ async function main() {
     });
 
     if (entries.length === 0) {
-        console.log('No automated screenshots to capture.');
+        console.log("No automated screenshots to capture.");
         if (filterNames.length > 0) {
-            console.log('Check that the names match and are not marked as manual.');
+            console.log("Check that the names match and are not marked as manual.");
         }
         return;
     }
@@ -184,8 +187,8 @@ async function main() {
 
     // Enable OUIA testing IDs so that automated selectors can target components by ID
     const initPage = await context.newPage();
-    await initPage.goto(defaults.baseUrl, { waitUntil: 'commit' });
-    await initPage.evaluate(() => localStorage.setItem('ouia', 'true'));
+    await initPage.goto(defaults.baseUrl, { waitUntil: "commit" });
+    await initPage.evaluate(() => localStorage.setItem("ouia", "true"));
     await initPage.close();
 
     let captured = 0;
@@ -211,7 +214,7 @@ async function main() {
                     screenshots[name].capturedIn = projectVersion;
                 }
             }
-            writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+            writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
             console.log(`Updated capturedIn to ${projectVersion} in media.json`);
         }
     }
@@ -219,7 +222,7 @@ async function main() {
 
 function getProjectVersion() {
     try {
-        const pom = readFileSync(join(__dirname, '../../pom.xml'), 'utf-8');
+        const pom = readFileSync(join(__dirname, "../../pom.xml"), "utf-8");
         const match = pom.match(/<artifactId>hal-fnd-parent<\/artifactId>\s*<version>([^<]+)<\/version>/);
         return match ? match[1] : null;
     } catch {
@@ -227,7 +230,7 @@ function getProjectVersion() {
     }
 }
 
-main().catch(err => {
-    console.error('Fatal error:', err.message);
+main().catch((err) => {
+    console.error("Fatal error:", err.message);
     process.exit(1);
 });

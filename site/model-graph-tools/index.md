@@ -12,11 +12,11 @@ MGT solves this by importing the complete static metadata of a WildFly release i
 
 MGT runs as a lightweight container alongside your WildFly server. Each container image is built for a specific WildFly version and exposes a REST API on a port derived from that version number. For example:
 
-| WildFly Version | MGT Port | REST API Base |
-|---|---|---|
-| 38.0 | 7380 | `http://localhost:7380/api/` |
-| 39.0 | 7390 | `http://localhost:7390/api/` |
-| 41.0 | 7410 | `http://localhost:7410/api/` |
+| WildFly Version | MGT Port | REST API Base                |
+| --------------- | -------- | ---------------------------- |
+| 38.0            | 7380     | `http://localhost:7380/api/` |
+| 39.0            | 7390     | `http://localhost:7390/api/` |
+| 41.0            | 7410     | `http://localhost:7410/api/` |
 
 The port formula is **7000 + major × 10 + minor**, so there is no guesswork involved.
 
@@ -104,10 +104,10 @@ This turns the AI assistant into a WildFly configuration expert that always has 
 
 The MGT indicator in the console toolbar shows the current status at a glance:
 
-| Status | Meaning |
-|---|---|
-| **Available** | An MGT container matching the connected WildFly version is running and reachable |
-| **Not available** | No matching MGT container was detected |
+| Status            | Meaning                                                                          |
+| ----------------- | -------------------------------------------------------------------------------- |
+| **Available**     | An MGT container matching the connected WildFly version is running and reachable |
+| **Not available** | No matching MGT container was detected                                           |
 
 Clicking the indicator opens a panel where you can check availability again or learn more about setting up MGT. When available, the indicator shows a green status icon; when no matching container is detected, it shows a neutral icon with a prompt to start one.
 
