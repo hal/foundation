@@ -137,7 +137,7 @@ public class CatalogPage implements Page {
         ModelGraphType effectiveType = deriveEffectiveType();
         catalogTable.update(effectiveType, response.results);
         catalogSidebar.update(response.facets, state);
-        catalogToolbar.updateResultCount(response.total, response.limit);
+        catalogToolbar.updateResultCount(response.total);
     }
 
     private ModelGraphType deriveEffectiveType() {

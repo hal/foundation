@@ -19,14 +19,16 @@ import java.util.function.Consumer;
 
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.OuiaIds;
+import org.patternfly.component.pagination.PageInfo;
+import org.patternfly.component.pagination.Pagination;
 import org.patternfly.component.textinputgroup.TextInputGroup;
 import org.patternfly.component.toolbar.Toolbar;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 
-import static org.jboss.elemento.Elements.span;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.pagination.Pagination.pagination;
 import static org.patternfly.component.textinputgroup.TextInputGroup.textInputGroup;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
@@ -44,7 +46,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
 
     private final Toolbar toolbar;
     private final TextInputGroup searchInput;
-    private final HTMLElement resultCount;
+    private final Pagination pagination;
 
     CatalogToolbar(Consumer<String> onSearch, Runnable onClear) {
         searchInput = textInputGroup("catalog-search")
@@ -55,7 +57,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                     }
                 });
 
-        resultCount = span().style("white-space", "nowrap").element();
+        pagination = pagination();
 
         toolbar = toolbar().ouiaId(OuiaIds.PAGE_CATALOG_TOOLBAR)
                 .addContent(toolbarContent()
@@ -73,7 +75,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                                                     onClear.run();
                                                 }))))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
-                                .addItem(toolbarItem().add(resultCount))));
+                                .addItem(toolbarItem().add(pagination))));
     }
 
     @Override
@@ -81,11 +83,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
         return toolbar.element();
     }
 
-    void updateResultCount(int total, int limit) {
-        if (total == 0) {
-            resultCount.textContent = "No results";
-        } else {
-            resultCount.textContent = "Showing " + Math.min(total, limit) + " of " + total;
-        }
+    void updateResultCount(int total) {
+        pagination.pageInfo(PageInfo.of(total));
     }
 }
