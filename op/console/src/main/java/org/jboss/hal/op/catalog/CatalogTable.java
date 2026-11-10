@@ -204,8 +204,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                 .addItem(td("Resource").text(safe(result.resourceAddress)));
         if (p != null) {
             tr.addItem(td("Data type").text(safe(p.dataType)))
-                    .addItem(storageTd(p.storage))
-                    .addItem(accessTypeTd(p.accessType))
+                    .addItem(storageTd("Storage", p.storage))
+                    .addItem(accessTypeTd("Access", p.accessType))
                     .addItem(td("Required").text(yesNo(p.isRequired())))
                     .addItem(td("Nillable").text(yesNo(p.isNillable())));
         } else {

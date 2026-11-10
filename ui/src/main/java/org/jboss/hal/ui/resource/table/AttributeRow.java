@@ -79,7 +79,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                     }
                 })
                 .addItem(td("Type").text(attribute.formatType()))
-                .addItem(storageTd(attribute.hasDefined(STORAGE) ? attribute.get(STORAGE).asString() : null))
-                .addItem(accessTypeTd(attribute.hasDefined(ACCESS_TYPE) ? attribute.get(ACCESS_TYPE).asString() : null));
+                .addItem(storageTd("Storage", attribute.hasDefined(STORAGE) ? attribute.get(STORAGE).asString() : null))
+                .addItem(accessTypeTd("Access", attribute.hasDefined(ACCESS_TYPE) ? attribute.get(ACCESS_TYPE).asString() : null));
     }
 }

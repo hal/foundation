@@ -265,8 +265,10 @@ public final class AttributeBricks {
         return span().css(util("mx-sm")).text("/").element();
     }
 
-    public static Td accessTypeTd(String accessType) {
-        Td td = td("Access");
+    // ------------------------------------------------------ table
+
+    public static Td accessTypeTd(String column, String accessType) {
+        Td td = td(column);
         if (accessType != null) {
             switch (accessType) {
                 case READ_WRITE:
@@ -288,8 +290,8 @@ public final class AttributeBricks {
         return td;
     }
 
-    public static Td storageTd(String storage) {
-        Td td = td("Storage");
+    public static Td storageTd(String column, String storage) {
+        Td td = td(column);
         if (CONFIGURATION.equals(storage)) {
             td.add(iconWithTooltip(fileCode(), "Configuration"));
         } else if (RUNTIME.equals(storage)) {
