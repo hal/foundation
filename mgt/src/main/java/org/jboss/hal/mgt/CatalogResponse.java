@@ -15,15 +15,20 @@
  */
 package org.jboss.hal.mgt;
 
+import java.util.List;
+
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+
+import static java.util.Arrays.asList;
 
 /**
  * JsInterop type for the MGT catalog API response ({@code GET /api/catalog}).
  *
  * <p>Contains paginated results, facet counts, and pagination metadata. The {@link #facets} field is a dynamic object
- * whose keys are facet names and values are objects mapping facet values to counts. Use
- * {@code Js.asPropertyMap(facets)} to iterate.
+ * whose keys are facet names and values are objects mapping facet values to counts. Use {@code Js.asPropertyMap(facets)} to
+ * iterate.
  *
  * @see <a href="https://github.com/model-graph-tools">Model Graph Tools</a>
  */
@@ -44,4 +49,9 @@ public class CatalogResponse {
 
     /** Pagination offset. */
     public int offset;
+
+    @JsOverlay
+    public final List<CatalogResult> results() {
+        return asList(results);
+    }
 }

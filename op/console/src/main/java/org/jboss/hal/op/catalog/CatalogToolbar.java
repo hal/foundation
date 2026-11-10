@@ -18,18 +18,21 @@ package org.jboss.hal.op.catalog;
 import java.util.function.Consumer;
 
 import org.jboss.elemento.IsElement;
+import org.jboss.elemento.Key;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
-import org.patternfly.component.textinputgroup.TextInputGroup;
+import org.patternfly.component.textinputgroup.SearchInputGroup;
 import org.patternfly.component.toolbar.Toolbar;
 
 import elemental2.dom.HTMLElement;
-import elemental2.dom.KeyboardEvent;
 
+import static org.jboss.elemento.Key.Enter;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.pagination.PageInfo.UNKNOWN;
+import static org.patternfly.component.pagination.PageSize._50;
 import static org.patternfly.component.pagination.Pagination.pagination;
-import static org.patternfly.component.textinputgroup.TextInputGroup.textInputGroup;
+import static org.patternfly.component.textinputgroup.SearchInputGroup.searchInputGroup;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
@@ -45,20 +48,18 @@ import static org.patternfly.style.Classes.modifier;
 class CatalogToolbar implements IsElement<HTMLElement> {
 
     private final Toolbar toolbar;
-    private final TextInputGroup searchInput;
+    private final SearchInputGroup searchInput;
     private final Pagination pagination;
 
     CatalogToolbar(Consumer<String> onSearch, Runnable onClear) {
-        searchInput = textInputGroup("catalog-search")
+        searchInput = searchInputGroup("catalog-search")
                 .placeholder("Search catalog...")
                 .onKeydown((event, component, value) -> {
-                    if ("Enter".equals(((KeyboardEvent) event).key)) {
+                    if (Enter.match(event)) {
                         onSearch.accept(value);
                     }
                 });
-
-        pagination = pagination();
-
+        pagination = pagination(PageInfo.of(_50.value, UNKNOWN));
         toolbar = toolbar().ouiaId(OuiaIds.PAGE_CATALOG_TOOLBAR)
                 .addContent(toolbarContent()
                         .addGroup(toolbarGroup().css(modifier("filter-group"))
@@ -84,6 +85,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     }
 
     void updateResultCount(int total) {
-        pagination.pageInfo(PageInfo.of(total));
+        PageInfo pageInfo = pagination.pageInfo().withTotal(total);
+        pagination.pageInfo(pageInfo);
     }
 }

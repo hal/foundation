@@ -20,9 +20,9 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
- * JsInterop type for the type-specific properties of a catalog result. The JSON arrives as a flat object with all
- * possible fields; which fields are present depends on the result type. {@code @JsOverlay} methods provide null-safe
- * access to boolean fields.
+ * JsInterop type for the type-specific properties of a catalog result. The JSON arrives as a flat object with all possible
+ * fields; which fields are present depends on the result type. {@code @JsOverlay} methods provide null-safe access to boolean
+ * fields.
  *
  * <p>Attribute fields: {@link #dataType}, {@link #accessType}, {@link #storage}, {@link #restart}, {@link #required},
  * {@link #nillable}, {@link #expressions}, {@link #sensitive}, {@link #unit}.
@@ -118,10 +118,5 @@ public class CatalogProperties {
     @JsOverlay
     public final boolean isDeclaresCap() {
         return declaresCap != null && declaresCap;
-    }
-
-    @JsOverlay
-    public final boolean isDefinesAttrGroups() {
-        return definesAttrGroups != null && definesAttrGroups;
     }
 }

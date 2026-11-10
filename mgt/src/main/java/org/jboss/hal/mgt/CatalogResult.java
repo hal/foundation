@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.mgt;
 
+import org.jboss.hal.env.Stability;
+
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -58,5 +60,10 @@ public class CatalogResult {
     @JsOverlay
     public final ModelGraphType type() {
         return ModelGraphType.of(type);
+    }
+
+    @JsOverlay
+    public final Stability stability(Stability defaultStability) {
+        return Stability.parse(stability, defaultStability);
     }
 }

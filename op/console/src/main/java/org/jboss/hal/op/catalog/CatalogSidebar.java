@@ -33,20 +33,18 @@ import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.mgt.RestartCounts;
 import org.jboss.hal.mgt.StabilityCounts;
 import org.jboss.hal.mgt.StorageCounts;
+import org.jboss.hal.ui.component.VerticalTab;
+import org.jboss.hal.ui.component.VerticalTabs;
 import org.patternfly.component.form.Checkbox;
 import org.patternfly.core.OuiaSupport;
 
-import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.a;
+import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.div;
-import static org.jboss.elemento.Elements.fieldset;
-import static org.jboss.elemento.Elements.legend;
-import static org.jboss.elemento.Elements.li;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
-import static org.jboss.elemento.Elements.ul;
-import static org.jboss.hal.core.Humanize.capitalCase;
+import static org.jboss.hal.ui.component.VerticalTab.verticalTab;
+import static org.jboss.hal.ui.component.VerticalTabs.verticalTabs;
 import static org.patternfly.component.form.Checkbox.checkbox;
 import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
@@ -57,32 +55,33 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
  */
 class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, CatalogSidebar> {
 
-    private final Consumer<ModelGraphType> onTypeSelect;
-    private final BiConsumer<CatalogFacet, String> onFacetToggle;
+    private static final String MODEL_GRAPH_TYPE_KEY = "model-graph-type";
+
     private final HTMLElement container;
-    private final HTMLElement tabList;
+    private final VerticalTabs verticalTabs;
+    private final VerticalTab allVerticalTabs;
     private final HTMLElement filterContainer;
-    private final Map<String, HTMLAnchorElement> tabLinks;
+    private final BiConsumer<CatalogFacet, String> onFacetToggle;
     private final Map<CatalogFacet, List<Checkbox>> facetCheckboxes;
 
     CatalogSidebar(Consumer<ModelGraphType> onTypeSelect, BiConsumer<CatalogFacet, String> onFacetToggle) {
-        this.onTypeSelect = onTypeSelect;
         this.onFacetToggle = onFacetToggle;
-        this.tabLinks = new LinkedHashMap<>();
+        this.verticalTabs = verticalTabs();
+        this.allVerticalTabs = verticalTab("all", "All");
         this.facetCheckboxes = new EnumMap<>(CatalogFacet.class);
 
-        tabList = ul().css("vertical-tabs-pf")
-                .element();
-        addTypeTab("All", null);
-        for (ModelGraphType type : ModelGraphType.values()) {
-            addTypeTab(capitalCase(type.type), type);
-        }
-        markActive(null);
+        verticalTabs.addItem(allVerticalTabs);
+        verticalTabs.addItems(asList(ModelGraphType.values()), type -> verticalTab(type.type, type.plural)
+                .store(MODEL_GRAPH_TYPE_KEY, type));
+        verticalTabs.onSelect((e, vt, s) -> {
+            ModelGraphType type = vt.get(MODEL_GRAPH_TYPE_KEY);
+            onTypeSelect.accept(type);
+        });
+        verticalTabs.select("all", true, false);
 
-        filterContainer = div().element();
-
-        container = div().css("pf-v6-c-catalog-sidebar")
-                .add(tabList)
+        filterContainer = div().css("filter-panel-pf").element();
+        container = div()
+                .add(verticalTabs)
                 .add(filterContainer)
                 .element();
         initOuia();
@@ -103,39 +102,6 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         return this;
     }
 
-    // ------------------------------------------------------ type tabs
-
-    private void addTypeTab(String label, ModelGraphType type) {
-        String key = type != null ? type.type : "all";
-        HTMLAnchorElement link = a("#").text(label)
-                .style("display", "block")
-                .style("padding", "var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--sm)")
-                .style("text-decoration", "none")
-                .style("border-left", "3px solid transparent")
-                .style("color", "var(--pf-t--global--text--color--regular)")
-                .element();
-        link.addEventListener("click", e -> {
-            e.preventDefault();
-            markActive(type);
-            onTypeSelect.accept(type);
-        });
-        tabLinks.put(key, link);
-        tabList.appendChild(li().add(link).element());
-    }
-
-    private void markActive(ModelGraphType type) {
-        String activeKey = type != null ? type.type : "all";
-        tabLinks.forEach((key, link) -> {
-            if (key.equals(activeKey)) {
-                link.style.setProperty("border-left-color", "var(--pf-t--global--border--color--brand--default)");
-                link.style.setProperty("font-weight", "bold");
-            } else {
-                link.style.setProperty("border-left-color", "transparent");
-                link.style.setProperty("font-weight", "normal");
-            }
-        });
-    }
-
     // ------------------------------------------------------ facet filters
 
     void update(CatalogFacets facets, CatalogState state) {
@@ -146,6 +112,23 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         }
 
         HTMLElement stackElement = stack().gutter().element();
+
+        // Global type counts
+        int all = facets.type.resource + facets.type.attribute + facets.type.operation + facets.type.capability;
+        allVerticalTabs.text("All (" + all + ")");
+        for (ModelGraphType type : ModelGraphType.values()) {
+            VerticalTab vt = verticalTabs.item(type.type);
+            if (vt != null) {
+                String count = " (" + switch (type) {
+                    case RESOURCE -> String.valueOf(facets.type.resource);
+                    case ATTRIBUTE -> String.valueOf(facets.type.attribute);
+                    case OPERATION -> String.valueOf(facets.type.operation);
+                    case CAPABILITY -> String.valueOf(facets.type.capability);
+                    default -> "";
+                } + ")";
+                vt.text(type.plural + count);
+            }
+        }
 
         // General facets (always visible)
         addStabilityGroup(stackElement, facets.stability, state);
@@ -297,12 +280,11 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
 
-        HTMLElement fs = fieldset().css("pf-v6-c-form__fieldset")
-                .add(legend().text(label)
-                        .style("font-weight", "bold")
-                        .style("margin-bottom", "var(--pf-t--global--spacer--xs)"))
+        HTMLElement category = div().css("filter-panel-pf-category")
+                .add(div().css("filter-panel-pf-category-title").text(label))
                 .element();
 
+        HTMLElement items = div().css("filter-panel-pf-category-items").element();
         List<Checkbox> checkboxes = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : values.entrySet()) {
             String value = entry.getKey();
@@ -315,11 +297,12 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             }
             cb.onChange((event, checkbox, checked) -> onFacetToggle.accept(facet, value));
             checkboxes.add(cb);
-            fs.appendChild(div().add(cb).element());
+            items.appendChild(div().css("filter-panel-pf-category-item").add(cb).element());
         }
         facetCheckboxes.put(facet, checkboxes);
+        category.appendChild(items);
 
-        stackEl.appendChild(stackItem().add(fs).element());
+        stackEl.appendChild(stackItem().add(category).element());
     }
 
     // ------------------------------------------------------ helpers

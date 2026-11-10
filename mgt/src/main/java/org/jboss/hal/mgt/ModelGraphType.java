@@ -2,15 +2,19 @@ package org.jboss.hal.mgt;
 
 public enum ModelGraphType {
 
-    RESOURCE("resource"),
-    ATTRIBUTE("attribute"),
-    OPERATION("operation"),
-    CAPABILITY("capability");
+    RESOURCE("resource", "Resource", "Resources"),
+    ATTRIBUTE("attribute", "Attribute", "Attributes"),
+    OPERATION("operation", "Operation", "Operations"),
+    CAPABILITY("capability", "Capability", "Capabilities");
 
     public final String type;
+    public final String singular;
+    public final String plural;
 
-    ModelGraphType(String type) {
+    ModelGraphType(String type, String singular, String plural) {
         this.type = type;
+        this.singular = singular;
+        this.plural = plural;
     }
 
     public static ModelGraphType of(String type) {
@@ -19,6 +23,6 @@ public enum ModelGraphType {
                 return resultType;
             }
         }
-        throw new IllegalArgumentException("Unknown search result type: " + type);
+        return null;
     }
 }

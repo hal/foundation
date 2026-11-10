@@ -147,11 +147,7 @@ public class CatalogPage implements Page {
         Set<String> activeTypes = state.activeTypes();
         if (activeTypes.size() == 1) {
             String typeStr = activeTypes.iterator().next();
-            try {
-                return ModelGraphType.of(typeStr);
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
+            return ModelGraphType.of(typeStr);
         }
         return null;
     }

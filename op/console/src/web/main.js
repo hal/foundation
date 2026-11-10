@@ -15,14 +15,14 @@
  */
 
 // External first
+import "dompurify";
 import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-charts.css";
+import "@patternfly/react-catalog-view-extension/dist/css/react-catalog-view-extension.css";
 import "@patternfly-java/core";
 import "@patternfly-java/finder";
 import "@patternfly-java/charts/dist/charts";
-import "@patternfly/react-catalog-view-extension/dist/css/react-catalog-view-extension.css";
-import "dompurify";
 
 // Variables second
 import "./variables.css";
