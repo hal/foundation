@@ -32,11 +32,10 @@ import static org.jboss.hal.ui.brick.StabilityBricks.stabilityStatus;
 import static org.patternfly.component.label.Label.label;
 
 /**
- * A PatternFly {@link Label} component that displays a WildFly {@link Stability} level with an appropriate icon and
- * color.
+ * A PatternFly {@link Label} component that displays a WildFly {@link Stability} level with an appropriate icon and color.
  * <p>
- * The label uses PatternFly status colors and icons to visually represent the stability level (e.g., experimental,
- * preview, community, default).
+ * The label uses PatternFly status colors and icons to visually represent the stability level (e.g., experimental, preview,
+ * community, default).
  */
 public class StabilityLabel implements
         ElementClassListMethods<HTMLElement, StabilityLabel>,
@@ -89,6 +88,11 @@ public class StabilityLabel implements
         if (compact) {
             label.compact().removeIcon();
         }
+        return this;
+    }
+
+    public StabilityLabel outline() {
+        label.outline();
         return this;
     }
 }

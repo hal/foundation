@@ -17,11 +17,15 @@ package org.jboss.hal.ui.brick;
 
 import java.util.function.Supplier;
 
+import org.jboss.elemento.By;
 import org.jboss.elemento.HTMLContainerBuilder;
+import org.jboss.elemento.Id;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.RestartMode;
 import org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent;
 import org.patternfly.component.popover.Popover;
+import org.patternfly.component.table.Td;
+import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.layout.flex.Flex;
 import org.patternfly.layout.flex.Gap;
 import org.patternfly.layout.flex.SpaceItems;
@@ -36,11 +40,16 @@ import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.strong;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ALTERNATIVES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CAPABILITY_REFERENCE;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.CONFIGURATION;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.EXPRESSIONS_ALLOWED;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.METRIC;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ONLY;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_WRITE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRED;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REQUIRES;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.RESTART_REQUIRED;
+import static org.jboss.hal.dmr.ModelDescriptionConstants.RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.UNIT;
 import static org.jboss.hal.dmr.ModelNodeHelper.asEnumValue;
 import static org.jboss.hal.meta.description.RestartMode.UNKNOWN;
@@ -52,6 +61,13 @@ import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.popover.Popover.popover;
 import static org.patternfly.component.popover.PopoverBody.popoverBody;
+import static org.patternfly.component.table.Td.td;
+import static org.patternfly.component.tooltip.Tooltip.tooltip;
+import static org.patternfly.icon.IconSets.far.fileCode;
+import static org.patternfly.icon.IconSets.fas.lock;
+import static org.patternfly.icon.IconSets.fas.memory;
+import static org.patternfly.icon.IconSets.fas.penToSquare;
+import static org.patternfly.icon.IconSets.patternfly.trendUp;
 import static org.patternfly.layout.flex.AlignItems.center;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
@@ -80,7 +96,7 @@ public final class AttributeBricks {
      * @param stabilityCheck returns {@code true} if the stability label should be shown
      * @return a flex layout containing the attribute name and optional stability label
      */
-    public static org.patternfly.layout.flex.Flex attributeName(AttributeDescription attribute,
+    public static Flex attributeName(AttributeDescription attribute,
             Supplier<Boolean> stabilityCheck) {
         return attributeName(attribute, false, stabilityCheck);
     }
@@ -94,7 +110,7 @@ public final class AttributeBricks {
      * @param stabilityCheck returns {@code true} if the stability label should be shown
      * @return a flex layout containing the attribute name and optional stability label
      */
-    public static org.patternfly.layout.flex.Flex attributeName(AttributeDescription attribute, boolean compact,
+    public static Flex attributeName(AttributeDescription attribute, boolean compact,
             Supplier<Boolean> stabilityCheck) {
         HTMLContainerBuilder<HTMLElement> name = strong()
                 .text(attribute.name())
@@ -247,5 +263,56 @@ public final class AttributeBricks {
     /** Returns a "/" separator element with horizontal margins, used between segments of composite attribute paths. */
     public static HTMLElement slashSeparator() {
         return span().css(util("mx-sm")).text("/").element();
+    }
+
+    public static Td accessTypeTd(String accessType) {
+        Td td = td("Access");
+        if (accessType != null) {
+            switch (accessType) {
+                case READ_WRITE:
+                    td.add(iconWithTooltip(penToSquare(), "read-write"));
+                    break;
+                case READ_ONLY:
+                    td.add(iconWithTooltip(lock(), "read-only"));
+                    break;
+                case METRIC:
+                    td.add(iconWithTooltip(trendUp(), "metric"));
+                    break;
+                default:
+                    emptyCell(td);
+                    break;
+            }
+        } else {
+            emptyCell(td);
+        }
+        return td;
+    }
+
+    public static Td storageTd(String storage) {
+        Td td = td("Storage");
+        if (CONFIGURATION.equals(storage)) {
+            td.add(iconWithTooltip(fileCode(), "Configuration"));
+        } else if (RUNTIME.equals(storage)) {
+            td.add(iconWithTooltip(memory(), "Memory"));
+        } else {
+            emptyCell(td);
+        }
+        return td;
+    }
+
+    private static HTMLElement iconWithTooltip(PredefinedIcon icon, String text) {
+        String id = Id.unique();
+        Variable minWidth = utilVar("min-width", "MinWidth");
+        return span().id(id)
+                .add(icon)
+                .add(tooltip(By.id(id))
+                        .css(util("min-width"))
+                        .style(minWidth.name, "10ch")
+                        .text(text))
+                .element();
+    }
+
+    private static void emptyCell(Td td) {
+        td.element().textContent = " ";
     }
 }

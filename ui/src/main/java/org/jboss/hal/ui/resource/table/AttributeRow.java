@@ -17,41 +17,25 @@ package org.jboss.hal.ui.resource.table;
 
 import java.util.function.Function;
 
-import org.jboss.elemento.By;
-import org.jboss.elemento.Id;
 import org.jboss.hal.meta.description.AttributeDescription;
 import org.jboss.hal.meta.description.ResourceDescription;
-import org.patternfly.component.table.Td;
 import org.patternfly.component.table.TitleCell;
 import org.patternfly.component.table.Tr;
-import org.patternfly.icon.PredefinedIcon;
-import org.patternfly.style.Variable;
 
 import elemental2.dom.HTMLElement;
 
-import static org.jboss.elemento.Elements.span;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.ACCESS_TYPE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.CONFIGURATION;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.METRIC;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_ONLY;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_WRITE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.RUNTIME;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.STORAGE;
 import static org.jboss.hal.ui.UIContext.uic;
+import static org.jboss.hal.ui.brick.AttributeBricks.accessTypeTd;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeDescription;
 import static org.jboss.hal.ui.brick.AttributeBricks.attributeName;
+import static org.jboss.hal.ui.brick.AttributeBricks.storageTd;
 import static org.jboss.hal.ui.brick.DescriptionBricks.AttributeDescriptionContent.allButReadOnly;
 import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.TitleCell.titleCell;
 import static org.patternfly.component.table.Tr.tr;
-import static org.patternfly.component.tooltip.Tooltip.tooltip;
-import static org.patternfly.icon.IconSets.fas.database;
-import static org.patternfly.icon.IconSets.fas.lock;
-import static org.patternfly.icon.IconSets.fas.memory;
-import static org.patternfly.icon.IconSets.fas.penToSquare;
-import static org.patternfly.icon.IconSets.patternfly.trendUp;
 import static org.patternfly.style.Classes.util;
-import static org.patternfly.style.Variable.utilVar;
 
 /**
  * Function that maps an {@link AttributeDescription} to a table row ({@link Tr}) for the attributes table.
@@ -95,61 +79,7 @@ class AttributeRow implements Function<AttributeDescription, Tr> {
                     }
                 })
                 .addItem(td("Type").text(attribute.formatType()))
-                .addItem(td("Storage").run(td -> storage(td, attribute)))
-                .addItem(td("Access type").run(td -> accessType(td, attribute)));
-    }
-
-    private void storage(Td td, AttributeDescription attribute) {
-        if (attribute.hasDefined(STORAGE)) {
-            String storageId = Id.unique(attribute.name(), STORAGE);
-            String storage = attribute.get(STORAGE).asString();
-            if (CONFIGURATION.equals(storage)) {
-                td.add(iconWithTooltip(storageId, database(), "Configuration"));
-            } else if (RUNTIME.equals(storage)) {
-                td.add(iconWithTooltip(storageId, memory(), "Memory"));
-            } else {
-                emptyCell(td);
-            }
-        } else {
-            emptyCell(td);
-        }
-    }
-
-    private void accessType(Td td, AttributeDescription attribute) {
-        if (attribute.hasDefined(ACCESS_TYPE)) {
-            String accessTypeId = Id.unique(attribute.name(), ACCESS_TYPE);
-            String accessType = attribute.get(ACCESS_TYPE).asString();
-            switch (accessType) {
-                case READ_WRITE:
-                    td.add(iconWithTooltip(accessTypeId, penToSquare(), "read-write"));
-                    break;
-                case READ_ONLY:
-                    td.add(iconWithTooltip(accessTypeId, lock(), "read-only"));
-                    break;
-                case METRIC:
-                    td.add(iconWithTooltip(accessTypeId, trendUp(), "metric"));
-                    break;
-                default:
-                    emptyCell(td);
-                    break;
-            }
-        } else {
-            emptyCell(td);
-        }
-    }
-
-    private HTMLElement iconWithTooltip(String id, PredefinedIcon icon, String text) {
-        Variable minWidth = utilVar("min-width", "MinWidth");
-        return span().id(id)
-                .add(icon)
-                .add(tooltip(By.id(id))
-                        .css(util("min-width"))
-                        .style(minWidth.name, "10ch")
-                        .text(text))
-                .element();
-    }
-
-    private void emptyCell(Td td) {
-        td.element().textContent = " ";
+                .addItem(storageTd(attribute.hasDefined(STORAGE) ? attribute.get(STORAGE).asString() : null))
+                .addItem(accessTypeTd(attribute.hasDefined(ACCESS_TYPE) ? attribute.get(ACCESS_TYPE).asString() : null));
     }
 }

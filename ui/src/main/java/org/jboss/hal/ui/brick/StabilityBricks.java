@@ -21,6 +21,8 @@ import org.jboss.hal.env.Stability;
 import org.patternfly.icon.PredefinedIcon;
 import org.patternfly.style.Status;
 
+import static org.jboss.hal.env.Stability.COMMUNITY;
+import static org.jboss.hal.env.Stability.DEFAULT;
 import static org.jboss.hal.env.Stability.EXPERIMENTAL;
 import static org.jboss.hal.env.Stability.PREVIEW;
 import static org.patternfly.icon.IconSets.fas.circleInfo;
@@ -44,6 +46,8 @@ public final class StabilityBricks {
             return Status.danger;
         } else if (stability == PREVIEW) {
             return Status.warning;
+        } else if (stability == DEFAULT) {
+            return Status.success;
         }
         return Status.info;
     }
@@ -61,8 +65,5 @@ public final class StabilityBricks {
     /** Returns a supplier that creates an icon for the given stability level. */
     public static Supplier<PredefinedIcon> stabilityIconSupplier(Stability stability) {
         return () -> stabilityIcon(stability);
-    }
-
-    private StabilityBricks() {
     }
 }
