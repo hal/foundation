@@ -10,3 +10,13 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/op/console"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/site"
+    schedule:
+      interval: "daily"
