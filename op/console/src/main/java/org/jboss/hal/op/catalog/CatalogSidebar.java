@@ -284,7 +284,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     // ------------------------------------------------------ generic facet
 
     private void addFacetGroup(String label, CatalogState state, CatalogFacet facet, Map<String, Integer> values) {
-        if (values.isEmpty()) {
+        if (values.size() <= 1) {
             return;
         }
         FacetCategory facetCategory = new FacetCategory(label, facet, onFacetToggle);
