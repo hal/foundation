@@ -92,6 +92,11 @@ public class CatalogState {
         implicitType = false;
     }
 
+    /** Removes all values for the given facet. */
+    public void clearFacet(CatalogFacet facet) {
+        selections.remove(facet);
+    }
+
     /** Resets type and type-specific facet selections but preserves general facets (except TYPE) and the text query. */
     public void clearTypeSpecific() {
         selections.entrySet().removeIf(e -> e.getKey() == TYPE || e.getKey().group != Group.GENERAL);

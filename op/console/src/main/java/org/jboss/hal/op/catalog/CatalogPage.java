@@ -133,6 +133,9 @@ public class CatalogPage implements Page {
         if (state.isActive(facet, value)) {
             state.remove(facet, value);
         } else {
+            if (facet.exclusive) {
+                state.clearFacet(facet);
+            }
             state.apply(facet, value);
         }
         syncImplicitType();
