@@ -135,8 +135,25 @@ public class CatalogPage implements Page {
         } else {
             state.apply(facet, value);
         }
+        syncImplicitType();
         state.resetPage();
         search();
+    }
+
+    private void syncImplicitType() {
+        if (state.isImplicitType()) {
+            Set<String> types = state.activeTypes();
+            if (types.size() == 1) {
+                ModelGraphType impliedType = ModelGraphType.of(types.iterator().next());
+                if (impliedType != selectedType) {
+                    selectedType = impliedType;
+                    catalogSidebar.selectType(impliedType);
+                }
+            }
+        } else if (selectedType != null && !state.activeTypes().contains(selectedType.type)) {
+            selectedType = null;
+            catalogSidebar.selectType(null);
+        }
     }
 
     private void onNavigate(Event event, Pagination pagination, PageInfo previous, PageInfo update) {

@@ -107,6 +107,17 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         }
     }
 
+    void selectType(ModelGraphType type) {
+        if (type != null) {
+            VerticalTab vt = verticalTabs.item(type.type);
+            if (vt != null) {
+                verticalTabs.select(vt, true, false);
+            }
+        } else {
+            verticalTabs.select(allVerticalTabs, true, false);
+        }
+    }
+
     // ------------------------------------------------------ facet filters
 
     void update(CatalogFacets facets, CatalogState state) {
