@@ -14,6 +14,10 @@
  *  limitations under the License.
  */
 
-.filter-panel-pf-section-title {
-    margin-block-start: calc(2 * var(--pf-t--global--spacer--md));
+.filter-panel-divider {
+    margin-block-start: var(--pf-t--global--spacer--md);
+}
+
+.filter-panel-header {
+    margin-block-start: var(--pf-t--global--spacer--md);
 }

@@ -44,6 +44,8 @@ import static org.jboss.elemento.Elements.nav;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.hal.ui.component.VerticalTab.verticalTab;
 import static org.jboss.hal.ui.component.VerticalTabs.verticalTabs;
+import static org.patternfly.component.divider.Divider.divider;
+import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.title.Title.title;
 
 /**
@@ -106,22 +108,27 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
         // General facets
         if (facets.stability != null || facets.deprecated != null) {
-            sectionHeader("General");
             addStabilityGroup(state, facets.stability);
             addBooleanGroup("Deprecated", state, CatalogFacet.DEPRECATED, facets.deprecated);
         }
 
         // Type-specific facets
         if (hasResourceFacets(facets)) {
-            sectionHeader("Resources");
+            filterPanel
+                    .add(divider(hr).css("filter-panel-divider"))
+                    .add(title(4, "Resources").css("filter-panel-header"));
             addResourceFacets(state, facets);
         }
         if (hasAttributeFacets(facets)) {
-            sectionHeader("Attributes");
+            filterPanel
+                    .add(divider(hr).css("filter-panel-divider"))
+                    .add(title(4, "Attributes").css("filter-panel-header"));
             addAttributeFacets(state, facets);
         }
         if (hasOperationFacets(facets)) {
-            sectionHeader("Operations");
+            filterPanel
+                    .add(divider(hr).css("filter-panel-divider"))
+                    .add(title(4, "Operations").css("filter-panel-header"));
             addOperationFacets(state, facets);
         }
     }
@@ -281,10 +288,6 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     }
 
     // ------------------------------------------------------ helpers
-
-    private void sectionHeader(String title) {
-        filterPanel.add(title(4, title).css("filter-panel-pf-section-title"));
-    }
 
     private void putIfPositive(Map<String, Integer> map, String key, int value) {
         if (value > 0) {
