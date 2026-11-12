@@ -174,30 +174,35 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     private void addResourceFacets(CatalogState state, CatalogFacets facets) {
         // @formatter:off
         if (facets.singleton != null) {addBooleanGroup("Singleton", state, CatalogFacet.SINGLETON, facets.singleton);}
-        if (facets.declaresCap != null) {addBooleanGroup("Declares Capability", state, CatalogFacet.DECLARES_CAP, facets.declaresCap);}
+        if (facets.declaresCap != null) {addBooleanGroup("Declares capability", state, CatalogFacet.DECLARES_CAP, facets.declaresCap);}
+        if (facets.definesAttrGroups != null) {addBooleanGroup("Attribute groups", state, CatalogFacet.DEFINES_ATTR_GROUPS, facets.definesAttrGroups);}
         // @formatter:on
     }
 
     private void addAttributeFacets(CatalogState state, CatalogFacets facets) {
         // @formatter:off
         if (facets.dataType != null) {addDataTypeGroup(state, facets.dataType);}
+        Map<String, Integer> units = facets.unitCounts();
+        if (!units.isEmpty()) { addFacetGroup("Unit", state, CatalogFacet.UNIT, units); }
+        if (facets.hasAllowed != null) {addBooleanGroup("Allowed values", state, CatalogFacet.HAS_ALLOWED, facets.hasAllowed);}
+        if (facets.refsCap != null) {addBooleanGroup("References capability", state, CatalogFacet.REFS_CAP, facets.refsCap);}
+        if (facets.expressions != null) {addBooleanGroup("Expressions", state, CatalogFacet.EXPRESSIONS, facets.expressions);}
+        if (facets.required != null) {addBooleanGroup("Required", state, CatalogFacet.REQUIRED, facets.required);}
+        if (facets.nillable != null) {addBooleanGroup("Nillable", state, CatalogFacet.NILLABLE, facets.nillable);}
         if (facets.accessType != null) {addAccessTypeGroup(state, facets.accessType);}
         if (facets.storage != null) {addStorageGroup(state, facets.storage);}
         if (facets.restart != null) {addRestartGroup(state, facets.restart);}
-        if (facets.required != null) {addBooleanGroup("Required", state, CatalogFacet.REQUIRED, facets.required);}
-        if (facets.nillable != null) {addBooleanGroup("Nillable", state, CatalogFacet.NILLABLE, facets.nillable);}
-        if (facets.expressions != null) {addBooleanGroup("Expressions", state, CatalogFacet.EXPRESSIONS, facets.expressions);}
         if (facets.sensitive != null) {addBooleanGroup("Sensitive", state, CatalogFacet.SENSITIVE, facets.sensitive);}
         // @formatter:on
     }
 
     private void addOperationFacets(CatalogState state, CatalogFacets facets) {
         // @formatter:off
-        if (facets.readOnly != null) {addBooleanGroup("Read Only", state, CatalogFacet.READ_ONLY, facets.readOnly);}
-        if (facets.runtimeOnly != null) {addBooleanGroup("Runtime Only", state, CatalogFacet.RUNTIME_ONLY, facets.runtimeOnly);}
+        if (facets.hasParams != null) {addBooleanGroup("Has parameters", state, CatalogFacet.HAS_PARAMS, facets.hasParams);}
+        if (facets.hasReturnValue != null) {addBooleanGroup("Has return value", state, CatalogFacet.HAS_RETURN_VALUE, facets.hasReturnValue);}
         if (facets.global != null) {addBooleanGroup("Global", state, CatalogFacet.GLOBAL, facets.global);}
-        if (facets.hasParams != null) {addBooleanGroup("Has Parameters", state, CatalogFacet.HAS_PARAMS, facets.hasParams);}
-        if (facets.hasReturnValue != null) {addBooleanGroup("Has Return Value", state, CatalogFacet.HAS_RETURN_VALUE, facets.hasReturnValue);}
+        if (facets.readOnly != null) {addBooleanGroup("Read only", state, CatalogFacet.READ_ONLY, facets.readOnly);}
+        if (facets.runtimeOnly != null) {addBooleanGroup("Runtime only", state, CatalogFacet.RUNTIME_ONLY, facets.runtimeOnly);}
         // @formatter:on
     }
 

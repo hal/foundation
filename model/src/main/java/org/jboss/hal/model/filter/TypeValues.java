@@ -32,7 +32,6 @@ public class TypeValues {
         return List.of(
                 new TypeValues("Boolean", ModelType.BOOLEAN),
                 new TypeValues("Bytes", ModelType.BYTES),
-                new TypeValues("Expression", ModelType.EXPRESSION),
                 new TypeValues("Numeric", List.of(
                         ModelType.INT,
                         ModelType.LONG,
