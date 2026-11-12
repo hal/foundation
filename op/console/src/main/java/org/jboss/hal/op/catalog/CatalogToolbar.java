@@ -18,10 +18,10 @@ package org.jboss.hal.op.catalog;
 import java.util.function.Consumer;
 
 import org.jboss.elemento.IsElement;
-import org.jboss.elemento.Key;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
+import org.patternfly.component.pagination.PaginationHandler;
 import org.patternfly.component.textinputgroup.SearchInputGroup;
 import org.patternfly.component.toolbar.Toolbar;
 
@@ -29,8 +29,6 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Key.Enter;
 import static org.patternfly.component.button.Button.button;
-import static org.patternfly.component.pagination.PageInfo.UNKNOWN;
-import static org.patternfly.component.pagination.PageSize._50;
 import static org.patternfly.component.pagination.Pagination.pagination;
 import static org.patternfly.component.textinputgroup.SearchInputGroup.searchInputGroup;
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
@@ -51,7 +49,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     private final SearchInputGroup searchInput;
     private final Pagination pagination;
 
-    CatalogToolbar(Consumer<String> onSearch, Runnable onClear) {
+    CatalogToolbar(PageInfo pageInfo, Consumer<String> onSearch, Runnable onClear, PaginationHandler onNavigate) {
         searchInput = searchInputGroup("catalog-search")
                 .placeholder("Search catalog...")
                 .onKeydown((event, component, value) -> {
@@ -59,7 +57,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                         onSearch.accept(value);
                     }
                 });
-        pagination = pagination(PageInfo.of(_50.value, UNKNOWN));
+        pagination = pagination(pageInfo).onChange(onNavigate);
         toolbar = toolbar().ouiaId(OuiaIds.PAGE_CATALOG_TOOLBAR)
                 .addContent(toolbarContent()
                         .addGroup(toolbarGroup().css(modifier("filter-group"))
@@ -84,8 +82,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
         return toolbar.element();
     }
 
-    void updateResultCount(int total) {
-        PageInfo pageInfo = pagination.pageInfo().withTotal(total);
+    void updatePageInfo(PageInfo pageInfo) {
         pagination.pageInfo(pageInfo);
     }
 }

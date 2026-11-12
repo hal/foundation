@@ -30,7 +30,10 @@ import org.jboss.hal.mgt.CatalogFilter;
 import org.jboss.hal.mgt.CatalogResponse;
 import org.jboss.hal.mgt.ModelGraphCatalog;
 import org.jboss.hal.mgt.ModelGraphType;
+import org.patternfly.component.pagination.PageInfo;
+import org.patternfly.component.pagination.Pagination;
 
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
@@ -61,7 +64,7 @@ public class CatalogPage implements Page {
     public CatalogPage(ModelGraphCatalog catalog) {
         this.catalog = catalog;
         this.state = new CatalogState();
-        this.catalogToolbar = new CatalogToolbar(this::onSearch, this::onClear);
+        this.catalogToolbar = new CatalogToolbar(state.pageInfo(), this::onSearch, this::onClear, this::onNavigate);
         this.catalogSidebar = new CatalogSidebar(this::onTypeSelect, this::onFacetToggle);
         this.catalogTable = new CatalogTable();
     }
@@ -95,12 +98,14 @@ public class CatalogPage implements Page {
 
     private void onSearch(String query) {
         state.query(query);
+        state.resetPage();
         search();
     }
 
     private void onClear() {
         state.clearQuery();
         state.clearAll();
+        state.resetPage();
         selectedType = null;
         search();
     }
@@ -108,6 +113,7 @@ public class CatalogPage implements Page {
     private void onTypeSelect(ModelGraphType type) {
         selectedType = type;
         state.clearAll();
+        state.resetPage();
         if (type != null) {
             state.apply(CatalogFacet.TYPE, type.type);
         }
@@ -120,6 +126,12 @@ public class CatalogPage implements Page {
         } else {
             state.apply(facet, value);
         }
+        state.resetPage();
+        search();
+    }
+
+    private void onNavigate(Event event, Pagination pagination, PageInfo previous, PageInfo update) {
+        state.navigate(update);
         search();
     }
 
@@ -135,9 +147,10 @@ public class CatalogPage implements Page {
 
     private void handleResponse(CatalogResponse response) {
         ModelGraphType effectiveType = deriveEffectiveType();
+        state.updateTotal(response.total);
         catalogTable.update(effectiveType, response.results);
         catalogSidebar.update(response.facets, state);
-        catalogToolbar.updateResultCount(response.total);
+        catalogToolbar.updatePageInfo(state.pageInfo());
     }
 
     private ModelGraphType deriveEffectiveType() {

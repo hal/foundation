@@ -24,8 +24,11 @@ import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogFacet.Group;
 import org.jboss.hal.mgt.CatalogFilter;
 import org.jboss.hal.mgt.ModelGraphType;
+import org.patternfly.component.pagination.PageInfo;
 
 import static org.jboss.hal.mgt.CatalogFacet.TYPE;
+import static org.patternfly.component.pagination.PageInfo.UNKNOWN;
+import static org.patternfly.component.pagination.PageSize._50;
 
 /**
  * Mutable state machine for the Model Catalog page. Tracks active facet selections and builds a {@link CatalogFilter} for
@@ -37,12 +40,14 @@ import static org.jboss.hal.mgt.CatalogFacet.TYPE;
  */
 public class CatalogState {
 
-    private String query;
     private final Map<CatalogFacet, Set<String>> selections;
+    private String query;
+    private PageInfo pageInfo;
     private boolean implicitType;
 
     public CatalogState() {
         this.selections = new EnumMap<>(CatalogFacet.class);
+        this.pageInfo = PageInfo.of(_50.value, UNKNOWN);
     }
 
     // ------------------------------------------------------ mutations
@@ -97,7 +102,23 @@ public class CatalogState {
         this.query = q;
     }
 
+    public void navigate(PageInfo pageInfo) {
+        this.pageInfo = pageInfo;
+    }
+
+    public void resetPage() {
+        this.pageInfo = PageInfo.of(pageInfo.pageSize(), UNKNOWN);
+    }
+
+    public void updateTotal(int total) {
+        this.pageInfo = pageInfo.withTotal(total);
+    }
+
     // ------------------------------------------------------ queries
+
+    public PageInfo pageInfo() {
+        return pageInfo;
+    }
 
     /** Builds a {@link CatalogFilter} from the current state. */
     public CatalogFilter currentFilter() {
@@ -105,6 +126,8 @@ public class CatalogState {
         if (query != null && !query.isEmpty()) {
             filter.q(query);
         }
+        filter.limit(pageInfo.pageSize());
+        filter.offset(pageInfo.from() - 1);
         for (Map.Entry<CatalogFacet, Set<String>> entry : selections.entrySet()) {
             CatalogFacet facet = entry.getKey();
             Set<String> values = entry.getValue();
