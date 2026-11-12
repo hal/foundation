@@ -69,6 +69,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
         verticalTabs.addItem(allVerticalTabs);
         verticalTabs.addItems(asList(ModelGraphType.values()), type -> verticalTab(type.type, type.plural)
+                .style("margin-block-start", 0) // matches the spacing of the checkboxes
                 .store(MODEL_GRAPH_TYPE_KEY, type));
         verticalTabs.onSelect((e, vt, s) -> {
             ModelGraphType type = vt.get(MODEL_GRAPH_TYPE_KEY);
