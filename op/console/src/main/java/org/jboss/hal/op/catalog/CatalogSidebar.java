@@ -77,7 +77,6 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             ModelGraphType type = vt.get(MODEL_GRAPH_TYPE_KEY);
             onTypeSelect.accept(type);
         });
-        verticalTabs.select("all", true, false);
 
         filterContainer = div().css("filter-panel-pf").element();
         container = div()
@@ -100,6 +99,12 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     @Override
     public CatalogSidebar that() {
         return this;
+    }
+
+    void resetType() {
+        for (VerticalTab verticalTab : verticalTabs.items()) {
+            verticalTabs.select(verticalTab, false, false);
+        }
     }
 
     // ------------------------------------------------------ facet filters
@@ -130,14 +135,26 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             }
         }
 
-        // General facets (always visible)
-        addStabilityGroup(stackElement, facets.stability, state);
-        addBooleanGroup(stackElement, "Deprecated", CatalogFacet.DEPRECATED, facets.deprecated, state);
+        // General facets
+        if (facets.stability != null || facets.deprecated != null) {
+            addSectionHeader(stackElement, "General");
+            addStabilityGroup(stackElement, facets.stability, state);
+            addBooleanGroup(stackElement, "Deprecated", CatalogFacet.DEPRECATED, facets.deprecated, state);
+        }
 
-        // Type-specific facets based on selected type or facets presence
-        addResourceFacets(stackElement, facets, state);
-        addAttributeFacets(stackElement, facets, state);
-        addOperationFacets(stackElement, facets, state);
+        // Type-specific facets
+        if (hasResourceFacets(facets)) {
+            addSectionHeader(stackElement, "Resource");
+            addResourceFacets(stackElement, facets, state);
+        }
+        if (hasAttributeFacets(facets)) {
+            addSectionHeader(stackElement, "Attribute");
+            addAttributeFacets(stackElement, facets, state);
+        }
+        if (hasOperationFacets(facets)) {
+            addSectionHeader(stackElement, "Operation");
+            addOperationFacets(stackElement, facets, state);
+        }
 
         filterContainer.appendChild(stackElement);
     }
@@ -311,5 +328,28 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         if (value > 0) {
             map.put(key, value);
         }
+    }
+
+    // ------------------------------------------------------ section headers
+
+    private void addSectionHeader(HTMLElement stackEl, String title) {
+        stackEl.appendChild(stackItem()
+                .add(div().css("filter-panel-pf-section-title").text(title))
+                .element());
+    }
+
+    private boolean hasResourceFacets(CatalogFacets facets) {
+        return facets.singleton != null || facets.declaresCap != null;
+    }
+
+    private boolean hasAttributeFacets(CatalogFacets facets) {
+        return facets.dataType != null || facets.accessType != null || facets.storage != null
+                || facets.restart != null || facets.required != null || facets.nillable != null
+                || facets.expressions != null || facets.sensitive != null;
+    }
+
+    private boolean hasOperationFacets(CatalogFacets facets) {
+        return facets.readOnly != null || facets.runtimeOnly != null || facets.global != null
+                || facets.hasParams != null || facets.hasReturnValue != null;
     }
 }

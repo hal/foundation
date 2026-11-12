@@ -32,11 +32,13 @@ import org.jboss.hal.mgt.ModelGraphCatalog;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
+import org.patternfly.layout.split.SplitItem;
 
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.resources.OuiaIds.PAGE_CATALOG;
 import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
@@ -57,7 +59,9 @@ public class CatalogPage implements Page {
     private final CatalogState state;
     private final CatalogToolbar catalogToolbar;
     private final CatalogSidebar catalogSidebar;
+    private final CatalogWelcome catalogWelcome;
     private final CatalogTable catalogTable;
+    private final SplitItem mainContent;
     private ModelGraphType selectedType;
 
     @Inject
@@ -66,7 +70,9 @@ public class CatalogPage implements Page {
         this.state = new CatalogState();
         this.catalogToolbar = new CatalogToolbar(state.pageInfo(), this::onSearch, this::onClear, this::onNavigate);
         this.catalogSidebar = new CatalogSidebar(this::onTypeSelect, this::onFacetToggle);
+        this.catalogWelcome = new CatalogWelcome();
         this.catalogTable = new CatalogTable();
+        this.mainContent = splitItem().fill();
     }
 
     @Override
@@ -82,8 +88,8 @@ public class CatalogPage implements Page {
                                 .style("min-width", "200px")
                                 .style("max-width", "250px")
                                 .add(catalogSidebar))
-                        .addItem(splitItem().fill()
-                                .add(catalogTable)))
+                        .addItem(mainContent
+                                .add(catalogWelcome)))
                 .element();
 
         return asList(toolbarSection, contentSection);
@@ -91,7 +97,8 @@ public class CatalogPage implements Page {
 
     @Override
     public void attach() {
-        search();
+        catalogToolbar.showPagination(false);
+        initialSearch();
     }
 
     // ------------------------------------------------------ event handlers
@@ -107,12 +114,14 @@ public class CatalogPage implements Page {
         state.clearAll();
         state.resetPage();
         selectedType = null;
-        search();
+        catalogSidebar.resetType();
+        showWelcome();
+        initialSearch();
     }
 
     private void onTypeSelect(ModelGraphType type) {
         selectedType = type;
-        state.clearAll();
+        state.clearTypeSpecific();
         state.resetPage();
         if (type != null) {
             state.apply(CatalogFacet.TYPE, type.type);
@@ -135,7 +144,29 @@ public class CatalogPage implements Page {
         search();
     }
 
+    // ------------------------------------------------------ welcome / results
+
+    private void showWelcome() {
+        failSafeRemoveFromParent(catalogTable);
+        mainContent.add(catalogWelcome);
+        catalogToolbar.showPagination(false);
+    }
+
+    private void showResults() {
+        failSafeRemoveFromParent(catalogWelcome);
+        mainContent.add(catalogTable);
+        catalogToolbar.showPagination(true);
+    }
+
     // ------------------------------------------------------ search
+
+    private void initialSearch() {
+        CatalogFilter filter = state.currentFilter();
+        catalog.search(filter).then(response -> {
+            catalogSidebar.update(response.facets, state);
+            return null;
+        });
+    }
 
     private void search() {
         CatalogFilter filter = state.currentFilter();
@@ -148,8 +179,9 @@ public class CatalogPage implements Page {
     private void handleResponse(CatalogResponse response) {
         ModelGraphType effectiveType = deriveEffectiveType();
         state.updateTotal(response.total);
-        catalogTable.update(effectiveType, response.results);
+        showResults();
         catalogSidebar.update(response.facets, state);
+        catalogTable.update(effectiveType, response.results);
         catalogToolbar.updatePageInfo(state.pageInfo());
     }
 
