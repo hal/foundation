@@ -37,6 +37,12 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class CatalogProperties {
 
+    // ------------------------------------------------------ resource properties
+
+    public Boolean singleton;
+    public Boolean declaresCap;
+    public Boolean definesAttrGroups;
+
     // ------------------------------------------------------ attribute properties
 
     public String dataType;
@@ -56,12 +62,6 @@ public class CatalogProperties {
     public Boolean global;
     public Boolean hasParams;
     public Boolean hasReturnValue;
-
-    // ------------------------------------------------------ resource properties
-
-    public Boolean singleton;
-    public Boolean declaresCap;
-    public Boolean definesAttrGroups;
 
     // ------------------------------------------------------ overlay accessors
 

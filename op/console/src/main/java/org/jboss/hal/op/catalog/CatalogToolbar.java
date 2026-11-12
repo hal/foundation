@@ -27,6 +27,7 @@ import org.patternfly.component.toolbar.Toolbar;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Key.Enter;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.pagination.Pagination.pagination;
@@ -80,6 +81,10 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     @Override
     public HTMLElement element() {
         return toolbar.element();
+    }
+
+    void showPagination(boolean visible) {
+        setVisible(pagination, visible);
     }
 
     void updatePageInfo(PageInfo pageInfo) {

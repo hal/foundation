@@ -29,6 +29,7 @@ import "./variables.css";
 
 // Remaining (a-z)
 import "./capability.css";
+import "./catalog.css";
 import "./credential-reference.css";
 import "./dashboard.css";
 import "./expression.css";

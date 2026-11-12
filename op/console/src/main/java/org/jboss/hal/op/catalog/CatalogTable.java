@@ -26,6 +26,9 @@ import org.jboss.hal.ui.UIContext;
 import org.patternfly.component.table.Table;
 import org.patternfly.component.table.Tr;
 import org.patternfly.core.OuiaSupport;
+import org.patternfly.style.Classes;
+import org.patternfly.style.Variable;
+import org.patternfly.style.Variables;
 
 import elemental2.dom.HTMLElement;
 
@@ -43,6 +46,19 @@ import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
+import static org.patternfly.style.Classes.cell;
+import static org.patternfly.style.Classes.component;
+import static org.patternfly.style.Classes.table;
+import static org.patternfly.style.Variable.componentVar;
+import static org.patternfly.style.Variables.Width;
+import static org.patternfly.style.Width.width10;
+import static org.patternfly.style.Width.width20;
+import static org.patternfly.style.Width.width40;
+import static org.patternfly.style.Width.width50;
+import static org.patternfly.style.Width.width60;
+import static org.patternfly.style.Width.width70;
+import static org.patternfly.style.Width.width80;
+import static org.patternfly.style.Width.width90;
 
 /**
  * Dynamic table for catalog search results. Columns adapt based on the effective type: mixed results show generic columns,
@@ -80,7 +96,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ update
 
     void update(ModelGraphType effectiveType, CatalogResult[] results) {
-        if (effectiveType != currentType) {
+        if (table == null || effectiveType != currentType) {
             failSafeRemoveFromParent(table);
             table = buildTable(effectiveType);
             container.appendChild(table.element());
@@ -135,10 +151,10 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr mixedHeader() {
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("type").text("Type"))
-                .addItem(th("name").text("Name"))
-                .addItem(th("address").text("Address"))
-                .addItem(th("stability").text("Stability"));
+                .addItem(th("type").width(width10).text("Type"))
+                .addItem(th("name").width(width20).text("Name"))
+                .addItem(th("address").width(width60).text("Address"))
+                .addItem(th("stability").width(width10).text("Stability"));
     }
 
     private Tr mixedRow(CatalogResult result) {
@@ -158,10 +174,14 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr resourceHeader() {
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("address").text("Address"))
-                .addItem(th("singleton").text("Singleton"))
-                .addItem(th("declares-cap").text("Declares capability"))
-                .addItem(th("stability").text("Stability"));
+                .addItem(th("address").width(width80).text("Address"))
+                .addItem(th("singleton")
+                        .style(componentVar(component(Classes.table), cell, Width).name, "5%")
+                        .text("Singleton"))
+                .addItem(th("declares-cap")
+                        .style(componentVar(component(Classes.table), cell, Width).name, "5%")
+                        .text("Declares capability"))
+                .addItem(th("stability").width(width10).text("Stability"));
     }
 
     private Tr resourceRow(CatalogResult result) {
@@ -181,15 +201,18 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ attribute
 
     private Tr attributeHeader() {
+        // --pf-v6-c-table--cell--Width
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("name").text("Name"))
-                .addItem(th("res").text("Resource"))
-                .addItem(th("type").text("Data type"))
-                .addItem(th("storage").text("Storage"))
-                .addItem(th("access-type").text("Access"))
-                .addItem(th("required").text("Required"))
-                .addItem(th("nillable").text("Nillable"))
-                .addItem(th("stability").text("Stability"));
+                .addItem(th("name").width(width20).text("Name"))
+                .addItem(th("res").width(width50).text("Resource"))
+                .addItem(th("type").width(width10).text("Data type"))
+                .addItem(th("storage")
+                        .style(componentVar(component(Classes.table), cell, Width).name, "5%")
+                        .text("Storage"))
+                .addItem(th("access-type")
+                        .style(componentVar(component(Classes.table), cell, Width).name, "5%")
+                        .text("Access"))
+                .addItem(th("stability").width(width10).text("Stability"));
     }
 
     private Tr attributeRow(CatalogResult result) {
@@ -205,15 +228,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         if (p != null) {
             tr.addItem(td("Data type").text(safe(p.dataType)))
                     .addItem(storageTd("Storage", p.storage))
-                    .addItem(accessTypeTd("Access", p.accessType))
-                    .addItem(td("Required").text(yesNo(p.isRequired())))
-                    .addItem(td("Nillable").text(yesNo(p.isNillable())));
+                    .addItem(accessTypeTd("Access", p.accessType));
+
         } else {
             tr.addItem(td("Data type").text(" "))
                     .addItem(td("Storage").text(" "))
-                    .addItem(td("Access").text(" "))
-                    .addItem(td("Required").text(" "))
-                    .addItem(td("Nillable").text(" "));
+                    .addItem(td("Access").text(" "));
         }
         tr.addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
         return tr;
@@ -223,13 +243,15 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr operationHeader() {
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("name").text("Name"))
-                .addItem(th("res").text("Resource"))
-                .addItem(th("global").text("Global"))
-                .addItem(th("read-only").text("Read only"))
-                .addItem(th("runtime-only").text("Runtime only"))
-                .addItem(th("has-params").text("Has params"))
-                .addItem(th("stability").text("Stability"));
+                .addItem(th("name").width(width20).text("Name"))
+                .addItem(th("res").width(width60).text("Resource"))
+                .addItem(th("has-params")
+                        .style(componentVar(component(Classes.table), cell, Width).name, "5%")
+                        .text("Parameter"))
+                .addItem(th("has-return-value")
+                        .style(componentVar(component(Classes.table), cell, Width).name, "5%")
+                        .text("Return value"))
+                .addItem(th("stability").width(width10).text("Stability"));
     }
 
     private Tr operationRow(CatalogResult result) {
@@ -242,10 +264,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                             }
                         }))
                 .addItem(td("Resource").text(safe(result.resourceAddress)))
-                .addItem(td("Global").text(p != null ? yesNo(p.isGlobal()) : ""))
-                .addItem(td("Read only").text(p != null ? yesNo(p.isReadOnly()) : ""))
-                .addItem(td("Runtime only").text(p != null ? yesNo(p.isRuntimeOnly()) : ""))
-                .addItem(td("Has params").text(p != null ? yesNo(p.isHasParams()) : ""))
+                .addItem(td("Parameter").text(p != null ? yesNo(p.isHasParams()) : ""))
+                .addItem(td("Return value").text(p != null ? yesNo(p.isHasReturnValue()) : ""))
                 .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
     }
 
@@ -253,9 +273,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr capabilityHeader() {
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("name").text("Name"))
-                .addItem(th("address").text("Address"))
-                .addItem(th("stability").text("Stability"));
+                .addItem(th("name").width(width90).text("Name"))
+                .addItem(th("stability").width(width10).text("Stability"));
     }
 
     private Tr capabilityRow(CatalogResult result) {
@@ -266,7 +285,6 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                                 td.css(halModifier(deprecated));
                             }
                         }))
-                .addItem(td("Address").text(safe(result.address)))
                 .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
     }
 

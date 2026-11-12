@@ -22,52 +22,57 @@ package org.jboss.hal.mgt;
  * <p>Type-specific facets belong to exactly one {@link Group}: {@link Group#ATTRIBUTE}, {@link Group#RESOURCE}, or
  * {@link Group#OPERATION}. When a type-specific facet is selected without an explicit type filter, the type is implicitly
  * constrained to the facet's group.
+ *
+ * <p>Facets marked as {@link #exclusive} have mutually exclusive values — selecting one deselects the other. This applies to
+ * boolean facets (yes/no) and facets with exactly two fixed options (e.g. storage: configuration/runtime).
  */
 public enum CatalogFacet {
 
     // ------------------------------------------------------ general
 
-    TYPE("type", Group.GENERAL),
-    STABILITY("stability", Group.GENERAL),
-    DEPRECATED("deprecated", Group.GENERAL),
+    TYPE("type", Group.GENERAL, false),
+    STABILITY("stability", Group.GENERAL, false),
+    DEPRECATED("deprecated", Group.GENERAL, true),
 
     // ------------------------------------------------------ resource
 
-    SINGLETON("singleton", Group.RESOURCE),
-    DECLARES_CAP("declaresCap", Group.RESOURCE),
-    DEFINES_ATTR_GROUPS("definesAttrGroups", Group.RESOURCE),
+    SINGLETON("singleton", Group.RESOURCE, true),
+    DECLARES_CAP("declaresCap", Group.RESOURCE, true),
+    DEFINES_ATTR_GROUPS("definesAttrGroups", Group.RESOURCE, true),
 
     // ------------------------------------------------------ attribute
 
-    DATA_TYPE("dataType", Group.ATTRIBUTE),
-    ACCESS_TYPE("accessType", Group.ATTRIBUTE),
-    STORAGE("storage", Group.ATTRIBUTE),
-    RESTART("restart", Group.ATTRIBUTE),
-    REQUIRED("required", Group.ATTRIBUTE),
-    NILLABLE("nillable", Group.ATTRIBUTE),
-    EXPRESSIONS("expressions", Group.ATTRIBUTE),
-    SENSITIVE("sensitive", Group.ATTRIBUTE),
-    HAS_ALLOWED("hasAllowed", Group.ATTRIBUTE),
-    UNIT("unit", Group.ATTRIBUTE),
-    HAS_RELATIONSHIPS("hasRelationships", Group.ATTRIBUTE),
-    REFS_CAP("refsCap", Group.ATTRIBUTE),
+    DATA_TYPE("dataType", Group.ATTRIBUTE, false),
+    ACCESS_TYPE("accessType", Group.ATTRIBUTE, false),
+    STORAGE("storage", Group.ATTRIBUTE, true),
+    RESTART("restart", Group.ATTRIBUTE, false),
+    REQUIRED("required", Group.ATTRIBUTE, true),
+    NILLABLE("nillable", Group.ATTRIBUTE, true),
+    EXPRESSIONS("expressions", Group.ATTRIBUTE, true),
+    SENSITIVE("sensitive", Group.ATTRIBUTE, true),
+    HAS_ALLOWED("hasAllowed", Group.ATTRIBUTE, true),
+    UNIT("unit", Group.ATTRIBUTE, false),
+    HAS_RELATIONSHIPS("hasRelationships", Group.ATTRIBUTE, true),
+    REFS_CAP("refsCap", Group.ATTRIBUTE, true),
 
     // ------------------------------------------------------ operation
 
-    READ_ONLY("readOnly", Group.OPERATION),
-    RUNTIME_ONLY("runtimeOnly", Group.OPERATION),
-    GLOBAL("global", Group.OPERATION),
-    HAS_PARAMS("hasParams", Group.OPERATION),
-    HAS_RETURN_VALUE("hasReturnValue", Group.OPERATION);
+    READ_ONLY("readOnly", Group.OPERATION, true),
+    RUNTIME_ONLY("runtimeOnly", Group.OPERATION, true),
+    GLOBAL("global", Group.OPERATION, true),
+    HAS_PARAMS("hasParams", Group.OPERATION, true),
+    HAS_RETURN_VALUE("hasReturnValue", Group.OPERATION, true);
 
     // ------------------------------------------------------ instance
 
     public final String key;
     public final Group group;
+    public final boolean exclusive;
 
-    CatalogFacet(String key, Group group) {
+    CatalogFacet(String key, Group group, boolean exclusive) {
         this.key = key;
         this.group = group;
+        this.exclusive = exclusive;
     }
 
     // ------------------------------------------------------ group

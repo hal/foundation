@@ -7,6 +7,44 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add Model Catalog page with dynamic table, faceted sidebar, welcome page, and pagination
+- Add faceted search with typed facet counts, mutual exclusion for binary checkboxes, and automatic hiding of single-value categories
+- Add CatalogState filter state machine with implicit type logic from facet selection
+- Add VerticalTabs component for catalog sidebar type filtering
+- Add OUIA IDs for shared UI components and skeleton toolbar
+- Add `Identifiers` utility with all static `HasIdentifier` constants
+- Add MGT search result deduplication and highlighting
+
+### Changed
+
+- Extract `mgt` module from op/console — dedicated REST client, DTOs, availability events, and endpoint management
+- Migrate op/console and site module to Vite+ 1.5.0
+- Rename model browser route from `/management-model` to `/model-browser` and rename packages accordingly
+- Refactor ModelGraphConnection — extract `ModelGraphSearch`, `ModelGraphEndpoint`, and `ModelGraphCapability` as separate concerns
+- Rename `ModelGraphToolsIndicator` to `ModelGraphIndicator`
+- Improve universal search box pick list and error handling
+
+### Fixed
+
+- Fix catalog sidebar type tab not syncing with implicit type from facet selection
+- Fix case-insensitive model graph type handling and capitalize labels
+- Fix hyphenated JSON keys using JsOverlay
+- Fix explicit elemental2 dependency management for J2CL ADVANCED mode
+- Fix CI container build by replacing qemu-user-static with qemu-user-binfmt
+- Fix vertical tab spacing in catalog sidebar to match checkbox alignment
+
+### Upgrades
+
+- Bump PatternFly Java to 0.15.1-SNAPSHOT
+- Bump Elemento, Elemental2, and J2CL processors
+- Bump jboss-parent
+- Bump Vite+ to 1.5.1
+- Bump Node.js
+- Bump GitHub Actions (setup-java v6.2.0)
+- Bump npm dependencies and packageManager versions
+
 ## [0.6.0] - 2026-10-20
 
 ### Added

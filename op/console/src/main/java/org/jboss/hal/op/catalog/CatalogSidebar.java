@@ -15,14 +15,12 @@
  */
 package org.jboss.hal.op.catalog;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.mgt.AccessTypeCounts;
 import org.jboss.hal.mgt.BooleanCounts;
@@ -35,19 +33,20 @@ import org.jboss.hal.mgt.StabilityCounts;
 import org.jboss.hal.mgt.StorageCounts;
 import org.jboss.hal.ui.component.VerticalTab;
 import org.jboss.hal.ui.component.VerticalTabs;
-import org.patternfly.component.form.Checkbox;
 import org.patternfly.core.OuiaSupport;
 
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.nav;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
 import static org.jboss.hal.ui.component.VerticalTab.verticalTab;
 import static org.jboss.hal.ui.component.VerticalTabs.verticalTabs;
-import static org.patternfly.component.form.Checkbox.checkbox;
-import static org.patternfly.layout.stack.Stack.stack;
-import static org.patternfly.layout.stack.StackItem.stackItem;
+import static org.patternfly.component.divider.Divider.divider;
+import static org.patternfly.component.divider.DividerType.hr;
+import static org.patternfly.component.title.Title.title;
 
 /**
  * Sidebar with type tabs and facet filter checkboxes. Type tabs filter by {@link ModelGraphType}. Facet filters are grouped by
@@ -57,39 +56,35 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     private static final String MODEL_GRAPH_TYPE_KEY = "model-graph-type";
 
-    private final HTMLElement container;
+    private final BiConsumer<CatalogFacet, String> onFacetToggle;
     private final VerticalTabs verticalTabs;
     private final VerticalTab allVerticalTabs;
-    private final HTMLElement filterContainer;
-    private final BiConsumer<CatalogFacet, String> onFacetToggle;
-    private final Map<CatalogFacet, List<Checkbox>> facetCheckboxes;
+    private final HTMLElement root;
+    private final HTMLContainerBuilder<HTMLDivElement> filterPanel;
 
     CatalogSidebar(Consumer<ModelGraphType> onTypeSelect, BiConsumer<CatalogFacet, String> onFacetToggle) {
         this.onFacetToggle = onFacetToggle;
         this.verticalTabs = verticalTabs();
         this.allVerticalTabs = verticalTab("all", "All");
-        this.facetCheckboxes = new EnumMap<>(CatalogFacet.class);
 
         verticalTabs.addItem(allVerticalTabs);
         verticalTabs.addItems(asList(ModelGraphType.values()), type -> verticalTab(type.type, type.plural)
+                .style("margin-block-start", 0) // matches the spacing of the checkboxes
                 .store(MODEL_GRAPH_TYPE_KEY, type));
         verticalTabs.onSelect((e, vt, s) -> {
             ModelGraphType type = vt.get(MODEL_GRAPH_TYPE_KEY);
             onTypeSelect.accept(type);
         });
-        verticalTabs.select("all", true, false);
-
-        filterContainer = div().css("filter-panel-pf").element();
-        container = div()
+        root = nav()
                 .add(verticalTabs)
-                .add(filterContainer)
+                .add(filterPanel = div().css("filter-panel-pf"))
                 .element();
         initOuia();
     }
 
     @Override
     public HTMLElement element() {
-        return container;
+        return root;
     }
 
     @Override
@@ -102,18 +97,63 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         return this;
     }
 
-    // ------------------------------------------------------ facet filters
+    // ------------------------------------------------------ update
 
-    void update(CatalogFacets facets, CatalogState state) {
-        facetCheckboxes.clear();
-        removeChildrenFrom(filterContainer);
+    void update(CatalogState state, CatalogFacets facets) {
+        removeChildrenFrom(filterPanel);
         if (facets == null) {
             return;
         }
 
-        HTMLElement stackElement = stack().gutter().element();
+        updateTypeCounts(facets);
 
-        // Global type counts
+        // General facets
+        if (facets.stability != null || facets.deprecated != null) {
+            addStabilityGroup(state, facets.stability);
+            addBooleanGroup("Deprecated", state, CatalogFacet.DEPRECATED, facets.deprecated);
+        }
+
+        // Type-specific facets
+        if (hasResourceFacets(facets)) {
+            filterPanel
+                    .add(divider(hr).css("filter-panel-divider"))
+                    .add(title(4, "Resources").css("filter-panel-header"));
+            addResourceFacets(state, facets);
+        }
+        if (hasAttributeFacets(facets)) {
+            filterPanel
+                    .add(divider(hr).css("filter-panel-divider"))
+                    .add(title(4, "Attributes").css("filter-panel-header"));
+            addAttributeFacets(state, facets);
+        }
+        if (hasOperationFacets(facets)) {
+            filterPanel
+                    .add(divider(hr).css("filter-panel-divider"))
+                    .add(title(4, "Operations").css("filter-panel-header"));
+            addOperationFacets(state, facets);
+        }
+    }
+
+    // ------------------------------------------------------ type
+
+    void selectType(ModelGraphType type) {
+        if (type != null) {
+            VerticalTab vt = verticalTabs.item(type.type);
+            if (vt != null) {
+                verticalTabs.select(vt, true, false);
+            }
+        } else {
+            verticalTabs.select(allVerticalTabs, true, false);
+        }
+    }
+
+    void resetType() {
+        for (VerticalTab verticalTab : verticalTabs.items()) {
+            verticalTabs.select(verticalTab, false, false);
+        }
+    }
+
+    private void updateTypeCounts(CatalogFacets facets) {
         int all = facets.type.resource + facets.type.attribute + facets.type.operation + facets.type.capability;
         allVerticalTabs.text("All (" + all + ")");
         for (ModelGraphType type : ModelGraphType.values()) {
@@ -124,81 +164,52 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
                     case ATTRIBUTE -> String.valueOf(facets.type.attribute);
                     case OPERATION -> String.valueOf(facets.type.operation);
                     case CAPABILITY -> String.valueOf(facets.type.capability);
-                    default -> "";
                 } + ")";
                 vt.text(type.plural + count);
             }
         }
-
-        // General facets (always visible)
-        addStabilityGroup(stackElement, facets.stability, state);
-        addBooleanGroup(stackElement, "Deprecated", CatalogFacet.DEPRECATED, facets.deprecated, state);
-
-        // Type-specific facets based on selected type or facets presence
-        addResourceFacets(stackElement, facets, state);
-        addAttributeFacets(stackElement, facets, state);
-        addOperationFacets(stackElement, facets, state);
-
-        filterContainer.appendChild(stackElement);
     }
 
-    private void addResourceFacets(HTMLElement stackEl, CatalogFacets facets, CatalogState state) {
-        if (facets.singleton != null) {
-            addBooleanGroup(stackEl, "Singleton", CatalogFacet.SINGLETON, facets.singleton, state);
-        }
-        if (facets.declaresCap != null) {
-            addBooleanGroup(stackEl, "Declares Capability", CatalogFacet.DECLARES_CAP, facets.declaresCap, state);
-        }
+    // ------------------------------------------------------ facets
+
+    private void addResourceFacets(CatalogState state, CatalogFacets facets) {
+        // @formatter:off
+        if (facets.singleton != null) {addBooleanGroup("Singleton", state, CatalogFacet.SINGLETON, facets.singleton);}
+        if (facets.declaresCap != null) {addBooleanGroup("Declares capability", state, CatalogFacet.DECLARES_CAP, facets.declaresCap);}
+        if (facets.definesAttrGroups != null) {addBooleanGroup("Attribute groups", state, CatalogFacet.DEFINES_ATTR_GROUPS, facets.definesAttrGroups);}
+        // @formatter:on
     }
 
-    private void addAttributeFacets(HTMLElement stackEl, CatalogFacets facets, CatalogState state) {
-        if (facets.dataType != null) {
-            addDataTypeGroup(stackEl, facets.dataType, state);
-        }
-        if (facets.accessType != null) {
-            addAccessTypeGroup(stackEl, facets.accessType, state);
-        }
-        if (facets.storage != null) {
-            addStorageGroup(stackEl, facets.storage, state);
-        }
-        if (facets.restart != null) {
-            addRestartGroup(stackEl, facets.restart, state);
-        }
-        if (facets.required != null) {
-            addBooleanGroup(stackEl, "Required", CatalogFacet.REQUIRED, facets.required, state);
-        }
-        if (facets.nillable != null) {
-            addBooleanGroup(stackEl, "Nillable", CatalogFacet.NILLABLE, facets.nillable, state);
-        }
-        if (facets.expressions != null) {
-            addBooleanGroup(stackEl, "Expressions", CatalogFacet.EXPRESSIONS, facets.expressions, state);
-        }
-        if (facets.sensitive != null) {
-            addBooleanGroup(stackEl, "Sensitive", CatalogFacet.SENSITIVE, facets.sensitive, state);
-        }
+    private void addAttributeFacets(CatalogState state, CatalogFacets facets) {
+        // @formatter:off
+        if (facets.dataType != null) {addDataTypeGroup(state, facets.dataType);}
+        Map<String, Integer> units = facets.unitCounts();
+        if (!units.isEmpty()) { addFacetGroup("Unit", state, CatalogFacet.UNIT, units); }
+        if (facets.hasAllowed != null) {addBooleanGroup("Allowed values", state, CatalogFacet.HAS_ALLOWED, facets.hasAllowed);}
+        if (facets.refsCap != null) {addBooleanGroup("References capability", state, CatalogFacet.REFS_CAP, facets.refsCap);}
+        if (facets.expressions != null) {addBooleanGroup("Expressions", state, CatalogFacet.EXPRESSIONS, facets.expressions);}
+        if (facets.required != null) {addBooleanGroup("Required", state, CatalogFacet.REQUIRED, facets.required);}
+        if (facets.nillable != null) {addBooleanGroup("Nillable", state, CatalogFacet.NILLABLE, facets.nillable);}
+        if (facets.accessType != null) {addAccessTypeGroup(state, facets.accessType);}
+        if (facets.storage != null) {addStorageGroup(state, facets.storage);}
+        if (facets.restart != null) {addRestartGroup(state, facets.restart);}
+        if (facets.sensitive != null) {addBooleanGroup("Sensitive", state, CatalogFacet.SENSITIVE, facets.sensitive);}
+        // @formatter:on
     }
 
-    private void addOperationFacets(HTMLElement stackEl, CatalogFacets facets, CatalogState state) {
-        if (facets.readOnly != null) {
-            addBooleanGroup(stackEl, "Read Only", CatalogFacet.READ_ONLY, facets.readOnly, state);
-        }
-        if (facets.runtimeOnly != null) {
-            addBooleanGroup(stackEl, "Runtime Only", CatalogFacet.RUNTIME_ONLY, facets.runtimeOnly, state);
-        }
-        if (facets.global != null) {
-            addBooleanGroup(stackEl, "Global", CatalogFacet.GLOBAL, facets.global, state);
-        }
-        if (facets.hasParams != null) {
-            addBooleanGroup(stackEl, "Has Parameters", CatalogFacet.HAS_PARAMS, facets.hasParams, state);
-        }
-        if (facets.hasReturnValue != null) {
-            addBooleanGroup(stackEl, "Has Return Value", CatalogFacet.HAS_RETURN_VALUE, facets.hasReturnValue, state);
-        }
+    private void addOperationFacets(CatalogState state, CatalogFacets facets) {
+        // @formatter:off
+        if (facets.hasParams != null) {addBooleanGroup("Has parameters", state, CatalogFacet.HAS_PARAMS, facets.hasParams);}
+        if (facets.hasReturnValue != null) {addBooleanGroup("Has return value", state, CatalogFacet.HAS_RETURN_VALUE, facets.hasReturnValue);}
+        if (facets.global != null) {addBooleanGroup("Global", state, CatalogFacet.GLOBAL, facets.global);}
+        if (facets.readOnly != null) {addBooleanGroup("Read only", state, CatalogFacet.READ_ONLY, facets.readOnly);}
+        if (facets.runtimeOnly != null) {addBooleanGroup("Runtime only", state, CatalogFacet.RUNTIME_ONLY, facets.runtimeOnly);}
+        // @formatter:on
     }
 
-    // ------------------------------------------------------ specific facet groups
+    // ------------------------------------------------------ specific facets
 
-    private void addStabilityGroup(HTMLElement stackEl, StabilityCounts counts, CatalogState state) {
+    private void addStabilityGroup(CatalogState state, StabilityCounts counts) {
         if (counts == null) {
             return;
         }
@@ -207,10 +218,10 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "community", counts.community);
         putIfPositive(values, "preview", counts.preview);
         putIfPositive(values, "experimental", counts.experimental);
-        addFacetGroup(stackEl, "Stability", CatalogFacet.STABILITY, values, state);
+        addFacetGroup("Stability", state, CatalogFacet.STABILITY, values);
     }
 
-    private void addDataTypeGroup(HTMLElement stackEl, DataTypeCounts counts, CatalogState state) {
+    private void addDataTypeGroup(CatalogState state, DataTypeCounts counts) {
         if (counts == null) {
             return;
         }
@@ -225,10 +236,10 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "list", counts.list);
         putIfPositive(values, "bytes", counts.bytes);
         putIfPositive(values, "property", counts.property);
-        addFacetGroup(stackEl, "Data Type", CatalogFacet.DATA_TYPE, values, state);
+        addFacetGroup("Data Type", state, CatalogFacet.DATA_TYPE, values);
     }
 
-    private void addAccessTypeGroup(HTMLElement stackEl, AccessTypeCounts counts, CatalogState state) {
+    private void addAccessTypeGroup(CatalogState state, AccessTypeCounts counts) {
         if (counts == null) {
             return;
         }
@@ -236,20 +247,20 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "read-write", counts.readWrite());
         putIfPositive(values, "read-only", counts.readOnly());
         putIfPositive(values, "metric", counts.metric);
-        addFacetGroup(stackEl, "Access Type", CatalogFacet.ACCESS_TYPE, values, state);
+        addFacetGroup("Access Type", state, CatalogFacet.ACCESS_TYPE, values);
     }
 
-    private void addStorageGroup(HTMLElement stackEl, StorageCounts counts, CatalogState state) {
+    private void addStorageGroup(CatalogState state, StorageCounts counts) {
         if (counts == null) {
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
         putIfPositive(values, "configuration", counts.configuration);
         putIfPositive(values, "runtime", counts.runtime);
-        addFacetGroup(stackEl, "Storage", CatalogFacet.STORAGE, values, state);
+        addFacetGroup("Storage", state, CatalogFacet.STORAGE, values);
     }
 
-    private void addRestartGroup(HTMLElement stackEl, RestartCounts counts, CatalogState state) {
+    private void addRestartGroup(CatalogState state, RestartCounts counts) {
         if (counts == null) {
             return;
         }
@@ -258,58 +269,50 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "all-services", counts.allServices());
         putIfPositive(values, "resource-services", counts.resourceServices());
         putIfPositive(values, "jvm", counts.jvm);
-        addFacetGroup(stackEl, "Restart", CatalogFacet.RESTART, values, state);
+        addFacetGroup("Restart", state, CatalogFacet.RESTART, values);
     }
 
-    private void addBooleanGroup(HTMLElement stackEl, String label, CatalogFacet facet, BooleanCounts counts,
-            CatalogState state) {
+    private void addBooleanGroup(String label, CatalogState state, CatalogFacet facet, BooleanCounts counts) {
         if (counts == null) {
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
         if (counts.yes > 0) {values.put("yes", counts.yes);}
         if (counts.no > 0) {values.put("no", counts.no);}
-        addFacetGroup(stackEl, label, facet, values, state);
+        addFacetGroup(label, state, facet, values);
     }
 
-    // ------------------------------------------------------ generic facet group
+    // ------------------------------------------------------ generic facet
 
-    private void addFacetGroup(HTMLElement stackEl, String label, CatalogFacet facet, Map<String, Integer> values,
-            CatalogState state) {
-        if (values.isEmpty()) {
+    private void addFacetGroup(String label, CatalogState state, CatalogFacet facet, Map<String, Integer> values) {
+        if (values.size() <= 1) {
             return;
         }
-
-        HTMLElement category = div().css("filter-panel-pf-category")
-                .add(div().css("filter-panel-pf-category-title").text(label))
-                .element();
-
-        HTMLElement items = div().css("filter-panel-pf-category-items").element();
-        List<Checkbox> checkboxes = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : values.entrySet()) {
-            String value = entry.getKey();
-            int count = entry.getValue();
-            String cbId = facet.key + "-" + value;
-            String cbLabel = value + " (" + count + ")";
-            Checkbox cb = checkbox(cbId, cbId, cbLabel);
-            if (state.isActive(facet, value)) {
-                cb.value(true);
-            }
-            cb.onChange((event, checkbox, checked) -> onFacetToggle.accept(facet, value));
-            checkboxes.add(cb);
-            items.appendChild(div().css("filter-panel-pf-category-item").add(cb).element());
-        }
-        facetCheckboxes.put(facet, checkboxes);
-        category.appendChild(items);
-
-        stackEl.appendChild(stackItem().add(category).element());
+        FacetCategory facetCategory = new FacetCategory(label, facet, onFacetToggle);
+        facetCategory.addValues(state, values);
+        filterPanel.add(facetCategory);
     }
 
     // ------------------------------------------------------ helpers
 
-    private static void putIfPositive(Map<String, Integer> map, String key, int value) {
+    private void putIfPositive(Map<String, Integer> map, String key, int value) {
         if (value > 0) {
             map.put(key, value);
         }
+    }
+
+    private boolean hasResourceFacets(CatalogFacets facets) {
+        return facets.singleton != null || facets.declaresCap != null;
+    }
+
+    private boolean hasAttributeFacets(CatalogFacets facets) {
+        return facets.dataType != null || facets.accessType != null || facets.storage != null
+                || facets.restart != null || facets.required != null || facets.nillable != null
+                || facets.expressions != null || facets.sensitive != null;
+    }
+
+    private boolean hasOperationFacets(CatalogFacets facets) {
+        return facets.readOnly != null || facets.runtimeOnly != null || facets.global != null
+                || facets.hasParams != null || facets.hasReturnValue != null;
     }
 }
