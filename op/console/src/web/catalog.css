@@ -15,11 +15,5 @@
  */
 
 .filter-panel-pf-section-title {
-    font-size: var(--pf-t--global--font--size--xs);
-    font-weight: var(--pf-t--global--font--weight--body--bold);
-    color: var(--pf-t--global--text--color--subtle);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding-block-end: var(--pf-t--global--spacer--xs);
-    border-block-end: var(--pf-t--global--border--width--divider--default) solid var(--pf-t--global--border--color--default);
+    margin-block-start: calc(2 * var(--pf-t--global--spacer--md));
 }

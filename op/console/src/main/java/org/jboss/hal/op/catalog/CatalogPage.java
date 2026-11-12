@@ -180,7 +180,7 @@ public class CatalogPage implements Page {
     private void initialSearch() {
         CatalogFilter filter = state.currentFilter();
         catalog.search(filter).then(response -> {
-            catalogSidebar.update(response.facets, state);
+            catalogSidebar.update(state, response.facets);
             return null;
         });
     }
@@ -197,7 +197,7 @@ public class CatalogPage implements Page {
         ModelGraphType effectiveType = deriveEffectiveType();
         state.updateTotal(response.total);
         showResults();
-        catalogSidebar.update(response.facets, state);
+        catalogSidebar.update(state, response.facets);
         catalogTable.update(effectiveType, response.results);
         catalogToolbar.updatePageInfo(state.pageInfo());
     }
