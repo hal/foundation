@@ -187,9 +187,11 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         if (!units.isEmpty()) { addFacetGroup("Unit", state, CatalogFacet.UNIT, units); }
         if (facets.hasAllowed != null) {addBooleanGroup("Allowed values", state, CatalogFacet.HAS_ALLOWED, facets.hasAllowed);}
         if (facets.refsCap != null) {addBooleanGroup("References capability", state, CatalogFacet.REFS_CAP, facets.refsCap);}
-        if (facets.expressions != null) {addBooleanGroup("Expressions", state, CatalogFacet.EXPRESSIONS, facets.expressions);}
+        if (facets.expressions != null) {addBooleanGroup("Supports expressions", state, CatalogFacet.EXPRESSIONS, facets.expressions);}
         if (facets.required != null) {addBooleanGroup("Required", state, CatalogFacet.REQUIRED, facets.required);}
         if (facets.nillable != null) {addBooleanGroup("Nillable", state, CatalogFacet.NILLABLE, facets.nillable);}
+        if (facets.hasAlternatives != null) {addBooleanGroup("Alternatives", state, CatalogFacet.HAS_ALTERNATIVES, facets.hasAlternatives);}
+        if (facets.hasRequires != null) {addBooleanGroup("Requires", state, CatalogFacet.HAS_REQUIRES, facets.hasRequires);}
         if (facets.accessType != null) {addAccessTypeGroup(state, facets.accessType);}
         if (facets.storage != null) {addStorageGroup(state, facets.storage);}
         if (facets.restart != null) {addRestartGroup(state, facets.restart);}

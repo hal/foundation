@@ -59,7 +59,8 @@ public class CatalogFacets {
     public BooleanCounts expressions;
     public BooleanCounts sensitive;
     public BooleanCounts hasAllowed;
-    public BooleanCounts hasRelationships;
+    public BooleanCounts hasAlternatives;
+    public BooleanCounts hasRequires;
     public BooleanCounts refsCap;
 
     // ------------------------------------------------------ operation

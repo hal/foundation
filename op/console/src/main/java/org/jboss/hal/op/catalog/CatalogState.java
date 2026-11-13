@@ -221,7 +221,8 @@ public class CatalogState {
             case SENSITIVE -> filter.sensitive(toBoolean(arr[0]));
             case HAS_ALLOWED -> filter.hasAllowed(toBoolean(arr[0]));
             case UNIT -> filter.unit(arr);
-            case HAS_RELATIONSHIPS -> filter.hasRelationships(toBoolean(arr[0]));
+            case HAS_ALTERNATIVES -> filter.hasAlternatives(toBoolean(arr[0]));
+            case HAS_REQUIRES -> filter.hasRequires(toBoolean(arr[0]));
             case REFS_CAP -> filter.refsCap(arr[0]);
 
             // operation

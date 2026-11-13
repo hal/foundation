@@ -35,4 +35,10 @@ public class CapabilityReference {
 
     /** The management model address of the resource that references the capability. */
     public String resourceAddress;
+
+    /** The stability level of the attribute that references the capability (may be {@code null}). */
+    public String attributeStability;
+
+    /** The stability level of the resource that references the capability (may be {@code null}). */
+    public String resourceStability;
 }

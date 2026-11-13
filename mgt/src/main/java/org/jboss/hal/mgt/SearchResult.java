@@ -49,6 +49,9 @@ public class SearchResult {
     /** Resources that declare this capability (only present for capabilities, may be {@code null}). */
     public ResourceRef[] providedBy;
 
+    /** The stability level (may be {@code null}). */
+    public String stability;
+
     @JsOverlay
     public final ModelGraphType type() {
         return ModelGraphType.of(type);

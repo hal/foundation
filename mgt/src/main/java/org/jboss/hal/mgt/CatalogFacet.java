@@ -52,7 +52,8 @@ public enum CatalogFacet {
     SENSITIVE("sensitive", Group.ATTRIBUTE, true),
     HAS_ALLOWED("hasAllowed", Group.ATTRIBUTE, true),
     UNIT("unit", Group.ATTRIBUTE, false),
-    HAS_RELATIONSHIPS("hasRelationships", Group.ATTRIBUTE, true),
+    HAS_ALTERNATIVES("hasAlternatives", Group.ATTRIBUTE, true),
+    HAS_REQUIRES("hasRequires", Group.ATTRIBUTE, true),
     REFS_CAP("refsCap", Group.ATTRIBUTE, true),
 
     // ------------------------------------------------------ operation

@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents the query parameters for the MGT catalog API ({@code GET /api/catalog}). Use builder-style setters to
- * configure filters, then call {@link #toQueryString()} to produce the URL query string.
+ * Represents the query parameters for the MGT catalog API ({@code GET /api/catalog}). Use builder-style setters to configure
+ * filters, then call {@link #toQueryString()} to produce the URL query string.
  *
  * <p>Only non-null/non-default values are included in the query string. Multi-value parameters are rendered as
  * comma-separated values.
@@ -57,7 +57,8 @@ public class CatalogFilter {
     private Boolean sensitive;
     private Boolean hasAllowed;
     private List<String> unit;
-    private Boolean hasRelationships;
+    private Boolean hasAlternatives;
+    private Boolean hasRequires;
     private String refsCap;
 
     // operation-specific
@@ -183,8 +184,13 @@ public class CatalogFilter {
         return this;
     }
 
-    public CatalogFilter hasRelationships(boolean hasRelationships) {
-        this.hasRelationships = hasRelationships;
+    public CatalogFilter hasAlternatives(boolean hasAlternatives) {
+        this.hasAlternatives = hasAlternatives;
+        return this;
+    }
+
+    public CatalogFilter hasRequires(boolean hasRequires) {
+        this.hasRequires = hasRequires;
         return this;
     }
 
@@ -247,7 +253,8 @@ public class CatalogFilter {
         appendBoolean(params, "sensitive", sensitive);
         appendBoolean(params, "hasAllowed", hasAllowed);
         appendMulti(params, "unit", unit);
-        appendBoolean(params, "hasRelationships", hasRelationships);
+        appendBoolean(params, "hasAlternatives", hasAlternatives);
+        appendBoolean(params, "hasRequires", hasRequires);
         appendString(params, "refsCap", refsCap);
 
         // operation
