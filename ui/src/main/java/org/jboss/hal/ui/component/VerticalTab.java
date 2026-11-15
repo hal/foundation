@@ -19,6 +19,8 @@ import org.jboss.elemento.HTMLElementVisibilityMethods;
 import org.patternfly.core.ComponentContext;
 import org.patternfly.core.HasIdentifier;
 import org.patternfly.core.OuiaSupport;
+import org.patternfly.style.Modifiers;
+import org.patternfly.style.Modifiers.Disabled;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
@@ -31,6 +33,7 @@ import static org.jboss.elemento.EventType.click;
 
 public class VerticalTab implements
         ComponentContext<HTMLElement, VerticalTab>,
+        Disabled<HTMLElement, VerticalTab>,
         ElementAttributeMethods<HTMLElement, VerticalTab>,
         ElementClassListMethods<HTMLElement, VerticalTab>,
         ElementConsumerMethods<HTMLElement, VerticalTab>,

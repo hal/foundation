@@ -42,6 +42,7 @@ import "./stability.css";
 import "./tree-view.css";
 import "./ui.css";
 import "./universal-search.css";
+import "./vertical-tabs.css";
 
 // Load J2CL-compiled console app
 const script = document.createElement("script");
