@@ -18,6 +18,7 @@ package org.jboss.hal.op.catalog;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.mgt.CatalogProperties;
+import org.jboss.hal.mgt.CatalogResponse;
 import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.resources.Identifiers;
@@ -96,13 +97,14 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ update
 
     void update(ModelGraphType effectiveType, CatalogResult[] results) {
-        if (table == null || effectiveType != currentType) {
+        ModelGraphType tableType = effectiveType == ModelGraphType.ALL ? null : effectiveType;
+        if (table == null || tableType != currentType) {
             failSafeRemoveFromParent(table);
-            table = buildTable(effectiveType);
+            table = buildTable(tableType);
             container.appendChild(table.element());
-            currentType = effectiveType;
+            currentType = tableType;
         }
-        populateRows(effectiveType, results);
+        populateRows(tableType, results);
     }
 
     // ------------------------------------------------------ table
@@ -113,6 +115,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
             t.addHead(thead().addRow(mixedHeader()));
         } else {
             switch (effectiveType) {
+                case ALL -> t.addHead(thead().addRow(mixedHeader()));
                 case RESOURCE -> t.addHead(thead().addRow(resourceHeader()));
                 case ATTRIBUTE -> t.addHead(thead().addRow(attributeHeader()));
                 case OPERATION -> t.addHead(thead().addRow(operationHeader()));
@@ -137,6 +140,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                 row = mixedRow(result);
             } else {
                 row = switch (effectiveType) {
+                    case ALL -> mixedRow(result);
                     case RESOURCE -> resourceRow(result);
                     case ATTRIBUTE -> attributeRow(result);
                     case OPERATION -> operationRow(result);

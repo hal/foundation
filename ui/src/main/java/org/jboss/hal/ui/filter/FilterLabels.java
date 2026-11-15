@@ -115,7 +115,7 @@ public class FilterLabels {
         if (filter.defined(TypesAttribute.NAME)) {
             List<TypeValues> value = filter.<List<TypeValues>>get(TypesAttribute.NAME).value();
             for (TypeValues type : value) {
-                labels.add(label(type.name).onClose((event, chip) ->
+                labels.add(label(type.name).onClose((event, label) ->
                         filter.set(TypesAttribute.NAME, List.of(type), collectionRemove(ArrayList::new))));
             }
         }

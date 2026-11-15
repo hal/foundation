@@ -25,7 +25,6 @@ import org.jboss.hal.model.filter.StorageAttribute;
 import org.jboss.hal.model.filter.TypesAttribute;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.filter.FilterLabels;
-import org.jboss.hal.ui.filter.NameSearchInput;
 import org.patternfly.component.toolbar.Toolbar;
 import org.patternfly.core.ObservableValue;
 import org.patternfly.filter.Filter;
@@ -33,6 +32,7 @@ import org.patternfly.filter.Filter;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.hal.ui.filter.ItemCount.itemCount;
+import static org.jboss.hal.ui.filter.NameSearchInput.nameSearchInput;
 import static org.jboss.hal.ui.filter.ReDeExMultiSelect.reDeExMultiSelect;
 import static org.jboss.hal.ui.filter.StorageAccessTypeMultiSelect.storageAccessTypeMultiSelect;
 import static org.jboss.hal.ui.filter.TypesMultiSelect.typesFilterMultiSelect;
@@ -72,7 +72,8 @@ class AttributesToolbar implements IsElement<HTMLElement> {
             ObservableValue<Integer> visible, ObservableValue<Integer> total) {
         toolbar = toolbar().css(modifier("inset-none"))
                 .addContent(toolbarContent()
-                        .addItem(toolbarItem(searchFilter).add(NameSearchInput.nameSearchInput(filter).ouiaId(OuiaIds.MODEL_BROWSER_ATTRIBUTES_FILTER)))
+                        .addItem(toolbarItem(searchFilter).add(
+                                nameSearchInput(filter).ouiaId(OuiaIds.MODEL_BROWSER_ATTRIBUTES_FILTER)))
                         .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().add(typesFilterMultiSelect(filter)))
                                 .addItem(toolbarItem().add(reDeExMultiSelect(filter)))
@@ -102,8 +103,7 @@ class AttributesToolbar implements IsElement<HTMLElement> {
                                         .filterToLabels(FilterLabels::storageAccessTypeLabels)))
                         .addItem(toolbarItem()
                                 .add(button("Save filter").link().inline())
-                                .add(button("Clear all filters").link().inline().onClick((e, c) -> filter.resetAll()))
-                        ));
+                                .add(button("Clear all filters").link().inline().onClick((e, c) -> filter.resetAll()))));
     }
 
     @Override
