@@ -44,7 +44,7 @@ class FacetCategory implements IsElement<HTMLElement> {
         return root;
     }
 
-    void addValues(CatalogState state, Map<String, Integer> values) {
+    void values(CatalogState state, Map<String, Integer> values) {
         for (Map.Entry<String, Integer> entry : values.entrySet()) {
             String value = entry.getKey();
             int count = entry.getValue();
@@ -54,7 +54,7 @@ class FacetCategory implements IsElement<HTMLElement> {
                     .add(checkbox(cbId, cbId, value)
                             .onChange((e, cb, checked) -> onToggle.accept(facet, value))
                             .run(cb -> {
-                                if (state.isActive(facet, value)) {
+                                if (state.isActive(facet)) {
                                     cb.value(true);
                                 }
                                 cb.textDelegate().appendChild(span().css("item-count").text("(" + count + ")").element());

@@ -26,6 +26,7 @@ import org.jboss.hal.mgt.AccessTypeCounts;
 import org.jboss.hal.mgt.BooleanCounts;
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogFacets;
+import org.jboss.hal.mgt.CatalogResponse;
 import org.jboss.hal.mgt.DataTypeCounts;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.mgt.RestartCounts;
@@ -99,38 +100,37 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     // ------------------------------------------------------ update
 
-    void update(CatalogState state, CatalogFacets facets) {
+    void update(CatalogState state, CatalogResponse response) {
         removeChildrenFrom(filterPanel);
-        if (facets == null) {
-            return;
-        }
+        if (!response.isEmpty()) {
+            CatalogFacets facets = response.facets;
+            updateTypeCounts(facets);
 
-        updateTypeCounts(facets);
+            // General facets
+            if (facets.stability != null || facets.deprecated != null) {
+                addStabilityGroup(state, facets.stability);
+                addBooleanGroup("Deprecated", state, CatalogFacet.DEPRECATED, facets.deprecated);
+            }
 
-        // General facets
-        if (facets.stability != null || facets.deprecated != null) {
-            addStabilityGroup(state, facets.stability);
-            addBooleanGroup("Deprecated", state, CatalogFacet.DEPRECATED, facets.deprecated);
-        }
-
-        // Type-specific facets
-        if (hasResourceFacets(facets)) {
-            filterPanel
-                    .add(divider(hr).css("filter-panel-divider"))
-                    .add(title(4, "Resources").css("filter-panel-header"));
-            addResourceFacets(state, facets);
-        }
-        if (hasAttributeFacets(facets)) {
-            filterPanel
-                    .add(divider(hr).css("filter-panel-divider"))
-                    .add(title(4, "Attributes").css("filter-panel-header"));
-            addAttributeFacets(state, facets);
-        }
-        if (hasOperationFacets(facets)) {
-            filterPanel
-                    .add(divider(hr).css("filter-panel-divider"))
-                    .add(title(4, "Operations").css("filter-panel-header"));
-            addOperationFacets(state, facets);
+            // Type-specific facets
+            if (hasResourceFacets(facets)) {
+                filterPanel
+                        .add(divider(hr).css("filter-panel-divider"))
+                        .add(title(4, "Resources").css("filter-panel-header"));
+                addResourceFacets(state, facets);
+            }
+            if (hasAttributeFacets(facets)) {
+                filterPanel
+                        .add(divider(hr).css("filter-panel-divider"))
+                        .add(title(4, "Attributes").css("filter-panel-header"));
+                addAttributeFacets(state, facets);
+            }
+            if (hasOperationFacets(facets)) {
+                filterPanel
+                        .add(divider(hr).css("filter-panel-divider"))
+                        .add(title(4, "Operations").css("filter-panel-header"));
+                addOperationFacets(state, facets);
+            }
         }
     }
 
@@ -155,17 +155,18 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     private void updateTypeCounts(CatalogFacets facets) {
         int all = facets.type.resource + facets.type.attribute + facets.type.operation + facets.type.capability;
-        allVerticalTabs.text("All (" + all + ")");
+        allVerticalTabs.disabled(all == 0).text("All (" + all + ")");
         for (ModelGraphType type : ModelGraphType.values()) {
             VerticalTab vt = verticalTabs.item(type.type);
             if (vt != null) {
-                String count = " (" + switch (type) {
-                    case RESOURCE -> String.valueOf(facets.type.resource);
-                    case ATTRIBUTE -> String.valueOf(facets.type.attribute);
-                    case OPERATION -> String.valueOf(facets.type.operation);
-                    case CAPABILITY -> String.valueOf(facets.type.capability);
-                } + ")";
-                vt.text(type.plural + count);
+                int count = switch (type) {
+                    case ALL -> 0;
+                    case RESOURCE -> facets.type.resource;
+                    case ATTRIBUTE -> facets.type.attribute;
+                    case OPERATION -> facets.type.operation;
+                    case CAPABILITY -> facets.type.capability;
+                };
+                vt.disabled(count == 0).text(type.plural + " (" + count + ")");
             }
         }
     }
@@ -291,7 +292,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         FacetCategory facetCategory = new FacetCategory(label, facet, onFacetToggle);
-        facetCategory.addValues(state, values);
+        facetCategory.values(state, values);
         filterPanel.add(facetCategory);
     }
 

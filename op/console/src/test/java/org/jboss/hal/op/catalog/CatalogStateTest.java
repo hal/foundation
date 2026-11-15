@@ -15,13 +15,20 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.jboss.hal.mgt.CatalogFacet;
-import org.jboss.hal.mgt.CatalogFilter;
+import org.jboss.hal.mgt.FacetValue;
+import org.jboss.hal.mgt.ModelGraphType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.jboss.hal.mgt.CatalogFacet.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CatalogStateTest {
 
@@ -32,179 +39,170 @@ class CatalogStateTest {
         state = new CatalogState();
     }
 
-    // ------------------------------------------------------ basic apply/remove
+    // ------------------------------------------------------ initial state
+
+    @Test
+    void initialTypeIsAll() {
+        assertEquals(ModelGraphType.ALL, state.effectiveType());
+        assertFalse(state.typeSelection().implicit());
+    }
 
     @Test
     void emptyStateHasNoFilters() {
         assertFalse(state.hasActiveFilters());
-        assertTrue(state.activeTypes().isEmpty());
-        assertEquals("", state.currentFilter().toQueryString());
-    }
-
-    @Test
-    void applyAndRemoveFacet() {
-        state.apply(REQUIRED, "yes");
-        assertTrue(state.isActive(REQUIRED, "yes"));
-
-        state.remove(REQUIRED, "yes");
-        assertFalse(state.isActive(REQUIRED, "yes"));
-        assertFalse(state.hasActiveFilters());
-    }
-
-    @Test
-    void applyMultiValueFacet() {
-        state.apply(DATA_TYPE, "string");
-        state.apply(DATA_TYPE, "int");
-        assertTrue(state.isActive(DATA_TYPE, "string"));
-        assertTrue(state.isActive(DATA_TYPE, "int"));
-
-        String qs = state.currentFilter().toQueryString();
-        assertTrue(qs.contains("dataType="));
-    }
-
-    @Test
-    void clearAllPreservesQuery() {
-        state.query("connection");
-        state.apply(REQUIRED, "yes");
-        state.clearAll();
-
-        assertFalse(state.hasActiveFilters());
-        String qs = state.currentFilter().toQueryString();
-        assertTrue(qs.contains("q=connection"));
-    }
-
-    @Test
-    void clearQuery() {
-        state.query("connection");
-        state.clearQuery();
-        assertEquals("", state.currentFilter().toQueryString());
+        assertEquals("", state.buildFilter().toQueryString());
     }
 
     // ------------------------------------------------------ explicit type
 
     @Test
-    void explicitTypeSelection() {
-        state.apply(TYPE, "attribute");
-        assertFalse(state.isImplicitType());
-        assertTrue(state.activeTypes().contains("attribute"));
+    void selectExplicitType() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
+        assertFalse(state.typeSelection().implicit());
     }
 
     @Test
-    void removeExplicitTypeRemovesTypeSpecificFacets() {
-        state.apply(TYPE, "attribute");
-        state.apply(REQUIRED, "yes");
-        state.apply(STORAGE, "configuration");
-
-        state.remove(TYPE, "attribute");
-
-        assertFalse(state.isActive(REQUIRED, "yes"));
-        assertFalse(state.isActive(STORAGE, "configuration"));
+    void selectAllType() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.selectType(ModelGraphType.ALL);
+        assertEquals(ModelGraphType.ALL, state.effectiveType());
     }
 
     @Test
-    void removeTypeDoesNotAffectOtherGroups() {
-        state.apply(TYPE, "attribute");
-        state.apply(TYPE, "resource");
-        state.apply(REQUIRED, "yes");
-        state.apply(SINGLETON, "yes");
+    void selectTypeClearsTypeSpecificFacets() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.selectType(ModelGraphType.RESOURCE);
+        assertFalse(state.isActive(CatalogFacet.REQUIRED));
+    }
 
-        state.remove(TYPE, "attribute");
+    // ------------------------------------------------------ facet apply/remove
 
-        assertFalse(state.isActive(REQUIRED, "yes"));
-        assertTrue(state.isActive(SINGLETON, "yes"));
+    @Test
+    void applyBoolFacet() {
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        assertTrue(state.isActive(CatalogFacet.REQUIRED));
+        assertInstanceOf(FacetValue.Bool.class, state.getValue(CatalogFacet.REQUIRED));
+    }
+
+    @Test
+    void applyMultiFacet() {
+        state.apply(CatalogFacet.STABILITY,
+                new FacetValue.Multi(new LinkedHashSet<>(List.of("default", "community"))));
+        assertTrue(state.isActive(CatalogFacet.STABILITY));
+        assertInstanceOf(FacetValue.Multi.class, state.getValue(CatalogFacet.STABILITY));
+    }
+
+    @Test
+    void removeFacet() {
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.remove(CatalogFacet.REQUIRED);
+        assertFalse(state.isActive(CatalogFacet.REQUIRED));
+        assertNull(state.getValue(CatalogFacet.REQUIRED));
     }
 
     // ------------------------------------------------------ implicit type
 
     @Test
     void typeSpecificFacetImpliesType() {
-        state.apply(REQUIRED, "yes");
-
-        assertTrue(state.isImplicitType());
-        assertTrue(state.activeTypes().contains("attribute"));
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
+        assertTrue(state.typeSelection().implicit());
     }
 
     @Test
     void removeLastTypeSpecificFacetRemovesImplicitType() {
-        state.apply(REQUIRED, "yes");
-        state.remove(REQUIRED, "yes");
-
-        assertFalse(state.isImplicitType());
-        assertTrue(state.activeTypes().isEmpty());
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.remove(CatalogFacet.REQUIRED);
+        assertEquals(ModelGraphType.ALL, state.effectiveType());
+        assertFalse(state.typeSelection().implicit());
     }
 
     @Test
     void multipleTypeSpecificFacetsKeepImplicitType() {
-        state.apply(REQUIRED, "yes");
-        state.apply(STORAGE, "configuration");
-
-        state.remove(REQUIRED, "yes");
-
-        assertTrue(state.isImplicitType());
-        assertTrue(state.activeTypes().contains("attribute"));
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.apply(CatalogFacet.STORAGE,
+                new FacetValue.Multi(new LinkedHashSet<>(List.of("configuration"))));
+        state.remove(CatalogFacet.REQUIRED);
+        assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
+        assertTrue(state.typeSelection().implicit());
     }
 
     @Test
     void explicitTypeOverridesImplicit() {
-        state.apply(REQUIRED, "yes");
-        assertTrue(state.isImplicitType());
-
-        state.apply(TYPE, "attribute");
-        assertFalse(state.isImplicitType());
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        assertTrue(state.typeSelection().implicit());
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        assertFalse(state.typeSelection().implicit());
     }
 
     @Test
     void explicitTypeThenRemoveTypeSpecificKeepsType() {
-        state.apply(TYPE, "attribute");
-        state.apply(REQUIRED, "yes");
-        state.remove(REQUIRED, "yes");
-
-        assertFalse(state.isImplicitType());
-        assertTrue(state.activeTypes().contains("attribute"));
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.remove(CatalogFacet.REQUIRED);
+        assertFalse(state.typeSelection().implicit());
+        assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
     }
 
-    // ------------------------------------------------------ query string translation
+    @Test
+    void secondGroupFacetDoesNotOverwriteImplicitType() {
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        ModelGraphType impliedType = state.effectiveType();
+        state.apply(CatalogFacet.SINGLETON, new FacetValue.Bool(true));
+        assertEquals(impliedType, state.effectiveType());
+    }
+
+    // ------------------------------------------------------ query
 
     @Test
-    void booleanFacetTranslation() {
-        state.apply(TYPE, "attribute");
-        state.apply(REQUIRED, "yes");
-        state.apply(NILLABLE, "no");
+    void clearAllPreservesQuery() {
+        state.query("connection");
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.clearAll();
+        assertFalse(state.hasActiveFilters());
+        assertTrue(state.buildFilter().toQueryString().contains("q=connection"));
+    }
 
-        String qs = state.currentFilter().toQueryString();
+    @Test
+    void clearQuery() {
+        state.query("connection");
+        state.clearQuery();
+        assertEquals("", state.buildFilter().toQueryString());
+    }
+
+    // ------------------------------------------------------ buildFilter
+
+    @Test
+    void buildFilterProducesCorrectQueryString() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.query("test");
+        String qs = state.buildFilter().toQueryString();
+        assertTrue(qs.contains("type=attribute"));
+        assertTrue(qs.contains("required=true"));
+        assertTrue(qs.contains("q=test"));
+    }
+
+    @Test
+    void buildFilterBooleanTranslation() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.apply(CatalogFacet.NILLABLE, new FacetValue.Bool(false));
+        String qs = state.buildFilter().toQueryString();
         assertTrue(qs.contains("required=true"));
         assertTrue(qs.contains("nillable=false"));
     }
 
     @Test
-    void multiValueFacetTranslation() {
-        state.apply(TYPE, "attribute");
-        state.apply(ACCESS_TYPE, "read-write");
-        state.apply(ACCESS_TYPE, "metric");
-
-        String qs = state.currentFilter().toQueryString();
+    void buildFilterMultiValueTranslation() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.apply(CatalogFacet.ACCESS_TYPE,
+                new FacetValue.Multi(new LinkedHashSet<>(List.of("read-write", "metric"))));
+        String qs = state.buildFilter().toQueryString();
         assertTrue(qs.contains("accessType="));
         assertTrue(qs.contains("read-write"));
         assertTrue(qs.contains("metric"));
-    }
-
-    @Test
-    void operationFacetTranslation() {
-        state.apply(TYPE, "operation");
-        state.apply(HAS_PARAMS, "yes");
-        state.apply(READ_ONLY, "no");
-
-        String qs = state.currentFilter().toQueryString();
-        assertTrue(qs.contains("hasParams=true"));
-        assertTrue(qs.contains("readOnly=false"));
-    }
-
-    @Test
-    void resourceFacetTranslation() {
-        state.apply(TYPE, "resource");
-        state.apply(SINGLETON, "yes");
-
-        String qs = state.currentFilter().toQueryString();
-        assertTrue(qs.contains("singleton=true"));
     }
 }

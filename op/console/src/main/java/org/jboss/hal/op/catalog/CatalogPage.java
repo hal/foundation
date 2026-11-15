@@ -15,8 +15,6 @@
  */
 package org.jboss.hal.op.catalog;
 
-import java.util.Set;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
@@ -26,8 +24,9 @@ import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
 import org.jboss.hal.mgt.CatalogFacet;
-import org.jboss.hal.mgt.CatalogFilter;
+import org.jboss.hal.mgt.CatalogQuery;
 import org.jboss.hal.mgt.CatalogResponse;
+import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.mgt.ModelGraphCatalog;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.patternfly.component.pagination.PageInfo;
@@ -62,13 +61,13 @@ public class CatalogPage implements Page {
     private final CatalogWelcome catalogWelcome;
     private final CatalogTable catalogTable;
     private final SplitItem mainContent;
-    private ModelGraphType selectedType;
 
     @Inject
     public CatalogPage(ModelGraphCatalog catalog) {
         this.catalog = catalog;
         this.state = new CatalogState();
-        this.catalogToolbar = new CatalogToolbar(state.pageInfo(), this::onSearch, this::onClear, this::onNavigate);
+        this.catalogToolbar = new CatalogToolbar(state.pageInfo(), this::onSearch, this::onClearSearch, this::onClear,
+                this::onNavigate);
         this.catalogSidebar = new CatalogSidebar(this::onTypeSelect, this::onFacetToggle);
         this.catalogWelcome = new CatalogWelcome();
         this.catalogTable = new CatalogTable();
@@ -105,58 +104,39 @@ public class CatalogPage implements Page {
 
     private void onSearch(String query) {
         state.query(query);
-        state.resetPage();
+        state.resetPageInfo();
+        search();
+    }
+
+    private void onClearSearch() {
+        state.clearQuery();
+        state.resetPageInfo();
         search();
     }
 
     private void onClear() {
         state.clearQuery();
         state.clearAll();
-        state.resetPage();
-        selectedType = null;
-        catalogSidebar.resetType();
+        state.resetPageInfo();
         showWelcome();
         initialSearch();
     }
 
     private void onTypeSelect(ModelGraphType type) {
-        selectedType = type;
-        state.clearTypeSpecific();
-        state.resetPage();
-        if (type != null) {
-            state.apply(CatalogFacet.TYPE, type.type);
-        }
+        state.selectType(type != null ? type : ModelGraphType.ALL);
+        state.resetPageInfo();
         search();
     }
 
     private void onFacetToggle(CatalogFacet facet, String value) {
-        if (state.isActive(facet, value)) {
-            state.remove(facet, value);
+        // TODO adapt to new FacetValue API during UI refactoring
+        if (state.isActive(facet)) {
+            state.remove(facet);
         } else {
-            if (facet.exclusive) {
-                state.clearFacet(facet);
-            }
-            state.apply(facet, value);
+            state.apply(facet, new FacetValue.Bool("yes".equals(value)));
         }
-        syncImplicitType();
-        state.resetPage();
+        state.resetPageInfo();
         search();
-    }
-
-    private void syncImplicitType() {
-        if (state.isImplicitType()) {
-            Set<String> types = state.activeTypes();
-            if (types.size() == 1) {
-                ModelGraphType impliedType = ModelGraphType.of(types.iterator().next());
-                if (impliedType != selectedType) {
-                    selectedType = impliedType;
-                    catalogSidebar.selectType(impliedType);
-                }
-            }
-        } else if (selectedType != null && !state.activeTypes().contains(selectedType.type)) {
-            selectedType = null;
-            catalogSidebar.selectType(null);
-        }
     }
 
     private void onNavigate(Event event, Pagination pagination, PageInfo previous, PageInfo update) {
@@ -181,39 +161,27 @@ public class CatalogPage implements Page {
     // ------------------------------------------------------ search
 
     private void initialSearch() {
-        CatalogFilter filter = state.currentFilter();
-        catalog.search(filter).then(response -> {
-            catalogSidebar.update(state, response.facets);
+        CatalogQuery query = state.buildFilter();
+        catalog.search(query).then(response -> {
+            catalogSidebar.update(state, response);
             return null;
         });
     }
 
     private void search() {
-        CatalogFilter filter = state.currentFilter();
-        catalog.search(filter).then(response -> {
+        CatalogQuery query = state.buildFilter();
+        catalog.search(query).then(response -> {
             handleResponse(response);
             return null;
         });
     }
 
     private void handleResponse(CatalogResponse response) {
-        ModelGraphType effectiveType = deriveEffectiveType();
+        ModelGraphType effectiveType = state.effectiveType();
         state.updateTotal(response.total);
         showResults();
-        catalogSidebar.update(state, response.facets);
+        catalogSidebar.update(state, response);
         catalogTable.update(effectiveType, response.results);
         catalogToolbar.updatePageInfo(state.pageInfo());
-    }
-
-    private ModelGraphType deriveEffectiveType() {
-        if (selectedType != null) {
-            return selectedType;
-        }
-        Set<String> activeTypes = state.activeTypes();
-        if (activeTypes.size() == 1) {
-            String typeStr = activeTypes.iterator().next();
-            return ModelGraphType.of(typeStr);
-        }
-        return null;
     }
 }
