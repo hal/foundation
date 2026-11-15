@@ -16,99 +16,76 @@
 package org.jboss.hal.op.catalog;
 
 import java.util.EnumMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogFacet.Group;
-import org.jboss.hal.mgt.CatalogFilter;
+import org.jboss.hal.mgt.CatalogQuery;
+import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.mgt.ModelGraphType;
+import org.jboss.hal.mgt.TypeSelection;
 import org.patternfly.component.pagination.PageInfo;
 
-import static org.jboss.hal.mgt.CatalogFacet.TYPE;
 import static org.patternfly.component.pagination.PageInfo.UNKNOWN;
 import static org.patternfly.component.pagination.PageSize._50;
 
 /**
- * Mutable state machine for the Model Catalog page. Tracks active facet selections and builds a {@link CatalogFilter} for
- * querying the MGT catalog API.
+ * Mutable state machine for the Model Catalog page. Tracks the selected type, active facet selections, text query, and
+ * pagination. Builds a {@link CatalogQuery} for querying the MGT catalog API.
  *
- * <p>Handles implicit type constraints: when a type-specific facet (e.g., {@link CatalogFacet#REQUIRED}) is applied without an
- * explicit type selection, the type is implicitly constrained to the facet's group. Removing the last type-specific facet while
- * implicit removes the type constraint.
+ * <p>Handles implicit type constraints: when a type-specific facet is applied without an explicit type selection, the type is
+ * implicitly constrained to the facet's group. Removing the last type-specific facet while implicit removes the type
+ * constraint.
  */
 public class CatalogState {
 
-    private final Map<CatalogFacet, Set<String>> selections;
+    private final Map<CatalogFacet, FacetValue> facets;
+    private TypeSelection typeSelection;
     private String query;
     private PageInfo pageInfo;
-    private boolean implicitType;
 
     public CatalogState() {
-        this.selections = new EnumMap<>(CatalogFacet.class);
+        this.facets = new EnumMap<>(CatalogFacet.class);
+        this.typeSelection = new TypeSelection(ModelGraphType.ALL, false);
         this.pageInfo = PageInfo.of(_50.value, UNKNOWN);
     }
 
     // ------------------------------------------------------ mutations
 
-    /** Adds a value to the given facet's selection. Handles implicit type constraints for type-specific facets. */
-    public void apply(CatalogFacet facet, String value) {
-        if (facet == TYPE) {
-            implicitType = false;
-        } else if (facet.group != Group.GENERAL && !hasExplicitType()) {
+    public void selectType(ModelGraphType type) {
+        ModelGraphType previousType = typeSelection.type();
+        typeSelection = new TypeSelection(type, false);
+        if (previousType != type) {
+            facets.entrySet().removeIf(e -> e.getKey().group != Group.GENERAL && !groupMatchesType(e.getKey(), type));
+        }
+    }
+
+    public void apply(CatalogFacet facet, FacetValue value) {
+        if (facet.group != Group.GENERAL && typeSelection.type() == ModelGraphType.ALL) {
             ModelGraphType impliedType = facet.group.implicitType();
             if (impliedType != null) {
-                selections.computeIfAbsent(TYPE, k -> new LinkedHashSet<>()).clear();
-                selections.get(TYPE).add(impliedType.type);
-                implicitType = true;
+                typeSelection = new TypeSelection(impliedType, true);
             }
         }
-        selections.computeIfAbsent(facet, k -> new LinkedHashSet<>()).add(value);
+        facets.put(facet, value);
     }
 
-    /** Removes a value from the given facet's selection. Cleans up implicit type constraints when appropriate. */
-    public void remove(CatalogFacet facet, String value) {
-        Set<String> values = selections.get(facet);
-        if (values == null) {
-            return;
-        }
-        values.remove(value);
-        if (values.isEmpty()) {
-            selections.remove(facet);
-        }
-
-        if (facet == TYPE) {
-            removeTypeSpecificFacets(value);
-        } else if (facet.group != Group.GENERAL && implicitType && !hasTypeSpecificFacets()) {
-            selections.remove(TYPE);
-            implicitType = false;
+    public void remove(CatalogFacet facet) {
+        facets.remove(facet);
+        if (typeSelection.implicit() && !hasTypeSpecificFacets()) {
+            typeSelection = new TypeSelection(ModelGraphType.ALL, false);
         }
     }
 
-    /** Resets all facet selections but preserves the text query. */
     public void clearAll() {
-        selections.clear();
-        implicitType = false;
+        facets.clear();
+        typeSelection = new TypeSelection(ModelGraphType.ALL, false);
     }
 
-    /** Removes all values for the given facet. */
-    public void clearFacet(CatalogFacet facet) {
-        selections.remove(facet);
-    }
-
-    /** Resets type and type-specific facet selections but preserves general facets (except TYPE) and the text query. */
-    public void clearTypeSpecific() {
-        selections.entrySet().removeIf(e -> e.getKey() == TYPE || e.getKey().group != Group.GENERAL);
-        implicitType = false;
-    }
-
-    /** Clears the text query. */
     public void clearQuery() {
         this.query = null;
     }
 
-    /** Sets the text search query. */
     public void query(String q) {
         this.query = q;
     }
@@ -117,7 +94,7 @@ public class CatalogState {
         this.pageInfo = pageInfo;
     }
 
-    public void resetPage() {
+    public void resetPageInfo() {
         this.pageInfo = PageInfo.of(pageInfo.pageSize(), UNKNOWN);
     }
 
@@ -127,114 +104,55 @@ public class CatalogState {
 
     // ------------------------------------------------------ queries
 
+    public TypeSelection typeSelection() {
+        return typeSelection;
+    }
+
+    public ModelGraphType effectiveType() {
+        return typeSelection.type();
+    }
+
+    public boolean isActive(CatalogFacet facet) {
+        return facets.containsKey(facet);
+    }
+
+    public FacetValue getValue(CatalogFacet facet) {
+        return facets.get(facet);
+    }
+
+    public boolean hasActiveFilters() {
+        return !facets.isEmpty();
+    }
+
     public PageInfo pageInfo() {
         return pageInfo;
     }
 
-    /** Builds a {@link CatalogFilter} from the current state. */
-    public CatalogFilter currentFilter() {
-        CatalogFilter filter = new CatalogFilter();
-        if (query != null && !query.isEmpty()) {
-            filter.q(query);
-        }
-        filter.limit(pageInfo.pageSize());
-        filter.offset(pageInfo.from() - 1);
-        for (Map.Entry<CatalogFacet, Set<String>> entry : selections.entrySet()) {
-            CatalogFacet facet = entry.getKey();
-            Set<String> values = entry.getValue();
-            if (values.isEmpty()) {
-                continue;
-            }
-            applyToFilter(filter, facet, values);
-        }
-        return filter;
-    }
-
-    /** Returns whether the given facet value is currently selected. */
-    public boolean isActive(CatalogFacet facet, String value) {
-        Set<String> values = selections.get(facet);
-        return values != null && values.contains(value);
-    }
-
-    /** Returns whether any facet selections are active (excludes the text query). */
-    public boolean hasActiveFilters() {
-        return !selections.isEmpty();
-    }
-
-    /** Returns the currently selected type values. */
-    public Set<String> activeTypes() {
-        Set<String> types = selections.get(TYPE);
-        return types != null ? Set.copyOf(types) : Set.of();
-    }
-
-    /** Returns whether the current type constraint was implicitly inferred from a type-specific facet. */
-    public boolean isImplicitType() {
-        return implicitType;
+    public CatalogQuery buildFilter() {
+        return new CatalogQuery(
+                query,
+                typeSelection.type(),
+                pageInfo.pageSize(),
+                pageInfo.from() - 1,
+                Map.copyOf(facets));
     }
 
     // ------------------------------------------------------ internal
 
-    private boolean hasExplicitType() {
-        return selections.containsKey(TYPE) && !implicitType;
+    private boolean groupMatchesType(CatalogFacet facet, ModelGraphType type) {
+        if (type == ModelGraphType.ALL) {
+            return true;
+        }
+        ModelGraphType groupType = facet.group.implicitType();
+        return groupType != null && groupType == type;
     }
 
     private boolean hasTypeSpecificFacets() {
-        for (CatalogFacet facet : selections.keySet()) {
-            if (facet != TYPE && facet.group != Group.GENERAL) {
+        for (CatalogFacet facet : facets.keySet()) {
+            if (facet.group != Group.GENERAL) {
                 return true;
             }
         }
         return false;
-    }
-
-    private void removeTypeSpecificFacets(String typeValue) {
-        for (Group group : Group.values()) {
-            ModelGraphType impliedType = group.implicitType();
-            if (impliedType != null && typeValue.equals(impliedType.type)) {
-                selections.entrySet().removeIf(e -> e.getKey().group == group);
-                break;
-            }
-        }
-    }
-
-    private void applyToFilter(CatalogFilter filter, CatalogFacet facet, Set<String> values) {
-        String[] arr = values.toArray(new String[0]);
-        switch (facet) {
-            // general
-            case TYPE -> filter.type(arr);
-            case STABILITY -> filter.stability(arr);
-            case DEPRECATED -> filter.deprecated(arr[0]);
-
-            // resource
-            case SINGLETON -> filter.singleton(toBoolean(arr[0]));
-            case DECLARES_CAP -> filter.declaresCap(arr[0]);
-            case DEFINES_ATTR_GROUPS -> filter.definesAttrGroups(toBoolean(arr[0]));
-
-            // attribute
-            case DATA_TYPE -> filter.dataType(arr);
-            case ACCESS_TYPE -> filter.accessType(arr);
-            case STORAGE -> filter.storage(arr);
-            case RESTART -> filter.restart(arr);
-            case REQUIRED -> filter.required(toBoolean(arr[0]));
-            case NILLABLE -> filter.nillable(toBoolean(arr[0]));
-            case EXPRESSIONS -> filter.expressions(toBoolean(arr[0]));
-            case SENSITIVE -> filter.sensitive(toBoolean(arr[0]));
-            case HAS_ALLOWED -> filter.hasAllowed(toBoolean(arr[0]));
-            case UNIT -> filter.unit(arr);
-            case HAS_ALTERNATIVES -> filter.hasAlternatives(toBoolean(arr[0]));
-            case HAS_REQUIRES -> filter.hasRequires(toBoolean(arr[0]));
-            case REFS_CAP -> filter.refsCap(arr[0]);
-
-            // operation
-            case READ_ONLY -> filter.readOnly(toBoolean(arr[0]));
-            case RUNTIME_ONLY -> filter.runtimeOnly(toBoolean(arr[0]));
-            case GLOBAL -> filter.global(toBoolean(arr[0]));
-            case HAS_PARAMS -> filter.hasParams(toBoolean(arr[0]));
-            case HAS_RETURN_VALUE -> filter.hasReturnValue(toBoolean(arr[0]));
-        }
-    }
-
-    private static boolean toBoolean(String value) {
-        return "yes".equals(value);
     }
 }

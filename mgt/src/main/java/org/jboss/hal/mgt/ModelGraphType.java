@@ -2,6 +2,7 @@ package org.jboss.hal.mgt;
 
 public enum ModelGraphType {
 
+    ALL("all", "All", "All"),
     RESOURCE("resource", "Resource", "Resources"),
     ATTRIBUTE("attribute", "Attribute", "Attributes"),
     OPERATION("operation", "Operation", "Operations"),

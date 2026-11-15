@@ -15,6 +15,7 @@ class CatalogBricks {
     static Label typeLabel(ModelGraphType type) {
         if (type != null) {
             return switch (type) {
+                case ALL -> label("all", "All", grey);
                 case RESOURCE -> label(type.type, type.singular, blue);
                 case ATTRIBUTE -> label(type.type, type.singular, teal);
                 case OPERATION -> label(type.type, type.singular, red);

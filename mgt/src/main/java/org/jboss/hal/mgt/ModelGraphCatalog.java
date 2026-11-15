@@ -43,9 +43,9 @@ public class ModelGraphCatalog {
     }
 
     /** Queries the MGT catalog API with the given filter. Returns a promise that resolves to the catalog response. */
-    public Promise<CatalogResponse> search(CatalogFilter filter) {
+    public Promise<CatalogResponse> search(CatalogQuery query) {
         StringBuilder url = endpoint.api().append("catalog");
-        String queryString = filter.toQueryString();
+        String queryString = query.toQueryString();
         if (!queryString.isEmpty()) {
             url.append("?").append(queryString);
         }

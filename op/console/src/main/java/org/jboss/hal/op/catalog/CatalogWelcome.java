@@ -33,12 +33,12 @@ class CatalogWelcome implements IsElement<HTMLElement> {
 
     CatalogWelcome() {
         root = content().editorial()
-                .add(content(h3).text("Model Catalog"))
-                .add(p().text("The Model Catalog lets you explore the complete WildFly management model. "
+                .add(content(h3).text("Model catalog"))
+                .add(p().text("The model catalog lets you explore the complete WildFly management model. "
                         + "It indexes all resources, attributes, operations, and capabilities across the entire "
                         + "management tree and makes them searchable with faceted filters."))
 
-                .add(content(h4).text("Getting Started"))
+                .add(content(h4).text("Getting started"))
                 .add(p().text("Select a type from the sidebar to browse a specific category, "
                         + "or enter a search term in the toolbar to find entries by name or address. "
                         + "You can also combine type selection with facet filters to narrow down results."))
