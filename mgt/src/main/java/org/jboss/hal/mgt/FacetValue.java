@@ -15,6 +15,8 @@
  */
 package org.jboss.hal.mgt;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public sealed interface FacetValue permits FacetValue.Bool, FacetValue.Multi, FacetValue.Text {
@@ -29,6 +31,10 @@ public sealed interface FacetValue permits FacetValue.Bool, FacetValue.Multi, Fa
     }
 
     record Multi(Set<String> values) implements FacetValue {
+        public Multi {
+            values = Collections.unmodifiableSet(new LinkedHashSet<>(values));
+        }
+
         @Override
         public String toQueryParam() {
             return String.join(",", values);

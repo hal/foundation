@@ -26,6 +26,10 @@ public record CatalogQuery(
         int offset,
         Map<CatalogFacet, FacetValue> facets) {
 
+    public CatalogQuery {
+        facets = Map.copyOf(facets);
+    }
+
     private static final int DEFAULT_LIMIT = 50;
     private static final int DEFAULT_OFFSET = 0;
 

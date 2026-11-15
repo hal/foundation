@@ -47,6 +47,14 @@ class FacetValueTest {
     }
 
     @Test
+    void multiIsImmutable() {
+        LinkedHashSet<String> mutable = new LinkedHashSet<>(List.of("string"));
+        FacetValue.Multi multi = new FacetValue.Multi(mutable);
+        mutable.add("int");
+        assertEquals("string", multi.toQueryParam());
+    }
+
+    @Test
     void textRendersContainsPrefix() {
         assertEquals("contains:datasource", new FacetValue.Text("datasource").toQueryParam());
     }
