@@ -12,13 +12,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Add Model Catalog page with dynamic table, faceted sidebar, welcome page, and pagination
 - Add faceted search with typed facet counts, mutual exclusion for binary checkboxes, and automatic hiding of single-value categories
 - Add CatalogState filter state machine with implicit type logic from facet selection
-- Add VerticalTabs component for catalog sidebar type filtering
+- Add `FacetValue` sealed interface, `TypeSelection`, and `CatalogQuery` records for typed catalog state
+- Add `isEmpty()` helper to `CatalogResponse`
+- Add VerticalTabs component for catalog sidebar type filtering with disabled state support
+- Add catalog toolbar text search filtering
 - Add OUIA IDs for shared UI components and skeleton toolbar
 - Add `Identifiers` utility with all static `HasIdentifier` constants
 - Add MGT search result deduplication and highlighting
 
 ### Changed
 
+- Update MGT DTOs and filters for REST API 0.4.0
+- Replace `CatalogFilter` with `CatalogQuery` and consolidate catalog state with typed `FacetValue`
+- Simplify catalog sidebar by removing redundant null checks and using `ALL` enum
+- Reorder catalog result fields to group resource properties before attributes
 - Extract `mgt` module from op/console — dedicated REST client, DTOs, availability events, and endpoint management
 - Migrate op/console and site module to Vite+ 1.5.0
 - Rename model browser route from `/management-model` to `/model-browser` and rename packages accordingly
@@ -28,6 +35,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Fix J2CL compatibility by using instanceof instead of switch patterns for source level 17
+- Fix immutability enforcement in `FacetValue.Multi` and `CatalogQuery`
 - Fix catalog sidebar type tab not syncing with implicit type from facet selection
 - Fix case-insensitive model graph type handling and capitalize labels
 - Fix hyphenated JSON keys using JsOverlay
@@ -37,6 +46,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Upgrades
 
+- Bump Quarkus platform to 3.40.1.2
+- Bump WildFly standard expansion BOM
 - Bump PatternFly Java to 0.15.1-SNAPSHOT
 - Bump Elemento, Elemental2, and J2CL processors
 - Bump jboss-parent
