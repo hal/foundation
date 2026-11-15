@@ -116,6 +116,18 @@ public class CatalogState {
         return facets.containsKey(facet);
     }
 
+    public boolean isActive(CatalogFacet facet, String value) {
+        FacetValue fv = facets.get(facet);
+        if (fv == null) {
+            return false;
+        }
+        return switch (fv) {
+            case FacetValue.Bool b -> b.value() == "yes".equals(value);
+            case FacetValue.Multi m -> m.values().contains(value);
+            case FacetValue.Text t -> true;
+        };
+    }
+
     public FacetValue getValue(CatalogFacet facet) {
         return facets.get(facet);
     }

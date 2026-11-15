@@ -54,7 +54,7 @@ class FacetCategory implements IsElement<HTMLElement> {
                     .add(checkbox(cbId, cbId, value)
                             .onChange((e, cb, checked) -> onToggle.accept(facet, value))
                             .run(cb -> {
-                                if (state.isActive(facet)) {
+                                if (state.isActive(facet, value)) {
                                     cb.value(true);
                                 }
                                 cb.textDelegate().appendChild(span().css("item-count").text("(" + count + ")").element());

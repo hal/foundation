@@ -23,6 +23,9 @@ import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogQuery;
 import org.jboss.hal.mgt.CatalogResponse;
@@ -129,11 +132,29 @@ public class CatalogPage implements Page {
     }
 
     private void onFacetToggle(CatalogFacet facet, String value) {
-        // TODO adapt to new FacetValue API during UI refactoring
-        if (state.isActive(facet)) {
-            state.remove(facet);
+        if (facet.exclusive) {
+            if (state.isActive(facet, value)) {
+                state.remove(facet);
+            } else {
+                state.apply(facet, new FacetValue.Bool("yes".equals(value)));
+            }
         } else {
-            state.apply(facet, new FacetValue.Bool("yes".equals(value)));
+            FacetValue current = state.getValue(facet);
+            if (current instanceof FacetValue.Multi multi && multi.values().contains(value)) {
+                Set<String> remaining = new LinkedHashSet<>(multi.values());
+                remaining.remove(value);
+                if (remaining.isEmpty()) {
+                    state.remove(facet);
+                } else {
+                    state.apply(facet, new FacetValue.Multi(remaining));
+                }
+            } else {
+                Set<String> values = current instanceof FacetValue.Multi multi
+                        ? new LinkedHashSet<>(multi.values())
+                        : new LinkedHashSet<>();
+                values.add(value);
+                state.apply(facet, new FacetValue.Multi(values));
+            }
         }
         state.resetPageInfo();
         search();
