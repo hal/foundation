@@ -36,19 +36,19 @@ import jsinterop.base.JsPropertyMap;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class CatalogFacets {
 
-    // ------------------------------------------------------ general
+    // ------------------------------------------------------ always present
 
     public TypeCounts type;
     public StabilityCounts stability;
     public BooleanCounts deprecated;
 
-    // ------------------------------------------------------ resource
+    // ------------------------------------------------------ present when type includes 'resource', null otherwise
 
     public BooleanCounts singleton;
     public BooleanCounts declaresCap;
     public BooleanCounts definesAttrGroups;
 
-    // ------------------------------------------------------ attribute
+    // ------------------------------------------------------ present when type includes 'attribute', null otherwise
 
     public DataTypeCounts dataType;
     public AccessTypeCounts accessType;
@@ -63,7 +63,7 @@ public class CatalogFacets {
     public BooleanCounts hasRequires;
     public BooleanCounts refsCap;
 
-    // ------------------------------------------------------ operation
+    // ------------------------------------------------------ present when type includes 'operation', null otherwise
 
     public BooleanCounts readOnly;
     public BooleanCounts runtimeOnly;

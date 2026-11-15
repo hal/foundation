@@ -39,7 +39,6 @@ import org.patternfly.core.OuiaSupport;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
-import static java.util.Arrays.asList;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.nav;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
@@ -59,19 +58,21 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     private final BiConsumer<CatalogFacet, String> onFacetToggle;
     private final VerticalTabs verticalTabs;
-    private final VerticalTab allVerticalTabs;
     private final HTMLElement root;
     private final HTMLContainerBuilder<HTMLDivElement> filterPanel;
 
     CatalogSidebar(Consumer<ModelGraphType> onTypeSelect, BiConsumer<CatalogFacet, String> onFacetToggle) {
         this.onFacetToggle = onFacetToggle;
         this.verticalTabs = verticalTabs();
-        this.allVerticalTabs = verticalTab("all", "All");
 
-        verticalTabs.addItem(allVerticalTabs);
-        verticalTabs.addItems(asList(ModelGraphType.values()), type -> verticalTab(type.type, type.plural)
-                .style("margin-block-start", 0) // matches the spacing of the checkboxes
-                .store(MODEL_GRAPH_TYPE_KEY, type));
+        for (ModelGraphType type : ModelGraphType.values()) {
+            VerticalTab vt = verticalTab(type.type, type.plural)
+                    .store(MODEL_GRAPH_TYPE_KEY, type);
+            if (type != ModelGraphType.ALL) {
+                vt.style("margin-block-start", 0);
+            }
+            verticalTabs.addItem(vt);
+        }
         verticalTabs.onSelect((e, vt, s) -> {
             ModelGraphType type = vt.get(MODEL_GRAPH_TYPE_KEY);
             onTypeSelect.accept(type);
@@ -102,17 +103,16 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     void update(CatalogState state, CatalogResponse response) {
         removeChildrenFrom(filterPanel);
+        selectType(state.effectiveType());
         if (!response.isEmpty()) {
             CatalogFacets facets = response.facets;
             updateTypeCounts(facets);
 
-            // General facets
-            if (facets.stability != null || facets.deprecated != null) {
-                addStabilityGroup(state, facets.stability);
-                addBooleanGroup("Deprecated", state, CatalogFacet.DEPRECATED, facets.deprecated);
-            }
+            // General facets (always present in the API response)
+            addStabilityGroup(state, facets.stability);
+            addBooleanGroup("Deprecated", state, CatalogFacet.DEPRECATED, facets.deprecated);
 
-            // Type-specific facets
+            // Type-specific facets (null when the API omits them for the current type filter)
             if (hasResourceFacets(facets)) {
                 filterPanel
                         .add(divider(hr).css("filter-panel-divider"))
@@ -137,30 +137,19 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     // ------------------------------------------------------ type
 
     void selectType(ModelGraphType type) {
-        if (type != null) {
-            VerticalTab vt = verticalTabs.item(type.type);
-            if (vt != null) {
-                verticalTabs.select(vt, true, false);
-            }
-        } else {
-            verticalTabs.select(allVerticalTabs, true, false);
-        }
-    }
-
-    void resetType() {
-        for (VerticalTab verticalTab : verticalTabs.items()) {
-            verticalTabs.select(verticalTab, false, false);
+        VerticalTab vt = verticalTabs.item(type.type);
+        if (vt != null) {
+            verticalTabs.select(vt, true, false);
         }
     }
 
     private void updateTypeCounts(CatalogFacets facets) {
-        int all = facets.type.resource + facets.type.attribute + facets.type.operation + facets.type.capability;
-        allVerticalTabs.disabled(all == 0).text("All (" + all + ")");
         for (ModelGraphType type : ModelGraphType.values()) {
             VerticalTab vt = verticalTabs.item(type.type);
             if (vt != null) {
                 int count = switch (type) {
-                    case ALL -> 0;
+                    case ALL -> facets.type.resource + facets.type.attribute
+                            + facets.type.operation + facets.type.capability;
                     case RESOURCE -> facets.type.resource;
                     case ATTRIBUTE -> facets.type.attribute;
                     case OPERATION -> facets.type.operation;
@@ -213,9 +202,6 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     // ------------------------------------------------------ specific facets
 
     private void addStabilityGroup(CatalogState state, StabilityCounts counts) {
-        if (counts == null) {
-            return;
-        }
         Map<String, Integer> values = new LinkedHashMap<>();
         putIfPositive(values, "default", counts.default_);
         putIfPositive(values, "community", counts.community);

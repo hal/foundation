@@ -126,7 +126,7 @@ public class CatalogPage implements Page {
     }
 
     private void onTypeSelect(ModelGraphType type) {
-        state.selectType(type != null ? type : ModelGraphType.ALL);
+        state.selectType(type);
         state.resetPageInfo();
         search();
     }
