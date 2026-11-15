@@ -17,6 +17,7 @@ package org.jboss.hal.op.catalog;
 
 import java.util.function.Consumer;
 
+import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.pagination.PageInfo;
@@ -29,6 +30,7 @@ import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Key.Enter;
+import static org.jboss.hal.resources.OuiaIds.SEARCH_FILTER;
 import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.pagination.Pagination.pagination;
 import static org.patternfly.component.textinputgroup.SearchInputGroup.searchInputGroup;
@@ -50,14 +52,19 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     private final SearchInputGroup searchInput;
     private final Pagination pagination;
 
-    CatalogToolbar(PageInfo pageInfo, Consumer<String> onSearch, Runnable onClear, PaginationHandler onNavigate) {
-        searchInput = searchInputGroup("catalog-search")
-                .placeholder("Search catalog...")
-                .onKeydown((event, component, value) -> {
+    CatalogToolbar(PageInfo pageInfo,
+            Consumer<String> onSearch, Runnable onClearSearch, Runnable onClear, PaginationHandler onNavigate) {
+        searchInput = searchInputGroup(Id.unique())
+                .ouiaId(SEARCH_FILTER)
+                .icon(magnifyingGlass())
+                .placeholder("Search model...")
+                .onKeyup((event, textInputGroup, value) -> {
                     if (Enter.match(event)) {
                         onSearch.accept(value);
                     }
-                });
+                })
+                .onClear((event, textInputGroup) -> onClearSearch.run());
+        searchInput.input().apply(input -> input.autocomplete = "off");
         pagination = pagination(pageInfo).onChange(onNavigate);
         toolbar = toolbar().ouiaId(OuiaIds.PAGE_CATALOG_TOOLBAR)
                 .addContent(toolbarContent()
@@ -66,12 +73,9 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                                         .add(searchInput)))
                         .addGroup(toolbarGroup().css(modifier("action-group"))
                                 .addItem(toolbarItem()
-                                        .add(button().primary().icon(magnifyingGlass()).text("Search")
-                                                .onClick((e, c) -> onSearch.accept(searchInput.value()))))
-                                .addItem(toolbarItem()
-                                        .add(button().secondary().icon(xmark()).text("Clear")
+                                        .add(button().secondary().icon(xmark()).text("Reset")
                                                 .onClick((e, c) -> {
-                                                    searchInput.value("");
+                                                    searchInput.value("", false);
                                                     onClear.run();
                                                 }))))
                         .addGroup(toolbarGroup().css(modifier("align-end"))

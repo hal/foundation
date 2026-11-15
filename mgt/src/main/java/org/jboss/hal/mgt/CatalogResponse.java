@@ -54,4 +54,9 @@ public class CatalogResponse {
     public final List<CatalogResult> results() {
         return asList(results);
     }
+
+    @JsOverlay
+    public final boolean isEmpty() {
+        return results == null || results.length == 0;
+    }
 }
