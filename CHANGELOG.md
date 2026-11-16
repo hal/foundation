@@ -48,7 +48,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Bump Quarkus platform to 3.40.1.2
 - Bump WildFly standard expansion BOM
-- Bump PatternFly Java to 0.15.1-SNAPSHOT
+- Bump PatternFly Java to 0.15.1
 - Bump Elemento, Elemental2, and J2CL processors
 - Bump jboss-parent
 - Bump Vite+ to 1.5.1
