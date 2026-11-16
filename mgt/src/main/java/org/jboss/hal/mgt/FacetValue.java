@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public sealed interface FacetValue permits FacetValue.Bool, FacetValue.Multi, FacetValue.Text {
+public sealed interface FacetValue permits FacetValue.Bool, FacetValue.Multi, FacetValue.BoolText {
 
     String toQueryParam();
 
@@ -41,10 +41,13 @@ public sealed interface FacetValue permits FacetValue.Bool, FacetValue.Multi, Fa
         }
     }
 
-    record Text(String text) implements FacetValue {
+    record BoolText(boolean value, String text) implements FacetValue {
         @Override
         public String toQueryParam() {
-            return "contains:" + text;
+            if (value && text != null && !text.isEmpty()) {
+                return "contains:" + text;
+            }
+            return String.valueOf(value);
         }
     }
 }

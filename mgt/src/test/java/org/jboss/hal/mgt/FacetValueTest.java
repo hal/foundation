@@ -55,7 +55,27 @@ class FacetValueTest {
     }
 
     @Test
-    void textRendersContainsPrefix() {
-        assertEquals("contains:datasource", new FacetValue.Text("datasource").toQueryParam());
+    void boolTextTrueWithText() {
+        assertEquals("contains:datasource", new FacetValue.BoolText(true, "datasource").toQueryParam());
+    }
+
+    @Test
+    void boolTextTrueWithoutText() {
+        assertEquals("true", new FacetValue.BoolText(true, null).toQueryParam());
+    }
+
+    @Test
+    void boolTextTrueWithEmptyText() {
+        assertEquals("true", new FacetValue.BoolText(true, "").toQueryParam());
+    }
+
+    @Test
+    void boolTextFalseWithText() {
+        assertEquals("false", new FacetValue.BoolText(false, "datasource").toQueryParam());
+    }
+
+    @Test
+    void boolTextFalseWithoutText() {
+        assertEquals("false", new FacetValue.BoolText(false, null).toQueryParam());
     }
 }
