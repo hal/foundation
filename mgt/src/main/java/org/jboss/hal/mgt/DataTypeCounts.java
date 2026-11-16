@@ -31,13 +31,22 @@ public class DataTypeCounts {
     @JsProperty(name = "long") public int long_;
     @JsProperty(name = "double") public int double_;
     public int object;
-    public int list;
+    public int map;
     public int bytes;
     public int property;
-    public int complex;
 
     @JsOverlay
     public final int bigDecimal() {
         return Js.asPropertyMap(this).getAsAny("big-decimal").asInt();
+    }
+
+    @JsOverlay
+    public final int listSimple() {
+        return Js.asPropertyMap(this).getAsAny("list-simple").asInt();
+    }
+
+    @JsOverlay
+    public final int listObject() {
+        return Js.asPropertyMap(this).getAsAny("list-object").asInt();
     }
 }

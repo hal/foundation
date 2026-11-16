@@ -24,7 +24,7 @@ package org.jboss.hal.mgt;
  * constrained to the facet's group.
  *
  * <p>Facets marked as {@link #exclusive} have mutually exclusive values — selecting one deselects the other. This applies to
- * boolean facets (yes/no) and facets with exactly two fixed options (e.g. storage: configuration/runtime).
+ * boolean facets (true/false) and facets with exactly two fixed options (e.g. storage: configuration/runtime).
  */
 public enum CatalogFacet {
 
