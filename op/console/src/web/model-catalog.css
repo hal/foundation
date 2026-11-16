@@ -1,0 +1,45 @@
+/**
+ *  Copyright 2024 Red Hat
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.hal-c-model-catalog {
+    --hal-c-model-catalog-offset: var(--hal-masthead--Height);
+    --hal-c-model-catalog-toolbar--Height: 86px; /* TODO Replace hard-coded value */
+    --hal-c-model-catalog-sidebar-width: 250px;
+
+    display: grid;
+    grid-template-columns: var(--hal-c-model-catalog-sidebar-width) 1fr;
+    height: 100%;
+    min-height: 0;
+}
+
+.hal-c-model-catalog__sidebar,
+.hal-c-model-catalog__results {
+    /*--pf-v6-c-page--section--m-sticky-top--BoxShadow: none;*/
+    height: calc(
+            100vh - var(--hal-c-model-catalog-offset) - 2 * var(--pf-v6-c-page__main-section--PaddingBlockStart) -
+            2 * var(--pf-v6-c-page__main-section--PaddingBlockEnd) - var(--hal-c-model-catalog-toolbar--Height)
+    );
+    max-height: calc(
+            100vh - var(--hal-c-model-catalog-offset) - 2 * var(--pf-v6-c-page__main-section--PaddingBlockStart) -
+            2 * var(--pf-v6-c-page__main-section--PaddingBlockEnd) - var(--hal-c-model-catalog-toolbar--Height)
+    );
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.hal-c-model-catalog__results {
+    padding-inline-start: var(--pf-v6-c-page__main-section--PaddingBlockStart);
+}

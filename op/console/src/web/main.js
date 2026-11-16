@@ -36,6 +36,7 @@ import "./expression.css";
 import "./finder.css";
 import "./jndi.css";
 import "./model-browser.css";
+import "./model-catalog.css";
 import "./record-table.css";
 import "./resource.css";
 import "./stability.css";
