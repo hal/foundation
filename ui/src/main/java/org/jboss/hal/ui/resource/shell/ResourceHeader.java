@@ -114,7 +114,10 @@ public class ResourceHeader implements
     }
 
     public ResourceHeader defaultDescription() {
-        return addDescription(metadata.resourceDescription().description());
+        if (metadata.resourceDescription().isDefined()) {
+            addDescription(metadata.resourceDescription().description());
+        }
+        return this;
     }
 
     @Override
