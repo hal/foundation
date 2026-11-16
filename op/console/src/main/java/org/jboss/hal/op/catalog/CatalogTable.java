@@ -18,7 +18,6 @@ package org.jboss.hal.op.catalog;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.mgt.CatalogProperties;
-import org.jboss.hal.mgt.CatalogResponse;
 import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.resources.Identifiers;
@@ -28,8 +27,6 @@ import org.patternfly.component.table.Table;
 import org.patternfly.component.table.Tr;
 import org.patternfly.core.OuiaSupport;
 import org.patternfly.style.Classes;
-import org.patternfly.style.Variable;
-import org.patternfly.style.Variables;
 
 import elemental2.dom.HTMLElement;
 
@@ -49,15 +46,13 @@ import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
 import static org.patternfly.style.Classes.cell;
 import static org.patternfly.style.Classes.component;
-import static org.patternfly.style.Classes.table;
+import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Width;
 import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width20;
-import static org.patternfly.style.Width.width40;
 import static org.patternfly.style.Width.width50;
 import static org.patternfly.style.Width.width60;
-import static org.patternfly.style.Width.width70;
 import static org.patternfly.style.Width.width80;
 import static org.patternfly.style.Width.width90;
 
@@ -110,7 +105,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ table
 
     private Table buildTable(ModelGraphType effectiveType) {
-        Table t = table().ouiaId(OuiaIds.PAGE_CATALOG_TABLE);
+        Table t = table().css(modifier("sticky-header"))
+                .ouiaId(OuiaIds.PAGE_CATALOG_TABLE);
         if (effectiveType == null) {
             t.addHead(thead().addRow(mixedHeader()));
         } else {

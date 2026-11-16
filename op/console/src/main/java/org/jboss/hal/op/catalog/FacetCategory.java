@@ -20,6 +20,15 @@ import static org.patternfly.component.form.Checkbox.checkbox;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.form;
 
+/**
+ * UI component representing a single facet category in the catalog filter panel.
+ * <p>
+ * Renders a field set with a category title and a list of checkbox values for the associated {@link CatalogFacet}. Each
+ * checkbox displays the facet value and its result count, reflects the active state from {@link CatalogState}, and notifies the
+ * supplied toggle handler when its selection changes.
+ * <p>
+ * The generated element can be inserted into the DOM through the {@link #element()} method.
+ */
 class FacetCategory implements IsElement<HTMLElement> {
 
     private final HTMLElement root;

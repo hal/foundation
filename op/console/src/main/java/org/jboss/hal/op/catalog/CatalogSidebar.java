@@ -42,6 +42,9 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.nav;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
+import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.modelCatalog;
+import static org.jboss.hal.resources.HalClasses.sidebar;
 import static org.jboss.hal.ui.component.VerticalTab.verticalTab;
 import static org.jboss.hal.ui.component.VerticalTabs.verticalTabs;
 import static org.patternfly.component.divider.Divider.divider;
@@ -77,7 +80,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             ModelGraphType type = vt.get(MODEL_GRAPH_TYPE_KEY);
             onTypeSelect.accept(type);
         });
-        root = nav()
+        root = nav().css(halComponent(modelCatalog, sidebar))
                 .add(verticalTabs)
                 .add(filterPanel = div().css("filter-panel-pf"))
                 .element();
@@ -101,9 +104,11 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     // ------------------------------------------------------ update
 
-    void update(CatalogState state, CatalogResponse response) {
+    void update(CatalogState state, CatalogResponse response, boolean markTypeSelected) {
         removeChildrenFrom(filterPanel);
-        selectType(state.effectiveType());
+        if (markTypeSelected) {
+            markTypeSelected(state.effectiveType());
+        }
         if (!response.isEmpty()) {
             CatalogFacets facets = response.facets;
             updateTypeCounts(facets);
@@ -136,7 +141,13 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     // ------------------------------------------------------ type
 
-    void selectType(ModelGraphType type) {
+    void clearTypeSelection() {
+        for (VerticalTab item : verticalTabs.items()) {
+            verticalTabs.select(item, false, false);
+        }
+    }
+
+    private void markTypeSelected(ModelGraphType type) {
         VerticalTab vt = verticalTabs.item(type.type);
         if (vt != null) {
             verticalTabs.select(vt, true, false);
@@ -166,7 +177,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         // @formatter:off
         if (facets.singleton != null) {addBooleanGroup("Singleton", state, CatalogFacet.SINGLETON, facets.singleton);}
         if (facets.declaresCap != null) {addBooleanGroup("Declares capability", state, CatalogFacet.DECLARES_CAP, facets.declaresCap);}
-        if (facets.definesAttrGroups != null) {addBooleanGroup("Attribute groups", state, CatalogFacet.DEFINES_ATTR_GROUPS, facets.definesAttrGroups);}
+        if (facets.definesAttrGroups != null) {addBooleanGroup("Has attribute groups", state, CatalogFacet.DEFINES_ATTR_GROUPS, facets.definesAttrGroups);}
         // @formatter:on
     }
 
@@ -221,8 +232,10 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "boolean", counts.boolean_);
         putIfPositive(values, "double", counts.double_);
         putIfPositive(values, "big-decimal", counts.bigDecimal());
+        putIfPositive(values, "list-simple", counts.listSimple());
+        putIfPositive(values, "list-object", counts.listObject());
+        putIfPositive(values, "map", counts.map);
         putIfPositive(values, "object", counts.object);
-        putIfPositive(values, "list", counts.list);
         putIfPositive(values, "bytes", counts.bytes);
         putIfPositive(values, "property", counts.property);
         addFacetGroup("Data Type", state, CatalogFacet.DATA_TYPE, values);
@@ -266,8 +279,8 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
-        if (counts.yes > 0) {values.put("yes", counts.yes);}
-        if (counts.no > 0) {values.put("no", counts.no);}
+        if (counts.true_ > 0) {values.put("true", counts.true_);}
+        if (counts.false_ > 0) {values.put("false", counts.false_);}
         addFacetGroup(label, state, facet, values);
     }
 

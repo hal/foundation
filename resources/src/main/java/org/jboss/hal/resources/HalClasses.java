@@ -44,6 +44,7 @@ public interface HalClasses {
     String jndi = "jndi";
     String mgt = "mgt";
     String modelBrowser = "model-browser";
+    String modelCatalog = "model-catalog";
     String name = "name";
     String rbacHidden = "rbac-hidden";
     String recordTable = "record-table";
@@ -53,6 +54,7 @@ public interface HalClasses {
     String results = "results";
     String scheme = "scheme";
     String segment = "segment";
+    String sidebar = "sidebar";
     String slash = "slash";
     String stabilityLevel = "stability-level";
     String status = "status";

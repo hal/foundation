@@ -15,17 +15,18 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogQuery;
 import org.jboss.hal.mgt.CatalogResponse;
@@ -34,19 +35,21 @@ import org.jboss.hal.mgt.ModelGraphCatalog;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
-import org.patternfly.layout.split.SplitItem;
 
 import elemental2.dom.Event;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
+import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.modelCatalog;
+import static org.jboss.hal.resources.HalClasses.results;
 import static org.jboss.hal.resources.OuiaIds.PAGE_CATALOG;
 import static org.patternfly.component.divider.Divider.divider;
 import static org.patternfly.component.divider.DividerType.hr;
 import static org.patternfly.component.page.PageSection.pageSection;
-import static org.patternfly.layout.split.Split.split;
-import static org.patternfly.layout.split.SplitItem.splitItem;
 
 /**
  * The Model Catalog page provides faceted search over the WildFly management model via the MGT sidecar. The layout follows the
@@ -63,7 +66,7 @@ public class CatalogPage implements Page {
     private final CatalogSidebar catalogSidebar;
     private final CatalogWelcome catalogWelcome;
     private final CatalogTable catalogTable;
-    private final SplitItem mainContent;
+    private final HTMLContainerBuilder<HTMLDivElement> mainContent;
 
     @Inject
     public CatalogPage(ModelGraphCatalog catalog) {
@@ -74,7 +77,7 @@ public class CatalogPage implements Page {
         this.catalogSidebar = new CatalogSidebar(this::onTypeSelect, this::onFacetToggle);
         this.catalogWelcome = new CatalogWelcome();
         this.catalogTable = new CatalogTable();
-        this.mainContent = splitItem().fill();
+        this.mainContent = div().css(halComponent(modelCatalog, results));
     }
 
     @Override
@@ -85,12 +88,9 @@ public class CatalogPage implements Page {
                 .element();
 
         HTMLElement contentSection = pageSection().limitWidth()
-                .add(split().gutter()
-                        .addItem(splitItem()
-                                .style("min-width", "200px")
-                                .style("max-width", "250px")
-                                .add(catalogSidebar))
-                        .addItem(mainContent
+                .add(div().css(halComponent(modelCatalog))
+                        .add(catalogSidebar)
+                        .add(mainContent
                                 .add(catalogWelcome)))
                 .element();
 
@@ -131,12 +131,13 @@ public class CatalogPage implements Page {
         search();
     }
 
+    @SuppressWarnings("DeconstructionCanBeUsed")
     private void onFacetToggle(CatalogFacet facet, String value) {
         if (facet.exclusive) {
             if (state.isActive(facet, value)) {
                 state.remove(facet);
             } else {
-                state.apply(facet, new FacetValue.Bool("yes".equals(value)));
+                state.apply(facet, new FacetValue.Bool("true".equals(value)));
             }
         } else {
             FacetValue current = state.getValue(facet);
@@ -184,7 +185,8 @@ public class CatalogPage implements Page {
     private void initialSearch() {
         CatalogQuery query = state.buildFilter();
         catalog.search(query).then(response -> {
-            catalogSidebar.update(state, response);
+            catalogSidebar.clearTypeSelection();
+            catalogSidebar.update(state, response, false);
             return null;
         });
     }
@@ -201,7 +203,7 @@ public class CatalogPage implements Page {
         ModelGraphType effectiveType = state.effectiveType();
         state.updateTotal(response.total);
         showResults();
-        catalogSidebar.update(state, response);
+        catalogSidebar.update(state, response, true);
         catalogTable.update(effectiveType, response.results);
         catalogToolbar.updatePageInfo(state.pageInfo());
     }

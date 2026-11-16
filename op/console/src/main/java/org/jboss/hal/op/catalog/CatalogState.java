@@ -122,11 +122,13 @@ public class CatalogState {
             return false;
         }
         if (fv instanceof FacetValue.Bool b) {
-            return b.value() == "yes".equals(value);
+            return b.value() == "true".equals(value);
+        } else if (fv instanceof FacetValue.BoolText bt) {
+            return bt.value() == "true".equals(value);
         } else if (fv instanceof FacetValue.Multi m) {
             return m.values().contains(value);
         }
-        return true;
+        return false;
     }
 
     public FacetValue getValue(CatalogFacet facet) {
