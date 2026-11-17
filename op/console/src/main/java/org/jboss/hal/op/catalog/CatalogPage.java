@@ -15,8 +15,6 @@
  */
 package org.jboss.hal.op.catalog;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import jakarta.enterprise.context.Dependent;
@@ -131,32 +129,14 @@ public class CatalogPage implements CatalogController, Page {
     }
 
     @Override
-    @SuppressWarnings("DeconstructionCanBeUsed")
-    public void applyFacetValue(CatalogFacet facet, String value) {
-        if (facet.exclusive) {
-            if (state.isActive(facet, value)) {
-                state.removeFacet(facet);
-            } else {
-                state.applyFacetValue(facet, new FacetValue.Bool("true".equals(value)));
-            }
-        } else {
-            FacetValue current = state.facetValue(facet);
-            if (current instanceof FacetValue.Multi multi && multi.values().contains(value)) {
-                Set<String> remaining = new LinkedHashSet<>(multi.values());
-                remaining.remove(value);
-                if (remaining.isEmpty()) {
-                    state.removeFacet(facet);
-                } else {
-                    state.applyFacetValue(facet, new FacetValue.Multi(remaining));
-                }
-            } else {
-                Set<String> values = current instanceof FacetValue.Multi multi
-                        ? new LinkedHashSet<>(multi.values())
-                        : new LinkedHashSet<>();
-                values.add(value);
-                state.applyFacetValue(facet, new FacetValue.Multi(values));
-            }
-        }
+    public void applyFacetValue(CatalogFacet facet, FacetValue value) {
+        state.applyFacetValue(facet, value);
+        internalSearch(this::internalUpdate);
+    }
+
+    @Override
+    public void removeFacet(CatalogFacet facet) {
+        state.removeFacet(facet);
         internalSearch(this::internalUpdate);
     }
 
