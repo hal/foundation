@@ -135,13 +135,22 @@ class CatalogState implements CatalogStateInfo {
     }
 
     @Override
+    public boolean hasActiveFilters() {
+        return !facets.isEmpty();
+    }
+
+    @Override
     public FacetValue facetValue(CatalogFacet facet) {
         return facets.get(facet);
     }
 
     @Override
-    public boolean hasActiveFilters() {
-        return !facets.isEmpty();
+    public String facetText(CatalogFacet facet) {
+        FacetValue fv = facetValue(facet);
+        if (fv instanceof FacetValue.BoolText bt && bt.text() != null && !bt.text().isEmpty()) {
+            return bt.text();
+        }
+        return null;
     }
 
     @Override

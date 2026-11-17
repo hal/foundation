@@ -43,3 +43,12 @@
 .hal-c-model-catalog__results {
     padding-inline-start: var(--pf-v6-c-page__main-section--PaddingBlockStart);
 }
+
+.hal-c-model-catalog__results .capabilities {
+    color: var(--pf-t--global--text--color--subtle);
+    list-style: "→ ";
+
+    li {
+        margin-inline-start: 2ch;
+    }
+}

@@ -30,13 +30,19 @@ import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
+import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
-import static org.jboss.hal.op.catalog.CatalogBricks.typeLabel;
+import static org.jboss.elemento.Elements.li;
+import static org.jboss.elemento.Elements.small;
+import static org.jboss.elemento.Elements.ul;
+import static org.jboss.hal.mgt.CatalogFacet.DECLARES_CAP;
+import static org.jboss.hal.mgt.CatalogFacet.REFS_CAP;
 import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.ui.brick.AttributeBricks.accessTypeTd;
 import static org.jboss.hal.ui.brick.AttributeBricks.storageTd;
+import static org.jboss.hal.ui.brick.ModelBricks.typeLabel;
 import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.Tbody.tbody;
@@ -63,14 +69,16 @@ import static org.patternfly.style.Width.width90;
  */
 class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, CatalogTable> {
 
+    private final CatalogController controller;
     private final Stability builtInStability;
     private final HTMLElement container;
     private Table table;
     private ModelGraphType currentType;
 
-    CatalogTable() {
-        builtInStability = UIContext.uic().environment().builtInStability();
-        container = div().element();
+    CatalogTable(CatalogController controller) {
+        this.controller = controller;
+        this.builtInStability = UIContext.uic().environment().builtInStability();
+        this.container = div().element();
         initOuia();
     }
 
@@ -149,7 +157,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr mixedRow(CatalogResult result) {
         return tr(rowId(result))
-                .addItem(td("Type").add(typeLabel(result.type())))
+                .addItem(td("Type").add(typeLabel(result.type().type)))
                 .addItem(td("Name").text(safe(result.name))
                         .run(td -> {
                             if (result.deprecated) {
@@ -179,6 +187,15 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         return tr(rowId(result))
                 .addItem(td("Address").text(safe(result.address))
                         .run(td -> {
+                            if (controller.state().isActive(DECLARES_CAP, "true")
+                                    && p.capabilities != null && p.capabilities.length > 0) {
+                                td.add(br()).add(small()
+                                        .add(ul().css("capabilities").run(ul -> {
+                                            for (String capability : p.capabilities) {
+                                                ul.add(li().text(capability));
+                                            }
+                                        })));
+                            }
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
                             }
@@ -210,6 +227,11 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         Tr tr = tr(rowId(result))
                 .addItem(td("Name").text(safe(result.name))
                         .run(td -> {
+                            if (controller.state().isActive(REFS_CAP, "true") && p.capabilityReference != null) {
+                                td.add(br()).add(small()
+                                        .add(ul().css("capabilities")
+                                                .add(li().text(p.capabilityReference))));
+                            }
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
                             }

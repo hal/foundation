@@ -16,9 +16,11 @@ public interface CatalogStateInfo {
 
     boolean isActive(CatalogFacet facet, String value);
 
+    boolean hasActiveFilters();
+
     FacetValue facetValue(CatalogFacet facet);
 
-    boolean hasActiveFilters();
+    String facetText(CatalogFacet facet);
 
     PageInfo pageInfo();
 }

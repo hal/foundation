@@ -21,3 +21,10 @@
 .filter-panel-header {
     margin-block-start: var(--pf-t--global--spacer--md);
 }
+
+.filter-panel-pf-category-item .pf-v6-c-form-control {
+    --pf-v6-c-form-control--PaddingBlockStart: var(--pf-t--global--spacer--control--vertical--compact);
+    --pf-v6-c-form-control--PaddingBlockEnd: var(--pf-t--global--spacer--control--vertical--compact);
+    --pf-v6-c-form-control--PaddingInlineStart: var(--pf-t--global--spacer--control--horizontal--compact);
+    --pf-v6-c-form-control--PaddingInlineEnd: var(--pf-t--global--spacer--control--horizontal--compact);
+}

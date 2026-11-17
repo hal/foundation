@@ -72,7 +72,7 @@ public class CatalogPage implements CatalogController, Page {
         this.toolbar = new CatalogToolbar(this);
         this.sidebar = new CatalogSidebar(this);
         this.welcome = new CatalogWelcome();
-        this.table = new CatalogTable();
+        this.table = new CatalogTable(this);
         this.mainContent = div().css(halComponent(modelCatalog, results));
     }
 
