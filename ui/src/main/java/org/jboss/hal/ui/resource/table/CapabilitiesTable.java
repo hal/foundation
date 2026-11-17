@@ -31,14 +31,14 @@ import org.jboss.elemento.IsElement;
 import org.jboss.elemento.flow.Flow;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.Task;
-import org.jboss.hal.mgt.CapabilityReference;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.Metadata;
-import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.meta.description.CapabilityDescription;
 import org.jboss.hal.meta.description.CapabilityDescriptions;
 import org.jboss.hal.meta.description.ResourceDescription;
+import org.jboss.hal.mgt.CapabilityReference;
 import org.jboss.hal.resources.Dataset;
+import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.Keys;
 import org.jboss.hal.ui.modelbrowser.ModelBrowserEvents.SelectInTree;
 import org.jboss.hal.ui.navigation.Highlight;
@@ -84,6 +84,8 @@ import static org.patternfly.layout.bullseye.Bullseye.bullseye;
 import static org.patternfly.layout.flex.Flex.flex;
 import static org.patternfly.layout.flex.FlexItem.flexItem;
 import static org.patternfly.layout.flex.SpaceItems.sm;
+import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Classes.noPadding;
 import static org.patternfly.style.Classes.util;
 import static org.patternfly.style.Size.xs;
 import static org.patternfly.style.Width.width10;
@@ -175,8 +177,8 @@ public class CapabilitiesTable implements Attachable, IsElement<HTMLElement> {
                             .addItem(td("Dynamic elements").add(dynamicElements(capability))))
                     .addRow(expandableTr(Id.build(capability.name(), "references"))
                             .addItem(td().text(""))
-                            .addItem(td().colSpan(3)
-                                    .addExpandableRowContent(expandableRowContent.noPadding())));
+                            .addItem(td().css(modifier(noPadding)).colSpan(3)
+                                    .addExpandableRowContent(expandableRowContent)));
         });
     }
 
