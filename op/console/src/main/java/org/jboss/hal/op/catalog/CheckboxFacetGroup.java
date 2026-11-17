@@ -30,11 +30,11 @@ import static org.patternfly.style.Classes.form;
  * <p>
  * The generated element can be inserted into the DOM through the {@link #element()} method.
  */
-class CatalogFacetGroup implements IsElement<HTMLElement> {
+class CheckboxFacetGroup implements IsElement<HTMLElement> {
 
     private final HTMLElement root;
 
-    CatalogFacetGroup(CatalogController controller, String text, CatalogFacet facet, Map<String, Integer> values) {
+    CheckboxFacetGroup(CatalogController controller, String text, CatalogFacet facet, Map<String, Integer> values) {
         this.root = form().css("filter-panel-pf-category")
                 .add(fieldset()
                         .css(component(form, "fieldset"), "filter-panel-pf-category-items")

@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.op.catalog;
 
+import org.jboss.elemento.EventType;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.mgt.BooleanCounts;
@@ -22,6 +23,7 @@ import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.ui.Format;
 
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
@@ -40,12 +42,12 @@ import static org.patternfly.style.Classes.form;
  * Facet group for capability boolean facets ({@link CatalogFacet#DECLARES_CAP}, {@link CatalogFacet#REFS_CAP}) that shows an
  * additional text input when "true" is checked, allowing users to filter by capability name substring.
  */
-class CatalogCapabilityFacetGroup implements IsElement<HTMLElement> {
+class TextFilterFacetGroup implements IsElement<HTMLElement> {
 
     private final HTMLElement root;
 
-    CatalogCapabilityFacetGroup(CatalogController controller, String text, CatalogFacet facet,
-            BooleanCounts counts) {
+    @SuppressWarnings("DeconstructionCanBeUsed")
+    TextFilterFacetGroup(CatalogController controller, String text, CatalogFacet facet, BooleanCounts counts) {
         HTMLElement textInputElement = textInput(Id.build("sidebar", "capability", facet.key, "text"))
                 .placeholder("Filter by name...")
                 .onKeyup((event, ti, value) -> {
@@ -70,11 +72,8 @@ class CatalogCapabilityFacetGroup implements IsElement<HTMLElement> {
             textInputElement.setAttribute("value", restoredText);
         }
 
-        String finalRestoredText = restoredText;
-        boolean finalTrueActive = trueActive;
-        boolean finalFalseActive = falseActive;
-
         this.root = form().css("filter-panel-pf-category")
+                .on(EventType.submit, Event::preventDefault)
                 .add(fieldset()
                         .css(component(form, "fieldset"), "filter-panel-pf-category-items")
                         .add(legend()
@@ -97,7 +96,7 @@ class CatalogCapabilityFacetGroup implements IsElement<HTMLElement> {
                                                     }
                                                 })
                                                 .run(cb -> {
-                                                    if (finalTrueActive) {
+                                                    if (trueActive) {
                                                         cb.value(true);
                                                     }
                                                     cb.textDelegate()
@@ -119,21 +118,18 @@ class CatalogCapabilityFacetGroup implements IsElement<HTMLElement> {
                                                 .onChange((e, cb, checked) -> {
                                                     if (checked) {
                                                         setVisible(textInputElement, false);
-                                                        controller.applyFacetValue(facet,
-                                                                new FacetValue.Bool(false));
+                                                        controller.applyFacetValue(facet, new FacetValue.Bool(false));
                                                     } else {
                                                         controller.removeFacet(facet);
                                                     }
                                                 })
                                                 .run(cb -> {
-                                                    if (finalFalseActive) {
+                                                    if (falseActive) {
                                                         cb.value(true);
                                                     }
-                                                    cb.textDelegate()
-                                                            .appendChild(span().css("item-count")
-                                                                    .text("(" + Format.number(counts.false_)
-                                                                            + ")")
-                                                                    .element());
+                                                    cb.textDelegate().appendChild(span().css("item-count")
+                                                            .text("(" + Format.number(counts.false_) + ")")
+                                                            .element());
                                                 })));
                             }
                         }))

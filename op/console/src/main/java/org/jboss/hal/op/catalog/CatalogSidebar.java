@@ -293,7 +293,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         if (counts.true_ > 0 || counts.false_ > 0) {
-            filterPanel.add(new CatalogCapabilityFacetGroup(controller, label, facet, counts));
+            filterPanel.add(new TextFilterFacetGroup(controller, label, facet, counts));
         }
     }
 
@@ -303,7 +303,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         if (values.size() <= 1) {
             return;
         }
-        filterPanel.add(new CatalogFacetGroup(controller, label, facet, values));
+        filterPanel.add(new CheckboxFacetGroup(controller, label, facet, values));
     }
 
     // ------------------------------------------------------ helpers
