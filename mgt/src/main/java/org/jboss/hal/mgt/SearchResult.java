@@ -37,19 +37,19 @@ public class SearchResult {
     /** The name of the resource, attribute, operation, or capability. */
     public String name;
 
-    /** A human-readable description (may be {@code null}). */
+    /** A human-readable description (might be {@code null}). */
     public String description;
 
-    /** The management model address where this item is defined (may be {@code null} for some capabilities). */
+    /** The management model address where this item is defined (might be {@code null} for some capabilities). */
     public String address;
 
-    /** Whether the resource (or the parent resource of an attribute/operation) is a singleton (may be {@code null}). */
+    /** Whether the resource (or the parent resource of an attribute/operation) is a singleton (might be {@code null}). */
     public Boolean singleton;
 
-    /** Resources that declare this capability (only present for capabilities, may be {@code null}). */
+    /** Resources that declare this capability (only present for capabilities, might be {@code null}). */
     public ResourceRef[] providedBy;
 
-    /** The stability level (may be {@code null}). */
+    /** The stability level (might be {@code null}). */
     public String stability;
 
     @JsOverlay

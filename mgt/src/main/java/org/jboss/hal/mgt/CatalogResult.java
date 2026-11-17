@@ -15,7 +15,9 @@
  */
 package org.jboss.hal.mgt;
 
+import org.jboss.elemento.Id;
 import org.jboss.hal.env.Stability;
+import org.jboss.hal.resources.Identifiers;
 
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -39,23 +41,28 @@ public class CatalogResult {
     /** The name of the resource, attribute, operation, or capability. */
     public String name;
 
-    /** A human-readable description (may be {@code null}). */
+    /** A human-readable description (might be {@code null}). */
     public String description;
 
-    /** The full management model address (may be {@code null} for some capabilities). */
+    /** The full management model address (might be {@code null} for some capabilities). */
     public String address;
 
-    /** The parent resource address without the attribute/operation name (may be {@code null}). */
+    /** The parent resource address without the attribute/operation name (might be {@code null}). */
     public String resourceAddress;
 
-    /** The stability level (may be {@code null}). */
+    /** The stability level (might be {@code null}). */
     public String stability;
 
     /** Whether this element is deprecated. */
     public boolean deprecated;
 
-    /** Type-specific properties (may be {@code null} for capabilities). */
+    /** Type-specific properties (might be {@code null} for capabilities). */
     public CatalogProperties properties;
+
+    @JsOverlay
+    public final String id() {
+        return Id.build(type, name, Identifiers.fromTemplate(resourceAddress));
+    }
 
     @JsOverlay
     public final ModelGraphType type() {

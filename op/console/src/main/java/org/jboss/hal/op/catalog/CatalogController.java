@@ -1,6 +1,7 @@
 package org.jboss.hal.op.catalog;
 
 import org.jboss.hal.mgt.CatalogFacet;
+import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.patternfly.component.pagination.PageInfo;
@@ -20,6 +21,8 @@ public interface CatalogController {
     void removeFacet(CatalogFacet facet);
 
     void navigate(PageInfo pageInfo);
+
+    void verifyAndGo(CatalogResult result);
 
     CatalogStateInfo state();
 }

@@ -229,6 +229,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         }
         Map<String, Integer> values = new LinkedHashMap<>();
         putIfPositive(values, "string", counts.string);
+        putIfPositive(values, "bytes", counts.bytes);
         putIfPositive(values, "int", counts.int_);
         putIfPositive(values, "long", counts.long_);
         putIfPositive(values, "boolean", counts.boolean_);
@@ -238,7 +239,6 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "list-object", counts.listObject());
         putIfPositive(values, "map", counts.map);
         putIfPositive(values, "object", counts.object);
-        putIfPositive(values, "bytes", counts.bytes);
         putIfPositive(values, "property", counts.property);
         addFacetGroup("Data Type", CatalogFacet.DATA_TYPE, values);
     }

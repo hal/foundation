@@ -21,17 +21,24 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.HTMLContainerBuilder;
+import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
+import org.jboss.hal.dmr.dispatch.Dispatcher;
+import org.jboss.hal.meta.AddressTemplate;
+import org.jboss.hal.meta.StatementContext;
+import org.jboss.hal.meta.tree.ModelTree;
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogQuery;
 import org.jboss.hal.mgt.CatalogResponse;
+import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.mgt.ModelGraphCatalog;
 import org.jboss.hal.mgt.ModelGraphType;
+import org.jboss.hal.ui.navigation.RouteRegistry;
 import org.patternfly.component.pagination.PageInfo;
 
 import elemental2.dom.HTMLDivElement;
@@ -57,7 +64,13 @@ import static org.patternfly.component.page.PageSection.pageSection;
 @Route("/model-catalog")
 public class CatalogPage implements CatalogController, Page {
 
+    private static final Logger logger = Logger.getLogger(CatalogPage.class.getName());
+
+    private final Dispatcher dispatcher;
     private final ModelGraphCatalog catalog;
+    private final ModelTree modelTree;
+    private final RouteRegistry routeRegistry;
+    private final StatementContext statementContext;
     private final CatalogState state;
     private final CatalogToolbar toolbar;
     private final CatalogSidebar sidebar;
@@ -66,8 +79,16 @@ public class CatalogPage implements CatalogController, Page {
     private final HTMLContainerBuilder<HTMLDivElement> mainContent;
 
     @Inject
-    public CatalogPage(ModelGraphCatalog catalog) {
+    public CatalogPage(Dispatcher dispatcher,
+            ModelGraphCatalog catalog,
+            ModelTree modelTree,
+            RouteRegistry routeRegistry,
+            StatementContext statementContext) {
         this.catalog = catalog;
+        this.dispatcher = dispatcher;
+        this.modelTree = modelTree;
+        this.routeRegistry = routeRegistry;
+        this.statementContext = statementContext;
         this.state = new CatalogState();
         this.toolbar = new CatalogToolbar(this);
         this.sidebar = new CatalogSidebar(this);
@@ -144,6 +165,39 @@ public class CatalogPage implements CatalogController, Page {
     public void navigate(PageInfo pageInfo) {
         state.navigate(pageInfo);
         internalSearch(this::internalUpdate);
+    }
+
+    @Override
+    public void verifyAndGo(CatalogResult result) {
+        String highlight = switch (result.type()) {
+            case ATTRIBUTE -> "a:" + result.name;
+            case OPERATION -> "o:" + result.name;
+            case CAPABILITY -> "c:" + result.name;
+            default -> null;
+        };
+
+        AddressTemplate.ofUntrusted(result.resourceAddress).ifPresentOrElse(template -> {
+                    if (template.fullyQualified()) {
+                        routeRegistry.goTo(template, highlight);
+                    } else {
+                        modelTree.resolveWildcards(template).then(resolved -> {
+                            if (resolved.isEmpty()) {
+                                // TODO Let the user know that no matching resources were found
+                                logger.error("No matching resources found for address %s", result.resourceAddress);
+                            } else if (resolved.size() == 1) {
+                                routeRegistry.goTo(resolved.get(0), highlight);
+                            } else {
+                                table.showPickList(result, resolved);
+                            }
+                            return null;
+                        });
+                    }
+                },
+                () -> {
+                    // TODO Let the user know about the invalid address
+                    logger.error("Invalid address %s", result.resourceAddress);
+                }
+        );
     }
 
     @Override

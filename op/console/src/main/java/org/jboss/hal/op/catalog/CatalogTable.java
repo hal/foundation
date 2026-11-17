@@ -15,14 +15,18 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.List;
+
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
+import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.mgt.CatalogProperties;
 import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.resources.Identifiers;
 import org.jboss.hal.resources.OuiaIds;
 import org.jboss.hal.ui.UIContext;
+import org.patternfly.component.button.Button;
 import org.patternfly.component.table.Table;
 import org.patternfly.component.table.Tr;
 import org.patternfly.core.OuiaSupport;
@@ -44,6 +48,7 @@ import static org.jboss.hal.ui.brick.AttributeBricks.accessTypeTd;
 import static org.jboss.hal.ui.brick.AttributeBricks.storageTd;
 import static org.jboss.hal.ui.brick.ModelBricks.typeLabel;
 import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
+import static org.patternfly.component.button.Button.button;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.Tbody.tbody;
 import static org.patternfly.component.table.Td.td;
@@ -97,7 +102,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         return container;
     }
 
-    // ------------------------------------------------------ update
+    // ------------------------------------------------------ api
 
     void update(ModelGraphType effectiveType, CatalogResult[] results) {
         if (table == null || effectiveType != currentType) {
@@ -107,6 +112,11 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
             currentType = effectiveType;
         }
         populateRows(effectiveType, results);
+    }
+
+    void showPickList(CatalogResult result, List<AddressTemplate> templates) {
+        String id = result.id();
+        // TODO Find the button element, create and open an overlay to pick a template from the list
     }
 
     // ------------------------------------------------------ table
@@ -158,13 +168,21 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Tr mixedRow(CatalogResult result) {
         return tr(rowId(result))
                 .addItem(td("Type").add(typeLabel(result.type().type)))
-                .addItem(td("Name").text(safe(result.name))
+                .addItem(td("Name")
+                        .add(link(result))
                         .run(td -> {
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
                             }
                         }))
-                .addItem(td("Address").text(safe(result.address)))
+                .addItem(td("Address")
+                        .run(td -> {
+                            if (result.type() == ModelGraphType.RESOURCE) {
+                                td.text(safe(result.address));
+                            } else {
+                                td.text(safe(result.resourceAddress));
+                            }
+                        }))
                 .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
     }
 
@@ -185,7 +203,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Tr resourceRow(CatalogResult result) {
         CatalogProperties p = result.properties;
         return tr(rowId(result))
-                .addItem(td("Address").text(safe(result.address))
+                .addItem(td("Address")
+                        .add(link(result))
                         .run(td -> {
                             if (controller.state().isActive(DECLARES_CAP, "true")
                                     && p.capabilities != null && p.capabilities.length > 0) {
@@ -225,7 +244,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Tr attributeRow(CatalogResult result) {
         CatalogProperties p = result.properties;
         Tr tr = tr(rowId(result))
-                .addItem(td("Name").text(safe(result.name))
+                .addItem(td("Name")
+                        .add(link(result))
                         .run(td -> {
                             if (controller.state().isActive(REFS_CAP, "true") && p.capabilityReference != null) {
                                 td.add(br()).add(small()
@@ -269,7 +289,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Tr operationRow(CatalogResult result) {
         CatalogProperties p = result.properties;
         return tr(rowId(result))
-                .addItem(td("Name").text(safe(result.name))
+                .addItem(td("Name")
+                        .add(link(result))
                         .run(td -> {
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
@@ -308,6 +329,13 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
             id = id + "-" + Identifiers.fromTemplate(result.address);
         }
         return id;
+    }
+
+    private Button link(CatalogResult result) {
+        String text = result.type() == ModelGraphType.RESOURCE ? result.resourceAddress : result.name;
+        return button(safe(text)).inline().link()
+                .id(result.id())
+                .onClick((e, b) -> controller.verifyAndGo(result));
     }
 
     private String safe(String value) {
