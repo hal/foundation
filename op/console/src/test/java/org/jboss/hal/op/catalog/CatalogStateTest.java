@@ -21,6 +21,7 @@ import java.util.List;
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.mgt.ModelGraphType;
+import org.patternfly.component.pagination.PageInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +51,7 @@ class CatalogStateTest {
     @Test
     void emptyStateHasNoFilters() {
         assertFalse(state.hasActiveFilters());
-        assertEquals("", state.buildFilter().toQueryString());
+        assertEquals("", state.buildQuery().toQueryString());
     }
 
     // ------------------------------------------------------ explicit type
@@ -72,7 +73,7 @@ class CatalogStateTest {
     @Test
     void selectTypeClearsTypeSpecificFacets() {
         state.selectType(ModelGraphType.ATTRIBUTE);
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
         state.selectType(ModelGraphType.RESOURCE);
         assertFalse(state.isActive(CatalogFacet.REQUIRED));
     }
@@ -81,57 +82,57 @@ class CatalogStateTest {
 
     @Test
     void applyBoolFacet() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
         assertTrue(state.isActive(CatalogFacet.REQUIRED));
-        assertInstanceOf(FacetValue.Bool.class, state.getValue(CatalogFacet.REQUIRED));
+        assertInstanceOf(FacetValue.Bool.class, state.facetValue(CatalogFacet.REQUIRED));
     }
 
     @Test
     void applyMultiFacet() {
-        state.apply(CatalogFacet.STABILITY,
+        state.applyFacetValue(CatalogFacet.STABILITY,
                 new FacetValue.Multi(new LinkedHashSet<>(List.of("default", "community"))));
         assertTrue(state.isActive(CatalogFacet.STABILITY));
-        assertInstanceOf(FacetValue.Multi.class, state.getValue(CatalogFacet.STABILITY));
+        assertInstanceOf(FacetValue.Multi.class, state.facetValue(CatalogFacet.STABILITY));
     }
 
     @Test
     void removeFacet() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
-        state.remove(CatalogFacet.REQUIRED);
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.removeFacet(CatalogFacet.REQUIRED);
         assertFalse(state.isActive(CatalogFacet.REQUIRED));
-        assertNull(state.getValue(CatalogFacet.REQUIRED));
+        assertNull(state.facetValue(CatalogFacet.REQUIRED));
     }
 
     // ------------------------------------------------------ implicit type
 
     @Test
     void typeSpecificFacetImpliesType() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
         assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
         assertTrue(state.typeSelection().implicit());
     }
 
     @Test
     void removeLastTypeSpecificFacetRemovesImplicitType() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
-        state.remove(CatalogFacet.REQUIRED);
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.removeFacet(CatalogFacet.REQUIRED);
         assertEquals(ModelGraphType.ALL, state.effectiveType());
         assertFalse(state.typeSelection().implicit());
     }
 
     @Test
     void multipleTypeSpecificFacetsKeepImplicitType() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
-        state.apply(CatalogFacet.STORAGE,
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.STORAGE,
                 new FacetValue.Multi(new LinkedHashSet<>(List.of("configuration"))));
-        state.remove(CatalogFacet.REQUIRED);
+        state.removeFacet(CatalogFacet.REQUIRED);
         assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
         assertTrue(state.typeSelection().implicit());
     }
 
     @Test
     void explicitTypeOverridesImplicit() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
         assertTrue(state.typeSelection().implicit());
         state.selectType(ModelGraphType.ATTRIBUTE);
         assertFalse(state.typeSelection().implicit());
@@ -140,36 +141,122 @@ class CatalogStateTest {
     @Test
     void explicitTypeThenRemoveTypeSpecificKeepsType() {
         state.selectType(ModelGraphType.ATTRIBUTE);
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
-        state.remove(CatalogFacet.REQUIRED);
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.removeFacet(CatalogFacet.REQUIRED);
         assertFalse(state.typeSelection().implicit());
         assertEquals(ModelGraphType.ATTRIBUTE, state.effectiveType());
     }
 
     @Test
     void secondGroupFacetDoesNotOverwriteImplicitType() {
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
         ModelGraphType impliedType = state.effectiveType();
-        state.apply(CatalogFacet.SINGLETON, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.SINGLETON, new FacetValue.Bool(true));
         assertEquals(impliedType, state.effectiveType());
+    }
+
+    // ------------------------------------------------------ general facets survive type change
+
+    @Test
+    void generalFacetsSurviveTypeChange() {
+        state.applyFacetValue(CatalogFacet.STABILITY,
+                new FacetValue.Multi(new LinkedHashSet<>(List.of("default"))));
+        state.selectType(ModelGraphType.RESOURCE);
+        assertTrue(state.isActive(CatalogFacet.STABILITY));
+    }
+
+    @Test
+    void generalFacetsSurviveTypeChangeToAll() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.applyFacetValue(CatalogFacet.DEPRECATED, new FacetValue.Bool(true));
+        state.selectType(ModelGraphType.ALL);
+        assertTrue(state.isActive(CatalogFacet.DEPRECATED));
+    }
+
+    // ------------------------------------------------------ reset
+
+    @Test
+    void resetClearsEverything() {
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        state.query("test");
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.STABILITY,
+                new FacetValue.Multi(new LinkedHashSet<>(List.of("default"))));
+
+        state.reset();
+
+        assertEquals(ModelGraphType.ALL, state.effectiveType());
+        assertFalse(state.typeSelection().implicit());
+        assertFalse(state.hasActiveFilters());
+        assertEquals("", state.buildQuery().toQueryString());
+    }
+
+    @Test
+    void resetPreservesPageSize() {
+        state.navigate(new PageInfo(2, 100, 500));
+        state.reset();
+        assertEquals(100, state.pageInfo().pageSize());
+    }
+
+    // ------------------------------------------------------ pagination
+
+    @Test
+    void navigateUpdatesPageInfo() {
+        PageInfo newPage = new PageInfo(3, 50, 200);
+        state.navigate(newPage);
+        assertEquals(3, state.pageInfo().page());
+        assertEquals(50, state.pageInfo().pageSize());
+        assertEquals(200, state.pageInfo().total());
+    }
+
+    @Test
+    void updateTotalPreservesPageAndPageSize() {
+        state.navigate(new PageInfo(2, 50, 100));
+        state.updateTotal(999);
+        assertEquals(2, state.pageInfo().page());
+        assertEquals(50, state.pageInfo().pageSize());
+        assertEquals(999, state.pageInfo().total());
+    }
+
+    // ------------------------------------------------------ isActive with BoolText
+
+    @Test
+    void isActiveWithBoolTextTrue() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "Yes"));
+        assertTrue(state.isActive(CatalogFacet.DECLARES_CAP, "true"));
+        assertFalse(state.isActive(CatalogFacet.DECLARES_CAP, "false"));
+    }
+
+    @Test
+    void isActiveWithBoolTextFalse() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(false, "No"));
+        assertTrue(state.isActive(CatalogFacet.DECLARES_CAP, "false"));
+        assertFalse(state.isActive(CatalogFacet.DECLARES_CAP, "true"));
+    }
+
+    // ------------------------------------------------------ isActive edge cases
+
+    @Test
+    void isActiveReturnsFalseForInactiveFacet() {
+        assertFalse(state.isActive(CatalogFacet.REQUIRED, "true"));
+    }
+
+    @Test
+    void isActiveMultiMatchesContainedValue() {
+        state.applyFacetValue(CatalogFacet.DATA_TYPE,
+                new FacetValue.Multi(new LinkedHashSet<>(List.of("string", "int"))));
+        assertTrue(state.isActive(CatalogFacet.DATA_TYPE, "string"));
+        assertTrue(state.isActive(CatalogFacet.DATA_TYPE, "int"));
+        assertFalse(state.isActive(CatalogFacet.DATA_TYPE, "boolean"));
     }
 
     // ------------------------------------------------------ query
 
     @Test
-    void clearAllPreservesQuery() {
-        state.query("connection");
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
-        state.clearAll();
-        assertFalse(state.hasActiveFilters());
-        assertTrue(state.buildFilter().toQueryString().contains("q=connection"));
-    }
-
-    @Test
     void clearQuery() {
         state.query("connection");
         state.clearQuery();
-        assertEquals("", state.buildFilter().toQueryString());
+        assertEquals("", state.buildQuery().toQueryString());
     }
 
     // ------------------------------------------------------ buildFilter
@@ -177,9 +264,9 @@ class CatalogStateTest {
     @Test
     void buildFilterProducesCorrectQueryString() {
         state.selectType(ModelGraphType.ATTRIBUTE);
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
         state.query("test");
-        String qs = state.buildFilter().toQueryString();
+        String qs = state.buildQuery().toQueryString();
         assertTrue(qs.contains("type=attribute"));
         assertTrue(qs.contains("required=true"));
         assertTrue(qs.contains("q=test"));
@@ -188,9 +275,9 @@ class CatalogStateTest {
     @Test
     void buildFilterBooleanTranslation() {
         state.selectType(ModelGraphType.ATTRIBUTE);
-        state.apply(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
-        state.apply(CatalogFacet.NILLABLE, new FacetValue.Bool(false));
-        String qs = state.buildFilter().toQueryString();
+        state.applyFacetValue(CatalogFacet.REQUIRED, new FacetValue.Bool(true));
+        state.applyFacetValue(CatalogFacet.NILLABLE, new FacetValue.Bool(false));
+        String qs = state.buildQuery().toQueryString();
         assertTrue(qs.contains("required=true"));
         assertTrue(qs.contains("nillable=false"));
     }
@@ -198,9 +285,9 @@ class CatalogStateTest {
     @Test
     void buildFilterMultiValueTranslation() {
         state.selectType(ModelGraphType.ATTRIBUTE);
-        state.apply(CatalogFacet.ACCESS_TYPE,
+        state.applyFacetValue(CatalogFacet.ACCESS_TYPE,
                 new FacetValue.Multi(new LinkedHashSet<>(List.of("read-write", "metric"))));
-        String qs = state.buildFilter().toQueryString();
+        String qs = state.buildQuery().toQueryString();
         assertTrue(qs.contains("accessType="));
         assertTrue(qs.contains("read-write"));
         assertTrue(qs.contains("metric"));

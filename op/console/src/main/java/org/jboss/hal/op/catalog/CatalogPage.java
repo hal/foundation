@@ -17,6 +17,7 @@ package org.jboss.hal.op.catalog;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -34,9 +35,7 @@ import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.mgt.ModelGraphCatalog;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.patternfly.component.pagination.PageInfo;
-import org.patternfly.component.pagination.Pagination;
 
-import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
@@ -58,40 +57,39 @@ import static org.patternfly.component.page.PageSection.pageSection;
  */
 @Dependent
 @Route("/model-catalog")
-public class CatalogPage implements Page {
+public class CatalogPage implements CatalogController, Page {
 
     private final ModelGraphCatalog catalog;
     private final CatalogState state;
-    private final CatalogToolbar catalogToolbar;
-    private final CatalogSidebar catalogSidebar;
-    private final CatalogWelcome catalogWelcome;
-    private final CatalogTable catalogTable;
+    private final CatalogToolbar toolbar;
+    private final CatalogSidebar sidebar;
+    private final CatalogWelcome welcome;
+    private final CatalogTable table;
     private final HTMLContainerBuilder<HTMLDivElement> mainContent;
 
     @Inject
     public CatalogPage(ModelGraphCatalog catalog) {
         this.catalog = catalog;
         this.state = new CatalogState();
-        this.catalogToolbar = new CatalogToolbar(state.pageInfo(), this::onSearch, this::onClearSearch, this::onClear,
-                this::onNavigate);
-        this.catalogSidebar = new CatalogSidebar(this::onTypeSelect, this::onFacetToggle);
-        this.catalogWelcome = new CatalogWelcome();
-        this.catalogTable = new CatalogTable();
+        this.toolbar = new CatalogToolbar(this);
+        this.sidebar = new CatalogSidebar(this);
+        this.welcome = new CatalogWelcome();
+        this.table = new CatalogTable();
         this.mainContent = div().css(halComponent(modelCatalog, results));
     }
 
     @Override
     public Iterable<HTMLElement> elements(Place place, Parameter parameter, LoadedData data) {
         HTMLElement toolbarSection = pageSection().ouiaId(PAGE_CATALOG).limitWidth()
-                .add(catalogToolbar)
+                .add(toolbar)
                 .add(divider(hr))
                 .element();
 
         HTMLElement contentSection = pageSection().limitWidth()
                 .add(div().css(halComponent(modelCatalog))
-                        .add(catalogSidebar)
+                        .add(sidebar)
                         .add(mainContent
-                                .add(catalogWelcome)))
+                                .add(welcome)))
                 .element();
 
         return asList(toolbarSection, contentSection);
@@ -99,112 +97,106 @@ public class CatalogPage implements Page {
 
     @Override
     public void attach() {
-        catalogToolbar.showPagination(false);
-        initialSearch();
+        reset();
     }
 
-    // ------------------------------------------------------ event handlers
+    // ------------------------------------------------------ api
 
-    private void onSearch(String query) {
+    @Override
+    public void search(String query) {
         state.query(query);
-        state.resetPageInfo();
-        search();
+        internalSearch(this::internalUpdate);
     }
 
-    private void onClearSearch() {
+    @Override
+    public void clearSearch() {
         state.clearQuery();
-        state.resetPageInfo();
-        search();
+        internalSearch(this::internalUpdate);
     }
 
-    private void onClear() {
-        state.clearQuery();
-        state.clearAll();
-        state.resetPageInfo();
+    @Override
+    public void reset() {
         showWelcome();
-        initialSearch();
+        state.reset();
+        internalSearch(response -> {
+            toolbar.reset();
+            sidebar.reset(response);
+        });
     }
 
-    private void onTypeSelect(ModelGraphType type) {
+    @Override
+    public void selectType(ModelGraphType type) {
         state.selectType(type);
-        state.resetPageInfo();
-        search();
+        internalSearch(this::internalUpdate);
     }
 
+    @Override
     @SuppressWarnings("DeconstructionCanBeUsed")
-    private void onFacetToggle(CatalogFacet facet, String value) {
+    public void applyFacetValue(CatalogFacet facet, String value) {
         if (facet.exclusive) {
             if (state.isActive(facet, value)) {
-                state.remove(facet);
+                state.removeFacet(facet);
             } else {
-                state.apply(facet, new FacetValue.Bool("true".equals(value)));
+                state.applyFacetValue(facet, new FacetValue.Bool("true".equals(value)));
             }
         } else {
-            FacetValue current = state.getValue(facet);
+            FacetValue current = state.facetValue(facet);
             if (current instanceof FacetValue.Multi multi && multi.values().contains(value)) {
                 Set<String> remaining = new LinkedHashSet<>(multi.values());
                 remaining.remove(value);
                 if (remaining.isEmpty()) {
-                    state.remove(facet);
+                    state.removeFacet(facet);
                 } else {
-                    state.apply(facet, new FacetValue.Multi(remaining));
+                    state.applyFacetValue(facet, new FacetValue.Multi(remaining));
                 }
             } else {
                 Set<String> values = current instanceof FacetValue.Multi multi
                         ? new LinkedHashSet<>(multi.values())
                         : new LinkedHashSet<>();
                 values.add(value);
-                state.apply(facet, new FacetValue.Multi(values));
+                state.applyFacetValue(facet, new FacetValue.Multi(values));
             }
         }
-        state.resetPageInfo();
-        search();
+        internalSearch(this::internalUpdate);
     }
 
-    private void onNavigate(Event event, Pagination pagination, PageInfo previous, PageInfo update) {
-        state.navigate(update);
-        search();
+    @Override
+    public void navigate(PageInfo pageInfo) {
+        state.navigate(pageInfo);
+        internalSearch(this::internalUpdate);
     }
 
-    // ------------------------------------------------------ welcome / results
-
-    private void showWelcome() {
-        failSafeRemoveFromParent(catalogTable);
-        mainContent.add(catalogWelcome);
-        catalogToolbar.showPagination(false);
+    @Override
+    public CatalogStateInfo state() {
+        return state;
     }
 
-    private void showResults() {
-        failSafeRemoveFromParent(catalogWelcome);
-        mainContent.add(catalogTable);
-        catalogToolbar.showPagination(true);
-    }
+    // ------------------------------------------------------ internal
 
-    // ------------------------------------------------------ search
-
-    private void initialSearch() {
-        CatalogQuery query = state.buildFilter();
+    private void internalSearch(Consumer<CatalogResponse> consumer) {
+        CatalogQuery query = state.buildQuery();
         catalog.search(query).then(response -> {
-            catalogSidebar.clearTypeSelection();
-            catalogSidebar.update(state, response, false);
+            consumer.accept(response);
             return null;
         });
     }
 
-    private void search() {
-        CatalogQuery query = state.buildFilter();
-        catalog.search(query).then(response -> {
-            handleResponse(response);
-            return null;
-        });
-    }
-
-    private void handleResponse(CatalogResponse response) {
+    private void internalUpdate(CatalogResponse response) {
         ModelGraphType effectiveType = state.effectiveType();
         state.updateTotal(response.total);
         showResults();
-        catalogSidebar.update(state, response, true);
-        catalogTable.update(effectiveType, response.results);
-        catalogToolbar.updatePageInfo(state.pageInfo());
+        sidebar.update(response);
+        table.update(effectiveType, response.results);
+        toolbar.update(state.pageInfo());
+    }
+
+    private void showWelcome() {
+        failSafeRemoveFromParent(table);
+        mainContent.add(welcome);
+    }
+
+    private void showResults() {
+        failSafeRemoveFromParent(welcome);
+        mainContent.add(table);
     }
 }

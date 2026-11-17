@@ -37,22 +37,22 @@ import static org.patternfly.component.pagination.PageSize._50;
  * implicitly constrained to the facet's group. Removing the last type-specific facet while implicit removes the type
  * constraint.
  */
-public class CatalogState {
+class CatalogState implements CatalogStateInfo {
 
     private final Map<CatalogFacet, FacetValue> facets;
-    private TypeSelection typeSelection;
     private String query;
     private PageInfo pageInfo;
+    private TypeSelection typeSelection;
 
-    public CatalogState() {
+    CatalogState() {
         this.facets = new EnumMap<>(CatalogFacet.class);
-        this.typeSelection = new TypeSelection(ModelGraphType.ALL, false);
         this.pageInfo = PageInfo.of(_50.value, UNKNOWN);
+        this.typeSelection = new TypeSelection(ModelGraphType.ALL, false);
     }
 
     // ------------------------------------------------------ mutations
 
-    public void selectType(ModelGraphType type) {
+    void selectType(ModelGraphType type) {
         ModelGraphType previousType = typeSelection.type();
         typeSelection = new TypeSelection(type, false);
         if (previousType != type) {
@@ -60,7 +60,7 @@ public class CatalogState {
         }
     }
 
-    public void apply(CatalogFacet facet, FacetValue value) {
+    void applyFacetValue(CatalogFacet facet, FacetValue value) {
         if (facet.group != Group.GENERAL && typeSelection.type() == ModelGraphType.ALL) {
             ModelGraphType impliedType = facet.group.implicitType();
             if (impliedType != null) {
@@ -70,52 +70,55 @@ public class CatalogState {
         facets.put(facet, value);
     }
 
-    public void remove(CatalogFacet facet) {
+    void removeFacet(CatalogFacet facet) {
         facets.remove(facet);
         if (typeSelection.implicit() && !hasTypeSpecificFacets()) {
             typeSelection = new TypeSelection(ModelGraphType.ALL, false);
         }
     }
 
-    public void clearAll() {
-        facets.clear();
+    void reset() {
+        query = null;
+        pageInfo = PageInfo.of(pageInfo.pageSize(), UNKNOWN);
         typeSelection = new TypeSelection(ModelGraphType.ALL, false);
+        facets.clear();
     }
 
-    public void clearQuery() {
+    void clearQuery() {
         this.query = null;
     }
 
-    public void query(String q) {
+    void query(String q) {
         this.query = q;
     }
 
-    public void navigate(PageInfo pageInfo) {
+    void navigate(PageInfo pageInfo) {
         this.pageInfo = pageInfo;
     }
 
-    public void resetPageInfo() {
-        this.pageInfo = PageInfo.of(pageInfo.pageSize(), UNKNOWN);
-    }
-
-    public void updateTotal(int total) {
+    void updateTotal(int total) {
         this.pageInfo = pageInfo.withTotal(total);
     }
 
     // ------------------------------------------------------ queries
 
+    @Override
     public TypeSelection typeSelection() {
         return typeSelection;
     }
 
+    @Override
     public ModelGraphType effectiveType() {
         return typeSelection.type();
     }
 
+    @Override
     public boolean isActive(CatalogFacet facet) {
         return facets.containsKey(facet);
     }
 
+    @Override
+    @SuppressWarnings({"DeconstructionCanBeUsed", "IfCanBeSwitch"})
     public boolean isActive(CatalogFacet facet, String value) {
         FacetValue fv = facets.get(facet);
         if (fv == null) {
@@ -131,19 +134,22 @@ public class CatalogState {
         return false;
     }
 
-    public FacetValue getValue(CatalogFacet facet) {
+    @Override
+    public FacetValue facetValue(CatalogFacet facet) {
         return facets.get(facet);
     }
 
+    @Override
     public boolean hasActiveFilters() {
         return !facets.isEmpty();
     }
 
+    @Override
     public PageInfo pageInfo() {
         return pageInfo;
     }
 
-    public CatalogQuery buildFilter() {
+    CatalogQuery buildQuery() {
         return new CatalogQuery(
                 query,
                 typeSelection.type(),

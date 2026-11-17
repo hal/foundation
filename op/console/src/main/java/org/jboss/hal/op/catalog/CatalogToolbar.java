@@ -15,14 +15,11 @@
  */
 package org.jboss.hal.op.catalog;
 
-import java.util.function.Consumer;
-
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.OuiaIds;
 import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
-import org.patternfly.component.pagination.PaginationHandler;
 import org.patternfly.component.textinputgroup.SearchInputGroup;
 import org.patternfly.component.toolbar.Toolbar;
 
@@ -52,20 +49,20 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     private final SearchInputGroup searchInput;
     private final Pagination pagination;
 
-    CatalogToolbar(PageInfo pageInfo,
-            Consumer<String> onSearch, Runnable onClearSearch, Runnable onClear, PaginationHandler onNavigate) {
+    CatalogToolbar(CatalogController controller) {
         searchInput = searchInputGroup(Id.unique())
                 .ouiaId(SEARCH_FILTER)
                 .icon(magnifyingGlass())
                 .placeholder("Search model...")
                 .onKeyup((event, textInputGroup, value) -> {
                     if (Enter.match(event)) {
-                        onSearch.accept(value);
+                        controller.search(value);
                     }
                 })
-                .onClear((event, textInputGroup) -> onClearSearch.run());
+                .onClear((event, textInputGroup) -> controller.clearSearch());
         searchInput.input().apply(input -> input.autocomplete = "off");
-        pagination = pagination(pageInfo).onChange(onNavigate);
+        pagination = pagination(controller.state().pageInfo())
+                .onChange((e, p, __, pi) -> controller.navigate(pi));
         toolbar = toolbar().ouiaId(OuiaIds.PAGE_CATALOG_TOOLBAR)
                 .addContent(toolbarContent()
                         .addGroup(toolbarGroup().css(modifier("filter-group"))
@@ -76,7 +73,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                                         .add(button().secondary().icon(xmark()).text("Reset")
                                                 .onClick((e, c) -> {
                                                     searchInput.value("", false);
-                                                    onClear.run();
+                                                    controller.reset();
                                                 }))))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(pagination))));
@@ -87,11 +84,12 @@ class CatalogToolbar implements IsElement<HTMLElement> {
         return toolbar.element();
     }
 
-    void showPagination(boolean visible) {
-        setVisible(pagination, visible);
+    void reset() {
+        setVisible(pagination, false);
     }
 
-    void updatePageInfo(PageInfo pageInfo) {
+    void update(PageInfo pageInfo) {
+        setVisible(pagination, true);
         pagination.pageInfo(pageInfo);
     }
 }

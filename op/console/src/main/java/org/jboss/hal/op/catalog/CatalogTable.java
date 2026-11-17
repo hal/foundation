@@ -92,14 +92,13 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ update
 
     void update(ModelGraphType effectiveType, CatalogResult[] results) {
-        ModelGraphType tableType = effectiveType == ModelGraphType.ALL ? null : effectiveType;
-        if (table == null || tableType != currentType) {
+        if (table == null || effectiveType != currentType) {
             failSafeRemoveFromParent(table);
-            table = buildTable(tableType);
+            table = buildTable(effectiveType);
             container.appendChild(table.element());
-            currentType = tableType;
+            currentType = effectiveType;
         }
-        populateRows(tableType, results);
+        populateRows(effectiveType, results);
     }
 
     // ------------------------------------------------------ table
@@ -107,16 +106,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Table buildTable(ModelGraphType effectiveType) {
         Table t = table().css(modifier("sticky-header"))
                 .ouiaId(OuiaIds.PAGE_CATALOG_TABLE);
-        if (effectiveType == null) {
-            t.addHead(thead().addRow(mixedHeader()));
-        } else {
-            switch (effectiveType) {
-                case ALL -> t.addHead(thead().addRow(mixedHeader()));
-                case RESOURCE -> t.addHead(thead().addRow(resourceHeader()));
-                case ATTRIBUTE -> t.addHead(thead().addRow(attributeHeader()));
-                case OPERATION -> t.addHead(thead().addRow(operationHeader()));
-                case CAPABILITY -> t.addHead(thead().addRow(capabilityHeader()));
-            }
+        switch (effectiveType) {
+            case ALL -> t.addHead(thead().addRow(mixedHeader()));
+            case RESOURCE -> t.addHead(thead().addRow(resourceHeader()));
+            case ATTRIBUTE -> t.addHead(thead().addRow(attributeHeader()));
+            case OPERATION -> t.addHead(thead().addRow(operationHeader()));
+            case CAPABILITY -> t.addHead(thead().addRow(capabilityHeader()));
         }
         t.addBody(tbody());
         return t;
@@ -131,18 +126,13 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
             return;
         }
         for (CatalogResult result : results) {
-            Tr row;
-            if (effectiveType == null) {
-                row = mixedRow(result);
-            } else {
-                row = switch (effectiveType) {
-                    case ALL -> mixedRow(result);
-                    case RESOURCE -> resourceRow(result);
-                    case ATTRIBUTE -> attributeRow(result);
-                    case OPERATION -> operationRow(result);
-                    case CAPABILITY -> capabilityRow(result);
-                };
-            }
+            Tr row = switch (effectiveType) {
+                case ALL -> mixedRow(result);
+                case RESOURCE -> resourceRow(result);
+                case ATTRIBUTE -> attributeRow(result);
+                case OPERATION -> operationRow(result);
+                case CAPABILITY -> capabilityRow(result);
+            };
             table.tbody().addRow(row);
         }
     }
