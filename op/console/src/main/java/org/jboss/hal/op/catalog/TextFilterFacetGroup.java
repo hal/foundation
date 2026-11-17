@@ -15,13 +15,13 @@
  */
 package org.jboss.hal.op.catalog;
 
-import org.jboss.elemento.EventType;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.mgt.BooleanCounts;
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.ui.Format;
+import org.patternfly.component.form.TextInput;
 
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
@@ -32,6 +32,7 @@ import static org.jboss.elemento.Elements.form;
 import static org.jboss.elemento.Elements.legend;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.elemento.EventType.submit;
 import static org.jboss.elemento.Key.Enter;
 import static org.patternfly.component.form.Checkbox.checkbox;
 import static org.patternfly.component.form.TextInput.textInput;
@@ -48,14 +49,14 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
 
     @SuppressWarnings("DeconstructionCanBeUsed")
     TextFilterFacetGroup(CatalogController controller, String text, CatalogFacet facet, BooleanCounts counts) {
-        HTMLElement textInputElement = textInput(Id.build("sidebar", "capability", facet.key, "text"))
+        TextInput textInput = textInput(Id.build("sidebar", "capability", facet.key, "text"))
                 .placeholder("Filter by name...")
+                .applyTo(input -> input.element().autocomplete = "off")
                 .onKeyup((event, ti, value) -> {
                     if (Enter.match(event)) {
                         controller.applyFacetValue(facet, new FacetValue.BoolText(true, value));
                     }
-                })
-                .element();
+                });
 
         // Restore state on rebuild
         FacetValue currentValue = controller.state().facetValue(facet);
@@ -67,13 +68,13 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
             showTextInput = true;
             restoredText = bt.text() != null ? bt.text() : "";
         }
-        setVisible(textInputElement, showTextInput);
+        setVisible(textInput, showTextInput);
         if (!restoredText.isEmpty()) {
-            textInputElement.setAttribute("value", restoredText);
+            textInput.value(restoredText);
         }
 
         this.root = form().css("filter-panel-pf-category")
-                .on(EventType.submit, Event::preventDefault)
+                .on(submit, Event::preventDefault)
                 .add(fieldset()
                         .css(component(form, "fieldset"), "filter-panel-pf-category-items")
                         .add(legend()
@@ -87,11 +88,11 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
                                         .add(checkbox(trueId, trueId, "true")
                                                 .onChange((e, cb, checked) -> {
                                                     if (checked) {
-                                                        setVisible(textInputElement, true);
+                                                        setVisible(textInput, true);
                                                         controller.applyFacetValue(facet,
                                                                 new FacetValue.BoolText(true, null));
                                                     } else {
-                                                        setVisible(textInputElement, false);
+                                                        setVisible(textInput, false);
                                                         controller.removeFacet(facet);
                                                     }
                                                 })
@@ -108,7 +109,7 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
 
                             // Text input (below "true" checkbox)
                             fieldset.add(div().css("filter-panel-pf-category-item")
-                                    .add(textInputElement));
+                                    .add(textInput));
 
                             // "false" checkbox
                             if (counts.false_ > 0) {
@@ -117,7 +118,7 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
                                         .add(checkbox(falseId, falseId, "false")
                                                 .onChange((e, cb, checked) -> {
                                                     if (checked) {
-                                                        setVisible(textInputElement, false);
+                                                        setVisible(textInput, false);
                                                         controller.applyFacetValue(facet, new FacetValue.Bool(false));
                                                     } else {
                                                         controller.removeFacet(facet);

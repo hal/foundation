@@ -10,6 +10,7 @@ import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.FacetValue;
 import org.jboss.hal.ui.Format;
 
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.div;
@@ -17,6 +18,7 @@ import static org.jboss.elemento.Elements.fieldset;
 import static org.jboss.elemento.Elements.form;
 import static org.jboss.elemento.Elements.legend;
 import static org.jboss.elemento.Elements.span;
+import static org.jboss.elemento.EventType.submit;
 import static org.patternfly.component.form.Checkbox.checkbox;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.form;
@@ -36,6 +38,7 @@ class CheckboxFacetGroup implements IsElement<HTMLElement> {
 
     CheckboxFacetGroup(CatalogController controller, String text, CatalogFacet facet, Map<String, Integer> values) {
         this.root = form().css("filter-panel-pf-category")
+                .on(submit, Event::preventDefault)
                 .add(fieldset()
                         .css(component(form, "fieldset"), "filter-panel-pf-category-items")
                         .add(legend()
