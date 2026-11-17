@@ -30,6 +30,7 @@ import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.mgt.RestartCounts;
 import org.jboss.hal.mgt.StabilityCounts;
 import org.jboss.hal.mgt.StorageCounts;
+import org.jboss.hal.ui.Format;
 import org.jboss.hal.ui.component.VerticalTab;
 import org.jboss.hal.ui.component.VerticalTabs;
 import org.patternfly.core.OuiaSupport;
@@ -40,7 +41,6 @@ import elemental2.dom.HTMLElement;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.nav;
 import static org.jboss.elemento.Elements.removeChildrenFrom;
-import static org.jboss.hal.op.catalog.CatalogBricks.formattedCount;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelCatalog;
 import static org.jboss.hal.resources.HalClasses.sidebar;
@@ -168,7 +168,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
                     case OPERATION -> facets.type.operation;
                     case CAPABILITY -> facets.type.capability;
                 };
-                vt.disabled(count == 0).text(type.plural + " (" + formattedCount(count) + ")");
+                vt.disabled(count == 0).text(type.plural + " (" + Format.number(count) + ")");
             }
         }
     }
@@ -178,7 +178,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     private void addResourceFacets(CatalogFacets facets) {
         // @formatter:off
         if (facets.singleton != null) {addBooleanGroup("Singleton", CatalogFacet.SINGLETON, facets.singleton);}
-        if (facets.declaresCap != null) {addBooleanGroup("Declares capability", CatalogFacet.DECLARES_CAP, facets.declaresCap);}
+        if (facets.declaresCap != null) {addCapabilityGroup("Declares capability", CatalogFacet.DECLARES_CAP, facets.declaresCap);}
         if (facets.definesAttrGroups != null) {addBooleanGroup("Has attribute groups", CatalogFacet.DEFINES_ATTR_GROUPS, facets.definesAttrGroups);}
         // @formatter:on
     }
@@ -189,7 +189,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         Map<String, Integer> units = facets.unitCounts();
         if (!units.isEmpty()) { addFacetGroup("Unit", CatalogFacet.UNIT, units); }
         if (facets.hasAllowed != null) {addBooleanGroup("Allowed values", CatalogFacet.HAS_ALLOWED, facets.hasAllowed);}
-        if (facets.refsCap != null) {addBooleanGroup("References capability", CatalogFacet.REFS_CAP, facets.refsCap);}
+        if (facets.refsCap != null) {addCapabilityGroup("References capability", CatalogFacet.REFS_CAP, facets.refsCap);}
         if (facets.expressions != null) {addBooleanGroup("Supports expressions", CatalogFacet.EXPRESSIONS, facets.expressions);}
         if (facets.required != null) {addBooleanGroup("Required", CatalogFacet.REQUIRED, facets.required);}
         if (facets.nillable != null) {addBooleanGroup("Nillable", CatalogFacet.NILLABLE, facets.nillable);}
@@ -286,6 +286,17 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         addFacetGroup(label, facet, values);
     }
 
+    // ------------------------------------------------------ capability facet
+
+    private void addCapabilityGroup(String label, CatalogFacet facet, BooleanCounts counts) {
+        if (counts == null) {
+            return;
+        }
+        if (counts.true_ > 0 || counts.false_ > 0) {
+            filterPanel.add(new CatalogCapabilityFacetGroup(controller, label, facet, counts));
+        }
+    }
+
     // ------------------------------------------------------ generic facet
 
     private void addFacetGroup(String label, CatalogFacet facet, Map<String, Integer> values) {
@@ -299,6 +310,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     @FunctionalInterface
     private interface FacetAdder {
+
         void addFacets(CatalogFacets facets);
     }
 
