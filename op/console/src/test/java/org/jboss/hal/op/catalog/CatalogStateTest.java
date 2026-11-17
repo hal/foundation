@@ -259,6 +259,97 @@ class CatalogStateTest {
         assertEquals("", state.buildQuery().toQueryString());
     }
 
+    // ------------------------------------------------------ BoolText query generation
+
+    @Test
+    void boolTextWithTextProducesContainsQuery() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        String qs = state.buildQuery().toQueryString();
+        assertTrue(qs.contains("declaresCap=contains:datasource"));
+    }
+
+    @Test
+    void boolTextWithEmptyTextProducesBooleanQuery() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, ""));
+        String qs = state.buildQuery().toQueryString();
+        assertTrue(qs.contains("declaresCap=true"));
+    }
+
+    @Test
+    void boolTextWithNullTextProducesBooleanQuery() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, null));
+        String qs = state.buildQuery().toQueryString();
+        assertTrue(qs.contains("declaresCap=true"));
+    }
+
+    // ------------------------------------------------------ BoolText state retrieval
+
+    @Test
+    void capabilityTextRetainedInState() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        FacetValue fv = state.facetValue(CatalogFacet.DECLARES_CAP);
+        assertInstanceOf(FacetValue.BoolText.class, fv);
+        assertEquals("datasource", ((FacetValue.BoolText) fv).text());
+    }
+
+    @Test
+    void updatingCapabilityTextReplacesOldValue() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "elytron"));
+        FacetValue fv = state.facetValue(CatalogFacet.DECLARES_CAP);
+        assertEquals("elytron", ((FacetValue.BoolText) fv).text());
+        String qs = state.buildQuery().toQueryString();
+        assertTrue(qs.contains("declaresCap=contains:elytron"));
+        assertFalse(qs.contains("datasource"));
+    }
+
+    @Test
+    void refsCapTextFilterIndependentOfDeclaresCap() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        state.applyFacetValue(CatalogFacet.REFS_CAP, new FacetValue.BoolText(true, "elytron"));
+        String qs = state.buildQuery().toQueryString();
+        assertTrue(qs.contains("declaresCap=contains:datasource"));
+        assertTrue(qs.contains("refsCap=contains:elytron"));
+    }
+
+    // ------------------------------------------------------ capability text filter edge cases
+
+    @Test
+    void removingDeclaresCapClearsTextFilter() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        state.removeFacet(CatalogFacet.DECLARES_CAP);
+        assertNull(state.facetValue(CatalogFacet.DECLARES_CAP));
+        assertFalse(state.isActive(CatalogFacet.DECLARES_CAP));
+    }
+
+    @Test
+    void typeChangeClearsCapabilityTextFilter() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        assertEquals(ModelGraphType.RESOURCE, state.effectiveType());
+        state.selectType(ModelGraphType.ATTRIBUTE);
+        assertFalse(state.isActive(CatalogFacet.DECLARES_CAP));
+    }
+
+    @Test
+    void resetClearsCapabilityTextFilter() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        state.applyFacetValue(CatalogFacet.REFS_CAP, new FacetValue.BoolText(true, "elytron"));
+        state.reset();
+        assertFalse(state.isActive(CatalogFacet.DECLARES_CAP));
+        assertFalse(state.isActive(CatalogFacet.REFS_CAP));
+    }
+
+    @Test
+    void switchFromBoolTextToBoolFalse() {
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.BoolText(true, "datasource"));
+        state.applyFacetValue(CatalogFacet.DECLARES_CAP, new FacetValue.Bool(false));
+        FacetValue fv = state.facetValue(CatalogFacet.DECLARES_CAP);
+        assertInstanceOf(FacetValue.Bool.class, fv);
+        String qs = state.buildQuery().toQueryString();
+        assertTrue(qs.contains("declaresCap=false"));
+        assertFalse(qs.contains("contains"));
+    }
+
     // ------------------------------------------------------ buildFilter
 
     @Test
