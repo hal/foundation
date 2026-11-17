@@ -36,8 +36,8 @@ import static org.jboss.hal.ui.UIContext.uic;
 /**
  * Locale-aware formatters for file sizes, durations, and percentages using the Internationalization API.
  * <p>
- * All methods in this class use the user's locale from {@link UIContext#settings()} to format values according to
- * regional conventions.
+ * All methods in this class use the user's locale from {@link UIContext#settings()} to format values according to regional
+ * conventions.
  */
 public class Format {
 
@@ -87,9 +87,8 @@ public class Format {
     }
 
     /**
-     * Formats a decimal value as a locale-aware percentage string. Values greater than 1 are treated as whole
-     * percentages (e.g., 75 becomes "75%"), while values between 0 and 1 are treated as fractions (e.g., 0.75
-     * becomes "75%").
+     * Formats a decimal value as a locale-aware percentage string. Values greater than 1 are treated as whole percentages
+     * (e.g., 75 becomes "75%"), while values between 0 and 1 are treated as fractions (e.g., 0.75 becomes "75%").
      *
      * @param value the value to format as a percentage
      * @return the formatted percentage string
@@ -99,5 +98,15 @@ public class Format {
                 .style(percent));
         double failSafeValue = (value > 1) ? value / 100 : value;
         return numberFormat.format(failSafeValue);
+    }
+
+    /**
+     * Formats an integer using the user's locale-specific number formatting rules.
+     *
+     * @param number the integer value to format
+     * @return the locale-aware formatted number string
+     */
+    public static String number(int number) {
+        return numberFormat(uic().settings().locale()).format(number);
     }
 }

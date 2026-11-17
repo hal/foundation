@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.elemento.Id;
-import org.jboss.hal.core.Humanize;
 import org.jboss.hal.mgt.ModelGraphSearch;
 import org.jboss.hal.mgt.ResourceRef;
 import org.jboss.hal.mgt.SearchResult;
@@ -31,7 +30,6 @@ import org.patternfly.async.AsyncItems;
 import org.patternfly.component.menu.MenuItem;
 import org.patternfly.component.menu.MenuList;
 import org.patternfly.core.HasValue;
-import org.patternfly.style.Color;
 
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
@@ -44,7 +42,7 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.highlight;
 import static org.jboss.hal.resources.HalClasses.mgt;
 import static org.jboss.hal.resources.HalClasses.universalSearch;
-import static org.patternfly.component.label.Label.label;
+import static org.jboss.hal.ui.brick.ModelBricks.typeLabel;
 import static org.patternfly.component.menu.MenuItem.menuItem;
 import static org.patternfly.style.Classes.util;
 
@@ -195,16 +193,16 @@ class ModelGraphSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         MenuItem item = menuItem(identifier)
                 .text(nameElement)
                 .css(halComponent(universalSearch, mgt, HalClasses.result))
-                .icon(label(Humanize.capitalCase(result.type), typeColor(result.type)).compact().element())
+                .icon(typeLabel(result.type, true).element())
                 .store(Keys.SEARCH_RESULT, result);
-        HTMLElement descriptionElement = descriptionElement(result, searchTerm);
+        HTMLElement descriptionElement = descriptionElement(result);
         if (descriptionElement != null) {
             item.description(descriptionElement);
         }
         return item;
     }
 
-    private HTMLElement descriptionElement(SearchResult result, String searchTerm) {
+    private HTMLElement descriptionElement(SearchResult result) {
         boolean hasDescription = result.description != null && !result.description.isEmpty();
         boolean hasAddress = result.address != null && !result.address.isEmpty();
         boolean hasProviders = result.providedBy != null && result.providedBy.length > 0;
@@ -257,18 +255,5 @@ class ModelGraphSearchAsyncItems implements AsyncItems<MenuList, MenuItem> {
         if (start < text.length()) {
             container.appendChild(document.createTextNode(text.substring(start)));
         }
-    }
-
-    private Color typeColor(String type) {
-        if (type == null) {
-            return Color.grey;
-        }
-        return switch (type.toLowerCase()) {
-            case "attribute" -> Color.blue;
-            case "resource" -> Color.green;
-            case "operation" -> Color.purple;
-            case "capability" -> Color.teal;
-            default -> Color.grey;
-        };
     }
 }
