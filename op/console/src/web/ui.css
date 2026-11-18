@@ -37,3 +37,8 @@
 .hal-m-restricted {
     cursor: not-allowed;
 }
+
+/* TODO Remove after next PFJ upgrade */
+.pf-v6-c-list.pf-m-compact {
+    --pf-v6-c-list--Gap: 0;
+}

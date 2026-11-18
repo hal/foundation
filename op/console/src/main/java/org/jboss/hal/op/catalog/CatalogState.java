@@ -84,6 +84,10 @@ class CatalogState implements CatalogStateInfo {
         facets.clear();
     }
 
+    void resetPage() {
+        pageInfo = pageInfo.withPage(1);
+    }
+
     void clearQuery() {
         this.query = null;
     }

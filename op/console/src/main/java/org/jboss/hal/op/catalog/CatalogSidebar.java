@@ -177,8 +177,8 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     private void addResourceFacets(CatalogFacets facets) {
         // @formatter:off
-        if (facets.singleton != null) {addBooleanGroup("Singleton", CatalogFacet.SINGLETON, facets.singleton);}
         if (facets.declaresCap != null) {addCapabilityGroup("Declares capability", CatalogFacet.DECLARES_CAP, facets.declaresCap);}
+        if (facets.singleton != null) {addBooleanGroup("Singleton", CatalogFacet.SINGLETON, facets.singleton);}
         if (facets.definesAttrGroups != null) {addBooleanGroup("Has attribute groups", CatalogFacet.DEFINES_ATTR_GROUPS, facets.definesAttrGroups);}
         // @formatter:on
     }

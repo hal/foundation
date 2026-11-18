@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-.hal-c-capability-reference__menu {
+.hal-c-pick-list {
     background-color: var(--pf-t--global--background--color--100);
     box-shadow: var(--pf-t--global--box-shadow--lg);
     padding: var(--pf-t--global--spacer--sm);
     max-width: 60ch;
 }
 
-.hal-c-capability-reference__menu-list {
+.hal-c-pick-list__items {
     max-height: 200px;
     overflow-y: scroll;
 }

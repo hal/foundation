@@ -28,4 +28,7 @@ public interface Dataset {
 
     /** Data attribute storing a highlight specification (e.g. {@code a:max-pool-size} or {@code o:suspend}). */
     String highlight = "halHighlight";
+
+    /** Data attribute storing whether a resource has been verified against the live server. */
+    String verified = "halVerified";
 }

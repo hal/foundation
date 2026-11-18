@@ -16,6 +16,7 @@
 package org.jboss.hal.meta.tree;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -220,16 +221,16 @@ public class ModelTree {
             return resolveWildcards(template);
         }
 
-        String key = "resolved";
+        String key = "template";
         List<Task<FlowContext>> tasks = templates.stream()
                 .map(template -> (Task<FlowContext>) context -> {
                     if (template.fullyQualified()) {
-                        List<AddressTemplate> resolved = context.get(key);
+                        Set<AddressTemplate> resolved = context.get(key);
                         resolved.add(template);
                         return context.resolve();
                     }
                     return resolveWildcards(template).then(r -> {
-                        List<AddressTemplate> resolved = context.get(key);
+                        Set<AddressTemplate> resolved = context.get(key);
                         resolved.addAll(r);
                         return context.resolve();
                     });
@@ -237,9 +238,9 @@ public class ModelTree {
                 .collect(toList());
 
         FlowContext initialContext = new FlowContext();
-        initialContext.set(key, new ArrayList<AddressTemplate>());
+        initialContext.set(key, new HashSet<>());
         return Flow.parallel(initialContext, tasks)
-                .then(context -> Promise.resolve(context.<List<AddressTemplate>>get(key)));
+                .then(context -> Promise.resolve(new ArrayList<>(context.<Set<AddressTemplate>>get(key))));
     }
 
     /**
@@ -267,11 +268,12 @@ public class ModelTree {
         }
 
         logger.debug("Resolve wildcards in %s", template);
+        String key = "template";
         AddressTemplate resolved = new StatementContextResolver(statementContext).resolve(template);
         AddressTemplate start = startAtFirstWildcard(resolved);
         FlowContext initialContext = new FlowContext();
         initialContext.push(AddressTemplate.of(start));
-        initialContext.set("templates", new ArrayList<AddressTemplate>());
+        initialContext.set(key, new HashSet<AddressTemplate>());
 
         return Flow.repeat(initialContext, context -> {
                     AddressTemplate current = context.pop();
@@ -290,7 +292,7 @@ public class ModelTree {
                                 AddressTemplate resolvedChild = new WildcardResolver(LTR, modelNode.asString())
                                         .resolve(current);
                                 logger.debug("Add %s", resolvedChild);
-                                List<AddressTemplate> templates = context.get("templates");
+                                Set<AddressTemplate> templates = context.get(key);
                                 templates.add(resolvedChild);
                             } else {
                                 AddressTemplate nextTemplate = new WildcardResolver(LTR, modelNode.asString())
@@ -305,16 +307,17 @@ public class ModelTree {
                 .failFast(false)
                 .while_(context -> !context.isStackEmpty())
                 .then(context -> {
-                    List<AddressTemplate> templates = context.get("templates");
+                    Set<AddressTemplate> templates = context.get(key);
                     if ("*".equals(resolved.last().value)) {
                         return Promise.resolve(templates);
                     }
                     return verifyExistence(templates);
-                });
+                })
+                .then(templates -> Promise.resolve(new ArrayList<>(templates)));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Promise<List<AddressTemplate>> verifyExistence(List<AddressTemplate> templates) {
+    private Promise<Set<AddressTemplate>> verifyExistence(Set<AddressTemplate> templates) {
         if (templates.isEmpty()) {
             return Promise.resolve(templates);
         }
@@ -330,7 +333,7 @@ public class ModelTree {
                 .toArray(Promise[]::new);
         return Promise.all(checks).then(results -> {
             Object[] array = (Object[]) results;
-            List<AddressTemplate> existing = new ArrayList<>();
+            Set<AddressTemplate> existing = new HashSet<>();
             for (Object result : array) {
                 if (result != null) {
                     existing.add((AddressTemplate) result);

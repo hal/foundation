@@ -15,19 +15,24 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import org.jboss.elemento.HTMLContainerBuilder;
-import org.jboss.elemento.logger.Logger;
+import org.jboss.elemento.flow.FlowContext;
+import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
 import org.jboss.elemento.router.Place;
 import org.jboss.elemento.router.Route;
+import org.jboss.hal.core.Notifications;
+import org.jboss.hal.dmr.ResourceCheck;
 import org.jboss.hal.dmr.dispatch.Dispatcher;
+import org.jboss.hal.env.Environment;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.meta.StatementContext;
 import org.jboss.hal.meta.tree.ModelTree;
@@ -45,8 +50,12 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.flow.Flow.parallel;
+import static org.jboss.hal.core.Notification.error;
+import static org.jboss.hal.core.Notification.info;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelCatalog;
 import static org.jboss.hal.resources.HalClasses.results;
@@ -64,11 +73,10 @@ import static org.patternfly.component.page.PageSection.pageSection;
 @Route("/model-catalog")
 public class CatalogPage implements CatalogController, Page {
 
-    private static final Logger logger = Logger.getLogger(CatalogPage.class.getName());
-
     private final Dispatcher dispatcher;
     private final ModelGraphCatalog catalog;
     private final ModelTree modelTree;
+    private final Notifications notifications;
     private final RouteRegistry routeRegistry;
     private final StatementContext statementContext;
     private final CatalogState state;
@@ -80,20 +88,23 @@ public class CatalogPage implements CatalogController, Page {
 
     @Inject
     public CatalogPage(Dispatcher dispatcher,
+            Environment environment,
             ModelGraphCatalog catalog,
             ModelTree modelTree,
+            Notifications notifications,
             RouteRegistry routeRegistry,
             StatementContext statementContext) {
-        this.catalog = catalog;
         this.dispatcher = dispatcher;
+        this.catalog = catalog;
         this.modelTree = modelTree;
+        this.notifications = notifications;
         this.routeRegistry = routeRegistry;
         this.statementContext = statementContext;
         this.state = new CatalogState();
         this.toolbar = new CatalogToolbar(this);
         this.sidebar = new CatalogSidebar(this);
         this.welcome = new CatalogWelcome();
-        this.table = new CatalogTable(this);
+        this.table = new CatalogTable(this, environment.builtInStability());
         this.mainContent = div().css(halComponent(modelCatalog, results));
     }
 
@@ -146,12 +157,14 @@ public class CatalogPage implements CatalogController, Page {
     @Override
     public void selectType(ModelGraphType type) {
         state.selectType(type);
+        state.resetPage();
         internalSearch(this::internalUpdate);
     }
 
     @Override
     public void applyFacetValue(CatalogFacet facet, FacetValue value) {
         state.applyFacetValue(facet, value);
+        state.resetPage();
         internalSearch(this::internalUpdate);
     }
 
@@ -169,23 +182,22 @@ public class CatalogPage implements CatalogController, Page {
 
     @Override
     public void verifyAndGo(CatalogResult result) {
-        String highlight = switch (result.type()) {
-            case ATTRIBUTE -> "a:" + result.name;
-            case OPERATION -> "o:" + result.name;
-            case CAPABILITY -> "c:" + result.name;
-            default -> null;
-        };
+        verifyAndGo(result, result.resourceAddress);
+    }
 
-        AddressTemplate.ofUntrusted(result.resourceAddress).ifPresentOrElse(template -> {
+    @Override
+    public void verifyAndGo(CatalogResult result, String resource) {
+        AddressTemplate.ofUntrusted(resource).ifPresentOrElse(template -> {
                     if (template.fullyQualified()) {
-                        routeRegistry.goTo(template, highlight);
+                        goTo(result, template);
                     } else {
                         modelTree.resolveWildcards(template).then(resolved -> {
                             if (resolved.isEmpty()) {
                                 // TODO Let the user know that no matching resources were found
-                                logger.error("No matching resources found for address %s", result.resourceAddress);
+                                notifications.send(info("No matching resources found",
+                                        "The address " + resource + " does not resolve do any resources."));
                             } else if (resolved.size() == 1) {
-                                routeRegistry.goTo(resolved.get(0), highlight);
+                                goTo(result, resolved.get(0));
                             } else {
                                 table.showPickList(result, resolved);
                             }
@@ -193,11 +205,69 @@ public class CatalogPage implements CatalogController, Page {
                         });
                     }
                 },
-                () -> {
-                    // TODO Let the user know about the invalid address
-                    logger.error("Invalid address %s", result.resourceAddress);
-                }
-        );
+                () -> notifications.send(error("Invalid address", "The address " + resource + " is invalid.")));
+    }
+
+    @Override
+    public void goTo(CatalogResult result, AddressTemplate template) {
+        String highlight = switch (result.type()) {
+            case ATTRIBUTE -> "a:" + result.name;
+            case OPERATION -> "o:" + result.name;
+            case CAPABILITY -> "c:" + result.name;
+            default -> null;
+        };
+        routeRegistry.goTo(template, highlight);
+    }
+
+    @Override
+    public void verifyOnServer() {
+        List<Task<FlowContext>> tasks = table.unverifiedResults().stream()
+                .map(result -> (Task<FlowContext>) context -> {
+                    if (result.type() == ModelGraphType.CAPABILITY) {
+                        // TODO check if declaring resources exist
+                        return context.resolve();
+                    } else {
+                        return AddressTemplate.ofUntrusted(result.resourceAddress)
+                                .map(template -> {
+                                    if (template.fullyQualified()) {
+                                        return new ResourceCheck(dispatcher, template.resolve(statementContext))
+                                                .apply(new FlowContext())
+                                                .then(innerContext -> {
+                                                    int status = innerContext.pop(404);
+                                                    if (status == 200) {
+                                                        table.markVerified(result, VerificationStatus.EXISTS_ONCE, template);
+                                                    } else {
+                                                        table.markVerified(result, VerificationStatus.DOES_NOT_EXIST, null);
+                                                    }
+                                                    return innerContext.resolve();
+                                                });
+                                    } else {
+                                        return modelTree.resolveWildcards(template).then(resolved -> {
+                                            if (resolved.isEmpty()) {
+                                                table.markVerified(result, VerificationStatus.DOES_NOT_EXIST, null);
+                                            } else if (resolved.size() == 1) {
+                                                table.markVerified(result, VerificationStatus.EXISTS_ONCE, template);
+                                            } else {
+                                                table.markVerified(result, VerificationStatus.EXISTS_MULTIPLE, null);
+                                            }
+                                            return context.resolve();
+                                        });
+                                    }
+                                })
+                                .orElseGet(() -> {
+                                    table.markVerified(result, VerificationStatus.INVALID, null);
+                                    return context.resolve();
+                                });
+                    }
+                })
+                .collect(toList());
+
+        if (tasks.isEmpty()) {
+            notifications.send(info("Verification done", "All resources have already been verified."));
+        } else {
+            parallel(new FlowContext(), tasks).subscribe(context ->
+                    notifications.send(info("Verification complete", tasks.size() + " resources verified.")));
+        }
     }
 
     @Override

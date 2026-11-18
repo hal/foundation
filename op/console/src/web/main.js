@@ -28,7 +28,6 @@ import "@patternfly-java/charts/dist/charts";
 import "./variables.css";
 
 // Remaining (a-z)
-import "./capability.css";
 import "./catalog.css";
 import "./credential-reference.css";
 import "./dashboard.css";
@@ -37,6 +36,7 @@ import "./finder.css";
 import "./jndi.css";
 import "./model-browser.css";
 import "./model-catalog.css";
+import "./pick-list.css";
 import "./record-table.css";
 import "./resource.css";
 import "./stability.css";

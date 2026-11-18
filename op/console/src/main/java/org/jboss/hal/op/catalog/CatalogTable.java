@@ -15,54 +15,76 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import org.jboss.elemento.By;
+import org.jboss.elemento.ElementTextMethods;
+import org.jboss.elemento.HTMLContainerBuilder;
+import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.mgt.CatalogProperties;
 import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.ModelGraphType;
+import org.jboss.hal.resources.Dataset;
+import org.jboss.hal.resources.HalClasses;
 import org.jboss.hal.resources.Identifiers;
+import org.jboss.hal.resources.Keys;
 import org.jboss.hal.resources.OuiaIds;
-import org.jboss.hal.ui.UIContext;
 import org.patternfly.component.button.Button;
 import org.patternfly.component.table.Table;
+import org.patternfly.component.table.Tbody;
 import org.patternfly.component.table.Tr;
 import org.patternfly.core.OuiaSupport;
 import org.patternfly.overlay.Overlay;
 import org.patternfly.style.Classes;
-import org.patternfly.style.Placement;
 
 import elemental2.dom.HTMLElement;
 
+import static elemental2.dom.DomGlobal.console;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.elemento.Elements.insertAfter;
 import static org.jboss.elemento.Elements.li;
-import static org.jboss.elemento.Elements.querySelector;
 import static org.jboss.elemento.Elements.small;
+import static org.jboss.elemento.Elements.span;
+import static org.jboss.elemento.Elements.strong;
 import static org.jboss.elemento.Elements.ul;
 import static org.jboss.hal.mgt.CatalogFacet.DECLARES_CAP;
 import static org.jboss.hal.mgt.CatalogFacet.REFS_CAP;
 import static org.jboss.hal.resources.HalClasses.deprecated;
+import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
+import static org.jboss.hal.resources.HalClasses.items;
+import static org.jboss.hal.resources.HalClasses.modelCatalog;
+import static org.jboss.hal.resources.HalClasses.pickList;
+import static org.jboss.hal.resources.HalClasses.results;
 import static org.jboss.hal.ui.brick.AttributeBricks.accessTypeTd;
 import static org.jboss.hal.ui.brick.AttributeBricks.storageTd;
 import static org.jboss.hal.ui.brick.ModelBricks.typeLabel;
 import static org.jboss.hal.ui.component.StabilityLabel.stabilityLabel;
 import static org.patternfly.component.button.Button.button;
+import static org.patternfly.component.list.List.list;
+import static org.patternfly.component.list.ListItem.listItem;
 import static org.patternfly.component.table.Table.table;
 import static org.patternfly.component.table.Tbody.tbody;
 import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
+import static org.patternfly.layout.stack.Stack.stack;
+import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.overlay.Overlay.overlay;
 import static org.patternfly.overlay.TriggerMode.click;
 import static org.patternfly.style.Classes.cell;
+import static org.patternfly.style.Classes.compact;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Placement.bottom;
@@ -72,8 +94,8 @@ import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width20;
 import static org.patternfly.style.Width.width50;
 import static org.patternfly.style.Width.width60;
+import static org.patternfly.style.Width.width70;
 import static org.patternfly.style.Width.width80;
-import static org.patternfly.style.Width.width90;
 
 /**
  * Dynamic table for catalog search results. Columns adapt based on the effective type: mixed results show generic columns,
@@ -84,15 +106,23 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private final CatalogController controller;
     private final Stability builtInStability;
+    private final Map<String, Button> links;
+    private final Map<String, Button> declaringLinks;
+    private final Map<String, ElementTextMethods<?, ?>> addressTexts;
     private final HTMLElement container;
-    private Table table;
-    private ModelGraphType currentType;
-    private Overlay currentOverlay;
-    private HTMLElement currentOverlayElement;
 
-    CatalogTable(CatalogController controller) {
+    private Table table;
+    private Tbody tbody;
+    private ModelGraphType currentType;
+    private Overlay overlay;
+    private HTMLElement overlayElement;
+
+    CatalogTable(CatalogController controller, Stability builtInStability) {
         this.controller = controller;
-        this.builtInStability = UIContext.uic().environment().builtInStability();
+        this.builtInStability = builtInStability;
+        this.links = new HashMap<>();
+        this.declaringLinks = new HashMap<>();
+        this.addressTexts = new HashMap<>();
         this.container = div().element();
         initOuia();
     }
@@ -115,6 +145,9 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ api
 
     void update(ModelGraphType effectiveType, CatalogResult[] results) {
+        links.clear();
+        declaringLinks.clear();
+        addressTexts.clear();
         if (table == null || effectiveType != currentType) {
             failSafeRemoveFromParent(table);
             table = buildTable(effectiveType);
@@ -124,50 +157,106 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         populateRows(effectiveType, results);
     }
 
+    void markVerified(CatalogResult result, VerificationStatus status, AddressTemplate template) {
+        if (result.type() == ModelGraphType.CAPABILITY) {
+            // TODO mark declaring resources
+        } else {
+            if (tbody != null) {
+                Tr tr = tbody.item(rowId(result));
+                if (tr != null) {
+                    if (!tr.element().dataset.has(Dataset.verified)) {
+                        Button link = links.get(result.id());
+                        ElementTextMethods<?, ?> addressText = addressTexts.get(result.id());
+                        switch (status) {
+                            case DOES_NOT_EXIST, INVALID, ERROR, UNKNOWN -> {
+                                // TODO Should we add a status icon for INVALID, ERROR, or UNKNOWN?
+                                if (link != null) {
+                                    link.element().replaceWith(link.element().ownerDocument.createTextNode(link.text()));
+                                }
+                            }
+                            case EXISTS_ONCE -> {
+                                if (addressText != null && template != null) {
+                                    addressText.text(template.template);
+                                }
+                            }
+                            case EXISTS_MULTIPLE -> { /*nothing to do*/ }
+                        }
+                        tr.data(Dataset.verified);
+                    }
+                }
+            }
+        }
+        console.log("### Marking result %s with status %s", result.id(), status);
+    }
+
     void showPickList(CatalogResult result, List<AddressTemplate> templates) {
-        // TODO Find the button element, create and open an overlay to pick a template from the list
-        currentOverlayElement = div().css(component(Classes.overlay)).text("Picklist").element();
-        HTMLElement linkElement = querySelector(this, By.id(result.id()));
-        if (linkElement != null) {
-            currentOverlay = overlay(currentOverlayElement, bottom)
+        Button link = links.get(result.id());
+        if (link != null) {
+            overlayElement = div().css(component(Classes.overlay))
+                    .add(stack().css(halComponent(pickList))
+                            .gutter()
+                            .addItem(stackItem()
+                                    .add("The address ")
+                                    .add(strong(result.resourceAddress))
+                                    .add(" resolves to multiple resources. Please pick a resource from the list."))
+                            .addItem(stackItem().fill()
+                                    .add(list().css(halComponent(pickList, items)).plain()
+                                            .addItems(templates, template -> listItem()
+                                                    .add(button(template.toString()).link().inline()
+                                                            .onClick((e, btn) ->
+                                                                    controller.goTo(result, template)))))
+                            ))
+                    .element();
+            overlay = overlay(overlayElement, bottom)
                     .distance(10)
-                    .trigger(linkElement)
+                    .trigger(link.element())
                     .triggerMode(click)
                     .onToggle((event, open) -> {
                         if (!open) {
-                            failSafeRemoveFromParent(currentOverlayElement);
-                            currentOverlay.detach();
-                            currentOverlay = null;
-                            currentOverlayElement = null;
+                            failSafeRemoveFromParent(overlayElement);
+                            overlay.detach();
+                            overlay = null;
+                            overlayElement = null;
                         }
                     });
-            insertAfter(currentOverlayElement, linkElement);
-            currentOverlay.attach();
-            currentOverlay.show();
+            insertAfter(overlayElement, link.element());
+            overlay.attach();
+            overlay.show();
         }
+    }
+
+    public List<CatalogResult> unverifiedResults() {
+        if (tbody != null) {
+            return tbody.items().stream()
+                    .filter(tr -> !tr.element().dataset.has(Dataset.verified))
+                    .map(tr -> tr.<CatalogResult>get(Keys.CATALOG_RESULT))
+                    .filter(Objects::nonNull)
+                    .collect(toList());
+        }
+        return emptyList();
     }
 
     // ------------------------------------------------------ table
 
     private Table buildTable(ModelGraphType effectiveType) {
-        Table t = table().css(modifier("sticky-header"))
+        Table table = table().css(modifier("sticky-header"))
                 .ouiaId(OuiaIds.PAGE_CATALOG_TABLE);
         switch (effectiveType) {
-            case ALL -> t.addHead(thead().addRow(mixedHeader()));
-            case RESOURCE -> t.addHead(thead().addRow(resourceHeader()));
-            case ATTRIBUTE -> t.addHead(thead().addRow(attributeHeader()));
-            case OPERATION -> t.addHead(thead().addRow(operationHeader()));
-            case CAPABILITY -> t.addHead(thead().addRow(capabilityHeader()));
+            case ALL -> table.addHead(thead().addRow(mixedHeader()));
+            case RESOURCE -> table.addHead(thead().addRow(resourceHeader()));
+            case ATTRIBUTE -> table.addHead(thead().addRow(attributeHeader()));
+            case OPERATION -> table.addHead(thead().addRow(operationHeader()));
+            case CAPABILITY -> table.addHead(thead().addRow(capabilityHeader()));
         }
-        t.addBody(tbody());
-        return t;
+        table.addBody(tbody = tbody());
+        return table;
     }
 
     private void populateRows(ModelGraphType effectiveType, CatalogResult[] results) {
-        if (table == null || table.tbody() == null) {
+        if (table == null || tbody == null) {
             return;
         }
-        table.tbody().clear();
+        tbody.clear();
         if (results == null) {
             return;
         }
@@ -179,7 +268,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                 case OPERATION -> operationRow(result);
                 case CAPABILITY -> capabilityRow(result);
             };
-            table.tbody().addRow(row);
+            tbody.addRow(row.store(Keys.CATALOG_RESULT, result));
         }
     }
 
@@ -197,8 +286,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         return tr(rowId(result))
                 .addItem(td("Type").add(typeLabel(result.type().type)))
                 .addItem(td("Name")
-                        .add(link(result))
                         .run(td -> {
+                            if (result.type() == ModelGraphType.CAPABILITY) {
+                                td.text(safe(result.name));
+                            } else {
+                                td.add(link(result, false));
+                            }
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
                             }
@@ -206,7 +299,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                 .addItem(td("Address")
                         .run(td -> {
                             if (result.type() == ModelGraphType.RESOURCE) {
-                                td.text(safe(result.address));
+                                td.add(addressText(result));
+                            } else if (result.type() == ModelGraphType.CAPABILITY
+                                    && result.properties.declaringResources != null) {
+                                td.add(list().plain().css(modifier(compact))
+                                        .addItems(asList(result.properties.declaringResources), resource ->
+                                                listItem().add(declaringResourceLink(result, resource))));
                             } else {
                                 td.text(safe(result.resourceAddress));
                             }
@@ -232,16 +330,11 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         CatalogProperties p = result.properties;
         return tr(rowId(result))
                 .addItem(td("Address")
-                        .add(link(result))
+                        .add(link(result, true))
                         .run(td -> {
                             if (controller.state().isActive(DECLARES_CAP, "true")
                                     && p.capabilities != null && p.capabilities.length > 0) {
-                                td.add(br()).add(small()
-                                        .add(ul().css("capabilities").run(ul -> {
-                                            for (String capability : p.capabilities) {
-                                                ul.add(li().text(capability));
-                                            }
-                                        })));
+                                td.add(br()).add(capabilities(p.capabilities));
                             }
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
@@ -273,18 +366,16 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         CatalogProperties p = result.properties;
         Tr tr = tr(rowId(result))
                 .addItem(td("Name")
-                        .add(link(result))
+                        .add(link(result, false))
                         .run(td -> {
                             if (controller.state().isActive(REFS_CAP, "true") && p.capabilityReference != null) {
-                                td.add(br()).add(small()
-                                        .add(ul().css("capabilities")
-                                                .add(li().text(p.capabilityReference))));
+                                td.add(br()).add(capabilities(new String[]{p.capabilityReference}));
                             }
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
                             }
                         }))
-                .addItem(td("Resource").text(safe(result.resourceAddress)));
+                .addItem(td("Resource").add(addressText(result)));
         if (p != null) {
             tr.addItem(td("Data type").text(safe(p.dataType)))
                     .addItem(storageTd("Storage", p.storage))
@@ -318,13 +409,13 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         CatalogProperties p = result.properties;
         return tr(rowId(result))
                 .addItem(td("Name")
-                        .add(link(result))
+                        .add(link(result, false))
                         .run(td -> {
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
                             }
                         }))
-                .addItem(td("Resource").text(safe(result.resourceAddress)))
+                .addItem(td("Resource").add(addressText(result)))
                 .addItem(td("Parameter").text(p != null ? yesNo(p.isHasParams()) : ""))
                 .addItem(td("Return value").text(p != null ? yesNo(p.isHasReturnValue()) : ""))
                 .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
@@ -334,16 +425,29 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr capabilityHeader() {
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("name").width(width90).text("Name"))
+                .addItem(th("name").width(width20).text("Name"))
+                .addItem(th("res").width(width70).text("Resource"))
                 .addItem(th("stability").width(width10).text("Stability"));
     }
 
     private Tr capabilityRow(CatalogResult result) {
+        CatalogProperties p = result.properties;
         return tr(rowId(result))
-                .addItem(td("Name").text(safe(result.name))
+                .addItem(td("Name")
+                        .text(safe(result.name))
                         .run(td -> {
                             if (result.deprecated) {
                                 td.css(halModifier(deprecated));
+                            }
+                        }))
+                .addItem(td("Resource")
+                        .run(td -> {
+                            if (p.declaringResources != null) {
+                                td.add(list().plain().css(modifier(compact))
+                                        .addItems(asList(p.declaringResources), resource ->
+                                                listItem().add(declaringResourceLink(result, resource))));
+                            } else {
+                                td.text(" ");
                             }
                         }))
                 .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
@@ -352,18 +456,40 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     // ------------------------------------------------------ helpers
 
     private String rowId(CatalogResult result) {
-        String id = safe(result.type) + "-" + safe(result.name);
-        if (result.address != null) {
-            id = id + "-" + Identifiers.fromTemplate(result.address);
-        }
-        return id;
+        return Id.build("row", result.id());
     }
 
-    private Button link(CatalogResult result) {
+    private Button link(CatalogResult result, boolean useAsText) {
         String text = result.type() == ModelGraphType.RESOURCE ? result.resourceAddress : result.name;
-        return button(safe(text)).inline().link()
-                .id(result.id())
+        Button button = button(safe(text)).inline().link()
                 .onClick((e, b) -> controller.verifyAndGo(result));
+        links.put(result.id(), button);
+        if (useAsText) {
+            addressTexts.put(result.id(), button);
+        }
+        return button;
+    }
+
+    private ElementTextMethods<?, ?> addressText(CatalogResult result) {
+        HTMLContainerBuilder<HTMLElement> span = span().text(safe(result.resourceAddress));
+        addressTexts.put(result.id(), span);
+        return span;
+    }
+
+    private Button declaringResourceLink(CatalogResult capability, String resource) {
+        Button button = button(safe(resource)).inline().link()
+                .onClick((e, b) -> controller.verifyAndGo(capability, resource));
+        declaringLinks.put(capability.id(), button);
+        return button;
+    }
+
+    private HTMLContainerBuilder<HTMLElement> capabilities(String[] capabilities) {
+        return small().add(ul().css(halComponent(modelCatalog, results, HalClasses.capabilities))
+                .run(ul -> {
+                    for (String capability : capabilities) {
+                        ul.add(li().text(capability));
+                    }
+                }));
     }
 
     private String safe(String value) {

@@ -24,6 +24,7 @@ public interface HalClasses {
     // ------------------------------------------------------ constants (a-z)
 
     String body = "body";
+    String capabilities = "capabilities";
     String capabilityReference = "capability-reference";
     String clearText = "clear-text";
     String colon = "colon";
@@ -41,11 +42,13 @@ public interface HalClasses {
     String groupBody = "group-body";
     String groups = "groups";
     String highlight = "highlight";
+    String items = "items";
     String jndi = "jndi";
     String mgt = "mgt";
     String modelBrowser = "model-browser";
     String modelCatalog = "model-catalog";
     String name = "name";
+    String pickList = "pick-list";
     String rbacHidden = "rbac-hidden";
     String recordTable = "record-table";
     String resource = "resource";

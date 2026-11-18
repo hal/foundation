@@ -53,6 +53,11 @@ public interface Keys {
     String CAPABILITY_DESCRIPTION = "capability-description";
 
     /**
+     * {@code org.jboss.hal.mgt.CatalogResult} stored in catalog result table rows to associate each row with catalog result.
+     */
+    String CATALOG_RESULT = "catalog-result";
+
+    /**
      * {@code org.jboss.hal.op.endpoint.Endpoint} stored in endpoint selector cards during bootstrap endpoint selection.
      */
     String ENDPOINT = "endpoint";

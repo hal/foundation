@@ -19,6 +19,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Add OUIA IDs for shared UI components and skeleton toolbar
 - Add `Identifiers` utility with all static `HasIdentifier` constants
 - Add MGT search result deduplication and highlighting
+- Add "Verify on server" feature for catalog results — batch-checks resource existence against the connected WildFly server
+- Add `VerificationStatus` enum for tracking resource verification state (exists once, exists multiple, does not exist, invalid)
+- Add overlay pick list for multi-template resource links in catalog table
+- Add clickable resource address links in catalog table for direct navigation to model browser
 
 ### Changed
 
@@ -32,6 +36,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactor ModelGraphConnection — extract `ModelGraphSearch`, `ModelGraphEndpoint`, and `ModelGraphCapability` as separate concerns
 - Rename `ModelGraphToolsIndicator` to `ModelGraphIndicator`
 - Improve universal search box pick list and error handling
+- Use `Set` instead of `List` in `ModelTree` wildcard resolution to deduplicate resolved templates
+- Add `declaringResources` property to `CatalogProperties` for capability result types
+- Add welcome page section explaining the "Verify on server" feature
+- Reset pagination to page 1 on type selection change
 
 ### Fixed
 
@@ -43,6 +51,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix explicit elemental2 dependency management for J2CL ADVANCED mode
 - Fix CI container build by replacing qemu-user-static with qemu-user-binfmt
 - Fix vertical tab spacing in catalog sidebar to match checkbox alignment
+- Fix ranked templates in capability reference label list
+- Rename CSS file `capability.css` to `pick-list.css` for broader reuse
 
 ### Upgrades
 
@@ -54,6 +64,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Bump Vite+ to 1.5.1
 - Bump Node.js
 - Bump GitHub Actions (setup-java v6.2.0)
+- Bump Vite+ to 1.7.0 and vite-plus-core to 8.3.8000
 - Bump npm dependencies and packageManager versions
 
 ## [0.6.0] - 2026-10-20

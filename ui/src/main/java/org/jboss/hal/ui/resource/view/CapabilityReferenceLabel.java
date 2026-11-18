@@ -47,6 +47,8 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.PROFILE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.SERVER_GROUP;
 import static org.jboss.hal.resources.HalClasses.capabilityReference;
 import static org.jboss.hal.resources.HalClasses.halComponent;
+import static org.jboss.hal.resources.HalClasses.items;
+import static org.jboss.hal.resources.HalClasses.pickList;
 import static org.jboss.hal.resources.HalClasses.value;
 import static org.jboss.hal.ui.UIContext.uic;
 import static org.patternfly.component.button.Button.button;
@@ -61,8 +63,6 @@ import static org.patternfly.layout.stack.Stack.stack;
 import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.overlay.Overlay.overlay;
 import static org.patternfly.style.Classes.component;
-import static org.patternfly.style.Classes.list;
-import static org.patternfly.style.Classes.menu;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Classes.overflow;
 import static org.patternfly.style.Classes.overlay;
@@ -118,7 +118,7 @@ class CapabilityReferenceLabel implements IsElement<HTMLElement> {
                             .flatMap(List::stream)
                             .collect(toList());
                     HTMLElement overlayElement = div().css(component(overlay))
-                            .add(stack().css(halComponent(capabilityReference, menu))
+                            .add(stack().css(halComponent(pickList))
                                     .gutter()
                                     .addItem(stackItem()
                                             .add("Attribute ")
@@ -131,7 +131,7 @@ class CapabilityReferenceLabel implements IsElement<HTMLElement> {
                                             .add(strong().element())
                                             .add(" resources:"))
                                     .addItem(stackItem().fill()
-                                            .add(list().css(halComponent(capabilityReference, menu, list)).plain()
+                                            .add(list().css(halComponent(pickList, items)).plain()
                                                     .addItems(ranked, tpl -> listItem()
                                                             .add(button(tpl.toString()).link().inline()
                                                                     .onClick((e, btn) ->

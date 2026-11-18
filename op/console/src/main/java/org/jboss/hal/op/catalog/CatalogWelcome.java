@@ -26,6 +26,9 @@ import static org.jboss.elemento.Elements.ul;
 import static org.patternfly.component.content.Content.content;
 import static org.patternfly.component.content.ContentType.h3;
 import static org.patternfly.component.content.ContentType.h4;
+import static org.patternfly.component.icon.Icon.icon;
+import static org.patternfly.icon.IconSets.rhUi.warning;
+import static org.patternfly.style.Status.warning;
 
 class CatalogWelcome implements IsElement<HTMLElement> {
 
@@ -68,6 +71,23 @@ class CatalogWelcome implements IsElement<HTMLElement> {
                         + "on the selected type. Common filters include stability level and deprecation status. "
                         + "Type-specific filters let you narrow by data type, access type, storage mode, "
                         + "restart requirements, and more."))
+
+                .add(content(h4).text("Verify on server"))
+                .add(p().text("The catalog draws its data from the model graph database, which describes the full "
+                        + "management model independent of any running server. Click \"Verify on server\" "
+                        + "in the toolbar to cross-reference catalog entries with the connected WildFly instance. "
+                        + "This turns catalog links into live navigation:"))
+                .add(ul()
+                        .add(li().text("Resources that do not exist on the server are shown as plain text "
+                                + "instead of clickable links."))
+                        .add(li().text("Wildcard addresses are resolved against the server. When exactly one "
+                                + "matching resource exists, the link points directly to it."))
+                        .add(li().text("When multiple matches exist, the link opens a list that lets you "
+                                + "choose which resource to navigate to.")))
+                .add(p().add(icon(warning()).status(warning).inline())
+                        .add(" This operation checks each resource address against the running server, "
+                                + "which can involve a large number of management operations. Depending on the "
+                                + "size of the result set, it may take a moment to complete."))
                 .element();
     }
 

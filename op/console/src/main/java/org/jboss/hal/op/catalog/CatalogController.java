@@ -1,5 +1,6 @@
 package org.jboss.hal.op.catalog;
 
+import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.mgt.CatalogFacet;
 import org.jboss.hal.mgt.CatalogResult;
 import org.jboss.hal.mgt.FacetValue;
@@ -23,6 +24,12 @@ public interface CatalogController {
     void navigate(PageInfo pageInfo);
 
     void verifyAndGo(CatalogResult result);
+
+    void verifyAndGo(CatalogResult result, String resource);
+
+    void goTo(CatalogResult result, AddressTemplate template);
+
+    void verifyOnServer();
 
     CatalogStateInfo state();
 }

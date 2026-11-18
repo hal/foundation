@@ -34,9 +34,10 @@ import static org.patternfly.component.textinputgroup.SearchInputGroup.searchInp
 import static org.patternfly.component.toolbar.Toolbar.toolbar;
 import static org.patternfly.component.toolbar.ToolbarContent.toolbarContent;
 import static org.patternfly.component.toolbar.ToolbarGroup.toolbarGroup;
+import static org.patternfly.component.toolbar.ToolbarGroupType.actionGroup;
+import static org.patternfly.component.toolbar.ToolbarGroupType.filterGroup;
 import static org.patternfly.component.toolbar.ToolbarItem.toolbarItem;
 import static org.patternfly.icon.IconSets.fas.magnifyingGlass;
-import static org.patternfly.icon.IconSets.fas.xmark;
 import static org.patternfly.style.Classes.modifier;
 
 /**
@@ -65,16 +66,16 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                 .onChange((e, p, __, pi) -> controller.navigate(pi));
         toolbar = toolbar().ouiaId(OuiaIds.PAGE_CATALOG_TOOLBAR)
                 .addContent(toolbarContent()
-                        .addGroup(toolbarGroup().css(modifier("filter-group"))
+                        // .run(tc -> tc.containerDelegate().attributeStyleMap.set("align-items", "center"))
+                        .addGroup(toolbarGroup(filterGroup)
                                 .addItem(toolbarItem().css(modifier("search-filter"))
                                         .add(searchInput)))
-                        .addGroup(toolbarGroup().css(modifier("action-group"))
-                                .addItem(toolbarItem()
-                                        .add(button().secondary().icon(xmark()).text("Reset")
-                                                .onClick((e, c) -> {
-                                                    searchInput.value("", false);
-                                                    controller.reset();
-                                                }))))
+                        .addDivider()
+                        .addGroup(toolbarGroup(actionGroup)
+                                .addItem(toolbarItem().add(button().secondary().text("Clear all filters")
+                                        .onClick((e, c) -> controller.reset())))
+                                .addItem(toolbarItem().add(button().secondary().text("Verify on server")
+                                        .onClick((e, c) -> controller.verifyOnServer()))))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(pagination))));
     }
@@ -85,6 +86,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     }
 
     void reset() {
+        searchInput.value("", false);
         setVisible(pagination, false);
     }
 

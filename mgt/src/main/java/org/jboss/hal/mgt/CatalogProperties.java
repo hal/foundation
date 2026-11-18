@@ -39,10 +39,10 @@ public class CatalogProperties {
 
     // ------------------------------------------------------ resource properties
 
-    /** Whether the resource defines attribute groups (may be {@code null}). */
+    /** Whether the resource defines attribute groups (might be {@code null}). */
     public Boolean definesAttrGroups;
 
-    /** Whether the resource is a singleton (may be {@code null}). */
+    /** Whether the resource is a singleton (might be {@code null}). */
     public Boolean singleton;
 
     /** Names of capabilities declared by this resource (empty array if none, {@code null} for non-resource types). */
@@ -50,52 +50,57 @@ public class CatalogProperties {
 
     // ------------------------------------------------------ attribute properties
 
-    /** Whether expressions are allowed (may be {@code null}). */
+    /** Whether expressions are allowed (might be {@code null}). */
     public Boolean expressions;
 
-    /** Whether the attribute is nillable (may be {@code null}). */
+    /** Whether the attribute is nillable (might be {@code null}). */
     public Boolean nillable;
 
-    /** Whether the attribute is required (may be {@code null}). */
+    /** Whether the attribute is required (might be {@code null}). */
     public Boolean required;
 
-    /** Whether the attribute has an IS_SENSITIVE relationship (may be {@code null}). */
+    /** Whether the attribute has an IS_SENSITIVE relationship (might be {@code null}). */
     public Boolean sensitive;
 
-    /** The access type of the attribute (may be {@code null}). */
+    /** The access type of the attribute (might be {@code null}). */
     public String accessType;
 
     /** The name of the referenced capability, or {@code null} if the attribute does not reference a capability. */
     public String capabilityReference;
 
-    /** The data type of the attribute (may be {@code null}). */
+    /** The data type of the attribute (might be {@code null}). */
     public String dataType;
 
-    /** The restart policy for the attribute (may be {@code null}). */
+    /** The restart policy for the attribute (might be {@code null}). */
     public String restart;
 
-    /** The storage type of the attribute (may be {@code null}). */
+    /** The storage type of the attribute (might be {@code null}). */
     public String storage;
 
-    /** The measurement unit of the attribute (may be {@code null}). */
+    /** The measurement unit of the attribute (might be {@code null}). */
     public String unit;
 
     // ------------------------------------------------------ operation properties
 
-    /** Whether the operation is global (may be {@code null}). */
+    /** Whether the operation is global (might be {@code null}). */
     public Boolean global;
 
-    /** Whether the operation has parameters (may be {@code null}). */
+    /** Whether the operation has parameters (might be {@code null}). */
     public Boolean hasParams;
 
-    /** Whether the operation has a return value (may be {@code null}). */
+    /** Whether the operation has a return value (might be {@code null}). */
     public Boolean hasReturnValue;
 
-    /** Whether the operation is read-only (may be {@code null}). */
+    /** Whether the operation is read-only (might be {@code null}). */
     public Boolean readOnly;
 
-    /** Whether the operation is runtime-only (may be {@code null}). */
+    /** Whether the operation is runtime-only (might be {@code null}). */
     public Boolean runtimeOnly;
+
+    // ------------------------------------------------------ capability properties
+
+    /** Address of resources defining this capability (never empty for capabilities, {@code null} for non-resource types). */
+    public String[] declaringResources;
 
     // ------------------------------------------------------ overlay accessors
 
