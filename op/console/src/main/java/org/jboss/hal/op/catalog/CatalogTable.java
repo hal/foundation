@@ -44,7 +44,6 @@ import org.patternfly.style.Classes;
 
 import elemental2.dom.HTMLElement;
 
-import static elemental2.dom.DomGlobal.console;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -59,6 +58,8 @@ import static org.jboss.elemento.Elements.strong;
 import static org.jboss.elemento.Elements.ul;
 import static org.jboss.hal.mgt.CatalogFacet.DECLARES_CAP;
 import static org.jboss.hal.mgt.CatalogFacet.REFS_CAP;
+import static org.jboss.hal.mgt.ModelGraphType.CAPABILITY;
+import static org.jboss.hal.mgt.ModelGraphType.RESOURCE;
 import static org.jboss.hal.resources.HalClasses.deprecated;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
@@ -158,7 +159,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     }
 
     void markVerified(CatalogResult result, VerificationStatus status, AddressTemplate template) {
-        if (result.type() == ModelGraphType.CAPABILITY) {
+        if (result.type() == CAPABILITY) {
             // TODO mark declaring resources
         } else {
             if (tbody != null) {
@@ -186,7 +187,6 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                 }
             }
         }
-        console.log("### Marking result %s with status %s", result.id(), status);
     }
 
     void showPickList(CatalogResult result, List<AddressTemplate> templates) {
@@ -287,7 +287,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                 .addItem(td("Type").add(typeLabel(result.type().type)))
                 .addItem(td("Name")
                         .run(td -> {
-                            if (result.type() == ModelGraphType.CAPABILITY) {
+                            if (result.type() == CAPABILITY) {
                                 td.text(safe(result.name));
                             } else {
                                 td.add(link(result, false));
@@ -298,9 +298,9 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                         }))
                 .addItem(td("Address")
                         .run(td -> {
-                            if (result.type() == ModelGraphType.RESOURCE) {
+                            if (result.type() == RESOURCE) {
                                 td.add(addressText(result));
-                            } else if (result.type() == ModelGraphType.CAPABILITY
+                            } else if (result.type() == CAPABILITY
                                     && result.properties.declaringResources != null) {
                                 td.add(list().plain().css(modifier(compact))
                                         .addItems(asList(result.properties.declaringResources), resource ->
@@ -459,12 +459,14 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         return Id.build("row", result.id());
     }
 
-    private Button link(CatalogResult result, boolean useAsText) {
-        String text = result.type() == ModelGraphType.RESOURCE ? result.resourceAddress : result.name;
+    private Button link(CatalogResult result, boolean addressText) {
+        String text = result.type() == RESOURCE && controller.state().effectiveType() == RESOURCE
+                ? result.resourceAddress
+                : result.name;
         Button button = button(safe(text)).inline().link()
                 .onClick((e, b) -> controller.verifyAndGo(result));
         links.put(result.id(), button);
-        if (useAsText) {
+        if (addressText) {
             addressTexts.put(result.id(), button);
         }
         return button;

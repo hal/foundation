@@ -56,6 +56,9 @@ import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.elemento.flow.Flow.parallel;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.core.Notification.info;
+import static org.jboss.hal.op.catalog.VerificationStatus.DOES_NOT_EXIST;
+import static org.jboss.hal.op.catalog.VerificationStatus.EXISTS_MULTIPLE;
+import static org.jboss.hal.op.catalog.VerificationStatus.EXISTS_ONCE;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelCatalog;
 import static org.jboss.hal.resources.HalClasses.results;
@@ -235,20 +238,20 @@ public class CatalogPage implements CatalogController, Page {
                                                 .then(innerContext -> {
                                                     int status = innerContext.pop(404);
                                                     if (status == 200) {
-                                                        table.markVerified(result, VerificationStatus.EXISTS_ONCE, template);
+                                                        table.markVerified(result, EXISTS_ONCE, template);
                                                     } else {
-                                                        table.markVerified(result, VerificationStatus.DOES_NOT_EXIST, null);
+                                                        table.markVerified(result, DOES_NOT_EXIST, null);
                                                     }
                                                     return innerContext.resolve();
                                                 });
                                     } else {
                                         return modelTree.resolveWildcards(template).then(resolved -> {
                                             if (resolved.isEmpty()) {
-                                                table.markVerified(result, VerificationStatus.DOES_NOT_EXIST, null);
+                                                table.markVerified(result, DOES_NOT_EXIST, null);
                                             } else if (resolved.size() == 1) {
-                                                table.markVerified(result, VerificationStatus.EXISTS_ONCE, template);
+                                                table.markVerified(result, EXISTS_ONCE, resolved.get(0));
                                             } else {
-                                                table.markVerified(result, VerificationStatus.EXISTS_MULTIPLE, null);
+                                                table.markVerified(result, EXISTS_MULTIPLE, null);
                                             }
                                             return context.resolve();
                                         });
