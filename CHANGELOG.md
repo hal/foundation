@@ -9,20 +9,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add Model Catalog page with dynamic table, faceted sidebar, welcome page, and pagination
-- Add faceted search with typed facet counts, mutual exclusion for binary checkboxes, and automatic hiding of single-value categories
+- Add Model Catalog page with dynamic table, faceted sidebar, welcome page, and pagination ([#469](https://github.com/hal/foundation/issues/469), [#442](https://github.com/hal/foundation/issues/442), [#443](https://github.com/hal/foundation/issues/443), [#444](https://github.com/hal/foundation/issues/444))
+- Add faceted search with typed facet counts, mutual exclusion for binary checkboxes, and automatic hiding of single-value categories ([#445](https://github.com/hal/foundation/issues/445))
 - Add CatalogState filter state machine with implicit type logic from facet selection
 - Add `FacetValue` sealed interface, `TypeSelection`, and `CatalogQuery` records for typed catalog state
 - Add `isEmpty()` helper to `CatalogResponse`
 - Add VerticalTabs component for catalog sidebar type filtering with disabled state support
 - Add catalog toolbar text search filtering
+- Add capability name typeahead for declaresCap/refsCap facets ([#468](https://github.com/hal/foundation/issues/468))
 - Add OUIA IDs for shared UI components and skeleton toolbar
-- Add `Identifiers` utility with all static `HasIdentifier` constants
+- Add `Identifiers` utility with all static `HasIdentifier` constants ([#433](https://github.com/hal/foundation/issues/433))
 - Add MGT search result deduplication and highlighting
-- Add "Verify on server" feature for catalog results — batch-checks resource existence against the connected WildFly server
+- Add "Verify on server" feature for catalog results — batch-checks resource existence against the connected WildFly server ([#448](https://github.com/hal/foundation/issues/448))
 - Add `VerificationStatus` enum for tracking resource verification state (exists once, exists multiple, does not exist, invalid)
 - Add overlay pick list for multi-template resource links in catalog table
 - Add clickable resource address links in catalog table for direct navigation to model browser
+- Add capability names display in catalog table when capability filter is active
 
 ### Changed
 
@@ -51,6 +53,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix explicit elemental2 dependency management for J2CL ADVANCED mode
 - Fix CI container build by replacing qemu-user-static with qemu-user-binfmt
 - Fix vertical tab spacing in catalog sidebar to match checkbox alignment
+- Fix form submission on Enter in facet group inputs
 - Fix ranked templates in capability reference label list
 - Rename CSS file `capability.css` to `pick-list.css` for broader reuse
 
