@@ -17,6 +17,7 @@ package org.jboss.hal.op.catalog;
 
 import java.util.List;
 
+import org.jboss.elemento.By;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
@@ -30,14 +31,18 @@ import org.patternfly.component.button.Button;
 import org.patternfly.component.table.Table;
 import org.patternfly.component.table.Tr;
 import org.patternfly.core.OuiaSupport;
+import org.patternfly.overlay.Overlay;
 import org.patternfly.style.Classes;
+import org.patternfly.style.Placement;
 
 import elemental2.dom.HTMLElement;
 
 import static org.jboss.elemento.Elements.br;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
+import static org.jboss.elemento.Elements.insertAfter;
 import static org.jboss.elemento.Elements.li;
+import static org.jboss.elemento.Elements.querySelector;
 import static org.jboss.elemento.Elements.small;
 import static org.jboss.elemento.Elements.ul;
 import static org.jboss.hal.mgt.CatalogFacet.DECLARES_CAP;
@@ -55,9 +60,12 @@ import static org.patternfly.component.table.Td.td;
 import static org.patternfly.component.table.Th.th;
 import static org.patternfly.component.table.Thead.thead;
 import static org.patternfly.component.table.Tr.tr;
+import static org.patternfly.overlay.Overlay.overlay;
+import static org.patternfly.overlay.TriggerMode.click;
 import static org.patternfly.style.Classes.cell;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.modifier;
+import static org.patternfly.style.Placement.bottom;
 import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Width;
 import static org.patternfly.style.Width.width10;
@@ -79,6 +87,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private final HTMLElement container;
     private Table table;
     private ModelGraphType currentType;
+    private Overlay currentOverlay;
+    private HTMLElement currentOverlayElement;
 
     CatalogTable(CatalogController controller) {
         this.controller = controller;
@@ -115,8 +125,26 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     }
 
     void showPickList(CatalogResult result, List<AddressTemplate> templates) {
-        String id = result.id();
         // TODO Find the button element, create and open an overlay to pick a template from the list
+        currentOverlayElement = div().css(component(Classes.overlay)).text("Picklist").element();
+        HTMLElement linkElement = querySelector(this, By.id(result.id()));
+        if (linkElement != null) {
+            currentOverlay = overlay(currentOverlayElement, bottom)
+                    .distance(10)
+                    .trigger(linkElement)
+                    .triggerMode(click)
+                    .onToggle((event, open) -> {
+                        if (!open) {
+                            failSafeRemoveFromParent(currentOverlayElement);
+                            currentOverlay.detach();
+                            currentOverlay = null;
+                            currentOverlayElement = null;
+                        }
+                    });
+            insertAfter(currentOverlayElement, linkElement);
+            currentOverlay.attach();
+            currentOverlay.show();
+        }
     }
 
     // ------------------------------------------------------ table
