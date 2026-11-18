@@ -132,7 +132,7 @@ class CapabilityReferenceLabel implements IsElement<HTMLElement> {
                                             .add(" resources:"))
                                     .addItem(stackItem().fill()
                                             .add(list().css(halComponent(capabilityReference, menu, list)).plain()
-                                                    .addItems(templates, tpl -> listItem()
+                                                    .addItems(ranked, tpl -> listItem()
                                                             .add(button(tpl.toString()).link().inline()
                                                                     .onClick((e, btn) ->
                                                                             SelectInTree.dispatch(element(), tpl)))))))
