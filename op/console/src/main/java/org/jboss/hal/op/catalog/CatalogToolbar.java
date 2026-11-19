@@ -18,6 +18,7 @@ package org.jboss.hal.op.catalog;
 import org.jboss.elemento.Id;
 import org.jboss.elemento.IsElement;
 import org.jboss.hal.resources.OuiaIds;
+import org.patternfly.component.button.Button;
 import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
 import org.patternfly.component.textinputgroup.SearchInputGroup;
@@ -49,6 +50,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     private final Toolbar toolbar;
     private final SearchInputGroup searchInput;
     private final Pagination pagination;
+    private final Button verify;
 
     CatalogToolbar(CatalogController controller) {
         searchInput = searchInputGroup(Id.unique())
@@ -74,7 +76,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                         .addGroup(toolbarGroup(actionGroup)
                                 .addItem(toolbarItem().add(button().secondary().text("Clear all filters")
                                         .onClick((e, c) -> controller.reset())))
-                                .addItem(toolbarItem().add(button().secondary().text("Verify on server")
+                                .addItem(toolbarItem().add(verify = button().secondary().text("Verify on server")
                                         .onClick((e, c) -> controller.verifyOnServer()))))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(pagination))));
@@ -87,10 +89,12 @@ class CatalogToolbar implements IsElement<HTMLElement> {
 
     void reset() {
         searchInput.value("", false);
+        verify.disabled();
         setVisible(pagination, false);
     }
 
     void update(PageInfo pageInfo) {
+        verify.disabled(false);
         setVisible(pagination, true);
         pagination.pageInfo(pageInfo);
     }

@@ -159,12 +159,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     }
 
     void markVerified(CatalogResult result, VerificationStatus status, AddressTemplate template) {
-        if (result.type() == CAPABILITY) {
-            // TODO mark declaring resources
-        } else {
-            if (tbody != null) {
-                Tr tr = tbody.item(rowId(result));
-                if (tr != null) {
+        if (tbody != null) {
+            Tr tr = tbody.item(rowId(result));
+            if (tr != null) {
+                if (result.type() == CAPABILITY) {
+                    // TODO mark declaring resources
+                } else {
                     if (!tr.element().dataset.has(Dataset.verified)) {
                         Button link = links.get(result.id());
                         ElementTextMethods<?, ?> addressText = addressTexts.get(result.id());
@@ -182,9 +182,9 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                             }
                             case EXISTS_MULTIPLE -> { /*nothing to do*/ }
                         }
-                        tr.data(Dataset.verified);
                     }
                 }
+                tr.data(Dataset.verified);
             }
         }
     }
@@ -298,15 +298,13 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                         }))
                 .addItem(td("Address")
                         .run(td -> {
-                            if (result.type() == RESOURCE) {
-                                td.add(addressText(result));
-                            } else if (result.type() == CAPABILITY
+                            if (result.type() == CAPABILITY
                                     && result.properties.declaringResources != null) {
                                 td.add(list().plain().css(modifier(compact))
                                         .addItems(asList(result.properties.declaringResources), resource ->
                                                 listItem().add(declaringResourceLink(result, resource))));
                             } else {
-                                td.text(safe(result.resourceAddress));
+                                td.add(addressText(result));
                             }
                         }))
                 .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));

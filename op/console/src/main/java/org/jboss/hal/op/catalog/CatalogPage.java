@@ -15,6 +15,7 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,6 +24,7 @@ import jakarta.inject.Inject;
 
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.flow.FlowContext;
+import org.jboss.elemento.flow.ParallelTasks;
 import org.jboss.elemento.flow.Task;
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
@@ -48,7 +50,9 @@ import org.patternfly.component.pagination.PageInfo;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.promise.Promise;
 
+import static elemental2.dom.DomGlobal.console;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.div;
@@ -59,6 +63,7 @@ import static org.jboss.hal.core.Notification.info;
 import static org.jboss.hal.op.catalog.VerificationStatus.DOES_NOT_EXIST;
 import static org.jboss.hal.op.catalog.VerificationStatus.EXISTS_MULTIPLE;
 import static org.jboss.hal.op.catalog.VerificationStatus.EXISTS_ONCE;
+import static org.jboss.hal.op.catalog.VerificationStatus.INVALID;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelCatalog;
 import static org.jboss.hal.resources.HalClasses.results;
@@ -137,12 +142,14 @@ public class CatalogPage implements CatalogController, Page {
 
     @Override
     public void search(String query) {
+        state.resetPage();
         state.query(query);
         internalSearch(this::internalUpdate);
     }
 
     @Override
     public void clearSearch() {
+        state.resetPage();
         state.clearQuery();
         internalSearch(this::internalUpdate);
     }
@@ -159,20 +166,21 @@ public class CatalogPage implements CatalogController, Page {
 
     @Override
     public void selectType(ModelGraphType type) {
-        state.selectType(type);
         state.resetPage();
+        state.selectType(type);
         internalSearch(this::internalUpdate);
     }
 
     @Override
     public void applyFacetValue(CatalogFacet facet, FacetValue value) {
-        state.applyFacetValue(facet, value);
         state.resetPage();
+        state.applyFacetValue(facet, value);
         internalSearch(this::internalUpdate);
     }
 
     @Override
     public void removeFacet(CatalogFacet facet) {
+        state.resetPage();
         state.removeFacet(facet);
         internalSearch(this::internalUpdate);
     }
@@ -224,43 +232,16 @@ public class CatalogPage implements CatalogController, Page {
 
     @Override
     public void verifyOnServer() {
-        List<Task<FlowContext>> tasks = table.unverifiedResults().stream()
+        List<Task<FlowContext>> tasks = table.unverifiedResults()
+                .stream()
                 .map(result -> (Task<FlowContext>) context -> {
                     if (result.type() == ModelGraphType.CAPABILITY) {
-                        // TODO check if declaring resources exist
-                        return context.resolve();
+                        return new ParallelTasks<>(Arrays.stream(result.properties.declaringResources)
+                                .map(address -> (Task<FlowContext>) innerContext ->
+                                        verifyResource(context, result, address))
+                                .collect(toList())).apply(context);
                     } else {
-                        return AddressTemplate.ofUntrusted(result.resourceAddress)
-                                .map(template -> {
-                                    if (template.fullyQualified()) {
-                                        return new ResourceCheck(dispatcher, template.resolve(statementContext))
-                                                .apply(new FlowContext())
-                                                .then(innerContext -> {
-                                                    int status = innerContext.pop(404);
-                                                    if (status == 200) {
-                                                        table.markVerified(result, EXISTS_ONCE, template);
-                                                    } else {
-                                                        table.markVerified(result, DOES_NOT_EXIST, null);
-                                                    }
-                                                    return innerContext.resolve();
-                                                });
-                                    } else {
-                                        return modelTree.resolveWildcards(template).then(resolved -> {
-                                            if (resolved.isEmpty()) {
-                                                table.markVerified(result, DOES_NOT_EXIST, null);
-                                            } else if (resolved.size() == 1) {
-                                                table.markVerified(result, EXISTS_ONCE, resolved.get(0));
-                                            } else {
-                                                table.markVerified(result, EXISTS_MULTIPLE, null);
-                                            }
-                                            return context.resolve();
-                                        });
-                                    }
-                                })
-                                .orElseGet(() -> {
-                                    table.markVerified(result, VerificationStatus.INVALID, null);
-                                    return context.resolve();
-                                });
+                        return verifyResource(context, result, result.resourceAddress);
                     }
                 })
                 .collect(toList());
@@ -305,5 +286,50 @@ public class CatalogPage implements CatalogController, Page {
     private void showResults() {
         failSafeRemoveFromParent(welcome);
         mainContent.add(table);
+    }
+
+    private Promise<FlowContext> verifyResource(FlowContext context, CatalogResult result, String address) {
+        return AddressTemplate.ofUntrusted(address)
+                .map(template -> {
+                    if (template.fullyQualified()) {
+                        return new ResourceCheck(dispatcher, template.resolve(statementContext))
+                                .apply(new FlowContext())
+                                .then(innerContext -> {
+                                    int status = innerContext.pop(404);
+                                    if (status == 200) {
+                                        table.markVerified(result, EXISTS_ONCE, template);
+                                        console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                                EXISTS_ONCE.name());
+                                    } else {
+                                        table.markVerified(result, DOES_NOT_EXIST, null);
+                                        console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                                DOES_NOT_EXIST.name());
+                                    }
+                                    return innerContext.resolve();
+                                });
+                    } else {
+                        return modelTree.resolveWildcards(template).then(resolved -> {
+                            if (resolved.isEmpty()) {
+                                table.markVerified(result, DOES_NOT_EXIST, null);
+                                console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                        DOES_NOT_EXIST.name());
+                            } else if (resolved.size() == 1) {
+                                table.markVerified(result, EXISTS_ONCE, resolved.get(0));
+                                console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                        EXISTS_ONCE.name());
+                            } else {
+                                table.markVerified(result, EXISTS_MULTIPLE, null);
+                                console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                        EXISTS_MULTIPLE.name());
+                            }
+                            return context.resolve();
+                        });
+                    }
+                })
+                .orElseGet(() -> {
+                    table.markVerified(result, INVALID, null);
+                    console.log("### Verified %s: %s: %s", result.type().name(), address, INVALID.name());
+                    return context.resolve();
+                });
     }
 }
