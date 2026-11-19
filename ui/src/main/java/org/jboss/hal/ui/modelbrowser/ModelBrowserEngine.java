@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.jboss.elemento.By;
+import org.jboss.elemento.Id;
 import org.jboss.elemento.logger.Logger;
 import org.jboss.hal.dmr.ModelNode;
 import org.jboss.hal.dmr.Operation;
@@ -29,13 +30,16 @@ import org.jboss.hal.dmr.dispatch.Dispatcher;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.resources.Keys;
 import org.patternfly.async.AsyncItems;
+import org.patternfly.component.popover.Popover;
 import org.patternfly.component.tree.TreeViewItem;
 
+import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.failSafeRemoveFromParent;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CHILD_TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_NAMES_OPERATION;
@@ -73,9 +77,9 @@ class ModelBrowserEngine {
 
     /**
      * Returns a function that returns a promise to read the child resources of the selected tree view item. Uses
-     * {@link #parseChildren(ModelBrowserNode, ModelNode, boolean)} and {@link #mbn2tvi(Dispatcher)}.
+     * {@link #parseChildren(ModelBrowserNode, ModelNode, boolean)} and {@link #mbn2tvi(Dispatcher, TreeViewItem)}.
      */
-    static AsyncItems<TreeViewItem, TreeViewItem> readChildrenOperation(Dispatcher dispatcher) {
+    static AsyncItems<TreeViewItem, TreeViewItem> readChildrenOperation(Dispatcher dispatcher, TreeViewItem parent) {
         return tvi -> {
             ModelBrowserNode mbn = tvi.get(Keys.MODEL_BROWSER_NODE);
             if (mbn != null) {
@@ -93,7 +97,7 @@ class ModelBrowserEngine {
                     return dispatcher.execute(operation)
                             .then(result -> Promise.resolve(parseChildren(mbn, result, true)
                                     .stream()
-                                    .map(mbn2tvi(dispatcher))
+                                    .map(mbn2tvi(dispatcher, parent))
                                     .collect(toList())));
                 } else {
                     logger.error("Unable to read child resources of tree view item %o - %s: Wrong node type %s",
@@ -110,10 +114,10 @@ class ModelBrowserEngine {
     }
 
     /**
-     * Parses the result of {@link #readChildrenOperation(Dispatcher)} and turns it into a list of {@link ModelBrowserNode}s.
+     * Parses the result of {@link #readChildrenOperation(Dispatcher, TreeViewItem)} and turns it into a list of
+     * {@link ModelBrowserNode}s.
      */
-    static List<ModelBrowserNode> parseChildren(ModelBrowserNode parent, ModelNode result,
-            boolean nonExistingSingletons) {
+    static List<ModelBrowserNode> parseChildren(ModelBrowserNode parent, ModelNode result, boolean nonExistingSingletons) {
         AddressTemplate template = parent.template;
         Map<String, ModelBrowserNode> mbns = new LinkedHashMap<>();
         for (ModelNode modelNode : result.asList()) {
@@ -162,33 +166,50 @@ class ModelBrowserEngine {
     /**
      * Returns a function that turns a {@link ModelBrowserNode} into a {@link TreeViewItem}.
      */
-    static Function<ModelBrowserNode, TreeViewItem> mbn2tvi(Dispatcher dispatcher) {
+    static Function<ModelBrowserNode, TreeViewItem> mbn2tvi(Dispatcher dispatcher, TreeViewItem parent) {
         return mbn -> treeViewItem(mbn.identifier)
                 .text(mbn.name)
                 .icon(mbn.type.icon.get())
                 .store(Keys.MODEL_BROWSER_NODE, mbn)
                 .run(tvi -> {
                     if (mbn.exists) {
-                        tvi.addItems(readChildrenOperation(dispatcher));
+                        tvi.addItems(readChildrenOperation(dispatcher, tvi));
                         if (mbn.type.expandedIcon != null) {
                             tvi.expandedIcon(mbn.type.expandedIcon.get());
                         }
                     } else {
                         tvi.css(modifier(disabled));
-                        nonExistingSingletonPopover(mbn, tvi);
+                        nonExistingSingletonPopover(mbn, parent, tvi);
                     }
                 });
     }
 
-    private static void nonExistingSingletonPopover(ModelBrowserNode mbn, TreeViewItem tvi) {
-        logger.debug("Add popover for non-existing singleton resource %s", mbn.identifier);
+    private static void nonExistingSingletonPopover(ModelBrowserNode mbn, TreeViewItem parent, TreeViewItem nonExisting) {
+        logger.debug("Prepare popover for non-existing singleton resource %s", mbn.identifier);
         AddressTemplate anonymous = mbn.template.anonymiseLast(); // /a=b/c=d -> /a=b/c=*
-        tvi.add(popover(By.data(identifier, mbn.identifier))
+        nonExisting.add(addResourcePopover(mbn, anonymous));
+        if (parent != null) {
+            parent.onToggle((e, c, expanded) -> {
+                if (expanded) {
+                    // Go through the popover attach/detach lifecycle!
+                    // The last popover is still in the DOM, so we need to remove it first
+                    HTMLElement element = parent.querySelector(By.id(Id.build("add-resource-popover", mbn.identifier)));
+                    failSafeRemoveFromParent(element);
+                    nonExisting.add(addResourcePopover(mbn, anonymous));
+                }
+            });
+        }
+    }
+
+    private static Popover addResourcePopover(ModelBrowserNode mbn, AddressTemplate template) {
+        String id = Id.build("add-resource-popover", mbn.identifier);
+        return popover(By.data(identifier, mbn.identifier))
+                .id(id)
                 .addHeader(mbn.name)
                 .addBody(popoverBody()
                         .add(div().add("This resource does not yet exist."))
                         .add(div().add(button("Add resource").link().inline()
                                 .onClick((e, b) -> ModelBrowserEvents.AddResource.dispatch(b.element(),
-                                        anonymous, mbn.name, true))))));
+                                        template, mbn.name, true)))));
     }
 }

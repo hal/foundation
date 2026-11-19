@@ -165,7 +165,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
 
     void load(List<ModelBrowserNode> nodes) {
         treeView.clear();
-        treeView.addItems(nodes, mbn2tvi(uic().dispatcher()));
+        treeView.addItems(nodes, mbn2tvi(uic().dispatcher(), null));
     }
 
     void reload() {

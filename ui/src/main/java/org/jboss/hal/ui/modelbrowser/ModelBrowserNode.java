@@ -31,9 +31,6 @@ import org.patternfly.icon.PredefinedIcon;
  */
 class ModelBrowserNode {
 
-    /** Identifier used for the root node of the tree. */
-    static final String ROOT_ID = "root";
-
     /**
      * Classifies a node in the management model tree. Each type determines the icon, expandable behavior, and how child
      * resources are loaded.
