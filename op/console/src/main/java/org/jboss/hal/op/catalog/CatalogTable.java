@@ -15,11 +15,13 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jboss.elemento.By;
 import org.jboss.elemento.ElementTextMethods;
 import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.Id;
@@ -28,6 +30,7 @@ import org.jboss.hal.env.Stability;
 import org.jboss.hal.meta.AddressTemplate;
 import org.jboss.hal.mgt.CatalogProperties;
 import org.jboss.hal.mgt.CatalogResult;
+import org.jboss.hal.mgt.DeclaringResource;
 import org.jboss.hal.mgt.ModelGraphType;
 import org.jboss.hal.resources.Dataset;
 import org.jboss.hal.resources.HalClasses;
@@ -65,6 +68,7 @@ import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.halModifier;
 import static org.jboss.hal.resources.HalClasses.items;
 import static org.jboss.hal.resources.HalClasses.modelCatalog;
+import static org.jboss.hal.resources.HalClasses.noInset;
 import static org.jboss.hal.resources.HalClasses.pickList;
 import static org.jboss.hal.resources.HalClasses.results;
 import static org.jboss.hal.ui.brick.AttributeBricks.accessTypeTd;
@@ -85,7 +89,6 @@ import static org.patternfly.layout.stack.StackItem.stackItem;
 import static org.patternfly.overlay.Overlay.overlay;
 import static org.patternfly.overlay.TriggerMode.click;
 import static org.patternfly.style.Classes.cell;
-import static org.patternfly.style.Classes.compact;
 import static org.patternfly.style.Classes.component;
 import static org.patternfly.style.Classes.modifier;
 import static org.patternfly.style.Placement.bottom;
@@ -93,9 +96,9 @@ import static org.patternfly.style.Variable.componentVar;
 import static org.patternfly.style.Variables.Width;
 import static org.patternfly.style.Width.width10;
 import static org.patternfly.style.Width.width20;
+import static org.patternfly.style.Width.width30;
 import static org.patternfly.style.Width.width50;
 import static org.patternfly.style.Width.width60;
-import static org.patternfly.style.Width.width70;
 import static org.patternfly.style.Width.width80;
 
 /**
@@ -158,53 +161,49 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         populateRows(effectiveType, results);
     }
 
-    void markVerified(CatalogResult result, VerificationStatus status, String originalAddress,
-            AddressTemplate verifiedTemplate) {
+    void markVerified(CatalogResult result, VerificationStatus status, AddressTemplate verifiedTemplate,
+            String originalAddress) {
         if (tbody != null) {
-            Tr tr = tbody.item(rowId(result));
-            if (tr != null) {
-                if (result.type() == CAPABILITY) {
-                    Button link = declaringLinks.get(declaringLinkKey(result, originalAddress));
-                    if (link != null) {
-                        switch (status) {
-                            case DOES_NOT_EXIST, INVALID, ERROR, UNKNOWN -> link.element().replaceWith(
-                                    link.element().ownerDocument.createTextNode(link.text()));
-                            case EXISTS_ONCE -> {
-                                if (verifiedTemplate != null) {
-                                    link.text(verifiedTemplate.template);
-                                }
-                            }
-                            case EXISTS_MULTIPLE -> { /*nothing to do*/ }
-                        }
-                    }
-                } else {
-                    if (!tr.element().dataset.has(Dataset.verified)) {
-                        Button link = links.get(result.id());
-                        ElementTextMethods<?, ?> addressText = addressTexts.get(result.id());
-                        switch (status) {
-                            case DOES_NOT_EXIST, INVALID, ERROR, UNKNOWN -> {
-                                // TODO Should we add a status icon for INVALID, ERROR, or UNKNOWN?
-                                if (link != null) {
-                                    link.element().replaceWith(link.element().ownerDocument.createTextNode(link.text()));
-                                }
-                            }
-                            case EXISTS_ONCE -> {
-                                if (addressText != null && verifiedTemplate != null) {
-                                    addressText.text(verifiedTemplate.template);
-                                }
-                            }
-                            case EXISTS_MULTIPLE -> { /*nothing to do*/ }
-                        }
+            if (result.type() == CAPABILITY) {
+                Button link = declaringLinks.get(declaringLinkId(result, originalAddress));
+                if (link != null) {
+                    HTMLElement tr = link.closest(By.element("tr"));
+                    adjustLinkAndText(status, verifiedTemplate, link, link);
+                    if (tr != null) {
+                        tr.dataset.set(Dataset.verified, "");
                     }
                 }
-                tr.data(Dataset.verified);
+            } else {
+                Button link = links.get(result.id());
+                ElementTextMethods<?, ?> addressText = addressTexts.get(result.id());
+                if (link != null) {
+                    HTMLElement tr = link.closest(By.element("tr"));
+                    adjustLinkAndText(status, verifiedTemplate, link, addressText);
+                    if (tr != null) {
+                        tr.dataset.set(Dataset.verified, "");
+                    }
+                }
             }
+        }
+    }
+
+    private void adjustLinkAndText(VerificationStatus status, AddressTemplate template,
+            Button link, ElementTextMethods<?, ?> text) {
+        switch (status) {
+            case DOES_NOT_EXIST, INVALID, ERROR, UNKNOWN -> link.element().replaceWith(
+                    link.element().ownerDocument.createTextNode(link.text()));
+            case EXISTS_ONCE -> {
+                if (text != null && template != null) {
+                    text.text(template.template);
+                }
+            }
+            case EXISTS_MULTIPLE -> { /*nothing to do*/ }
         }
     }
 
     void showPickList(CatalogResult result, List<AddressTemplate> templates, String originalAddress) {
         Button link = result.type() == CAPABILITY
-                ? declaringLinks.get(declaringLinkKey(result, originalAddress))
+                ? declaringLinks.get(declaringLinkId(result, originalAddress))
                 : links.get(result.id());
         String address = originalAddress != null ? originalAddress : result.resourceAddress;
         if (link != null) {
@@ -277,14 +276,22 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
             return;
         }
         for (CatalogResult result : results) {
-            Tr row = switch (effectiveType) {
-                case ALL -> mixedRow(result);
-                case RESOURCE -> resourceRow(result);
-                case ATTRIBUTE -> attributeRow(result);
-                case OPERATION -> operationRow(result);
-                case CAPABILITY -> capabilityRow(result);
-            };
-            tbody.addRow(row.store(Keys.CATALOG_RESULT, result));
+            if (effectiveType == CAPABILITY) {
+                for (Tr row : capabilityRows(result)) {
+                    tbody.addRow(row.store(Keys.CATALOG_RESULT, result));
+                }
+            } else {
+                Tr row = switch (effectiveType) {
+                    case ALL -> mixedRow(result);
+                    case RESOURCE -> resourceRow(result);
+                    case ATTRIBUTE -> attributeRow(result);
+                    case OPERATION -> operationRow(result);
+                    case CAPABILITY -> null;
+                };
+                if (row != null) {
+                    tbody.addRow(row.store(Keys.CATALOG_RESULT, result));
+                }
+            }
         }
     }
 
@@ -314,16 +321,22 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                         }))
                 .addItem(td("Address")
                         .run(td -> {
-                            if (result.type() == CAPABILITY
-                                    && result.properties.declaringResources != null) {
-                                td.add(list().plain().css(modifier(compact))
-                                        .addItems(asList(result.properties.declaringResources), resource ->
-                                                listItem().add(declaringResourceLink(result, resource))));
+                            if (result.type() == CAPABILITY && result.properties.declaringResources != null) {
+                                td.add(list().plain()
+                                        .addItems(asList(result.properties.declaringResources), dr ->
+                                                listItem().add(declaringResourceLink(result, dr.address))));
                             } else {
                                 td.add(addressText(result));
                             }
                         }))
-                .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
+                .addItem(td("Stability")
+                        .run(td -> {
+                            if (result.type() == CAPABILITY) {
+                                td.text(" ");
+                            } else {
+                                td.add(stabilityLabel(result.stability(builtInStability)).outline());
+                            }
+                        }));
     }
 
     // ------------------------------------------------------ resource
@@ -439,38 +452,57 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private Tr capabilityHeader() {
         return tr(Identifiers.CATALOG_THEAD)
-                .addItem(th("name").width(width20).text("Name"))
-                .addItem(th("res").width(width70).text("Resource"))
+                .addItem(th("name").width(width30).text("Name"))
+                .addItem(th("res").width(width60).text("Declaring resources"))
                 .addItem(th("stability").width(width10).text("Stability"));
     }
 
-    private Tr capabilityRow(CatalogResult result) {
+    private List<Tr> capabilityRows(CatalogResult result) {
         CatalogProperties p = result.properties;
-        return tr(rowId(result))
-                .addItem(td("Name")
-                        .text(safe(result.name))
-                        .run(td -> {
-                            if (result.deprecated) {
-                                td.css(halModifier(deprecated));
-                            }
-                        }))
-                .addItem(td("Resource")
-                        .run(td -> {
-                            if (p.declaringResources != null) {
-                                td.add(list().plain().css(modifier(compact))
-                                        .addItems(asList(p.declaringResources), resource ->
-                                                listItem().add(declaringResourceLink(result, resource))));
-                            } else {
-                                td.text(" ");
-                            }
-                        }))
-                .addItem(td("Stability").add(stabilityLabel(result.stability(builtInStability)).outline()));
+        List<Tr> rows = new ArrayList<>();
+        if (p.declaringResources != null) {
+            int index = 0;
+            for (DeclaringResource declaringResource : p.declaringResources) {
+                rows.add(capabilityRow(index, result, declaringResource));
+                index++;
+            }
+        } else {
+            rows.add(capabilityRow(0, result, null));
+        }
+        return rows;
+    }
+
+    private Tr capabilityRow(int index, CatalogResult result, DeclaringResource declaringResource) {
+        Tr tr = tr(rowId(result, declaringResource));
+        if (index == 0) {
+            tr.addItem(td("Name").text(safe(result.name))
+                    .run(td -> {
+                        td.element().rowSpan = result.properties.declaringResources.length;
+                        if (result.deprecated) {
+                            td.css(halModifier(deprecated));
+                        }
+                    }));
+        }
+        tr.addItem(td("Declaring resources")
+                .run(td -> {
+                    if (index > 0) {
+                        td.css(modifier(noInset));
+                    }
+                })
+                .add(declaringResourceLink(result, declaringResource.address)));
+        tr.addItem(td("Stability").add(stabilityLabel(declaringResource.stability(builtInStability)).outline()));
+
+        return tr;
     }
 
     // ------------------------------------------------------ helpers
 
     private String rowId(CatalogResult result) {
         return Id.build("row", result.id());
+    }
+
+    private String rowId(CatalogResult result, DeclaringResource dr) {
+        return Id.build("row", result.id(), Identifiers.fromTemplate(dr.address));
     }
 
     private Button link(CatalogResult result, boolean addressText) {
@@ -495,11 +527,11 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Button declaringResourceLink(CatalogResult capability, String resource) {
         Button button = button(safe(resource)).inline().link()
                 .onClick((e, b) -> controller.verifyAndGo(capability, resource));
-        declaringLinks.put(declaringLinkKey(capability, resource), button);
+        declaringLinks.put(declaringLinkId(capability, resource), button);
         return button;
     }
 
-    private String declaringLinkKey(CatalogResult capability, String resource) {
+    private String declaringLinkId(CatalogResult capability, String resource) {
         return capability.id() + ":" + resource;
     }
 

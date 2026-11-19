@@ -9,53 +9,27 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Add Model Catalog page with dynamic table, faceted sidebar, welcome page, and pagination ([#469](https://github.com/hal/foundation/issues/469), [#442](https://github.com/hal/foundation/issues/442), [#443](https://github.com/hal/foundation/issues/443), [#444](https://github.com/hal/foundation/issues/444))
-- Add faceted search with typed facet counts, mutual exclusion for binary checkboxes, and automatic hiding of single-value categories ([#445](https://github.com/hal/foundation/issues/445))
-- Add CatalogState filter state machine with implicit type logic from facet selection
-- Add `FacetValue` sealed interface, `TypeSelection`, and `CatalogQuery` records for typed catalog state
-- Add `isEmpty()` helper to `CatalogResponse`
-- Add VerticalTabs component for catalog sidebar type filtering with disabled state support
-- Add catalog toolbar text search filtering
-- Add capability name typeahead for declaresCap/refsCap facets ([#468](https://github.com/hal/foundation/issues/468))
-- Add OUIA IDs for shared UI components and skeleton toolbar
-- Add `Identifiers` utility with all static `HasIdentifier` constants ([#433](https://github.com/hal/foundation/issues/433))
-- Add MGT search result deduplication and highlighting
-- Add "Verify on server" feature for catalog results — batch-checks resource existence against the connected WildFly server ([#448](https://github.com/hal/foundation/issues/448))
-- Add `VerificationStatus` enum for tracking resource verification state (exists once, exists multiple, does not exist, invalid)
-- Add overlay pick list for multi-template resource links in catalog table
+- Add Model Catalog page — faceted search over the WildFly management model with dynamic table, type filtering, text search, capability typeahead, and pagination ([#469](https://github.com/hal/foundation/issues/469), [#442](https://github.com/hal/foundation/issues/442), [#443](https://github.com/hal/foundation/issues/443), [#444](https://github.com/hal/foundation/issues/444), [#445](https://github.com/hal/foundation/issues/445), [#468](https://github.com/hal/foundation/issues/468))
+- Add "Verify on server" feature for catalog results — batch-checks resource existence, resolves wildcards, and provides pick list for multiple matches ([#448](https://github.com/hal/foundation/issues/448))
 - Add clickable resource address links in catalog table for direct navigation to model browser
-- Add capability names display in catalog table when capability filter is active
+- Add OUIA IDs for shared UI components and skeleton toolbar ([#433](https://github.com/hal/foundation/issues/433))
 
 ### Changed
 
-- Update MGT DTOs and filters for REST API 0.4.0
-- Replace `CatalogFilter` with `CatalogQuery` and consolidate catalog state with typed `FacetValue`
-- Simplify catalog sidebar by removing redundant null checks and using `ALL` enum
-- Reorder catalog result fields to group resource properties before attributes
 - Extract `mgt` module from op/console — dedicated REST client, DTOs, availability events, and endpoint management
-- Migrate op/console and site module to Vite+ 1.5.0
+- Update MGT DTOs and filters for REST API 0.4.0
 - Rename model browser route from `/management-model` to `/model-browser` and rename packages accordingly
-- Refactor ModelGraphConnection — extract `ModelGraphSearch`, `ModelGraphEndpoint`, and `ModelGraphCapability` as separate concerns
-- Rename `ModelGraphToolsIndicator` to `ModelGraphIndicator`
+- Migrate op/console and site module to Vite+
 - Improve universal search box pick list and error handling
-- Use `Set` instead of `List` in `ModelTree` wildcard resolution to deduplicate resolved templates
-- Add `declaringResources` property to `CatalogProperties` for capability result types
-- Add welcome page section explaining the "Verify on server" feature
-- Reset pagination to page 1 on type selection change
 
 ### Fixed
 
 - Fix J2CL compatibility by using instanceof instead of switch patterns for source level 17
-- Fix immutability enforcement in `FacetValue.Multi` and `CatalogQuery`
-- Fix catalog sidebar type tab not syncing with implicit type from facet selection
 - Fix case-insensitive model graph type handling and capitalize labels
 - Fix hyphenated JSON keys using JsOverlay
 - Fix explicit elemental2 dependency management for J2CL ADVANCED mode
 - Fix CI container build by replacing qemu-user-static with qemu-user-binfmt
-- Fix vertical tab spacing in catalog sidebar to match checkbox alignment
-- Fix form submission on Enter in facet group inputs
 - Fix ranked templates in capability reference label list
-- Rename CSS file `capability.css` to `pick-list.css` for broader reuse
 
 ### Upgrades
 
@@ -64,10 +38,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Bump PatternFly Java to 0.15.1
 - Bump Elemento, Elemental2, and J2CL processors
 - Bump jboss-parent
-- Bump Vite+ to 1.5.1
+- Bump Vite+ to 1.7.0 and vite-plus-core to 8.3.8000
 - Bump Node.js
 - Bump GitHub Actions (setup-java v6.2.0)
-- Bump Vite+ to 1.7.0 and vite-plus-core to 8.3.8000
 - Bump npm dependencies and packageManager versions
 
 ## [0.6.0] - 2026-10-20

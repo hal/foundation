@@ -48,6 +48,7 @@ public interface HalClasses {
     String modelBrowser = "model-browser";
     String modelCatalog = "model-catalog";
     String name = "name";
+    String noInset = "no-inset";
     String pickList = "pick-list";
     String rbacHidden = "rbac-hidden";
     String recordTable = "record-table";

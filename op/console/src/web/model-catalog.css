@@ -56,3 +56,7 @@
 .pf-v6-c-table__td.hal-m-deprecated .pf-v6-c-button__text {
     text-decoration: line-through !important;
 }
+
+.pf-v6-c-table__td.pf-m-no-inset {
+    padding-inline-start: var(--pf-v6-c-table--cell--PaddingInlineStart) !important;
+}

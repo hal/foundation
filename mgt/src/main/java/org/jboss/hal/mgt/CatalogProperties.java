@@ -99,8 +99,8 @@ public class CatalogProperties {
 
     // ------------------------------------------------------ capability properties
 
-    /** Address of resources defining this capability (never empty for capabilities, {@code null} for non-resource types). */
-    public String[] declaringResources;
+    /** Resources defining this capability (never empty for capabilities, {@code null} for non-resource types). */
+    public DeclaringResource[] declaringResources;
 
     // ------------------------------------------------------ overlay accessors
 

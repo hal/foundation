@@ -236,8 +236,8 @@ public class CatalogPage implements CatalogController, Page {
                 .map(result -> (Task<FlowContext>) context -> {
                     if (result.type() == ModelGraphType.CAPABILITY) {
                         return new ParallelTasks<>(Arrays.stream(result.properties.declaringResources)
-                                .map(address -> (Task<FlowContext>) innerContext ->
-                                        verifyResource(context, result, address))
+                                .map(dr -> (Task<FlowContext>) innerContext ->
+                                        verifyResource(context, result, dr.address))
                                 .collect(toList())).apply(context);
                     } else {
                         return verifyResource(context, result, result.resourceAddress);
@@ -298,11 +298,11 @@ public class CatalogPage implements CatalogController, Page {
                                 .then(innerContext -> {
                                     int status = innerContext.pop(404);
                                     if (status == 200) {
-                                        table.markVerified(result, EXISTS_ONCE, address, template);
+                                        table.markVerified(result, EXISTS_ONCE, template, address);
                                         logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                                 EXISTS_ONCE.name());
                                     } else {
-                                        table.markVerified(result, DOES_NOT_EXIST, address, null);
+                                        table.markVerified(result, DOES_NOT_EXIST, null, address);
                                         logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                                 DOES_NOT_EXIST.name());
                                     }
@@ -311,15 +311,15 @@ public class CatalogPage implements CatalogController, Page {
                     } else {
                         return modelTree.resolveWildcards(template).then(resolved -> {
                             if (resolved.isEmpty()) {
-                                table.markVerified(result, DOES_NOT_EXIST, address, null);
+                                table.markVerified(result, DOES_NOT_EXIST, null, address);
                                 logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                         DOES_NOT_EXIST.name());
                             } else if (resolved.size() == 1) {
-                                table.markVerified(result, EXISTS_ONCE, address, resolved.get(0));
+                                table.markVerified(result, EXISTS_ONCE, resolved.get(0), address);
                                 logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                         EXISTS_ONCE.name());
                             } else {
-                                table.markVerified(result, EXISTS_MULTIPLE, address, null);
+                                table.markVerified(result, EXISTS_MULTIPLE, null, address);
                                 logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                         EXISTS_MULTIPLE.name());
                             }
@@ -328,7 +328,7 @@ public class CatalogPage implements CatalogController, Page {
                     }
                 })
                 .orElseGet(() -> {
-                    table.markVerified(result, INVALID, address, null);
+                    table.markVerified(result, INVALID, null, address);
                     logger.debug("### Verified %s: %s: %s", result.type().name(), address, INVALID.name());
                     return context.resolve();
                 });

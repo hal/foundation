@@ -41,22 +41,20 @@ public class CatalogResult {
     /** The name of the resource, attribute, operation, or capability. */
     public String name;
 
-    /** A human-readable description (might be {@code null}). */
+    /** A human-readable description. Present for resources, attributes, and operations; {@code null} for capabilities. */
     public String description;
 
-    /** The full management model address (might be {@code null} for some capabilities). */
-    public String address;
-
-    /** The parent resource address without the attribute/operation name (might be {@code null}). */
+    /** The management model address. For resources this is the full address; for attributes and operations it is the parent
+     *  resource address. {@code null} for capabilities. */
     public String resourceAddress;
 
-    /** The stability level (might be {@code null}). */
+    /** The stability level. Always {@code null} for capabilities; might be {@code null} for other types. */
     public String stability;
 
     /** Whether this element is deprecated. */
     public boolean deprecated;
 
-    /** Type-specific properties (might be {@code null} for capabilities). */
+    /** Type-specific properties. Always present for all types. */
     public CatalogProperties properties;
 
     @JsOverlay
