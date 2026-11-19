@@ -26,6 +26,7 @@ import org.jboss.elemento.HTMLContainerBuilder;
 import org.jboss.elemento.flow.FlowContext;
 import org.jboss.elemento.flow.ParallelTasks;
 import org.jboss.elemento.flow.Task;
+import org.jboss.elemento.logger.Logger;
 import org.jboss.elemento.router.LoadedData;
 import org.jboss.elemento.router.Page;
 import org.jboss.elemento.router.Parameter;
@@ -52,7 +53,6 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 
-import static elemental2.dom.DomGlobal.console;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.jboss.elemento.Elements.div;
@@ -81,6 +81,7 @@ import static org.patternfly.component.page.PageSection.pageSection;
 @Route("/model-catalog")
 public class CatalogPage implements CatalogController, Page {
 
+    private static final Logger logger = Logger.getLogger(CatalogPage.class.getName());
     private final Dispatcher dispatcher;
     private final ModelGraphCatalog catalog;
     private final ModelTree modelTree;
@@ -204,7 +205,6 @@ public class CatalogPage implements CatalogController, Page {
                     } else {
                         modelTree.resolveWildcards(template).then(resolved -> {
                             if (resolved.isEmpty()) {
-                                // TODO Let the user know that no matching resources were found
                                 notifications.send(info("No matching resources found",
                                         "The address " + resource + " does not resolve do any resources."));
                             } else if (resolved.size() == 1) {
@@ -292,17 +292,16 @@ public class CatalogPage implements CatalogController, Page {
         return AddressTemplate.ofUntrusted(address)
                 .map(template -> {
                     if (template.fullyQualified()) {
-                        return new ResourceCheck(dispatcher, template.resolve(statementContext))
-                                .apply(new FlowContext())
+                        return new ResourceCheck(dispatcher, template.resolve(statementContext)).apply(new FlowContext())
                                 .then(innerContext -> {
                                     int status = innerContext.pop(404);
                                     if (status == 200) {
                                         table.markVerified(result, EXISTS_ONCE, template);
-                                        console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                        logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                                 EXISTS_ONCE.name());
                                     } else {
                                         table.markVerified(result, DOES_NOT_EXIST, null);
-                                        console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                        logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                                 DOES_NOT_EXIST.name());
                                     }
                                     return innerContext.resolve();
@@ -311,15 +310,15 @@ public class CatalogPage implements CatalogController, Page {
                         return modelTree.resolveWildcards(template).then(resolved -> {
                             if (resolved.isEmpty()) {
                                 table.markVerified(result, DOES_NOT_EXIST, null);
-                                console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                         DOES_NOT_EXIST.name());
                             } else if (resolved.size() == 1) {
                                 table.markVerified(result, EXISTS_ONCE, resolved.get(0));
-                                console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                         EXISTS_ONCE.name());
                             } else {
                                 table.markVerified(result, EXISTS_MULTIPLE, null);
-                                console.log("### Verified %s: %s: %s", result.type().name(), address,
+                                logger.debug("### Verified %s: %s: %s", result.type().name(), address,
                                         EXISTS_MULTIPLE.name());
                             }
                             return context.resolve();
@@ -328,7 +327,7 @@ public class CatalogPage implements CatalogController, Page {
                 })
                 .orElseGet(() -> {
                     table.markVerified(result, INVALID, null);
-                    console.log("### Verified %s: %s: %s", result.type().name(), address, INVALID.name());
+                    logger.debug("### Verified %s: %s: %s", result.type().name(), address, INVALID.name());
                     return context.resolve();
                 });
     }
