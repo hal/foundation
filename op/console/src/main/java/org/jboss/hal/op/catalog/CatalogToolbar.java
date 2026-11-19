@@ -23,9 +23,12 @@ import org.patternfly.component.pagination.PageInfo;
 import org.patternfly.component.pagination.Pagination;
 import org.patternfly.component.textinputgroup.SearchInputGroup;
 import org.patternfly.component.toolbar.Toolbar;
+import org.patternfly.core.Timeouts;
 
 import elemental2.dom.HTMLElement;
 
+import static elemental2.dom.DomGlobal.clearTimeout;
+import static elemental2.dom.DomGlobal.setTimeout;
 import static org.jboss.elemento.Elements.setVisible;
 import static org.jboss.elemento.Key.Enter;
 import static org.jboss.hal.resources.OuiaIds.SEARCH_FILTER;
@@ -51,6 +54,7 @@ class CatalogToolbar implements IsElement<HTMLElement> {
     private final SearchInputGroup searchInput;
     private final Pagination pagination;
     private final Button verify;
+    private double handle;
 
     CatalogToolbar(CatalogController controller) {
         searchInput = searchInputGroup(Id.unique())
@@ -76,7 +80,9 @@ class CatalogToolbar implements IsElement<HTMLElement> {
                         .addGroup(toolbarGroup(actionGroup)
                                 .addItem(toolbarItem().add(button().secondary().text("Clear all filters")
                                         .onClick((e, c) -> controller.reset())))
-                                .addItem(toolbarItem().add(verify = button().secondary().text("Verify on server")
+                                .addItem(toolbarItem().add(verify = button().secondary()
+                                        .text("Verify on server")
+                                        .progress(false, "Verifying resources")
                                         .onClick((e, c) -> controller.verifyOnServer()))))
                         .addGroup(toolbarGroup().css(modifier("align-end"))
                                 .addItem(toolbarItem().add(pagination))));
@@ -87,8 +93,22 @@ class CatalogToolbar implements IsElement<HTMLElement> {
         return toolbar.element();
     }
 
+    void startVerify() {
+        handle = setTimeout(__ -> {
+            verify.disabled();
+            verify.startProgress();
+        }, Timeouts.LOADING_TIMEOUT);
+    }
+
+    void verifyDone() {
+        clearTimeout(handle);
+        verify.stopProgress();
+        verify.disabled(false);
+    }
+
     void reset() {
         searchInput.value("", false);
+        verify.stopProgress();
         verify.disabled();
         setVisible(pagination, false);
     }

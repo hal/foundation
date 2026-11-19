@@ -158,12 +158,25 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         populateRows(effectiveType, results);
     }
 
-    void markVerified(CatalogResult result, VerificationStatus status, AddressTemplate template) {
+    void markVerified(CatalogResult result, VerificationStatus status, String originalAddress,
+            AddressTemplate verifiedTemplate) {
         if (tbody != null) {
             Tr tr = tbody.item(rowId(result));
             if (tr != null) {
                 if (result.type() == CAPABILITY) {
-                    // TODO mark declaring resources
+                    Button link = declaringLinks.get(declaringLinkKey(result, originalAddress));
+                    if (link != null) {
+                        switch (status) {
+                            case DOES_NOT_EXIST, INVALID, ERROR, UNKNOWN -> link.element().replaceWith(
+                                    link.element().ownerDocument.createTextNode(link.text()));
+                            case EXISTS_ONCE -> {
+                                if (verifiedTemplate != null) {
+                                    link.text(verifiedTemplate.template);
+                                }
+                            }
+                            case EXISTS_MULTIPLE -> { /*nothing to do*/ }
+                        }
+                    }
                 } else {
                     if (!tr.element().dataset.has(Dataset.verified)) {
                         Button link = links.get(result.id());
@@ -176,8 +189,8 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
                                 }
                             }
                             case EXISTS_ONCE -> {
-                                if (addressText != null && template != null) {
-                                    addressText.text(template.template);
+                                if (addressText != null && verifiedTemplate != null) {
+                                    addressText.text(verifiedTemplate.template);
                                 }
                             }
                             case EXISTS_MULTIPLE -> { /*nothing to do*/ }
@@ -189,15 +202,18 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         }
     }
 
-    void showPickList(CatalogResult result, List<AddressTemplate> templates) {
-        Button link = links.get(result.id());
+    void showPickList(CatalogResult result, List<AddressTemplate> templates, String originalAddress) {
+        Button link = result.type() == CAPABILITY
+                ? declaringLinks.get(declaringLinkKey(result, originalAddress))
+                : links.get(result.id());
+        String address = originalAddress != null ? originalAddress : result.resourceAddress;
         if (link != null) {
             overlayElement = div().css(component(Classes.overlay))
                     .add(stack().css(halComponent(pickList))
                             .gutter()
                             .addItem(stackItem()
                                     .add("The address ")
-                                    .add(strong(result.resourceAddress))
+                                    .add(strong(address))
                                     .add(" resolves to multiple resources. Please pick a resource from the list."))
                             .addItem(stackItem().fill()
                                     .add(list().css(halComponent(pickList, items)).plain()
@@ -479,8 +495,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     private Button declaringResourceLink(CatalogResult capability, String resource) {
         Button button = button(safe(resource)).inline().link()
                 .onClick((e, b) -> controller.verifyAndGo(capability, resource));
-        declaringLinks.put(capability.id(), button);
+        declaringLinks.put(declaringLinkKey(capability, resource), button);
         return button;
+    }
+
+    private String declaringLinkKey(CatalogResult capability, String resource) {
+        return capability.id() + ":" + resource;
     }
 
     private HTMLContainerBuilder<HTMLElement> capabilities(String[] capabilities) {

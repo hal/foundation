@@ -78,10 +78,11 @@ class CatalogWelcome implements IsElement<HTMLElement> {
                         + "in the toolbar to cross-reference catalog entries with the connected WildFly instance. "
                         + "This turns catalog links into live navigation:"))
                 .add(ul()
-                        .add(li().text("Resources that do not exist on the server are shown as plain text "
-                                + "instead of clickable links."))
+                        .add(li().text("Resources that do not exist on the server lose their clickable link "
+                                + "and are shown as plain text."))
                         .add(li().text("Wildcard addresses are resolved against the server. When exactly one "
-                                + "matching resource exists, the link points directly to it."))
+                                + "matching resource exists, the wildcard in the link text is replaced with "
+                                + "the actual resource name and the link points directly to it."))
                         .add(li().text("When multiple matches exist, the link opens a list that lets you "
                                 + "choose which resource to navigate to.")))
                 .add(p().add(icon(warning()).status(warning).inline())
