@@ -285,33 +285,43 @@ public class ModelTree {
                     if (logger.isEnabled(Level.DEBUG)) {
                         logger.debug("Execute operation %s", operation.asCli());
                     }
-                    return dispatcher.execute(operation).then(result -> {
-                        for (ModelNode modelNode : result.asList()) {
-                            AddressTemplate nextWildcard = nextWildcard(resolved, current);
-                            if (nextWildcard == null) {
-                                AddressTemplate resolvedChild = new WildcardResolver(LTR, modelNode.asString())
-                                        .resolve(current);
-                                logger.debug("Add %s", resolvedChild);
-                                Set<AddressTemplate> templates = context.get(key);
-                                templates.add(resolvedChild);
-                            } else {
-                                AddressTemplate nextTemplate = new WildcardResolver(LTR, modelNode.asString())
-                                        .resolve(nextWildcard);
-                                logger.debug("Push %s", nextTemplate);
-                                context.push(nextTemplate);
-                            }
-                        }
-                        return context.resolve();
-                    });
+                    return dispatcher.execute(operation)
+                            .then(result -> {
+                                for (ModelNode modelNode : result.asList()) {
+                                    AddressTemplate nextWildcard = nextWildcard(resolved, current);
+                                    if (nextWildcard == null) {
+                                        AddressTemplate resolvedChild = new WildcardResolver(LTR, modelNode.asString())
+                                                .resolve(current);
+                                        logger.debug("Add %s", resolvedChild);
+                                        Set<AddressTemplate> templates = context.get(key);
+                                        templates.add(resolvedChild);
+                                    } else {
+                                        AddressTemplate nextTemplate = new WildcardResolver(LTR, modelNode.asString())
+                                                .resolve(nextWildcard);
+                                        logger.debug("Push %s", nextTemplate);
+                                        context.push(nextTemplate);
+                                    }
+                                }
+                                return context.resolve();
+                            })
+                            .catch_(error -> {
+                                logger.debug("Failed to execute %s: %s", operation.asCli(), String.valueOf(error));
+                                return Promise.resolve(context);
+                            });
                 })
                 .failFast(false)
                 .while_(context -> !context.isStackEmpty())
                 .then(context -> {
                     Set<AddressTemplate> templates = context.get(key);
-                    if ("*".equals(resolved.last().value)) {
-                        return Promise.resolve(templates);
+                    if (logger.isEnabled(Level.DEBUG)) {
+                        logger.debug("Resolved templates for %s: %s", resolved, templates);
                     }
-                    return verifyExistence(templates);
+                    if (templates.isEmpty() || "*".equals(resolved.last().value)) {
+                        return Promise.resolve(templates);
+                    } else {
+                        logger.debug("Verifying existence of templates: %s", templates);
+                        return verifyExistence(templates);
+                    }
                 })
                 .then(templates -> Promise.resolve(new ArrayList<>(templates)));
     }
@@ -339,6 +349,7 @@ public class ModelTree {
                     existing.add((AddressTemplate) result);
                 }
             }
+            logger.debug("Existing templates: %s", existing);
             return Promise.resolve(existing);
         });
     }
