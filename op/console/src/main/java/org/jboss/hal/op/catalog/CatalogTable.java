@@ -473,7 +473,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
     }
 
     private Tr capabilityRow(int index, CatalogResult result, DeclaringResource declaringResource) {
-        Tr tr = tr(rowId(result, declaringResource));
+        Tr tr = tr(capabilityRowId(result, declaringResource));
         if (index == 0) {
             tr.addItem(td("Name").text(safe(result.name))
                     .run(td -> {
@@ -501,7 +501,7 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         return Id.build("row", result.id());
     }
 
-    private String rowId(CatalogResult result, DeclaringResource dr) {
+    private String capabilityRowId(CatalogResult result, DeclaringResource dr) {
         return Id.build("row", result.id(), Identifiers.fromTemplate(dr.address));
     }
 
@@ -518,12 +518,6 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
         return button;
     }
 
-    private ElementTextMethods<?, ?> addressText(CatalogResult result) {
-        HTMLContainerBuilder<HTMLElement> span = span().text(safe(result.resourceAddress));
-        addressTexts.put(result.id(), span);
-        return span;
-    }
-
     private Button declaringResourceLink(CatalogResult capability, String resource) {
         Button button = button(safe(resource)).inline().link()
                 .onClick((e, b) -> controller.verifyAndGo(capability, resource));
@@ -533,6 +527,12 @@ class CatalogTable implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, C
 
     private String declaringLinkId(CatalogResult capability, String resource) {
         return capability.id() + ":" + resource;
+    }
+
+    private ElementTextMethods<?, ?> addressText(CatalogResult result) {
+        HTMLContainerBuilder<HTMLElement> span = span().text(safe(result.resourceAddress));
+        addressTexts.put(result.id(), span);
+        return span;
     }
 
     private HTMLContainerBuilder<HTMLElement> capabilities(String[] capabilities) {
