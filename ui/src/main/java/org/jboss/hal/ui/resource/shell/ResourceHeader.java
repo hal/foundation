@@ -110,7 +110,7 @@ public class ResourceHeader implements
     // ------------------------------------------------------ builder
 
     public ResourceHeader defaultHeader() {
-        return addHeader(template.isEmpty() ? "Management Model" : template.last().value);
+        return addHeader(template.isRoot() ? "Management Model" : template.last().value);
     }
 
     public ResourceHeader defaultDescription() {

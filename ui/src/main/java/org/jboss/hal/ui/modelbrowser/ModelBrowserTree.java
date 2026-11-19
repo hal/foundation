@@ -108,7 +108,7 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
                 .icon(magnifyingGlass())
                 .ouiaId(OuiaIds.MODEL_BROWSER_FIND_BTN)
                 .onClick((e, b) -> {
-                    boolean scoped = !modelBrowser.root.isEmpty();
+                    boolean scoped = !modelBrowser.root.isRoot();
                     String rootAddress = scoped ? modelBrowser.root.toString() : selectedAddress();
                     new FindResource(b.element(), rootAddress, scoped).open();
                 });
@@ -206,7 +206,9 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
     }
 
     void select(AddressTemplate template) {
-        if (!template.isEmpty()) {
+        if (template.equals(modelBrowser.root)) {
+            modelBrowser.home();
+        } else {
             TreeViewItem item = treeView.findItem(template.identifier());
             if (item != null) {
                 treeView.select(item);
@@ -228,8 +230,6 @@ class ModelBrowserTree implements IsElement<HTMLElement>, OuiaSupport<HTMLElemen
                     }
                 });
             }
-        } else {
-            logger.error("Unable to select %s: Template is empty or not fully qualified.", template);
         }
     }
 

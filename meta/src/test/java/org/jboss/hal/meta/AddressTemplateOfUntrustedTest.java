@@ -30,28 +30,28 @@ class AddressTemplateOfUntrustedTest {
     void nullInput() {
         Optional<AddressTemplate> result = AddressTemplate.ofUntrusted(null);
         assertTrue(result.isPresent());
-        assertTrue(result.get().isEmpty());
+        assertTrue(result.get().isRoot());
     }
 
     @Test
     void emptyString() {
         Optional<AddressTemplate> result = AddressTemplate.ofUntrusted("");
         assertTrue(result.isPresent());
-        assertTrue(result.get().isEmpty());
+        assertTrue(result.get().isRoot());
     }
 
     @Test
     void blankString() {
         Optional<AddressTemplate> result = AddressTemplate.ofUntrusted("   ");
         assertTrue(result.isPresent());
-        assertTrue(result.get().isEmpty());
+        assertTrue(result.get().isRoot());
     }
 
     @Test
     void slashOnly() {
         Optional<AddressTemplate> result = AddressTemplate.ofUntrusted("/");
         assertTrue(result.isPresent());
-        assertTrue(result.get().isEmpty());
+        assertTrue(result.get().isRoot());
     }
 
     // ------------------------------------------------------ valid: simple templates

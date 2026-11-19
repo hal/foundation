@@ -30,26 +30,26 @@ class AddressTemplateTest {
 
     @Test
     void root() {
-        assertTrue(AddressTemplate.root().isEmpty());
+        assertTrue(AddressTemplate.root().isRoot());
         assertEquals("/", AddressTemplate.root().template);
     }
 
     @Test
     void empty() {
-        assertTrue(AddressTemplate.ofTrusted("").isEmpty());
-        assertTrue(AddressTemplate.ofTrusted("   ").isEmpty());
-        assertTrue(AddressTemplate.ofTrusted("/").isEmpty());
-        assertTrue(AddressTemplate.ofTrusted(" /").isEmpty());
-        assertTrue(AddressTemplate.ofTrusted("/ ").isEmpty());
-        assertTrue(AddressTemplate.ofTrusted(" / ").isEmpty());
-        assertTrue(AddressTemplate.of(emptyList()).isEmpty());
+        assertTrue(AddressTemplate.ofTrusted("").isRoot());
+        assertTrue(AddressTemplate.ofTrusted("   ").isRoot());
+        assertTrue(AddressTemplate.ofTrusted("/").isRoot());
+        assertTrue(AddressTemplate.ofTrusted(" /").isRoot());
+        assertTrue(AddressTemplate.ofTrusted("/ ").isRoot());
+        assertTrue(AddressTemplate.ofTrusted(" / ").isRoot());
+        assertTrue(AddressTemplate.of(emptyList()).isRoot());
     }
 
     @Test
     void nil() {
-        assertTrue(AddressTemplate.ofTrusted((String) null).isEmpty());
-        assertTrue(AddressTemplate.of((Placeholder) null).isEmpty());
-        assertTrue(AddressTemplate.of((List<Segment>) null).isEmpty());
+        assertTrue(AddressTemplate.ofTrusted((String) null).isRoot());
+        assertTrue(AddressTemplate.of((Placeholder) null).isRoot());
+        assertTrue(AddressTemplate.of((List<Segment>) null).isRoot());
     }
 
     @Test

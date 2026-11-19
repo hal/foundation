@@ -58,7 +58,7 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement>, OuiaSupport<H
 
     /** Creates a new breadcrumb for the given resource address. */
     public static ResourceBreadcrumb resourceBreadcrumb(AddressTemplate template, Metadata metadata) {
-        return new ResourceBreadcrumb(template, metadata);
+        return new ResourceBreadcrumb(template);
     }
 
     // ------------------------------------------------------ callback
@@ -80,11 +80,11 @@ public class ResourceBreadcrumb implements IsElement<HTMLElement>, OuiaSupport<H
     private final HTMLElement root;
     private final List<SegmentHandler> segmentHandler;
 
-    ResourceBreadcrumb(AddressTemplate template, Metadata metadata) {
+    ResourceBreadcrumb(AddressTemplate template) {
         this.segmentHandler = new ArrayList<>();
 
         org.patternfly.component.breadcrumb.Breadcrumb bc = breadcrumb();
-        if (template.isEmpty()) {
+        if (template.isRoot()) {
             bc.addItem(breadcrumbItem(Identifiers.BREADCRUMB_ROOT, "/")
                     .onClick((event, item) -> {
                         event.preventDefault();

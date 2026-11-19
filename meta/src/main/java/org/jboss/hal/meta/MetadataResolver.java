@@ -66,7 +66,7 @@ class MetadataResolver implements TemplateResolver {
 
     @Override
     public AddressTemplate resolve(AddressTemplate template) {
-        if (!template.isEmpty()) {
+        if (!template.isRoot()) {
             int index = 0;
             int length = template.size();
             List<Segment> segments = new ArrayList<>();

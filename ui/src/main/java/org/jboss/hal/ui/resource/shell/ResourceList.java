@@ -184,7 +184,7 @@ public class ResourceList implements IsElement<HTMLElement>, Attachable,
     ResourceList(AddressTemplate template, Metadata metadata) {
         this.template = template;
         this.metadata = metadata;
-        this.wildcardTemplate = !template.isEmpty() && "*".equals(template.last().value);
+        this.wildcardTemplate = !template.isRoot() && "*".equals(template.last().value);
         this.visible = ov(0);
         this.total = ov(0);
         this.extraMissingChildren = emptyList();

@@ -53,7 +53,6 @@ import static org.jboss.elemento.EventType.touchstart;
 import static org.jboss.hal.core.Notification.error;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.INCLUDE_SINGLETONS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.READ_CHILDREN_TYPES_OPERATION;
-import static org.jboss.hal.resources.Dataset.highlight;
 import static org.jboss.hal.resources.HalClasses.halComponent;
 import static org.jboss.hal.resources.HalClasses.modelBrowser;
 import static org.jboss.hal.resources.LocalStorage.MODEL_BROWSER_TREE_WIDTH;
@@ -224,7 +223,7 @@ public class ModelBrowser implements Attachable, IsElement<HTMLElement> {
                         .param(INCLUDE_SINGLETONS, true)
                         .build();
                 uic().dispatcher().execute(operation, result -> {
-                    String name = root.isEmpty() ? "Management Model" : root.last().value;
+                    String name = root.isRoot() ? "Management Model" : root.last().value;
                     rootMbn = new ModelBrowserNode(root, name, RESOURCE);
                     List<ModelBrowserNode> children = parseChildren(rootMbn, result, true);
                     if (children.isEmpty()) {

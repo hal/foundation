@@ -263,7 +263,7 @@ public class ModelTree {
      * @return A {@code Promise} resolving to a list of {@code AddressTemplate} objects with resolved wildcards.
      */
     public Promise<List<AddressTemplate>> resolveWildcards(AddressTemplate template) {
-        if (template.isEmpty() || template.fullyQualified()) {
+        if (template.isRoot() || template.fullyQualified()) {
             return Promise.resolve(emptyList());
         }
 

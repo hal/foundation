@@ -375,7 +375,7 @@ public final class AddressTemplate implements Iterable<Segment> {
 
     /** @return the parent address template or the root template */
     public AddressTemplate parent() {
-        if (isEmpty() || size() == 1) {
+        if (isRoot() || size() == 1) {
             return root();
         } else {
             return subTemplate(0, size() - 1);
@@ -384,7 +384,7 @@ public final class AddressTemplate implements Iterable<Segment> {
 
     /** Returns a copy of this template with the last segment's value replaced by {@code *}, or this template if already anonymous. */
     public AddressTemplate anonymiseLast() {
-        if (isEmpty()) {
+        if (isRoot()) {
             return root();
         } else if (!"*".equals(last().value)) {
             return parent().append(last().key, "*");
@@ -427,7 +427,7 @@ public final class AddressTemplate implements Iterable<Segment> {
     }
 
     /** @return true if this template contains no tokens, false otherwise */
-    public boolean isEmpty() {
+    public boolean isRoot() {
         return segments.isEmpty();
     }
 
@@ -492,7 +492,7 @@ public final class AddressTemplate implements Iterable<Segment> {
      * @return the resolved ResourceAddress
      */
     public ResourceAddress resolve(TemplateResolver resolver) {
-        if (isEmpty()) {
+        if (isRoot()) {
             return ResourceAddress.root();
         } else {
             ModelNode model = new ModelNode();
