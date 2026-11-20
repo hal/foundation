@@ -147,7 +147,7 @@ console.log("-".repeat(60));
 const screencastDir = join(__dirname, "screencasts");
 const expectedScreencasts = new Set(Object.keys(manifest.screencasts));
 const actualScreencasts = new Set(
-    existsSync(screencastDir) ? readdirSync(screencastDir).filter((f) => f.endsWith(".mp4")) : [],
+    existsSync(screencastDir) ? readdirSync(screencastDir).filter((f) => f.endsWith(".mp4") || f.endsWith(".webm")) : [],
 );
 
 for (const name of expectedScreencasts) {
