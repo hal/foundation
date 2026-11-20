@@ -29,6 +29,7 @@ export default defineConfig({
             { text: "Architecture", link: "/architecture/overview" },
             { text: "Model Graph Tools", link: "/model-graph-tools/" },
             { text: "Editions", link: "/editions/halop" },
+            { text: "Development", link: "/development/building" },
         ],
 
         sidebar: [
@@ -42,7 +43,9 @@ export default defineConfig({
                         link: "/features/stability",
                     },
                     { text: "Dashboard", link: "/features/dashboard" },
+                    { text: "Finder Navigation", link: "/features/finder" },
                     { text: "Model Browser", link: "/features/model-browser" },
+                    { text: "Model Catalog", link: "/features/model-catalog" },
                     {
                         text: "Resource Management",
                         link: "/features/resource-management",
@@ -63,6 +66,10 @@ export default defineConfig({
                     {
                         text: "Attribute Pipeline",
                         link: "/architecture/attribute-pipeline",
+                    },
+                    {
+                        text: "Attribute Pipeline Coverage",
+                        link: "/architecture/attribute-pipeline-coverage",
                     },
                 ],
             },

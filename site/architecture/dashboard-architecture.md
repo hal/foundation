@@ -1,3 +1,7 @@
+---
+description: Card-based dashboard architecture — independent CDI beans with async loading, fault isolation, and extensibility via standard card interface.
+---
+
 # Dashboard Architecture
 
 ## What It Does

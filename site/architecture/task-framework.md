@@ -1,3 +1,7 @@
+---
+description: CDI-based task framework for guided multi-step management operations that span multiple WildFly subsystems.
+---
+
 # Task Framework
 
 ## What It Does

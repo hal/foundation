@@ -1,8 +1,12 @@
+---
+description: Use-case-centric administrative workflows that span multiple subsystems, such as bulk-toggling statistics across all resources.
+---
+
 # Tasks
 
 Tasks provide a use-case-centric approach to completing complex management operations. Unlike the resource-centric views in the model browser, tasks focus on specific administrative workflows that often span multiple subsystems and resources.
 
-![Tasks](../media/screenshots/tasks.png)
+![Tasks overview page listing available administrative workflows with icons and summaries](../media/screenshots/tasks.png)
 
 ## Concept
 
@@ -32,11 +36,6 @@ The statistics-enabled task consolidates all resources that define this attribut
 - Filter the list to find specific resource types
 - Bulk-modify the `statistics-enabled` attribute across selected resources
 - Assign existing expressions or create new expressions (if supported by the resource)
-
-<video controls width="100%">
-  <source src="../media/screencasts/statistics-task.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
 
 This single task replaces what would otherwise require navigating through dozens of resource pages and manually toggling attributes.
 

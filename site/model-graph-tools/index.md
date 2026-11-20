@@ -1,3 +1,7 @@
+---
+description: Optional Neo4j-backed companion that indexes the WildFly management model for search, catalog browsing, and AI-assisted development via MCP.
+---
+
 # Model Graph Tools
 
 Model Graph Tools (MGT) is an optional companion for the HAL management console. It provides a searchable, graph-based representation of WildFly's management model — the same model the console uses to configure your server — and makes that knowledge available to both the console and AI-powered coding assistants.
@@ -84,7 +88,8 @@ Once the MGT container is running and detected by the console, you gain access t
 
 ### For Console Users
 
-- **Universal search**: A global search bar queries resources, attributes, operations, and capabilities in one go. Results link directly to the matching configuration page in the console, so you can jump from a search term like `buffer-pool` straight to the right subsystem form.
+- **[Model catalog](../features/model-catalog.md)**: A dedicated page for exploring the entire management model with faceted filters. Search by name or address, filter by type, stability, data type, access type, restart requirements, and more. Use **Verify on server** to cross-reference results with the connected WildFly instance.
+- **[Universal search](../features/universal-search.md)**: A global search bar queries resources, attributes, operations, and capabilities in one go. Results link directly to the matching configuration page in the console, so you can jump from a search term like `buffer-pool` straight to the right subsystem form.
 - **Richer metadata**: The console can display additional context about resources, attributes, and operations drawn from the full management model graph.
 - **Capability cross-references**: For any capability, the console can show which resources reference it — answering "where is this used?" with one click and linking to each dependent configuration page.
 

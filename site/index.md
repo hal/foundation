@@ -1,5 +1,6 @@
 ---
 layout: home
+description: Documentation for HAL Foundation — the next-generation management console for WildFly and JBoss EAP.
 
 hero:
     name: HAL Foundation
@@ -9,8 +10,8 @@ hero:
           text: Features
           link: /features/overview
         - theme: alt
-          text: Architecture
-          link: /architecture/overview
+          text: Get Started
+          link: /editions/halop
         - theme: alt
           text: GitHub
           link: https://github.com/hal/foundation

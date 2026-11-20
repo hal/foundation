@@ -1,3 +1,7 @@
+---
+description: Technical architecture of HAL Foundation — Java-to-JavaScript compilation via J2CL, CDI dependency injection, DMR data layer, and UI patterns.
+---
+
 # Architecture Overview
 
 HAL Foundation is a management console for WildFly and JBoss, written entirely in Java but running in the browser. The Java source compiles to JavaScript via J2CL, bundles with Vite, and optionally packages inside a Quarkus HTTP server for standalone deployment. The result is a fully client-side application with enterprise-grade tooling behind the scenes.

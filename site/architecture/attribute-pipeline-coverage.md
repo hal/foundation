@@ -1,3 +1,7 @@
+---
+description: Coverage statistics for the attribute pipeline — WildFly 42 attribute breakdown by storage, type, and handler coverage.
+---
+
 # Attribute Pipeline Coverage
 
 Coverage statistics and planned work for the [attribute pipeline](attribute-pipeline.md).

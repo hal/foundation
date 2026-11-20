@@ -1,8 +1,12 @@
+---
+description: Card-based dashboard providing an at-a-glance overview of WildFly server status, memory, threads, deployments, and domain topology.
+---
+
 # Dashboard
 
 The dashboard provides an at-a-glance overview of key information about your WildFly server or domain. It uses a card-based layout to present essential metrics and status information in an organized, easy-to-scan format.
 
-![Dashboard](../media/screenshots/dashboard.png)
+![Dashboard overview with server info, status, memory, threads, and deployment cards](../media/screenshots/dashboard.png)
 
 ## Universal Cards
 
@@ -29,4 +33,4 @@ When connected to a domain controller, additional cards provide domain-wide visi
 
 The dashboard adapts to the selected theme and contrast settings, ensuring readability in any visual mode:
 
-![Dashboard dark theme](../media/screenshots/dashboard-dark.png)
+![Dashboard in dark theme demonstrating theme adaptation across all cards](../media/screenshots/dashboard-dark.png)

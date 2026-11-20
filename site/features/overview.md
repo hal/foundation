@@ -1,3 +1,7 @@
+---
+description: Overview of the HAL management console's key features including universal search, model catalog, finder navigation, and stability level awareness.
+---
+
 # Features Overview
 
 The HAL management console for WildFly provides a modern, feature-rich interface for managing your WildFly servers and domains. This section highlights the key capabilities that make working with WildFly's management model more efficient and intuitive.
@@ -5,6 +9,10 @@ The HAL management console for WildFly provides a modern, feature-rich interface
 ## Universal Search
 
 Press **Cmd+K** (macOS) or **Ctrl+K** (Windows/Linux) to open the [universal search](./universal-search.md). When a local [Model Graph Tools](../model-graph-tools/index.md) container is running, it searches across the entire management model — resources, attributes, operations, and capabilities. Start typing with `/` to switch to address navigation with live typeahead completion. Results link directly to the matching configuration page with the target attribute highlighted.
+
+## Model Catalog
+
+The [model catalog](./model-catalog.md) provides a full-text, faceted search over the entire WildFly management model — resources, attributes, operations, and capabilities — in one page. Filter by stability level, data type, access type, restart requirements, and many more dimensions. Use **Verify on server** to cross-reference catalog entries with the connected WildFly instance and turn static links into live navigation.
 
 ## Header Enhancements
 
@@ -14,9 +22,11 @@ The console header provides quick access to essential controls. The **notificati
 
 WildFly's management model includes stability levels (experimental, preview, community, default) to indicate the maturity of features. The console [highlights these stability levels](./stability.md) across resources, attributes, operations, operation parameters, and capabilities, making it clear when you're working with experimental or preview features that may change in future releases.
 
-## Navigation Improvements
+## Finder Navigation
 
-Navigation has been refined for a smoother experience. The **finder selection syncs with navigation items**, so clicking a navigation item restores your last selection in that section. **Browser back and forward buttons** work correctly within the finder, making it natural to explore the management model and return to previous views.
+The console uses a [finder](./finder.md) — a multi-column browser — for navigating the configuration, runtime, and deployment sections. The finder URL reflects the current selection, so bookmarks and browser history work naturally, and browser back/forward buttons navigate within the finder.
+
+![Finder with multi-column navigation showing Configuration, Socket Bindings, and detail preview](../media/screenshots/finder.png)
 
 ## JavaScript API
 

@@ -1,3 +1,7 @@
+---
+description: Resource configuration features including attribute groups, auto-grouping, capability references, nested attributes, expression highlighting, and form validation.
+---
+
 # Resource Management
 
 Managing WildFly resources efficiently requires clear presentation of attributes, their values, constraints, and relationships. The console provides several features to make resource configuration more intuitive and less error-prone.
@@ -43,8 +47,8 @@ These validations run alongside per-attribute type checks, catching configuratio
 
 For LIST attributes with a simple-record value type (a list where each entry is a flat object with named fields), the console renders a **compact table view**. Each record appears as a row with columns derived from the value-type metadata.
 
-![List of Simple Records](../media/screenshots/list-simple-record-view.png)
+![Compact table view for LIST attributes with each record as a row derived from value-type metadata](../media/screenshots/list-simple-record-view.png)
 
 In edit mode, each row gets add, edit, and remove actions. Clicking edit opens a **modal editor** that presents the record's fields as a form, making it straightforward to work with structured list data without resorting to raw JSON or CLI commands.
 
-![List of Simple Records — Edit Mode](../media/screenshots/list-simple-record-edit.png)
+![Modal editor for a simple record entry presenting fields as a form with add, edit, and remove actions](../media/screenshots/list-simple-record-edit.png)

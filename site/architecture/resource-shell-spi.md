@@ -1,3 +1,7 @@
+---
+description: Composable resource shell for CRUD operations with an SPI for custom tabs, headers, dialogs, and resource rendering.
+---
+
 # Resource Shell & SPI
 
 ## What It Does

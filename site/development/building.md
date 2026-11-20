@@ -1,3 +1,7 @@
+---
+description: Maven build profiles, packaging targets, common build combinations, and helper scripts for HAL Foundation.
+---
+
 # Building
 
 ## Maven Profiles

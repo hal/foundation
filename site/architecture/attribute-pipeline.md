@@ -1,3 +1,7 @@
+---
+description: Two-tier pipeline that transforms WildFly management model metadata into interactive UI controls using handlers and providers.
+---
+
 # Attribute Pipeline
 
 ## What It Does

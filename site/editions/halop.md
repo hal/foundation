@@ -1,3 +1,7 @@
+---
+description: halOP deployment modes — bundled with WildFly via Galleon, standalone JVM/native server, container image, and development setup.
+---
+
 # halOP (HAL On Premise)
 
 halOP is the on-premise edition of the HAL management console, serving as the successor to the [current HAL console](https://github.com/hal/console). It provides a modern web interface for managing WildFly and JBoss EAP servers.
@@ -69,11 +73,11 @@ java -jar op/standalone/target/quarkus-app/quarkus-run.jar
 
 #### Use from Maven Central
 
-Download and run the latest release as an Uber-Jar:
+Download and run the latest release as an Uber-Jar. Replace `<version>` with the version from the [latest release](https://github.com/hal/foundation/releases):
 
 ```bash
-mvn dependency:copy -Dartifact=org.jboss.hal:hal-op-standalone:0.4.0:jar:runner -DoutputDirectory=.
-java -jar hal-op-standalone-0.4.0-runner.jar
+mvn dependency:copy -Dartifact=org.jboss.hal:hal-op-standalone:<version>:jar:runner -DoutputDirectory=.
+java -jar hal-op-standalone-<version>-runner.jar
 ```
 
 #### JBang
@@ -81,10 +85,7 @@ java -jar hal-op-standalone-0.4.0-runner.jar
 halOP can be started using [JBang](https://jbang.dev/):
 
 ```bash
-# Direct artifact reference
-jbang org.jboss.hal:hal-op-standalone:0.4.0:runner
-
-# Using the JBang catalog
+# Using the JBang catalog (recommended)
 jbang hal-op@hal
 
 # Install as a command
@@ -100,7 +101,7 @@ halOP provides native binaries built with GraalVM for optimal startup time and m
 
 ```bash
 mvn install -P op,standalone,native
-op/standalone/target/hal-op-standalone-0.4.0-runner
+op/standalone/target/hal-op-standalone-*-runner
 ```
 
 **Requirements:**
@@ -159,7 +160,7 @@ Serves HTML and CSS with hot module replacement:
 
 ```bash
 cd op/console
-npm run watch
+pnpm run watch
 ```
 
 This opens a browser at http://localhost:1234.
@@ -173,4 +174,4 @@ This opens a browser at http://localhost:1234.
 
 - Explore the [Features](../features/overview.md) available in halOP
 - Learn about the [Architecture](../architecture/overview.md) and extension points
-- Review [Getting Started](../index.md) for additional configuration options
+- Set up [Model Graph Tools](../model-graph-tools/index.md) for enhanced search and model exploration

@@ -1,3 +1,7 @@
+---
+description: OUIA component IDs for stable test selectors and integration with the dave end-to-end test suite.
+---
+
 # Test Automation
 
 The console is designed to support automated testing through stable, predictable UI component identifiers. The companion project [dave](https://github.com/hal/dave) is the end-to-end test suite built with [Playwright](https://playwright.dev/) and TypeScript.

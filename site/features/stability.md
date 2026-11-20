@@ -1,4 +1,12 @@
+---
+description: How the console highlights experimental and preview features in WildFly's management model using stability level labels and banners.
+---
+
 # Stability Level Highlighting
+
+::: tip In brief
+Only **preview** and **experimental** items are ever highlighted — `default` and `community` items are considered baseline and never receive a label, regardless of the server's stability level.
+:::
 
 WildFly's management model assigns a stability level to every resource, attribute, operation, operation parameter, and capability. The console uses these levels to visually highlight items that are less stable than what the server is configured to run at, so administrators can see at a glance which parts of the configuration are experimental or preview.
 
