@@ -86,6 +86,9 @@ async function executeActions(page, actions) {
                     { sel: action.selector, prop: action.property, val: action.value },
                 );
                 break;
+            case "fill":
+                await page.fill(action.selector, action.value);
+                break;
             case "wait":
                 if (action.selector) {
                     await page.waitForSelector(action.selector, { timeout: 10000 });
@@ -98,6 +101,28 @@ async function executeActions(page, actions) {
     }
 }
 
+async function hideStandaloneUi(page, recipe) {
+    await page.evaluate((path) => {
+        const endpoint = document.querySelector(
+            ".pf-v6-c-toolbar__item:has([data-ouia-component-id='hal-op-endpoint-selector'])",
+        );
+        if (endpoint) endpoint.style.display = "none";
+        for (const btn of document.querySelectorAll(".pf-v6-c-nav__scroll-button")) {
+            btn.style.display = "none";
+        }
+        for (const link of document.querySelectorAll(".pf-v6-c-nav__link")) {
+            const href = link.getAttribute("href");
+            if (href === path || (path !== "/" && href?.startsWith(path))) {
+                link.classList.add("pf-m-current");
+                link.setAttribute("aria-current", "page");
+            } else {
+                link.classList.remove("pf-m-current");
+                link.removeAttribute("aria-current");
+            }
+        }
+    }, recipe.path);
+}
+
 async function captureScreenshot(page, name, recipe, managementPort) {
     const url = buildUrl(recipe.path, managementPort);
     await page.goto(url, { waitUntil: "networkidle" });
@@ -106,6 +131,7 @@ async function captureScreenshot(page, name, recipe, managementPort) {
         await page.waitForSelector(recipe.waitFor, { timeout: 15000 });
     }
 
+    await hideStandaloneUi(page, recipe);
     await applyTheme(page, recipe.theme || "light");
 
     if (recipe.actions) {

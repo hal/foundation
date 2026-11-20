@@ -200,6 +200,129 @@
       ],
       "description": "Modal editor for a simple record entry, presenting the record's fields as a form with add, edit, and remove actions",
       "capturedIn": "0.6.0"
+    },
+    "model-catalog-overview.png": {
+      "path": "/model-catalog",
+      "waitFor": "[data-ouia-component-id='hal-op-page-catalog']",
+      "description": "Model catalog landing page with help text explaining types (resources, attributes, operations, capabilities), faceted filters in the sidebar, and search bar in the toolbar"
+    },
+    "model-catalog-resources.png": {
+      "path": "/model-catalog",
+      "waitFor": "[data-ouia-component-id='hal-op-page-catalog']",
+      "actions": [
+        {
+          "type": "click",
+          "selector": "li.vertical-tabs-pf-tab:nth-child(2) a"
+        },
+        {
+          "type": "wait",
+          "selector": "[data-ouia-component-id='hal-op-page-catalog-table']"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        }
+      ],
+      "description": "Model catalog showing the resources list with address, singleton, declares capability, and stability columns"
+    },
+    "model-catalog-search.png": {
+      "path": "/model-catalog",
+      "waitFor": "[data-ouia-component-id='hal-op-page-catalog']",
+      "actions": [
+        {
+          "type": "click",
+          "selector": "[data-ouia-component-id='hal-op-search-filter'] input"
+        },
+        {
+          "type": "type",
+          "text": "session"
+        },
+        {
+          "type": "keyboard",
+          "key": "Enter"
+        },
+        {
+          "type": "wait",
+          "selector": "[data-ouia-component-id='hal-op-page-catalog-table']"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click",
+          "selector": ".pf-v6-c-pagination .pf-v6-c-menu-toggle"
+        },
+        {
+          "type": "wait",
+          "ms": 300
+        },
+        {
+          "type": "click",
+          "selector": ".pf-v6-c-menu__list-item:first-child"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "fill",
+          "selector": ".pf-v6-c-pagination__nav-page-select input",
+          "value": "3"
+        },
+        {
+          "type": "keyboard",
+          "key": "Enter"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click",
+          "selector": "[data-ouia-component-id='hal-op-page-catalog-table']"
+        },
+        {
+          "type": "wait",
+          "ms": 300
+        }
+      ],
+      "description": "Model catalog search results for 'session' in All mode on page 3, showing mixed type labels (Operation, Attribute, Resource) with name, address, and stability columns"
+    },
+    "model-catalog-filtered.png": {
+      "path": "/model-catalog",
+      "waitFor": "[data-ouia-component-id='hal-op-page-catalog']",
+      "actions": [
+        {
+          "type": "click",
+          "selector": "li.vertical-tabs-pf-tab:nth-child(3) a"
+        },
+        {
+          "type": "wait",
+          "selector": "[data-ouia-component-id='hal-op-page-catalog-table']"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click",
+          "selector": "#sidebar-category-accesstype-read-write"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        },
+        {
+          "type": "click",
+          "selector": "#sidebar-category-unit-minutes"
+        },
+        {
+          "type": "wait",
+          "ms": 500
+        }
+      ],
+      "description": "Model catalog with Attributes type selected and facet filters applied (read-write access type, minutes unit), showing filtered results with name, resource, data type, storage, access, and stability columns"
     }
   },
   "screencasts": {
