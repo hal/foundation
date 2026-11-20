@@ -1,0 +1,104 @@
+name: Rebuild Native Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (without v prefix, e.g. 0.6.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-native-image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+    env:
+      MVN: ./mvnw --show-version --batch-mode --no-transfer-progress
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: v${{ inputs.version }}
+      - uses: actions/setup-java@v6.3.0
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-binfmt
+      - name: Build native binary for ${{ matrix.arch }}
+        run: $MVN install -P op,standalone,native -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime-options=--platform=linux/${{ matrix.arch }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-binary-${{ matrix.arch }}
+          path: op/standalone/target/*-runner
+          retention-days: 1
+
+  build-image:
+    needs: build-native-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: v${{ inputs.version }}
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-binfmt
+      - run: podman --version
+      - uses: actions/download-artifact@v8
+        with:
+          name: native-binary-amd64
+          path: op/standalone/target/native-amd64
+      - uses: actions/download-artifact@v8
+        with:
+          name: native-binary-arm64
+          path: op/standalone/target/native-arm64
+      - uses: redhat-actions/podman-login@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+      - name: Build multi-arch image
+        run: |
+          VERSION="${{ inputs.version }}"
+
+          podman manifest create quay.io/halconsole/hal-op:latest
+          podman build \
+            --platform linux/amd64 \
+            --manifest quay.io/halconsole/hal-op:latest \
+            --label maintainer=hpehl@redhat.com \
+            --label org.opencontainers.image.authors=hpehl@redhat.com \
+            --label org.opencontainers.image.description="HAL console on premise" \
+            --label org.opencontainers.image.licenses=Apache-2.0 \
+            --label org.opencontainers.image.revision="${VERSION}" \
+            --label org.opencontainers.image.source=https://github.com/hal/foundation \
+            --label org.opencontainers.image.title="HAL On Premise" \
+            --label org.opencontainers.image.url=https://hal.github.io \
+            --label org.opencontainers.image.vendor="Red Hat" \
+            --build-arg BINARY_PATH=target/native-amd64 \
+            -f op/standalone/src/main/docker/Dockerfile.native-micro \
+            op/standalone
+          podman build \
+            --platform linux/arm64 \
+            --manifest quay.io/halconsole/hal-op:latest \
+            --label maintainer=hpehl@redhat.com \
+            --label org.opencontainers.image.authors=hpehl@redhat.com \
+            --label org.opencontainers.image.description="HAL console on premise" \
+            --label org.opencontainers.image.licenses=Apache-2.0 \
+            --label org.opencontainers.image.revision="${VERSION}" \
+            --label org.opencontainers.image.source=https://github.com/hal/foundation \
+            --label org.opencontainers.image.title="HAL On Premise" \
+            --label org.opencontainers.image.url=https://hal.github.io \
+            --label org.opencontainers.image.vendor="Red Hat" \
+            --build-arg BINARY_PATH=target/native-arm64 \
+            -f op/standalone/src/main/docker/Dockerfile.native-micro \
+            op/standalone
+
+          podman tag quay.io/halconsole/hal-op:latest quay.io/halconsole/hal-op:${VERSION}
+          podman manifest push quay.io/halconsole/hal-op:latest
+          podman manifest push quay.io/halconsole/hal-op:${VERSION}
