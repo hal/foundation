@@ -37,20 +37,20 @@ export default defineConfig({
                 text: "Features",
                 items: [
                     { text: "Overview", link: "/features/overview" },
-                    { text: "Universal Search", link: "/features/universal-search" },
-                    {
-                        text: "Stability Level Highlighting",
-                        link: "/features/stability",
-                    },
                     { text: "Dashboard", link: "/features/dashboard" },
+                    { text: "Universal Search", link: "/features/universal-search" },
+                    { text: "Tasks", link: "/features/tasks" },
                     { text: "Finder Navigation", link: "/features/finder" },
-                    { text: "Model Browser", link: "/features/model-browser" },
-                    { text: "Model Catalog", link: "/features/model-catalog" },
                     {
                         text: "Resource Management",
                         link: "/features/resource-management",
                     },
-                    { text: "Tasks", link: "/features/tasks" },
+                    {
+                        text: "Stability Level Highlighting",
+                        link: "/features/stability",
+                    },
+                    { text: "Model Browser", link: "/features/model-browser" },
+                    { text: "Model Catalog", link: "/features/model-catalog" },
                 ],
             },
             {

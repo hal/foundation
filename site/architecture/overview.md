@@ -114,6 +114,10 @@ For multi-step asynchronous workflows, HAL uses Elemento's [Flow API](https://ha
 
 The `resources` module contains the `L10nBundle` interface for accessing translated strings. All user-facing text is externalized into property files and accessed via generated constants. The `Humanize` utility converts technical model terms (e.g., `ejb-connection-pool`) into human-readable labels (e.g., `EJB Connection Pool`) with special handling for common abbreviations (HTTP, SSL, JPA).
 
+## JavaScript API
+
+For advanced users and automation scenarios, several classes expose a JavaScript API accessible from the browser console. The `MetadataRepository` provides methods to retrieve, lookup, and dump metadata for any resource address. Logging can be controlled programmatically using methods documented in the [Elemento Logger guide](https://hal-console.gitbook.io/elemento/logger#controlling-log-levels-from-javascript).
+
 ## Test Automation
 
 The console uses OUIA (Open UI Automation) IDs to provide stable selectors for test automation. The `OuiaIds` class in the `resources` module centralizes both static and dynamically composed IDs. All PatternFly components are tagged with OUIA attributes, enabling reliable test scripts that survive UI refactoring. See [Test Automation](../development/test-automation.md) and the [dave documentation](https://hal.github.io/dave/) for details on the test suite.

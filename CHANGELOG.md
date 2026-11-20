@@ -7,29 +7,33 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+The headline feature of this release is the **[Model Catalog](https://hal.github.io/foundation/features/model-catalog.html)** — a full-text, faceted search over the entire WildFly management model. Search across resources, attributes, operations, and capabilities in one page, filter by stability level, data type, access type, restart requirements, and more. Use **Verify on server** to cross-reference catalog entries with the connected WildFly instance and turn static links into live navigation.
+
 ### Added
 
 - Add Model Catalog page — faceted search over the WildFly management model with dynamic table, type filtering, text search, capability typeahead, and pagination ([#469](https://github.com/hal/foundation/issues/469), [#442](https://github.com/hal/foundation/issues/442), [#443](https://github.com/hal/foundation/issues/443), [#444](https://github.com/hal/foundation/issues/444), [#445](https://github.com/hal/foundation/issues/445), [#468](https://github.com/hal/foundation/issues/468))
-- Add "Verify on server" feature for catalog results — batch-checks resource existence, resolves wildcards, and provides pick list for multiple matches ([#448](https://github.com/hal/foundation/issues/448))
+- Add "Verify on server" for catalog results — batch-checks resource existence, resolves wildcards, and provides pick list for multiple matches ([#448](https://github.com/hal/foundation/issues/448))
 - Add clickable resource address links in catalog table for direct navigation to model browser
 - Add OUIA IDs for shared UI components and skeleton toolbar ([#433](https://github.com/hal/foundation/issues/433))
+- Add deduplicated and highlighted MGT search results
 
 ### Changed
 
 - Extract `mgt` module from op/console — dedicated REST client, DTOs, availability events, and endpoint management
-- Update MGT DTOs and filters for REST API 0.4.0
 - Rename model browser route from `/management-model` to `/model-browser` and rename packages accordingly
 - Migrate op/console and site module to Vite+
-- Improve universal search box pick list and error handling
+- Improve universal search pick list and error handling
+- Restructure site documentation — reorder features overview, add model browser dual-mode docs, move JavaScript API to architecture
 
 ### Fixed
 
-- Fix J2CL compatibility by using instanceof instead of switch patterns for source level 17
+- Fix J2CL compatibility by using `instanceof` instead of switch patterns for source level 17
 - Fix case-insensitive model graph type handling and capitalize labels
 - Fix hyphenated JSON keys using JsOverlay
 - Fix explicit elemental2 dependency management for J2CL ADVANCED mode
 - Fix CI container build by replacing qemu-user-static with qemu-user-binfmt
 - Fix ranked templates in capability reference label list
+- Fix singleton popover recreation on tree node toggle in model browser
 
 ### Upgrades
 
@@ -40,7 +44,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Bump jboss-parent
 - Bump Vite+ to 1.7.0 and vite-plus-core to 8.3.8000
 - Bump Node.js
-- Bump GitHub Actions (setup-java v6.2.0)
+- Bump GitHub Actions (setup-java v6.3.0)
 - Bump npm dependencies and packageManager versions
 
 ## [0.6.0] - 2026-10-20

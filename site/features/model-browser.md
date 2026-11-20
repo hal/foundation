@@ -4,7 +4,15 @@ description: Tree-based browser for exploring WildFly's management model with at
 
 # Model Browser
 
-The model browser is the primary tool for exploring and working with WildFly's management model. It provides a comprehensive view of resources, their attributes, operations, and relationships.
+The model browser is the primary tool for exploring and working with WildFly's management model. It provides a comprehensive view of resources, their attributes, operations, and relationships — and it serves two distinct roles in the console.
+
+## Full and Scoped Mode
+
+In its **full mode**, the model browser lets you explore the entire management model from the root. You can traverse the complete resource hierarchy, inspect any resource at any depth, and jump to arbitrary addresses.
+
+In its **scoped mode**, the model browser drives the configuration pages for subsystems, interfaces, socket bindings, paths, system properties, and other areas of the management model. When you select a subsystem or configuration area in the [finder](./finder.md), the model browser opens rooted at that resource. The same component, the same interaction patterns, but scoped to the relevant subtree. Breadcrumbs, search, and navigation are all confined to the scoped root, so you stay focused on the area you're configuring.
+
+This dual use means there is one consistent tool for both discovery (full mode) and day-to-day configuration (scoped mode).
 
 ![Model browser with resizable tree view showing the WildFly management resource hierarchy](../media/screenshots/model-browser.png)
 
@@ -22,7 +30,7 @@ For cross-cutting search across the entire management model, use the [Universal 
 
 Resource list views display **descriptions** directly in the table, giving you context without needing to navigate into each resource. When an attribute references a capability, you can **follow capability references** to navigate to the related resource.
 
-The model browser supports **scoped browsing**: when you navigate to a resource from elsewhere in the console (such as from a finder), the browser adapts to that resource's scope. Flat resources without children display the detail panel at full width, and breadcrumbs and find/goto functions are scoped to the root resource.
+Flat resources without children display the detail panel at full width, keeping the layout clean when no tree navigation is needed.
 
 ## Creating Dependent Resources
 
