@@ -47,6 +47,6 @@ import "./vertical-tabs.css";
 
 // Load J2CL-compiled console app
 const script = document.createElement("script");
-script.src = "/console.js";
+script.src = `${import.meta.env.BASE_URL}console.js`;
 script.defer = true;
 document.body.appendChild(script);

@@ -38,6 +38,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>hal-op</artifactId>
             <classifier>test-suite-resources</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
