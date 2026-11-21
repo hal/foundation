@@ -40,7 +40,7 @@ function serveJ2cl() {
 
 export default defineConfig(({ mode }) => {
     const modeConfig = {
-        "feature-pack": { base: "/halop", outDir: "target/feature-pack-resources" },
+        "feature-pack": { base: "/halop/", outDir: "target/feature-pack-resources" },
         standalone: { base: "/", outDir: "target/standalone-resources" },
         "test-suite": { base: "/", outDir: "target/test-suite-resources" },
     };
