@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix feature-pack build failing because maven-clean-plugin deleted the subsystem's service loader file
+- Fix blank page in feature-pack mode caused by missing trailing slash in Vite base path
+
 ## [0.6.1] - 2026-11-20
 
 The headline feature of this release is the **[Model Catalog](https://hal.github.io/foundation/features/model-catalog.html)** — a full-text, faceted search over the entire WildFly management model. Search across resources, attributes, operations, and capabilities in one page, filter by stability level, data type, access type, restart requirements, and more. Use **Verify on server** to cross-reference catalog entries with the connected WildFly instance and turn static links into live navigation.
