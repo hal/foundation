@@ -53,7 +53,7 @@ The Data tab displays the current values of a resource's attributes with powerfu
 
 **Attribute descriptions** appear as popovers when you hover over an attribute name, providing context without cluttering the interface. Attributes that reference capabilities show **links to the referenced resources**, with support for multiple references displayed in a popup.
 
-The Data tab supports both **simple nested attributes** and **complex nested attributes** in a read-only view, allowing you to inspect deeply structured configuration. **Allowed values** are displayed for attributes with constrained value sets, and **expression syntax** is highlighted for attributes that use WildFly expressions.
+The Data tab supports both **simple nested attributes** and **complex nested attributes** in a read-only view, allowing you to inspect deeply structured configuration. **Allowed values** are displayed for attributes with constrained value sets, and **expression syntax** is highlighted for attributes that use WildFly expressions. For resources that need a tailored presentation, the [Resource Shell SPI](../architecture/resource-shell-spi.md) can provide custom tabs, layouts, or editors in place of the generic rendering.
 
 ## Attributes Tab
 

@@ -52,3 +52,7 @@ For LIST attributes with a simple-record value type (a list where each entry is 
 In edit mode, each row gets add, edit, and remove actions. Clicking edit opens a **modal editor** that presents the record's fields as a form, making it straightforward to work with structured list data without resorting to raw JSON or CLI commands.
 
 ![Modal editor for a simple record entry presenting fields as a form with add, edit, and remove actions](../media/screenshots/list-simple-record-edit.png)
+
+## Customization
+
+All the features described above work automatically from the management model metadata. When the generic rendering isn't enough for a particular resource, the [Resource Shell SPI](../architecture/resource-shell-spi.md) lets you replace or extend tabs, headers, and dialogs — giving specialized resources a tailored presentation without modifying the core console.
