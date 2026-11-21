@@ -32,8 +32,14 @@ SearchResult.prototype.description;
 /** @type {?string} */
 SearchResult.prototype.address;
 
+/** @type {?boolean} */
+SearchResult.prototype.singleton;
+
 /** @type {?Array<!ResourceRef>} */
 SearchResult.prototype.providedBy;
+
+/** @type {?string} */
+SearchResult.prototype.stability;
 
 // ------------------------------------------------------ ResourceRef
 
@@ -71,6 +77,12 @@ CapabilityReference.prototype.resourceName;
 /** @type {string} */
 CapabilityReference.prototype.resourceAddress;
 
+/** @type {?string} */
+CapabilityReference.prototype.attributeStability;
+
+/** @type {?string} */
+CapabilityReference.prototype.resourceStability;
+
 // ------------------------------------------------------ CatalogResponse
 
 /** @constructor */
@@ -104,9 +116,6 @@ CatalogResult.prototype.name;
 
 /** @type {?string} */
 CatalogResult.prototype.description;
-
-/** @type {?string} */
-CatalogResult.prototype.address;
 
 /** @type {?string} */
 CatalogResult.prototype.resourceAddress;
@@ -170,11 +179,28 @@ CatalogProperties.prototype.hasReturnValue;
 /** @type {?boolean} */
 CatalogProperties.prototype.singleton;
 
-/** @type {?boolean} */
-CatalogProperties.prototype.declaresCap;
+/** @type {?Array<string>} */
+CatalogProperties.prototype.capabilities;
 
 /** @type {?boolean} */
 CatalogProperties.prototype.definesAttrGroups;
+
+/** @type {?string} */
+CatalogProperties.prototype.capabilityReference;
+
+/** @type {?Array<!DeclaringResource>} */
+CatalogProperties.prototype.declaringResources;
+
+// ------------------------------------------------------ DeclaringResource
+
+/** @constructor */
+function DeclaringResource() {}
+
+/** @type {string} */
+DeclaringResource.prototype.address;
+
+/** @type {?string} */
+DeclaringResource.prototype.stability;
 
 // ------------------------------------------------------ CatalogFacets
 
@@ -226,11 +252,14 @@ CatalogFacets.prototype.sensitive;
 /** @type {?BooleanCounts} */
 CatalogFacets.prototype.hasAllowed;
 
-/** @type {?Object} */
-CatalogFacets.prototype.unit;
+/** @type {?BooleanCounts} */
+CatalogFacets.prototype.hasAlternatives;
 
 /** @type {?BooleanCounts} */
-CatalogFacets.prototype.hasRelationships;
+CatalogFacets.prototype.hasRequires;
+
+/** @type {?Object} */
+CatalogFacets.prototype.unit;
 
 /** @type {?BooleanCounts} */
 CatalogFacets.prototype.refsCap;
@@ -256,10 +285,10 @@ CatalogFacets.prototype.hasReturnValue;
 function BooleanCounts() {}
 
 /** @type {number} */
-BooleanCounts.prototype.yes;
+BooleanCounts.prototype['true'];
 
 /** @type {number} */
-BooleanCounts.prototype.no;
+BooleanCounts.prototype['false'];
 
 // ------------------------------------------------------ TypeCounts
 
@@ -322,7 +351,7 @@ DataTypeCounts.prototype['big-decimal'];
 DataTypeCounts.prototype.object;
 
 /** @type {number} */
-DataTypeCounts.prototype.list;
+DataTypeCounts.prototype.map;
 
 /** @type {number} */
 DataTypeCounts.prototype.bytes;
@@ -331,7 +360,10 @@ DataTypeCounts.prototype.bytes;
 DataTypeCounts.prototype.property;
 
 /** @type {number} */
-DataTypeCounts.prototype.complex;
+DataTypeCounts.prototype['list-simple'];
+
+/** @type {number} */
+DataTypeCounts.prototype['list-object'];
 
 // ------------------------------------------------------ AccessTypeCounts
 

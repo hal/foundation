@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix J2CL externs for MGT API response types — add missing `DeclaringResource` type, `SearchResult.singleton`/`stability`, `CapabilityReference` stability fields, `CatalogProperties.capabilities`/`capabilityReference`/`declaringResources`, `CatalogFacets.hasAlternatives`/`hasRequires`; remove stale `CatalogResult.address`, `CatalogProperties.declaresCap`, `CatalogFacets.hasRelationships`; fix `BooleanCounts` and `DataTypeCounts` property names to match current MGT REST API
+
 ## [0.6.2] - 2026-11-21
 
 ### Fixed
