@@ -35,6 +35,7 @@ public class DataTypeCounts {
     public int bytes;
     public int property;
 
+    // hyphenated names cannot use @JsProperty — J2CL rejects non-identifier names
     @JsOverlay
     public final int bigDecimal() {
         return Js.asPropertyMap(this).getAsAny("big-decimal").asInt();

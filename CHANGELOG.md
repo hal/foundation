@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix MGT externs not picked up by Closure Compiler — move externs file to `META-INF/externs/` to match the J2CL convention used by all other modules
+
 ## [0.6.3] - 2026-11-21
 
 ### Fixed

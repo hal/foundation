@@ -71,7 +71,7 @@ public class CatalogFacets {
     public BooleanCounts hasParams;
     public BooleanCounts hasReturnValue;
 
-    // ------------------------------------------------------ unit (dynamic)
+    // ------------------------------------------------------ unit (open-ended keys, cannot use @JsProperty)
 
     @JsOverlay
     public final Map<String, Integer> unitCounts() {

@@ -26,6 +26,7 @@ public class AccessTypeCounts {
 
     public int metric;
 
+    // hyphenated names cannot use @JsProperty — J2CL rejects non-identifier names
     @JsOverlay
     public final int readWrite() {
         return Js.asPropertyMap(this).getAsAny("read-write").asInt();

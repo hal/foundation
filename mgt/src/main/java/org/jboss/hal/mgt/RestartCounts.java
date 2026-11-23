@@ -26,14 +26,15 @@ public class RestartCounts {
 
     public int jvm;
 
-    @JsOverlay
-    public final int allServices() {
-        return Js.asPropertyMap(this).getAsAny("all-services").asInt();
-    }
-
+    // hyphenated names cannot use @JsProperty — J2CL rejects non-identifier names
     @JsOverlay
     public final int noServices() {
         return Js.asPropertyMap(this).getAsAny("no-services").asInt();
+    }
+
+    @JsOverlay
+    public final int allServices() {
+        return Js.asPropertyMap(this).getAsAny("all-services").asInt();
     }
 
     @JsOverlay
