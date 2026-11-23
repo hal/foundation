@@ -6,6 +6,26 @@ description: halOP deployment modes — bundled with WildFly via Galleon, standa
 
 halOP is the on-premise edition of the HAL management console, serving as the successor to the [current HAL console](https://github.com/hal/console). It provides a modern web interface for managing WildFly and JBoss EAP servers.
 
+## Quick Start with wado
+
+The easiest way to get a WildFly instance ready for halOP is [wado](https://github.com/hpehl/wado) (**W**ildFly **ad**min c**o**ntainers). It runs WildFly containers with preconfigured management credentials (`admin:admin`) and allowed origins for CORS, so halOP can connect out of the box.
+
+**Install wado:**
+
+```bash
+brew tap hpehl/tap && brew install wado
+```
+
+**Start a WildFly instance:**
+
+```bash
+wado start 42
+```
+
+This starts WildFly 42 in a container with auto-derived ports (HTTP `8420`, management `9420`) and allowed origins for halOP's standalone mode (`localhost:9090`) and development mode (`localhost:1234`).
+
+Then connect halOP (standalone, container, or dev mode) to `http://localhost:9420`.
+
 ## Deployment Modes
 
 halOP supports multiple deployment modes to fit different environments and use cases.
