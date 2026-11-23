@@ -10,20 +10,20 @@
       "path": "/",
       "waitFor": ".pf-v6-c-card",
       "description": "Dashboard overview with all cards in light theme, showing server info, status, host, JVM, memory, log, health, and deployments",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "dashboard-dark.png": {
       "path": "/",
       "waitFor": ".pf-v6-c-card",
       "theme": "dark",
       "description": "Dashboard overview in dark theme, demonstrating theme adaptation across all cards",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "model-browser.png": {
       "path": "/model-browser",
       "waitFor": ".pf-v6-c-tree-view",
       "description": "Model browser with resizable tree view showing the WildFly management resource hierarchy",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "find-resource.png": {
       "path": "/model-browser",
@@ -43,7 +43,7 @@
         }
       ],
       "description": "Find resource dialog in the model browser for searching by address, type, or name",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "auto-grouping.png": {
       "path": "/configuration/subsystem/datasources/subsystem%3Ddatasources%2Fdata-source%3DExampleDS",
@@ -59,7 +59,7 @@
         }
       ],
       "description": "Auto-grouping for resources with 20+ attributes, splitting into alphabetical chunks with abbreviated group names",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "capability-references.png": {
       "path": "/configuration/subsystem/elytron/subsystem%3Delytron%2Fserver-ssl-context%3DapplicationSSC",
@@ -83,7 +83,7 @@
         }
       ],
       "description": "Expanded capability row showing cross-references — which attributes reference this capability, grouped by attribute name with clickable resource links",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "universal-search-mgt.png": {
       "path": "/",
@@ -107,7 +107,7 @@
         }
       ],
       "description": "Universal search in model graph mode, showing grouped results for resources, attributes, operations, and capabilities matching a keyword",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "universal-search-address.png": {
       "path": "/",
@@ -131,7 +131,7 @@
         }
       ],
       "description": "Universal search in address navigation mode, showing typeahead completion resolving wildcards against the live server",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "highlight-routing.png": {
       "path": "/configuration/subsystem/undertow/subsystem%3Dundertow%2Fserver%3Ddefault-server%2Fhttps-listener%3Dhttps",
@@ -153,13 +153,13 @@
         }
       ],
       "description": "Highlight on a target attribute after navigating via universal search, showing the exact configuration item found",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "tasks.png": {
       "path": "/tasks",
       "waitFor": ".pf-v6-c-card",
       "description": "Tasks overview page listing available use-case-centric administrative workflows with icons and summaries",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "list-simple-record-view.png": {
       "path": "/configuration/subsystem/ee",
@@ -175,7 +175,7 @@
         }
       ],
       "description": "Compact table view for LIST attributes with simple-record value type, showing each record as a row with columns from the value-type metadata",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "list-simple-record-edit.png": {
       "path": "/configuration/subsystem/ee",
@@ -199,19 +199,19 @@
         }
       ],
       "description": "Modal editor for a simple record entry, presenting the record's fields as a form with add, edit, and remove actions",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "finder.png": {
       "path": "/configuration/configuration-column%3Dsocket-bindings-item%2Fsocket-binding-group-column%3Dstandard-sockets",
       "waitFor": ".pf-v6-c-finder",
       "description": "Finder with multi-column navigation showing Configuration > Socket Bindings > standard-sockets with detail preview panel",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "model-catalog-overview.png": {
       "path": "/model-catalog",
       "waitFor": "[data-ouia-component-id='hal-op-page-catalog']",
       "description": "Model catalog landing page with help text explaining types (resources, attributes, operations, capabilities), faceted filters in the sidebar, and search bar in the toolbar",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "model-catalog-resources.png": {
       "path": "/model-catalog",
@@ -231,7 +231,7 @@
         }
       ],
       "description": "Model catalog showing the resources list with address, singleton, declares capability, and stability columns",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "model-catalog-search.png": {
       "path": "/model-catalog",
@@ -296,7 +296,7 @@
         }
       ],
       "description": "Model catalog search results for 'session' in All mode on page 3, showing mixed type labels (Operation, Attribute, Resource) with name, address, and stability columns",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     },
     "model-catalog-filtered.png": {
       "path": "/model-catalog",
@@ -332,7 +332,7 @@
         }
       ],
       "description": "Model catalog with Attributes type selected and facet filters applied (read-write access type, minutes unit), showing filtered results with name, resource, data type, storage, access, and stability columns",
-      "capturedIn": "0.6.3"
+      "capturedIn": "0.6.4"
     }
   },
   "screencasts": {
