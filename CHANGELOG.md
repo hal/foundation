@@ -7,6 +7,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `@JsOverlay` bracket-access methods crashing when a JSON key is absent — add null guards in `AccessTypeCounts`, `BooleanCounts`, `DataTypeCounts`, `RestartCounts`, and `StabilityCounts`
+
 ## [0.6.4] - 2026-11-23
 
 ### Fixed
