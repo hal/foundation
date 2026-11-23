@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix storage facet filter sending `storage=false` instead of `storage=configuration` or `storage=runtime` — exclusive non-boolean facets now use the actual value
+- Fix unit facet checkboxes appearing in arbitrary order — sort by semantic grouping (time units descending, then size, rate, percentage)
+
 ## [0.6.5] - 2026-11-23
 
 ### Fixed
