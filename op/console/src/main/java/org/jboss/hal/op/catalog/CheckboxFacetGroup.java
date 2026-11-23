@@ -77,8 +77,10 @@ class CheckboxFacetGroup implements IsElement<HTMLElement> {
         if (facet.exclusive) {
             if (controller.state().isActive(facet, value)) {
                 controller.removeFacet(facet);
-            } else {
+            } else if ("true".equals(value) || "false".equals(value)) {
                 controller.applyFacetValue(facet, new FacetValue.Bool("true".equals(value)));
+            } else {
+                controller.applyFacetValue(facet, new FacetValue.Multi(Set.of(value)));
             }
         } else {
             FacetValue current = controller.state().facetValue(facet);
