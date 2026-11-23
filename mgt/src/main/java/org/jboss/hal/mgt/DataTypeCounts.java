@@ -19,6 +19,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /** Facet counts for the {@code dataType} facet. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -33,36 +34,43 @@ public class DataTypeCounts {
     // @JsOverlay is required for all names that are not common JS identifiers — see package-info.java
     @JsOverlay
     public final int boolean_() {
-        return Js.asPropertyMap(this).getAsAny("boolean").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("boolean") ? map.getAsAny("boolean").asInt() : 0;
     }
 
     @JsOverlay
     public final int int_() {
-        return Js.asPropertyMap(this).getAsAny("int").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("int") ? map.getAsAny("int").asInt() : 0;
     }
 
     @JsOverlay
     public final int long_() {
-        return Js.asPropertyMap(this).getAsAny("long").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("long") ? map.getAsAny("long").asInt() : 0;
     }
 
     @JsOverlay
     public final int double_() {
-        return Js.asPropertyMap(this).getAsAny("double").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("double") ? map.getAsAny("double").asInt() : 0;
     }
 
     @JsOverlay
     public final int bigDecimal() {
-        return Js.asPropertyMap(this).getAsAny("big-decimal").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("big-decimal") ? map.getAsAny("big-decimal").asInt() : 0;
     }
 
     @JsOverlay
     public final int listSimple() {
-        return Js.asPropertyMap(this).getAsAny("list-simple").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("list-simple") ? map.getAsAny("list-simple").asInt() : 0;
     }
 
     @JsOverlay
     public final int listObject() {
-        return Js.asPropertyMap(this).getAsAny("list-object").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("list-object") ? map.getAsAny("list-object").asInt() : 0;
     }
 }

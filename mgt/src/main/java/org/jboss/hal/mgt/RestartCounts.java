@@ -19,6 +19,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /** Facet counts for the {@code restart} facet: all-services, no-services, resource-services, and jvm. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -29,16 +30,19 @@ public class RestartCounts {
     // hyphenated names cannot use @JsProperty — J2CL rejects non-identifier names
     @JsOverlay
     public final int noServices() {
-        return Js.asPropertyMap(this).getAsAny("no-services").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("no-services") ? map.getAsAny("no-services").asInt() : 0;
     }
 
     @JsOverlay
     public final int allServices() {
-        return Js.asPropertyMap(this).getAsAny("all-services").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("all-services") ? map.getAsAny("all-services").asInt() : 0;
     }
 
     @JsOverlay
     public final int resourceServices() {
-        return Js.asPropertyMap(this).getAsAny("resource-services").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("resource-services") ? map.getAsAny("resource-services").asInt() : 0;
     }
 }

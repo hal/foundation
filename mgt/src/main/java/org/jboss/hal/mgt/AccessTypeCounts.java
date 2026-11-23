@@ -19,6 +19,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /** Facet counts for the {@code accessType} facet: read-write, read-only, and metric. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -29,11 +30,13 @@ public class AccessTypeCounts {
     // hyphenated names cannot use @JsProperty — J2CL rejects non-identifier names
     @JsOverlay
     public final int readWrite() {
-        return Js.asPropertyMap(this).getAsAny("read-write").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("read-write") ? map.getAsAny("read-write").asInt() : 0;
     }
 
     @JsOverlay
     public final int readOnly() {
-        return Js.asPropertyMap(this).getAsAny("read-only").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("read-only") ? map.getAsAny("read-only").asInt() : 0;
     }
 }

@@ -19,6 +19,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /** Facet counts for the {@code stability} facet: default, community, preview, and experimental. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -30,6 +31,7 @@ public class StabilityCounts {
 
     @JsOverlay
     public final int default_() {
-        return Js.asPropertyMap(this).getAsAny("default").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("default") ? map.getAsAny("default").asInt() : 0;
     }
 }

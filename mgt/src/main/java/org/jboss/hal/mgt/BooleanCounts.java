@@ -19,6 +19,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /** Facet counts for boolean facets with {@code "true"} and {@code "false"} values. Used by 14 boolean facets. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -26,11 +27,13 @@ public class BooleanCounts {
 
     @JsOverlay
     public final int true_() {
-        return Js.asPropertyMap(this).getAsAny("true").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("true") ? map.getAsAny("true").asInt() : 0;
     }
 
     @JsOverlay
     public final int false_() {
-        return Js.asPropertyMap(this).getAsAny("false").asInt();
+        JsPropertyMap<Object> map = Js.asPropertyMap(this);
+        return map.has("false") ? map.getAsAny("false").asInt() : 0;
     }
 }
