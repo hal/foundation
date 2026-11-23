@@ -15,7 +15,9 @@
  */
 package org.jboss.hal.op.catalog;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.elemento.HTMLContainerBuilder;
@@ -57,6 +59,9 @@ import static org.patternfly.component.title.Title.title;
 class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement, CatalogSidebar> {
 
     private static final String MODEL_GRAPH_TYPE_KEY = "model-graph-type";
+    private static final List<String> UNIT_ORDER = List.of(
+            "days", "minutes", "seconds", "milliseconds", "nanoseconds",
+            "bytes", "per_second", "percentage");
 
     private final CatalogController controller;
     private final VerticalTabs verticalTabs;
@@ -186,8 +191,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
     private void addAttributeFacets(CatalogFacets facets) {
         // @formatter:off
         if (facets.dataType != null) {addDataTypeGroup(facets.dataType);}
-        Map<String, Integer> units = facets.unitCounts();
-        if (!units.isEmpty()) { addFacetGroup("Unit", CatalogFacet.UNIT, units); }
+        addUnitGroup(facets.unitCounts());
         if (facets.hasAllowed != null) {addBooleanGroup("Allowed values", CatalogFacet.HAS_ALLOWED, facets.hasAllowed);}
         if (facets.refsCap != null) {addCapabilityGroup("References capability", CatalogFacet.REFS_CAP, facets.refsCap);}
         if (facets.expressions != null) {addBooleanGroup("Supports expressions", CatalogFacet.EXPRESSIONS, facets.expressions);}
@@ -262,6 +266,21 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         putIfPositive(values, "configuration", counts.configuration);
         putIfPositive(values, "runtime", counts.runtime);
         addFacetGroup("Storage", CatalogFacet.STORAGE, values);
+    }
+
+    private void addUnitGroup(Map<String, Integer> counts) {
+        if (counts.isEmpty()) {
+            return;
+        }
+        Comparator<String> comparator = Comparator.<String, Integer>comparing(unit -> {
+            int index = UNIT_ORDER.indexOf(unit);
+            return index == -1 ? UNIT_ORDER.size() : index;
+        }).thenComparing(Comparator.naturalOrder());
+        Map<String, Integer> sorted = new LinkedHashMap<>();
+        counts.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(comparator))
+                .forEach(e -> putIfPositive(sorted, e.getKey(), e.getValue()));
+        addFacetGroup("Unit", CatalogFacet.UNIT, sorted);
     }
 
     private void addRestartGroup(RestartCounts counts) {
