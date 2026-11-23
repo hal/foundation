@@ -9,7 +9,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Fix MGT externs not picked up by Closure Compiler — move externs file to `META-INF/externs/` to match the J2CL convention used by all other modules
+- Fix MGT externs not picked up by Closure Compiler — move externs file to `META-INF/externs/` and switch from `@constructor` to `@record` (structural typing for JSON response objects)
+- Fix missing facet counts in production mode — convert `@JsProperty(name = "...")` fields to `@JsOverlay` bracket access in `BooleanCounts`, `DataTypeCounts`, and `StabilityCounts`, since Closure Compiler renames dot-access properties on `Object`-typed variables
 
 ## [0.6.3] - 2026-11-21
 

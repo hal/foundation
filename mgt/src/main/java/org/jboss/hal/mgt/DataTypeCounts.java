@@ -17,7 +17,6 @@ package org.jboss.hal.mgt;
 
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 
@@ -26,16 +25,32 @@ import jsinterop.base.Js;
 public class DataTypeCounts {
 
     public int string;
-    @JsProperty(name = "boolean") public int boolean_;
-    @JsProperty(name = "int") public int int_;
-    @JsProperty(name = "long") public int long_;
-    @JsProperty(name = "double") public int double_;
     public int object;
     public int map;
     public int bytes;
     public int property;
 
-    // hyphenated names cannot use @JsProperty — J2CL rejects non-identifier names
+    // @JsOverlay is required for all names that are not common JS identifiers — see package-info.java
+    @JsOverlay
+    public final int boolean_() {
+        return Js.asPropertyMap(this).getAsAny("boolean").asInt();
+    }
+
+    @JsOverlay
+    public final int int_() {
+        return Js.asPropertyMap(this).getAsAny("int").asInt();
+    }
+
+    @JsOverlay
+    public final int long_() {
+        return Js.asPropertyMap(this).getAsAny("long").asInt();
+    }
+
+    @JsOverlay
+    public final int double_() {
+        return Js.asPropertyMap(this).getAsAny("double").asInt();
+    }
+
     @JsOverlay
     public final int bigDecimal() {
         return Js.asPropertyMap(this).getAsAny("big-decimal").asInt();

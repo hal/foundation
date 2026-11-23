@@ -15,16 +15,21 @@
  */
 package org.jboss.hal.mgt;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /** Facet counts for the {@code stability} facet: default, community, preview, and experimental. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class StabilityCounts {
 
-    @JsProperty(name = "default") public int default_;
     public int community;
     public int preview;
     public int experimental;
+
+    @JsOverlay
+    public final int default_() {
+        return Js.asPropertyMap(this).getAsAny("default").asInt();
+    }
 }

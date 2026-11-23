@@ -216,7 +216,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
 
     private void addStabilityGroup(StabilityCounts counts) {
         Map<String, Integer> values = new LinkedHashMap<>();
-        putIfPositive(values, "default", counts.default_);
+        putIfPositive(values, "default", counts.default_());
         putIfPositive(values, "community", counts.community);
         putIfPositive(values, "preview", counts.preview);
         putIfPositive(values, "experimental", counts.experimental);
@@ -230,10 +230,10 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         Map<String, Integer> values = new LinkedHashMap<>();
         putIfPositive(values, "string", counts.string);
         putIfPositive(values, "bytes", counts.bytes);
-        putIfPositive(values, "int", counts.int_);
-        putIfPositive(values, "long", counts.long_);
-        putIfPositive(values, "boolean", counts.boolean_);
-        putIfPositive(values, "double", counts.double_);
+        putIfPositive(values, "int", counts.int_());
+        putIfPositive(values, "long", counts.long_());
+        putIfPositive(values, "boolean", counts.boolean_());
+        putIfPositive(values, "double", counts.double_());
         putIfPositive(values, "big-decimal", counts.bigDecimal());
         putIfPositive(values, "list-simple", counts.listSimple());
         putIfPositive(values, "list-object", counts.listObject());
@@ -281,8 +281,8 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
             return;
         }
         Map<String, Integer> values = new LinkedHashMap<>();
-        if (counts.true_ > 0) {values.put("true", counts.true_);}
-        if (counts.false_ > 0) {values.put("false", counts.false_);}
+        if (counts.true_() > 0) {values.put("true", counts.true_());}
+        if (counts.false_() > 0) {values.put("false", counts.false_());}
         addFacetGroup(label, facet, values);
     }
 
@@ -292,7 +292,7 @@ class CatalogSidebar implements IsElement<HTMLElement>, OuiaSupport<HTMLElement,
         if (counts == null) {
             return;
         }
-        if (counts.true_ > 0 || counts.false_ > 0) {
+        if (counts.true_() > 0 || counts.false_() > 0) {
             filterPanel.add(new TextFilterFacetGroup(controller, label, facet, counts));
         }
     }

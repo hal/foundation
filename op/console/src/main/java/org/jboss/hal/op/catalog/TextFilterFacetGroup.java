@@ -82,7 +82,7 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
                                 .text(text))
                         .run(fieldset -> {
                             // "true" checkbox
-                            if (counts.true_ > 0) {
+                            if (counts.true_() > 0) {
                                 String trueId = Id.build("sidebar", "category", facet.key, "true");
                                 fieldset.add(div().css("filter-panel-pf-category-item")
                                         .add(checkbox(trueId, trueId, "true")
@@ -102,7 +102,7 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
                                                     }
                                                     cb.textDelegate()
                                                             .appendChild(span().css("item-count")
-                                                                    .text("(" + Format.number(counts.true_) + ")")
+                                                                    .text("(" + Format.number(counts.true_()) + ")")
                                                                     .element());
                                                 })));
                             }
@@ -112,7 +112,7 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
                                     .add(textInput));
 
                             // "false" checkbox
-                            if (counts.false_ > 0) {
+                            if (counts.false_() > 0) {
                                 String falseId = Id.build("sidebar", "category", facet.key, "false");
                                 fieldset.add(div().css("filter-panel-pf-category-item")
                                         .add(checkbox(falseId, falseId, "false")
@@ -129,7 +129,7 @@ class TextFilterFacetGroup implements IsElement<HTMLElement> {
                                                         cb.value(true);
                                                     }
                                                     cb.textDelegate().appendChild(span().css("item-count")
-                                                            .text("(" + Format.number(counts.false_) + ")")
+                                                            .text("(" + Format.number(counts.false_()) + ")")
                                                             .element());
                                                 })));
                             }

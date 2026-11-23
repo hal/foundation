@@ -15,17 +15,22 @@
  */
 package org.jboss.hal.mgt;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /** Facet counts for boolean facets with {@code "true"} and {@code "false"} values. Used by 14 boolean facets. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class BooleanCounts {
 
-    @JsProperty(name = "true")
-    public int true_;
+    @JsOverlay
+    public final int true_() {
+        return Js.asPropertyMap(this).getAsAny("true").asInt();
+    }
 
-    @JsProperty(name = "false")
-    public int false_;
+    @JsOverlay
+    public final int false_() {
+        return Js.asPropertyMap(this).getAsAny("false").asInt();
+    }
 }

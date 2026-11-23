@@ -4,12 +4,18 @@
  * These declarations prevent the Closure Compiler from renaming the JSON property
  * names that must match the MGT REST API response structure.
  *
+ * All types use {@code @record} (structural typing) rather than {@code @constructor}
+ * because these types represent plain JSON objects from {@code fetch().json()}, not
+ * class instances. With {@code @record}, Closure Compiler matches properties structurally
+ * on any object with the right shape, which is essential since J2CL maps these types as
+ * {@code Object} via {@code @JsType(isNative = true, name = "Object")}.
+ *
  * @externs
  */
 
 // ------------------------------------------------------ SearchResponse
 
-/** @constructor */
+/** @record */
 function SearchResponse() {}
 
 /** @type {!Array<!SearchResult>} */
@@ -17,7 +23,7 @@ SearchResponse.prototype.results;
 
 // ------------------------------------------------------ SearchResult
 
-/** @constructor */
+/** @record */
 function SearchResult() {}
 
 /** @type {string} */
@@ -43,7 +49,7 @@ SearchResult.prototype.stability;
 
 // ------------------------------------------------------ ResourceRef
 
-/** @constructor */
+/** @record */
 function ResourceRef() {}
 
 /** @type {string} */
@@ -54,7 +60,7 @@ ResourceRef.prototype.address;
 
 // ------------------------------------------------------ CapabilityReferencesResponse
 
-/** @constructor */
+/** @record */
 function CapabilityReferencesResponse() {}
 
 /** @type {string} */
@@ -65,7 +71,7 @@ CapabilityReferencesResponse.prototype.references;
 
 // ------------------------------------------------------ CapabilityReference
 
-/** @constructor */
+/** @record */
 function CapabilityReference() {}
 
 /** @type {string} */
@@ -85,7 +91,7 @@ CapabilityReference.prototype.resourceStability;
 
 // ------------------------------------------------------ CatalogResponse
 
-/** @constructor */
+/** @record */
 function CatalogResponse() {}
 
 /** @type {!Array<!CatalogResult>} */
@@ -105,7 +111,7 @@ CatalogResponse.prototype.offset;
 
 // ------------------------------------------------------ CatalogResult
 
-/** @constructor */
+/** @record */
 function CatalogResult() {}
 
 /** @type {string} */
@@ -131,7 +137,7 @@ CatalogResult.prototype.properties;
 
 // ------------------------------------------------------ CatalogProperties
 
-/** @constructor */
+/** @record */
 function CatalogProperties() {}
 
 /** @type {?string} */
@@ -193,7 +199,7 @@ CatalogProperties.prototype.declaringResources;
 
 // ------------------------------------------------------ DeclaringResource
 
-/** @constructor */
+/** @record */
 function DeclaringResource() {}
 
 /** @type {string} */
@@ -204,7 +210,7 @@ DeclaringResource.prototype.stability;
 
 // ------------------------------------------------------ CatalogFacets
 
-/** @constructor */
+/** @record */
 function CatalogFacets() {}
 
 /** @type {?TypeCounts} */
@@ -281,7 +287,7 @@ CatalogFacets.prototype.hasReturnValue;
 
 // ------------------------------------------------------ BooleanCounts
 
-/** @constructor */
+/** @record */
 function BooleanCounts() {}
 
 /** @type {number} */
@@ -292,7 +298,7 @@ BooleanCounts.prototype['false'];
 
 // ------------------------------------------------------ TypeCounts
 
-/** @constructor */
+/** @record */
 function TypeCounts() {}
 
 /** @type {number} */
@@ -309,7 +315,7 @@ TypeCounts.prototype.capability;
 
 // ------------------------------------------------------ StabilityCounts
 
-/** @constructor */
+/** @record */
 function StabilityCounts() {}
 
 /** @type {number} */
@@ -326,7 +332,7 @@ StabilityCounts.prototype.experimental;
 
 // ------------------------------------------------------ DataTypeCounts
 
-/** @constructor */
+/** @record */
 function DataTypeCounts() {}
 
 /** @type {number} */
@@ -367,7 +373,7 @@ DataTypeCounts.prototype['list-object'];
 
 // ------------------------------------------------------ AccessTypeCounts
 
-/** @constructor */
+/** @record */
 function AccessTypeCounts() {}
 
 /** @type {number} */
@@ -381,7 +387,7 @@ AccessTypeCounts.prototype.metric;
 
 // ------------------------------------------------------ StorageCounts
 
-/** @constructor */
+/** @record */
 function StorageCounts() {}
 
 /** @type {number} */
@@ -392,7 +398,7 @@ StorageCounts.prototype.runtime;
 
 // ------------------------------------------------------ RestartCounts
 
-/** @constructor */
+/** @record */
 function RestartCounts() {}
 
 /** @type {number} */
