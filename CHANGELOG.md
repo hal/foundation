@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.6] - 2026-11-23
+
 ### Fixed
 
 - Fix storage facet filter sending `storage=false` instead of `storage=configuration` or `storage=runtime` — exclusive non-boolean facets now use the actual value
@@ -569,7 +571,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.6.5...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.6.6...HEAD
+[0.6.6]: https://github.com/hal/foundation/compare/v0.6.5...v0.6.6
 [0.6.5]: https://github.com/hal/foundation/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/hal/foundation/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/hal/foundation/compare/v0.6.2...v0.6.3
