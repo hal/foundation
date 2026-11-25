@@ -22,33 +22,33 @@ Handlers and providers are registered in `Pipeline.java` and evaluated in priori
 
 #### Handlers (priority order)
 
-| Priority | Handler                    | Pattern                                                      |
-| -------- | -------------------------- | ------------------------------------------------------------ |
-| 1        | `CredentialReferenceHandler`| OBJECT with `{store, alias, clear-text}` value-type          |
-| 2        | `TimeUnitHandler`          | OBJECT with `{time, unit}` value-type                        |
-| 3        | `FileHandler`              | OBJECT with `{path, relative-to}` value-type                 |
-| 4        | `PathRelativeToHandler`    | Sibling STRING pair (`*path` + `*relative-to`) rendered as one unit |
-| 5        | `MapHandler`               | Simple scalar value-type maps                                |
-| 6        | `ListSimpleRecordHandler`  | LIST of simple records                                       |
-| 7        | `FlatteningHandler`        | Remaining simple records (all simple sub-attributes) — catch-all, must be last |
+| Priority | Handler                      | Pattern                                                                        |
+| -------- | ---------------------------- | ------------------------------------------------------------------------------ |
+| 1        | `CredentialReferenceHandler` | OBJECT with `{store, alias, clear-text}` value-type                            |
+| 2        | `TimeUnitHandler`            | OBJECT with `{time, unit}` value-type                                          |
+| 3        | `FileHandler`                | OBJECT with `{path, relative-to}` value-type                                   |
+| 4        | `PathRelativeToHandler`      | Sibling STRING pair (`*path` + `*relative-to`) rendered as one unit            |
+| 5        | `MapHandler`                 | Simple scalar value-type maps                                                  |
+| 6        | `ListSimpleRecordHandler`    | LIST of simple records                                                         |
+| 7        | `FlatteningHandler`          | Remaining simple records (all simple sub-attributes) — catch-all, must be last |
 
 #### Providers (priority order)
 
-| Priority | Provider           | Pattern                                                            |
-| -------- | ------------------ | ------------------------------------------------------------------ |
-| 1        | `RelativeToProvider`| Standalone `*relative-to` STRING not claimed by `PathRelativeToHandler` |
-| 2        | `DefaultProvider`  | Catch-all fallback for all remaining attributes                    |
+| Priority | Provider             | Pattern                                                                 |
+| -------- | -------------------- | ----------------------------------------------------------------------- |
+| 1        | `RelativeToProvider` | Standalone `*relative-to` STRING not claimed by `PathRelativeToHandler` |
+| 2        | `DefaultProvider`    | Catch-all fallback for all remaining attributes                         |
 
 ### OBJECT Breakdown (303 total)
 
-| Category                                  | Count | Handler                                                                    |
-| ----------------------------------------- | ----- | -------------------------------------------------------------------------- |
-| Credential references                     | —     | `CredentialReferenceHandler` (subset of simple records)                    |
-| Time/unit pairs                           | —     | `TimeUnitHandler` (subset of simple records)                               |
-| File path/relative-to                     | —     | `FileHandler` (subset of simple records)                                   |
-| Simple scalar value-type (maps)           | 178   | `MapHandler`                                                               |
-| Simple record (all simple sub-attributes) | 111   | `FlatteningHandler` (after specialized handlers claim their share)         |
-| Complex (nested LIST/OBJECT children)     | 14    | Not yet covered                                                            |
+| Category                                  | Count | Handler                                                            |
+| ----------------------------------------- | ----- | ------------------------------------------------------------------ |
+| Credential references                     | —     | `CredentialReferenceHandler` (subset of simple records)            |
+| Time/unit pairs                           | —     | `TimeUnitHandler` (subset of simple records)                       |
+| File path/relative-to                     | —     | `FileHandler` (subset of simple records)                           |
+| Simple scalar value-type (maps)           | 178   | `MapHandler`                                                       |
+| Simple record (all simple sub-attributes) | 111   | `FlatteningHandler` (after specialized handlers claim their share) |
+| Complex (nested LIST/OBJECT children)     | 14    | Not yet covered                                                    |
 
 Counts for specialized handlers are subsets carved from the 111 simple-record total. The 178 + 111 + 14 = 303 breakdown remains valid; the specialized handlers simply take priority over `FlatteningHandler` for specific patterns.
 
