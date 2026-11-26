@@ -1,4 +1,4 @@
-FROM quay.io/quarkus/ubi9-quarkus-micro-image:2.0
+FROM quay.io/quarkus/ubi10-quarkus-micro-image:2.0
 ARG BINARY_PATH=target
 WORKDIR /work/
 RUN chown 1001 /work \
@@ -6,7 +6,7 @@ RUN chown 1001 /work \
     && chown 1001:root /work
 COPY --chown=1001:root --chmod=0755 ${BINARY_PATH}/*-runner /work/application
 
-EXPOSE 8080
+EXPOSE 9090
 USER 1001
 
 ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]
