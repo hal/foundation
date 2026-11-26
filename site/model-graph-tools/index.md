@@ -21,6 +21,7 @@ MGT runs as a lightweight container alongside your WildFly server. Each containe
 | 38.0            | 7380     | `http://localhost:7380/api/` |
 | 39.0            | 7390     | `http://localhost:7390/api/` |
 | 41.0            | 7410     | `http://localhost:7410/api/` |
+| 42.0            | 7420     | `http://localhost:7420/api/` |
 
 The port formula is **7000 + major × 10 + minor**, so there is no guesswork involved.
 
@@ -54,19 +55,19 @@ cargo install mgt
 Start an MGT container for a specific WildFly version:
 
 ```bash
-mgt start 41
+mgt start 42
 ```
 
 This pulls the matching container image (if needed), maps the correct port automatically, and starts the container. You can start containers for multiple versions at once:
 
 ```bash
-mgt start 38,39,41
+mgt start 40,41,42
 ```
 
 Stop containers when you no longer need them:
 
 ```bash
-mgt stop 41
+mgt stop 42
 mgt stop --all
 ```
 
@@ -77,8 +78,10 @@ List running containers with `mgt ps`.
 If you prefer not to install the CLI, you can start a container directly — just make sure the port mapping follows the formula (**7000 + major × 10 + minor**):
 
 ```bash
-docker run -d --name mgt-41 -p 7410:7474 quay.io/halconsole/mgt:41.0
+docker run -d --name mgt-42 -p 7420:7474 quay.io/modelgraphtools/model:42.0.0
 ```
+
+Image tags use the full WildFly version (for example `42.0.0` or `41.0.1`).
 
 For more details on the `mgt` CLI, see the [tooling repository](https://github.com/model-graph-tools/tooling).
 
