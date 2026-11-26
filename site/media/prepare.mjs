@@ -27,9 +27,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const HALOP_JAR = join(__dirname, "../../op/standalone/target/quarkus-app/quarkus-run.jar");
 const HALOP_PORT = 9090;
 const HALOP_PID_FILE = join(__dirname, ".halop.pid");
+const HALOP_PROBE_TIMEOUT = 2000;
 
 const BOOTSTRAP_OPERATIONS = [
-    "/subsystem=ee:write-attribute(name=global-modules,value=[{name=module1,slot=slot1,annotations=true},{name=module2,slot=slot2,meta-inf=true,services=true}])",
+    "/subsystem=ee:write-attribute(name=global-modules,value=[{name=gm-0,slot=foo,services=true},{name=gm-1,meta-inf=true,annotations=true}])",
 ];
 
 function parseVersion(input) {
@@ -135,9 +136,22 @@ function isHalOPRunning() {
     }
 }
 
-function startHalOP(managementPort) {
+async function isPortServing(port) {
+    try {
+        await fetch(`http://localhost:${port}/`, { signal: AbortSignal.timeout(HALOP_PROBE_TIMEOUT) });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+async function startHalOP(managementPort) {
     if (isHalOPRunning()) {
         console.log("halOP standalone is already running.");
+        return;
+    }
+    if (await isPortServing(HALOP_PORT)) {
+        console.log(`An existing server is already listening on port ${HALOP_PORT}, using it as halOP.`);
         return;
     }
     if (!existsSync(HALOP_JAR)) {
@@ -195,7 +209,7 @@ async function main() {
     } else {
         startWildFly(version);
         startMgt(version);
-        startHalOP(version.managementPort);
+        await startHalOP(version.managementPort);
         console.log("\nEnvironment ready. Run: pnpm run media:capture " + args[0]);
     }
 }
