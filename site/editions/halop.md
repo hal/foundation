@@ -129,14 +129,28 @@ op/standalone/target/hal-op-standalone-*-runner
 - Recent version of GraalVM installed
 - See [Quarkus native image guide](https://quarkus.io/guides/building-native-image#configuring-graalvm) for setup details
 
-#### Use from GitHub Releases
+#### Homebrew (macOS)
 
-Native binaries for Linux, macOS, and Windows are attached to every [release](https://github.com/hal/foundation/releases). Download the binary for your platform, make it executable, and run it.
-
-On macOS you may need to run:
+On Apple Silicon Macs, the easiest way to install the native binary is [Homebrew](https://brew.sh/):
 
 ```bash
-chmod +x hal-op-*
+brew install hpehl/tap/hal-op
+hal-op
+```
+
+#### Use from GitHub Releases
+
+Native binaries for Linux, macOS (Apple Silicon), and Windows are attached to every [release](https://github.com/hal/foundation/releases). Download the binary for your platform, make it executable, and run it. Replace `<version>` with the version from the [latest release](https://github.com/hal/foundation/releases):
+
+```bash
+curl -fLO https://github.com/hal/foundation/releases/download/v<version>/hal-op-<version>-macos
+chmod +x hal-op-<version>-macos
+./hal-op-<version>-macos
+```
+
+The macOS binary isn't signed. If you download it with a browser, macOS quarantines it and refuses to start it. Downloading with `curl` or `gh release download` avoids this. Otherwise, remove the quarantine attribute:
+
+```bash
 xattr -d com.apple.quarantine hal-op-*
 ```
 
