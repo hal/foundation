@@ -244,3 +244,43 @@ jobs:
       - uses: softprops/action-gh-release@v3
         with:
           files: hal-op-${{ steps.get-version.outputs.version-without-v }}-*
+
+  update-formula:
+    if: github.repository_owner == 'hal'
+    needs: build-native-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - id: get-version
+        uses: battila7/get-version-action@v2.3.0
+      - id: checksum
+        run: |
+          VERSION="${{ steps.get-version.outputs.version-without-v }}"
+          URL="https://github.com/hal/foundation/releases/download/${{ steps.get-version.outputs.version }}/hal-op-${VERSION}-macos"
+          curl -fsSL -o hal-op-macos "${URL}"
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+          echo "sha=$(sha256sum hal-op-macos | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Set up Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Clone homebrew-tap
+        env:
+          TOKEN: ${{ secrets.FORMULA_TOKEN }}
+        run: git clone --branch main https://$TOKEN@github.com/hpehl/homebrew-tap.git
+      - name: Update formula
+        working-directory: homebrew-tap
+        run: |
+          sed -i \
+            -e 's|^  url ".*"|  url "${{ steps.checksum.outputs.url }}"|' \
+            -e 's|^  version ".*"|  version "${{ steps.get-version.outputs.version-without-v }}"|' \
+            -e 's|^  sha256 ".*"|  sha256 "${{ steps.checksum.outputs.sha }}"|' \
+            Formula/hal-op.rb
+      - name: Commit and push changes
+        working-directory: homebrew-tap
+        env:
+          TOKEN: ${{ secrets.FORMULA_TOKEN }}
+        run: |
+          git add Formula/hal-op.rb
+          git diff --cached --quiet && { echo "Formula already up to date"; exit 0; }
+          git commit -m "Update hal-op formula: version ${{ steps.get-version.outputs.version-without-v }}"
+          git push https://$TOKEN@github.com/hpehl/homebrew-tap.git main
