@@ -7,6 +7,21 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add Homebrew formula for the native macOS binary (`brew install hpehl/tap/hal-op`), updated automatically on every release
+
+### Fixed
+
+- Fix native container image to use the UBI 10 Quarkus micro image, matching the UBI 10 builder used by Quarkus 4, and expose the actual HTTP port 9090
+
+### Upgrades
+
+- Bump Quarkus platform to 4.0.1
+- Bump PatternFly Java to 0.16.0
+- Bump DOMPurify to 3.5.0
+- Bump pnpm to 12.23.0
+
 ## [0.6.6] - 2026-11-23
 
 ### Fixed
