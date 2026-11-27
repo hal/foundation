@@ -157,7 +157,12 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
             };
         }
 
-        /** Returns {@code true} if the path is a client-side route (not root and not a static file). */
+        /**
+         * Returns {@code true} if the path is a client-side route (not root and not a static file).
+         * <p>
+         * The same SPA routing logic exists in {@code org.jboss.hal.standalone.Main} and
+         * {@code org.jboss.hal.testsuite.Main} (both Vert.x). Keep them in sync.
+         */
         private static boolean clientRoute(String path) {
             return !path.equals("/") && !path.contains(".");
         }

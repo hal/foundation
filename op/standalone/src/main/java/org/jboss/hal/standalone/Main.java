@@ -43,7 +43,12 @@ public class Main {
         });
     }
 
-    /** Returns {@code true} if the path is a client-side route (not root and not a static file). */
+    /**
+     * Returns {@code true} if the path is a client-side route (not root and not a static file).
+     * <p>
+     * The same SPA routing logic exists in {@code org.jboss.hal.testsuite.Main} (Vert.x) and
+     * {@code org.jboss.hal.op.HalOpSubsystemRegistrar} (Undertow). Keep them in sync.
+     */
     private boolean clientRoute(String path) {
         return !path.equals("/") && !path.contains(".");
     }
