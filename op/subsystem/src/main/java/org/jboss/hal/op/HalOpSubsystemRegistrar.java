@@ -118,7 +118,9 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
                                     Module consoleModule = Module.getCallerModuleLoader().loadModule(CONSOLE_MODULE);
                                     ResourceManager resourceManager = new ClassPathResourceManager(
                                             consoleModule.getClassLoader(), RESOURCE_PREFIX);
-                                    mgmt.addManagementHandler(CONTEXT_NAME, true, spaHandler(resourceManager));
+                                    // Like /console, the static resources are served without authentication.
+                                    // Only the console's calls to /management require authentication.
+                                    mgmt.addManagementHandler(CONTEXT_NAME, false, spaHandler(resourceManager));
                                     log.infof("HAL on premise console available at /%s", CONTEXT_NAME);
                                 } catch (ModuleLoadException e) {
                                     throw new RuntimeException("Failed to load HAL console module: " + CONSOLE_MODULE, e);
@@ -146,6 +148,7 @@ class HalOpSubsystemRegistrar implements SubsystemResourceDefinitionRegistrar {
                 } else {
                     if (clientRoute(path)) {
                         Resource index = resourceManager.getResource("/index.html");
+                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
                         index.serve(exchange.getResponseSender(), exchange, IoCallback.END_EXCHANGE);
                     } else {
                         resourceHandler.handleRequest(exchange);

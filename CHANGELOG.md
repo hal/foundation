@@ -14,9 +14,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Raise the `halop` subsystem stability level from `experimental` to `preview` so it can be included in WildFly Preview's default configurations ([#486](https://github.com/hal/foundation/issues/486))
+- Serve the halOP static resources at `/halop` without HTTP authentication, like the existing console at `/console`. Calls to `/management` still require authentication ([#487](https://github.com/hal/foundation/issues/487))
 
 ### Fixed
 
+- Fix missing `Content-Type` header when the halOP subsystem serves `index.html` for client-side routes such as `/halop/deployments`
 - Fix native container image to use the UBI 10 Quarkus micro image, matching the UBI 10 builder used by Quarkus 4, and expose the actual HTTP port 9090
 
 ### Upgrades
