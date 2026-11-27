@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.7] - 2026-11-27
+
 ### Added
 
 - Add Homebrew formula for the native macOS binary (`brew install hpehl/tap/hal-op`), updated automatically on every release
@@ -592,7 +594,8 @@ Initial release.
 
 - for dependency upgrades
 -->
-[Unreleased]: https://github.com/hal/foundation/compare/v0.6.6...HEAD
+[Unreleased]: https://github.com/hal/foundation/compare/v0.6.7...HEAD
+[0.6.7]: https://github.com/hal/foundation/compare/v0.6.6...v0.6.7
 [0.6.6]: https://github.com/hal/foundation/compare/v0.6.5...v0.6.6
 [0.6.5]: https://github.com/hal/foundation/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/hal/foundation/compare/v0.6.3...v0.6.4
