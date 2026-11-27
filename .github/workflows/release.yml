@@ -69,6 +69,8 @@ jobs:
   release:
     needs: deploy
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version-without-v }}
     steps:
       - id: get-version
         uses: battila7/get-version-action@v2.3.0
@@ -198,90 +200,9 @@ jobs:
           podman manifest push quay.io/halconsole/hal-op:latest
           podman manifest push quay.io/halconsole/hal-op:${VERSION}
 
-  build-native-binaries:
+  native-binaries:
     needs: release
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    steps:
-      - id: get-version
-        uses: battila7/get-version-action@v2.3.0
-      - uses: actions/checkout@v7
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: 25
-          # Mandrel matches the Quarkus builder image; Oracle GraalVM may lag behind the
-          # SubstrateVM APIs required by the current Quarkus version
-          distribution: mandrel
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          cache: maven
-      - if: matrix.os == 'ubuntu-latest'
-        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -P op,standalone,native -Dquarkus.native.container-build=false
-      - if: matrix.os == 'macos-latest'
-        run: ./mvnw --show-version --batch-mode --no-transfer-progress install -P op,standalone,native -Dquarkus.native.container-build=false
-      - if: matrix.os == 'windows-latest'
-        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "op,standalone,native" "-Dquarkus.native.container-build=false" "-Dcheckstyle.skip" "-Deditorconfig.skip"
-      - if: matrix.os == 'windows-latest'
-        run: |
-          $APP_NAME = "hal-op"
-          $VERSION = "${{ steps.get-version.outputs.version-without-v }}"
-          $runner = Get-ChildItem -Path op\standalone\target\*-runner.exe | Select-Object -First 1
-          Move-Item $runner.FullName "${APP_NAME}-${VERSION}-windows.exe"
-        shell: pwsh
-      - if: matrix.os == 'macos-latest'
-        run: |
-          APP_NAME="hal-op"
-          VERSION="${{ steps.get-version.outputs.version-without-v }}"
-          find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-macos" \;
-        shell: bash
-      - if: matrix.os == 'ubuntu-latest'
-        run: |
-          APP_NAME="hal-op"
-          VERSION="${{ steps.get-version.outputs.version-without-v }}"
-          find op/standalone/target -maxdepth 1 -name '*-runner' -type f -exec mv {} "${APP_NAME}-${VERSION}-linux" \;
-        shell: bash
-      - uses: softprops/action-gh-release@v3
-        with:
-          files: hal-op-${{ steps.get-version.outputs.version-without-v }}-*
-
-  update-formula:
-    if: github.repository_owner == 'hal'
-    needs: build-native-binaries
-    runs-on: ubuntu-latest
-    steps:
-      - id: get-version
-        uses: battila7/get-version-action@v2.3.0
-      - id: checksum
-        run: |
-          VERSION="${{ steps.get-version.outputs.version-without-v }}"
-          URL="https://github.com/hal/foundation/releases/download/${{ steps.get-version.outputs.version }}/hal-op-${VERSION}-macos"
-          curl -fsSL -o hal-op-macos "${URL}"
-          echo "url=${URL}" >> "$GITHUB_OUTPUT"
-          echo "sha=$(sha256sum hal-op-macos | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
-      - name: Set up Git identity
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      - name: Clone homebrew-tap
-        env:
-          TOKEN: ${{ secrets.FORMULA_TOKEN }}
-        run: git clone --branch main https://$TOKEN@github.com/hpehl/homebrew-tap.git
-      - name: Update formula
-        working-directory: homebrew-tap
-        run: |
-          sed -i \
-            -e 's|^  url ".*"|  url "${{ steps.checksum.outputs.url }}"|' \
-            -e 's|^  version ".*"|  version "${{ steps.get-version.outputs.version-without-v }}"|' \
-            -e 's|^  sha256 ".*"|  sha256 "${{ steps.checksum.outputs.sha }}"|' \
-            Formula/hal-op.rb
-      - name: Commit and push changes
-        working-directory: homebrew-tap
-        env:
-          TOKEN: ${{ secrets.FORMULA_TOKEN }}
-        run: |
-          git add Formula/hal-op.rb
-          git diff --cached --quiet && { echo "Formula already up to date"; exit 0; }
-          git commit -m "Update hal-op formula: version ${{ steps.get-version.outputs.version-without-v }}"
-          git push https://$TOKEN@github.com/hpehl/homebrew-tap.git main
+    uses: ./.github/workflows/native-binaries.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+    secrets: inherit

@@ -1,0 +1,110 @@
+name: Native Binaries
+
+# Builds the native halOP binaries for Linux, macOS, and Windows, attaches them
+# to an existing GitHub release, and updates the Homebrew formula.
+#
+# Called by the release workflow, but can also be triggered manually to
+# (re)build the binaries of an already published release.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version (without v prefix, e.g. 0.6.1)'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (without v prefix, e.g. 0.6.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  APP_NAME: hal-op
+  MVN_ARGS: --show-version --batch-mode --no-transfer-progress
+
+jobs:
+  build-native-binaries:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            suffix: linux
+          - os: macos-latest
+            suffix: macos
+          - os: windows-latest
+            suffix: windows
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: v${{ inputs.version }}
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: 25
+          # Mandrel matches the Quarkus builder image; Oracle GraalVM may lag behind the
+          # SubstrateVM APIs required by the current Quarkus version
+          distribution: mandrel
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: maven
+      - if: runner.os != 'Windows'
+        run: ./mvnw $MVN_ARGS install -P op,standalone,native -Dquarkus.native.container-build=false
+      - if: runner.os == 'Windows'
+        run: .\mvnw.cmd --show-version --batch-mode --no-transfer-progress install "-P" "op,standalone,native" "-Dquarkus.native.container-build=false" "-Dcheckstyle.skip" "-Deditorconfig.skip"
+      - if: runner.os != 'Windows'
+        run: |
+          find op/standalone/target -maxdepth 1 -name '*-runner' -type f \
+            -exec mv {} "${APP_NAME}-${{ inputs.version }}-${{ matrix.suffix }}" \;
+        shell: bash
+      - if: runner.os == 'Windows'
+        run: |
+          $runner = Get-ChildItem -Path op\standalone\target\*-runner.exe | Select-Object -First 1
+          Move-Item $runner.FullName "$env:APP_NAME-${{ inputs.version }}-${{ matrix.suffix }}.exe"
+        shell: pwsh
+      - uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ inputs.version }}
+          files: ${{ env.APP_NAME }}-${{ inputs.version }}-*
+          fail_on_unmatched_files: true
+
+  update-formula:
+    if: github.repository_owner == 'hal'
+    needs: build-native-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - id: checksum
+        run: |
+          URL="https://github.com/hal/foundation/releases/download/v${{ inputs.version }}/${APP_NAME}-${{ inputs.version }}-macos"
+          curl -fsSL -o hal-op-macos "${URL}"
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+          echo "sha=$(sha256sum hal-op-macos | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Set up Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Clone homebrew-tap
+        env:
+          TOKEN: ${{ secrets.FORMULA_TOKEN }}
+        run: git clone --branch main https://$TOKEN@github.com/hpehl/homebrew-tap.git
+      - name: Update formula
+        working-directory: homebrew-tap
+        run: |
+          sed -i \
+            -e 's|^  url ".*"|  url "${{ steps.checksum.outputs.url }}"|' \
+            -e 's|^  version ".*"|  version "${{ inputs.version }}"|' \
+            -e 's|^  sha256 ".*"|  sha256 "${{ steps.checksum.outputs.sha }}"|' \
+            Formula/hal-op.rb
+      - name: Commit and push changes
+        working-directory: homebrew-tap
+        env:
+          TOKEN: ${{ secrets.FORMULA_TOKEN }}
+        run: |
+          git add Formula/hal-op.rb
+          git diff --cached --quiet && { echo "Formula already up to date"; exit 0; }
+          git commit -m "Update hal-op formula: version ${{ inputs.version }}"
+          git push https://$TOKEN@github.com/hpehl/homebrew-tap.git main
