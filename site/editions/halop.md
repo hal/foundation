@@ -32,7 +32,7 @@ halOP supports multiple deployment modes to fit different environments and use c
 
 ### Bundled with WildFly
 
-In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as an experimental [feature pack](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack) that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The feature pack mounts an additional HTTP endpoint on the management interface at http://localhost:9990/halop.
+In this mode halOP is bundled with WildFly and can be used out of the box. halOP is available as a preview [feature pack](https://central.sonatype.com/artifact/org.jboss.hal/hal-op-feature-pack) that can be provisioned with [Galleon](https://github.com/wildfly/galleon). The feature pack mounts an additional HTTP endpoint on the management interface at http://localhost:9990/halop.
 
 **Maven Coordinates:**
 
@@ -53,7 +53,7 @@ org.jboss.hal:hal-op-feature-pack
     ```bash
     galleon.sh provision op/feature-pack/target/provision.xml \
         --dir=$TMPDIR/wildfly \
-        --stability-level=experimental
+        --stability-level=preview
     ```
 
 3. Prepare and start the server:
@@ -61,14 +61,14 @@ org.jboss.hal:hal-op-feature-pack
     ```bash
     cd $TMPDIR/wildfly
     bin/add-user.sh -u admin -p admin --silent
-    bin/standalone.sh --stability=experimental
+    bin/standalone.sh --stability=preview
     ```
 
 4. Open http://localhost:9990/halop
 
 **Requirements:**
 
-- WildFly must be started with `--stability=experimental` to enable the halOP feature pack
+- WildFly must be started with `--stability=preview` (or `experimental`) to enable the halOP subsystem. It is rejected at the `community` and `default` levels.
 
 ### Standalone (JVM)
 

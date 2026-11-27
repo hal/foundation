@@ -11,6 +11,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add Homebrew formula for the native macOS binary (`brew install hpehl/tap/hal-op`), updated automatically on every release
 
+### Changed
+
+- Raise the `halop` subsystem stability level from `experimental` to `preview` so it can be included in WildFly Preview's default configurations ([#486](https://github.com/hal/foundation/issues/486))
+
 ### Fixed
 
 - Fix native container image to use the UBI 10 Quarkus micro image, matching the UBI 10 builder used by Quarkus 4, and expose the actual HTTP port 9090

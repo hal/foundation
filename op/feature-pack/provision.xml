@@ -34,6 +34,6 @@
     <options>
         <option name="optional-packages" value="passive+"/>
         <option name="jboss-fork-embedded" value="true"/>
-        <option name="stability-level" value="experimental"/>
+        <option name="stability-level" value="preview"/>
     </options>
 </installation>

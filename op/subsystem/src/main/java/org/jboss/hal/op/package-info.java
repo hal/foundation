@@ -18,7 +18,7 @@
  * WildFly subsystem extension for the HAL on premise management console. Registers the console as a static web
  * context on the WildFly management HTTP interface at {@code /halop}.
  *
- * <p>The subsystem is registered at the {@code experimental} stability level and consists of:
+ * <p>The subsystem is registered at the {@code preview} stability level and consists of:
  * <dl>
  *     <dt>{@link org.jboss.hal.op.HalOpExtension}</dt>
  *     <dd>The WildFly extension entry point that wires subsystem configuration, model, and XML persistence.</dd>

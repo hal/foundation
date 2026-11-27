@@ -103,7 +103,7 @@ galleon.sh provision op/feature-pack/target/provision.xml --dir=/path/to/wildfly
 
 The `provision.xml` in `op/feature-pack/` uses `${project.version}` for the feature pack version. During the build, Maven resource filtering produces `target/provision.xml` with the resolved version. It provisions a full default WildFly standalone server and adds the `halop` layer on top.
 
-Start the provisioned server with `--stability=experimental`.
+Start the provisioned server with `--stability=preview`.
 
 ## Development Mode
 

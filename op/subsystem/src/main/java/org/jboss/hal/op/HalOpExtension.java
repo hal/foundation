@@ -34,9 +34,9 @@ public class HalOpExtension extends SubsystemExtension<HalOpSubsystemSchema> {
                 SubsystemPersistence.of(HalOpSubsystemSchema.CURRENT));
     }
 
-    /** Returns {@link Stability#EXPERIMENTAL} as the stability level of this extension. */
+    /** Returns {@link Stability#PREVIEW} as the stability level of this extension. */
     @Override
     public Stability getStability() {
-        return Stability.EXPERIMENTAL;
+        return Stability.PREVIEW;
     }
 }
