@@ -198,8 +198,8 @@ importers:
         specifier: 1.65.1
         version: 1.65.1
       image-size:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 2.2.0
+        version: 2.2.0
       vite-plus:
         specifier: 'catalog:'
         version: 1.8.0(@vitest/ui@5.1.1)(playwright@1.65.1)
@@ -1097,9 +1097,9 @@ packages:
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
 
-  image-size@2.1.0:
-    resolution: {integrity: sha512-6Dbisa46RsgeAh3TMSFL2i8+uIFG+/LRmz6Q2oscSJJvXo1sOw3EgNO4M8jPl1P+gR1atJLDPrpclX4IHz63sA==}
-    engines: {node: '>=18'}
+  image-size@2.2.0:
+    resolution: {integrity: sha512-93QTtmEv0UD26RTJfmxQvWzhlauWO1TizNPjCumqzlACXYmI7TlwRWWT2+M4at7kZwnj+WkMOW9XKI76eX0dWw==}
+    engines: {node: '>=22'}
     hasBin: true
 
   js-tokens@4.0.0:
@@ -2114,7 +2114,7 @@ snapshots:
 
   html-void-elements@3.0.0: {}
 
-  image-size@2.1.0: {}
+  image-size@2.2.0: {}
 
   js-tokens@4.0.0: {}
 
